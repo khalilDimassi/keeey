@@ -1,6 +1,16 @@
 
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { UserPlus } from "lucide-react"; // Change icon to something else
+
 const Navbar = () => {
+    
+        const navigate = useNavigate(); // Create navigate function
+    
+        const handleButtonClick = () => {
+          navigate("/LoginPage"); // Navigate to the /login route
+        };
+    
   return (
     <div className="flex justify-between items-center bg-white p-2 rounded-lg"style={{ boxShadow: "0 4px 15px rgba(0, 128, 0, 0.2)"}}>
       {/* Left Side: Logo and Name */}
@@ -15,9 +25,13 @@ const Navbar = () => {
       </div>
       
       {/* Right Side: Button */}
-      <button className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center">
-        <span className="mr-2">👤</span> Créer un compte
-      </button>
+      <button
+      onClick={handleButtonClick}
+      className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center"
+    >
+      <UserPlus className="mr-2" /> {/* New icon */}
+      Créer un compte
+    </button>
     </div>
   );
 };

@@ -84,7 +84,8 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <button className="w-full text-gray-500 text-sm mt-6 hover:underline">
+        <button className="w-full text-gray-500 text-sm mt-6 hover:underline"
+             onClick={() => navigate("/home")} >
           continuer en tant qu'invité →
         </button>
       </div>

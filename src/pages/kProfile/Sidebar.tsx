@@ -9,7 +9,6 @@ import {
   Settings,
   LucideIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 type IconId =
   | "dashboard"
@@ -18,15 +17,21 @@ type IconId =
   | "target"
   | "users"
   | "user"
-  | "settings";
+  | "settings"
+  | null;
 
 interface IconItem {
   id: IconId;
   Icon: LucideIcon;
 }
 
-const Sidebar = () => {
-  const [activeIcon, setActiveIcon] = useState<IconId>("dashboard");
+interface SidebarProps {
+  onIconClick: (id: IconId) => void;
+  defaultSelected: IconId;
+}
+
+const Sidebar = ({ onIconClick, defaultSelected }: SidebarProps) => {
+  const [activeIcon, setActiveIcon] = useState<IconId>(defaultSelected);
 
   const icons: IconItem[] = [
     { id: "dashboard", Icon: LayoutGrid },
@@ -38,6 +43,11 @@ const Sidebar = () => {
     { id: "settings", Icon: Settings },
   ];
 
+  const handleIconClick = (id: IconId) => {
+    setActiveIcon(id);
+    onIconClick(id);
+  };
+
   return (
     <div
       style={{ marginTop: "50px" }}
@@ -48,12 +58,10 @@ const Sidebar = () => {
           <div
             key={id}
             className="relative mt-12 cursor-pointer flex items-center"
-            onClick={() => setActiveIcon(id)}
+            onClick={() => handleIconClick(id)}
           >
-            {/* Animated Selection Circle */}
             {activeIcon === id && (
-              <motion.div
-                layoutId="circle"
+              <div
                 className="absolute left-0 bg-white rounded-full"
                 style={{
                   width: "6rem",
@@ -61,22 +69,21 @@ const Sidebar = () => {
                   border: "3px solid rgba(140, 214, 194, 0.47)",
                   boxShadow: "3px 3px 7px #a5d8ca",
                 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
               />
             )}
-
-            {/* Animated Icon moving to the right */}
-            <motion.div
+            <div
               className="relative z-10"
-              animate={{ x: activeIcon === id ? 45 : 0 }} // Move icon 20px right when selected
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              style={{
+                transform: `translateX(${activeIcon === id ? "50px" : "0px"})`,
+                transition: "transform 0.3s ease-in-out",
+              }}
             >
               <Icon
                 className={`w-8 h-8 transition-all duration-300 ${
                   activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
                 }`}
               />
-            </motion.div>
+            </div>
           </div>
         ))}
       </div>

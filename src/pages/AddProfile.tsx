@@ -114,6 +114,7 @@ const AddProfile = () => {
             <button
               type="button"
               className="w-full text-gray-500 text-sm hover:underline"
+              onClick={() => navigate("/home")} 
             >
               Continuer en tant qu'invité →
             </button>
