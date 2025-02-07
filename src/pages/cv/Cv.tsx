@@ -5,11 +5,15 @@ import { MdBookmark } from 'react-icons/md';
 // Components
 import Experience from "./Experience";
 import Formation from "./Formation";
-import Presentation from "./Presentation";
+
 import Profil from "./Profile";
 import PersonalInfo from "./PersonalInfo";
 import Languages from "./Languages";
 import Certificats from "./Certificats";
+import Centre from "./Centre";
+import Competences from "./Competences";
+import Realisation from "./Realisation";
+import Qualites from "./Qualites";
 
 function Cv() {
   const [activeSection, setActiveSection] = useState("Informations personnelles");
@@ -35,15 +39,21 @@ function Cv() {
         return <PersonalInfo />;
       case "Profil":
         return <Profil />;
-      case "Présentation":
-        return <Presentation />;
+     
       case "Formations":
         return <Formation />;
       case "Expérience professionnelle":
         return <Experience />;
         case "Certificats":
-            
-        return <Certificats />;
+                    return <Certificats />;
+                    case "Centre d'intérêt":
+                        return <Centre />;
+                        case "Compétences":
+                            return <Competences />;
+                            case "Réalisations":
+                                return <Realisation />;
+                                case "Qualités":
+                                    return <Qualites />;
         case "Langue":
             
         return <Languages />;
