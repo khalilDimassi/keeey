@@ -8,13 +8,15 @@ import LoginOptions from './pages/LoginOptions';
 import LoginPage from './pages/LoginPage';
 import Layout from './pages/kProfile/Layout';
 
-import KProfile from './pages/beforlogin/KProfile';
+
+import Oportunite from './pages/beforlogin/Oportunite';
+import Cv from './pages/cv/cv';
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/test" element={<KProfile />} />
+        <Route path="/test" element={<Cv />} />
         <Route path="/home" element={<Layout />} />
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/LoginOptions" element={<LoginOptions />} />

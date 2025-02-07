@@ -329,6 +329,7 @@ const Profile: React.FC = () => {
  {/* Updated Documents Section */}
  <DocumentsSection />
     </div>
+    
   );
 };
 

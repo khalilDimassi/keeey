@@ -20,7 +20,7 @@ function SearchCriteria() {
     ];
   
     return (
-      <div className="p-4">
+      <div className="p-4" >
         {/* Utilisation de grid pour aligner Type de contrat et Mobilité */}
         <div className="grid grid-cols-2 gap-6 items-start">
           {/* Type de contrat souhaité */}
