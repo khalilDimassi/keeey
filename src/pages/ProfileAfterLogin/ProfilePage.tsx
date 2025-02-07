@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FaPencilAlt, FaPlus, FaUser } from "react-icons/fa";
 import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
+import axios from "axios";
+import { getAuthHeader } from "../utils/jwt";
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,8 @@ const Profile: React.FC = () => {
     adresse: "",
     codePostal: ""
   });
-  
+
+
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +39,40 @@ const Profile: React.FC = () => {
     setIsFormSubmitted(true);
   };
 
+
+
+  const [contactformData, setContactFormData] = useState({
+    gender: "",
+    last_name: "",
+    first_name: "",
+    email: "",
+    phone: "",
+    company: "",
+    occupation: "...",
+    contact_role: "REFERRAL"
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContactFormData({
+      ...contactformData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleContactSubmit = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/contact`,
+        formData,
+        { headers: getAuthHeader() }
+      );
+      alert("Référence ajoutée avec succès");
+    } catch (error) {
+      console.error("Erreur lors de l'envoi", error);
+      alert("Une erreur est survenue");
+    }
+  };
+
   return (
     <div className="p-4 space-y-6 min-h-screen" style={{ marginLeft: "-30px" }}>
       <div className="flex items-center space-x-4 ml-20">
@@ -44,7 +81,7 @@ const Profile: React.FC = () => {
           Profile
         </span>
       </div>
-      
+
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         <div
           className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-[30%]"
@@ -182,13 +219,13 @@ const Profile: React.FC = () => {
               </label>
 
               <div className="flex justify-end mt-4">
-  <button
-    onClick={handleSubmit}
-    className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
-  >
-    Save
-  </button>
-</div>
+                <button
+                  onClick={handleSubmit}
+                  className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           ) : (
             // Display View (after save)
@@ -238,98 +275,102 @@ const Profile: React.FC = () => {
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Mes Références</h2>
-        <button className="text-green-700 hover:text-blue-700">
-                    <PlusCircle size={40} />
-                  </button>
+            <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
+              <PlusCircle size={40} />
+            </button>
           </div>
-            <div className="flex space-x-4 mb-4">
-                <label className="flex items-center space-x-2">
+          <div className="flex space-x-4 mb-4">
+            {["Mr.", "Madame", "Autre"].map((label) => (
+              <label key={label} className="flex items-center space-x-2">
                 <input
-                    type="radio"
-                    name="refGender"
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  type="radio"
+                  name="refGender"
+                  value={label}
+                  checked={contactformData.gender === label}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
-                <span>Mr.</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                <input
-                    type="radio"
-                    name="refGender"
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <span>Madame</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                <input
-                    type="radio"
-                    name="refGender"
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <span>Autre</span>
-                </label>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mb-2">
-                <label className="block">
-                Nom
-                <input
-                    className="w-full p-3 border rounded mt-1"
-                    placeholder="Nom"
-                />
-                </label>
-                <label className="block">
-                Prénom
-                <input
-                    className="w-full p-3 border rounded mt-1"
-                    placeholder="Prénom"
-                />
-                </label>
-            </div>
-            <label className="block mb-2">
-                Adresse mail
-                <input
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <label className="block">
+              Nom
+              <input
+                name="lastName"
                 className="w-full p-3 border rounded mt-1"
-                placeholder="Adresse mail"
-                />
+                placeholder="Nom"
+                value={contactformData.last_name}
+                onChange={handleChange}
+              />
             </label>
-            <label className="block mb-2">Numéro de téléphone</label>
-            <div className="flex items-center space-x-2 mb-2">
-                <select className="p-3 border rounded bg-white">
-                <option>🇫🇷</option>
-                <option>🇬🇧</option>
-                </select>
-                <input
-                className="w-full p-3 border rounded"
-                placeholder="Numéro de téléphone"
-                />
-            </div>
-            <label className="block mb-2">
-                Entreprise
-                <input
+            <label className="block">
+              Prénom
+              <input
+                name="firstName"
                 className="w-full p-3 border rounded mt-1"
-                placeholder="Entreprise"
-                />
+                placeholder="Prénom"
+                value={contactformData.first_name}
+                onChange={handleChange}
+              />
             </label>
-            <h3 className="text-md font-semibold mt-4">Liste des références</h3>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-                <div className="p-4 border rounded bg-gray-50 shadow">
-                Web Designer - DIGIWEB
-                </div>
-                <div className="p-4 border rounded bg-gray-50 shadow">
-                Web Designer - DIGIWEB
-                </div>
-                <div className="p-4 border rounded bg-gray-50 shadow">
-                Web Designer - DIGIWEB
-                </div>
-                <div className="p-4 border rounded bg-gray-50 shadow">
-                Web Designer - DIGIWEB
-                </div>
+          </div>
+          <label className="block mb-2">
+            Adresse mail
+            <input
+              name="email"
+              className="w-full p-3 border rounded mt-1"
+              placeholder="Adresse mail"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </label>
+          <label className="block mb-2">Numéro de téléphone</label>
+          <div className="flex items-center space-x-2 mb-2">
+            <select className="p-3 border rounded bg-white">
+              <option>🇫🇷</option>
+              <option>🇬🇧</option>
+            </select>
+            <input
+              name="phone"
+              className="w-full p-3 border rounded"
+              placeholder="Numéro de téléphone"
+              value={contactformData.phone}
+              onChange={handleChange}
+            />
+          </div>
+          <label className="block mb-2">
+            Entreprise
+            <input
+              name="company"
+              className="w-full p-3 border rounded mt-1"
+              placeholder="Entreprise"
+              value={contactformData.company}
+              onChange={handleChange}
+            />
+          </label>
+          <h3 className="text-md font-semibold mt-4">Liste des références</h3>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <div className="p-4 border rounded bg-gray-50 shadow">
+              Web Designer - DIGIWEB
             </div>
+            <div className="p-4 border rounded bg-gray-50 shadow">
+              Web Designer - DIGIWEB
             </div>
+            <div className="p-4 border rounded bg-gray-50 shadow">
+              Web Designer - DIGIWEB
+            </div>
+            <div className="p-4 border rounded bg-gray-50 shadow">
+              Web Designer - DIGIWEB
+            </div>
+          </div>
         </div>
- {/* Updated Documents Section */}
- <DocumentsSection />
+      </div>
+      {/* Updated Documents Section */}
+      <DocumentsSection />
     </div>
-    
+
   );
 };
 

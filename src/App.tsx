@@ -10,7 +10,8 @@ import Layout from './pages/kProfile/Layout';
 
 
 import Oportunite from './pages/beforlogin/Oportunite';
-import Cv from './pages/cv/cv';
+import Cv from './pages/cv/Cv';
+
 function App() {
   return (
     <Router>

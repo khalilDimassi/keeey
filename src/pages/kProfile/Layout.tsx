@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAuthHeader, isAuthenticated } from "../utils/jwt";
+import axios from "axios";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Profile from "../ProfileAfterLogin/ProfilePage";
 import KProfile from "../beforlogin/KProfile";
 import Oportunite from "../beforlogin/Oportunite";
-import Cv from "../cv/cv";
+import Cv from "../cv/Cv";
 
 
 type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "users" | "user" | "settings" | null;
@@ -49,11 +51,11 @@ const Layout = () => {
       <div className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-[calc(100%-64px)]`} style={{ marginTop: "40px" }}>
         {/* Sidebar */}
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
-          <Sidebar 
-            onIconClick={handleIconClick} 
-            defaultSelected="fileText1" 
-            horizontal={isSidebarHorizontal} 
-            setHorizontal={setIsSidebarHorizontal} 
+          <Sidebar
+            onIconClick={handleIconClick}
+            defaultSelected="fileText1"
+            horizontal={isSidebarHorizontal}
+            setHorizontal={setIsSidebarHorizontal}
           />
         </div>
 
@@ -99,7 +101,7 @@ const Layout = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <Cv/>
+                <Cv />
               </motion.div>
             )}
           </AnimatePresence>

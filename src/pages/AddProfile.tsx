@@ -1,19 +1,56 @@
+import logo from "./assets/logo.png";
+import axios from "axios";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import logo from "./assets/logo.png";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { saveToken } from "./utils/jwt";
 
 
 const AddProfile = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const user_role = location.state?.user_role || "K-PROFILE";
+
   const [formData, setFormData] = useState({
-    nom: "",
-    prenom: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    telephone: "",
+    phone: "",
     password: "",
     confirmPassword: "",
+    user_role: user_role
   });
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/public/register`, formData);
+
+      const token = response?.data?.token;
+      if (!token) {
+        throw new Error("Token is missing in the response.");
+      }
+
+      saveToken(token);
+
+      navigate("/home");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Une erreur est survenue. Veuillez réessayer.");
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
@@ -21,10 +58,10 @@ const AddProfile = () => {
         <img src={logo} alt="Keeey Logo" className="h-16 object-contain" />
       </div>
 
-      <div className="relative w-full bg-white p-9 rounded-lg shadow-lg border-green-700" style={{width:"40rem", boxShadow: "0 4px 15px rgba(0, 128, 0, 0.2)", marginTop:"4rem"}}>
+      <div className="relative w-full bg-white p-9 rounded-lg shadow-lg border-green-700" style={{ width: "40rem", boxShadow: "0 4px 15px rgba(0, 128, 0, 0.2)", marginTop: "4rem" }}>
         <div className="flex items-center mb-6">
-        <button 
-            onClick={() => navigate("/LoginOptions")} 
+          <button
+            onClick={() => navigate("/LoginOptions")}
             className="text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft size={24} />
@@ -43,7 +80,7 @@ const AddProfile = () => {
                 name="nom"
                 placeholder="Nom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
-                value={formData.nom}
+                value={formData.first_name}
               />
             </div>
             <div>
@@ -53,7 +90,7 @@ const AddProfile = () => {
                 name="prenom"
                 placeholder="Prénom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
-                value={formData.prenom}
+                value={formData.last_name}
               />
             </div>
           </div>
@@ -76,7 +113,7 @@ const AddProfile = () => {
               name="telephone"
               placeholder="Votre numéro"
               className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
-              value={formData.telephone}
+              value={formData.phone}
             />
           </div>
 
@@ -103,6 +140,8 @@ const AddProfile = () => {
             </div>
           </div>
 
+          {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
+
           <div className="mt-6 space-y-4">
             <button
               type="submit"
@@ -114,7 +153,7 @@ const AddProfile = () => {
             <button
               type="button"
               className="w-full text-gray-500 text-sm hover:underline"
-              onClick={() => navigate("/home")} 
+              onClick={() => navigate("/home")}
             >
               Continuer en tant qu'invité →
             </button>
