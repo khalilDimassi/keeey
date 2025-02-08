@@ -3,7 +3,7 @@ import { FaPencilAlt, FaPlus, FaUser } from "react-icons/fa";
 import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
-import { getAuthHeader } from "../utils/jwt";
+import { getAuthHeader } from "../../utils/jwt";
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({

@@ -4,7 +4,7 @@ import { getAuthHeader, isAuthenticated } from "../utils/jwt";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import Profile from "../ProfileAfterLogin/ProfilePage";
+import Profile from "./ProfileAfterLogin/ProfilePage";
 import KProfile from "../beforlogin/KProfile";
 import Oportunite from "../beforlogin/Oportunite";
 import Cv from "../cv/Cv";
