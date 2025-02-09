@@ -5,7 +5,7 @@ import Profile from "./ProfileAfterLogin/ProfilePage";
 import KProfile from "../beforlogin/KProfile";
 import Oportunite from "../beforlogin/Oportunite";
 import JobOpportunities2 from "./JobOpportunities2";
-import Cv from "../cv/Cv";
+import Cv from "./cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
 import JobOpportunities from "./JobOpportunities";
@@ -26,7 +26,7 @@ type IconId =
 const Layout = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
-  const [showJobOpportunities, setShowJobOpportunities] = useState(true); // Connection state
+  const [showJobOpportunities] = useState(false); // Connection state
   const [activeComponent, setActiveComponent] = useState<IconId>("competence");
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 

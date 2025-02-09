@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Pencil, Trash } from "lucide-react";
 import { useState } from "react";
-import { getAuthHeader } from "../utils/jwt";
+import { getAuthHeader } from "../../utils/jwt";
 
 interface Exp {
   experience_id: number

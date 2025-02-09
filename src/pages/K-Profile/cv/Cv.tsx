@@ -1,13 +1,7 @@
-<<<<<<< HEAD
 import { BrainCircuit, ChevronDown, Download, FileText, Menu, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
-=======
-import axios from "axios";
-import { ChevronDown, Download, Menu } from "lucide-react";
-import { useEffect, useState } from "react";
->>>>>>> da93de372507f3d06a0ec563cb33cd78f9950501
 import { MdBookmark } from 'react-icons/md';
-import { getAuthHeader } from "../utils/jwt";
+import { getAuthHeader } from "../../utils/jwt";
 
 interface ResumeData {
   personalData: PersonalData

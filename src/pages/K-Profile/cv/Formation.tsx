@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pencil, Trash } from "lucide-react";
-import { getAuthHeader } from "../utils/jwt";
+import { getAuthHeader } from "../../utils/jwt";
 import axios from "axios";
 
 
