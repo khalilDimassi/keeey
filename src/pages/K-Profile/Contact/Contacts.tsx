@@ -20,9 +20,9 @@ const Contacts = ({ onClose }: { onClose: () => void }) => {
     <div className="w-full">
       <div className="relative bg-white shadow-sm rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200">
+        <div className="flex items-center justify-between ">
           {/* Tabs */}
-          <div className="flex gap-2 p-2">
+          <div className="flex ">
             <button
               className={`px-4 py-2 font-medium transition-all flex items-center gap-2 rounded-md ${
                 activeTab === "contacts"
@@ -59,7 +59,7 @@ const Contacts = ({ onClose }: { onClose: () => void }) => {
         </div>
 
         {/* Content */}
-        <div className="hover-box p-4">
+        <div className="hover-box p-4"  style={{boxShadow:"1px 10px 10px  rgba(96, 105, 110, 0.29)",borderRadius:"10px"}}>
           {activeTab === "contacts" ? <ContactsList /> : <Cooptation />}
         </div>
 

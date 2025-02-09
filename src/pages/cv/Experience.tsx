@@ -51,8 +51,8 @@ const Experience = () => {
 
   return (
     <div className="space-y-4">
-      <div className="border border-gray-200 rounded-md p-4">
-        <h3 className="font-medium mb-2">Ajouter une expérience</h3>
+      <div className=" p-4">
+       
         <div className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="nom" className="mb-1 text-gray-600">Nom du poste</label>

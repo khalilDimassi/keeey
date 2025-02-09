@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Profile from "./ProfileAfterLogin/ProfilePage";
@@ -9,24 +8,26 @@ import JobOpportunities2 from "./JobOpportunities2";
 import Cv from "../cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
-
+import JobOpportunities from "./JobOpportunities";
+import Dashboard from "./Dashboard";
+import MissionsTable from "./MissionsTable"; // Import MissionsTable
 
 type IconId =
   | "dashboard"
   | "fileText1"
   | "bookmark"
   | "target"
-  | "users"
+  | "competence"
   | "user"
   | "settings"
-  | "settings2"
+  | "contact"
   | null;
 
 const Layout = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
-  const [showJobOpportunities, setShowJobOpportunities] = useState(true);
-  const [activeComponent, setActiveComponent] = useState<IconId>("fileText1");
+  const [showJobOpportunities, setShowJobOpportunities] = useState(true); // Connection state
+  const [activeComponent, setActiveComponent] = useState<IconId>("competence");
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 
   const handleIconClick = (componentId: IconId) => {
@@ -34,7 +35,7 @@ const Layout = () => {
     setIsSidebarHorizontal(false);
 
     setShowProfile(componentId === "user");
-    setShowKProfile(componentId === "fileText1");
+    setShowKProfile(componentId === "competence");
   };
 
   const handleCloseKProfile = () => {
@@ -51,107 +52,56 @@ const Layout = () => {
 
       {/* Sidebar & Main Content */}
       <div
-        className={`flex ${
-          isSidebarHorizontal ? "flex-col" : ""
-        } w-full h-[calc(100%-64px)]`}
+        className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-[calc(100%-64px)]`}
         style={{ marginTop: "40px" }}
       >
         {/* Sidebar */}
-        <div
-          className={`${
-            isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"
-          }`}
-        >
+        <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
             onIconClick={handleIconClick}
-            defaultSelected="fileText1"
+            defaultSelected="competence"
             horizontal={isSidebarHorizontal}
             setHorizontal={setIsSidebarHorizontal}
           />
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-col w-full gap-4">
-          {/* Show KProfile */}
-          <AnimatePresence>
-            {activeComponent === "fileText1" && showKProfile && (
-              <KProfile onClose={handleCloseKProfile} />
-            )}
-          </AnimatePresence>
+        <div className="flex flex-col w-full gap-4 m-10">
+          {/* Show Dashboard */}
+          {activeComponent === "dashboard" && <Dashboard />}
 
-          {/* Toggle between JobOpportunities2 and Oportunite */}
-          {activeComponent === "fileText1" && (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={showJobOpportunities ? "job-opportunities2" : "oportunite"}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-              >
-                {showJobOpportunities ? <JobOpportunities2 /> : <Oportunite />}
-              </motion.div>
-            </AnimatePresence>
+          {/* Show KProfile */}
+          {activeComponent === "competence" && showKProfile && (
+            <KProfile onClose={handleCloseKProfile} />
           )}
 
-          {/* Show Users Section */}
-          {activeComponent === "users" && (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="job-opportunities2-contacts"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="flex flex-col gap-4"
-              >
-                <Contacts onClose={() => setActiveComponent(null)} />
-                <JobOpportunities2 />
-              </motion.div>
-            </AnimatePresence>
+          {/* If showJobOpportunities is false, always show Oportunite */}
+          {activeComponent === "competence" && !showJobOpportunities && <Oportunite />}
+
+          {/* If showJobOpportunities is true, switch between JobOpportunities and JobOpportunities2 */}
+          {activeComponent === "competence" && showJobOpportunities && (
+            showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
+          )}
+
+          {/* Show Contacts & JobOpportunities2 when "contact" is selected */}
+          {activeComponent === "contact" && (
+            <div className="flex flex-col gap-4">
+              <Contacts onClose={() => setActiveComponent(null)} />
+              <JobOpportunities2 />
+            </div>
           )}
 
           {/* Show Profile */}
-          <AnimatePresence>
-            {activeComponent === "user" && showProfile && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <Profile />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {activeComponent === "user" && showProfile && <Profile />}
 
           {/* Show CV */}
-          <AnimatePresence>
-            {activeComponent === "bookmark" && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <Cv />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {activeComponent === "fileText1" && <Cv />}
 
           {/* Show Reglage when "settings" is clicked */}
-          <AnimatePresence>
-            {activeComponent === "settings" && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <Reglage />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {activeComponent === "settings" && <Reglage />}
+
+          {/* Show MissionsTable when "target" is clicked */}
+          {activeComponent === "target" && <MissionsTable />}
         </div>
       </div>
     </div>

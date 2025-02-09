@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {
-  LayoutGrid,
-  FileText,
-  Bookmark,
-  Target,
-  Users,
-  User,
-  Settings,
-  LucideIcon,
+import { 
+  LayoutGrid, 
+  Settings, 
+  FileText, 
+  Bookmark, 
+  Target, 
+  Contact,   // ✅ Contact exists in Lucide
+  User, 
+  BrainCircuit, // ✅ Alternative for Competence
+  LucideIcon
 } from "lucide-react";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "users" | "user" | "settings" | "settings2"| null;
+type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact"| null;
 
 interface SidebarProps {
   onIconClick: (id: IconId) => void;
@@ -28,17 +29,18 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     }
   }, [horizontal]);
 
+ 
   const icons: { id: IconId; Icon: LucideIcon }[] = [
     { id: "dashboard", Icon: LayoutGrid },
+    { id: "competence", Icon: BrainCircuit },
     { id: "fileText1", Icon: FileText },
     { id: "bookmark", Icon: Bookmark },
     { id: "target", Icon: Target },
-    { id: "users", Icon: Users },
-    
+    { id: "contact", Icon: Contact },
     { id: "user", Icon: User },
     { id: "settings", Icon: Settings },
-    { id: "settings2", Icon: Settings },
-  ];
+];
+
 
   const handleIconClick = (id: IconId) => {
     setActiveIcon(id);
@@ -48,14 +50,15 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
 
   return (
     <div
-      className={`absolute bg-teal-800 rounded-2xl transition-all duration-500 
+      className={`absolute bg-teal-800 rounded-2xl transition-all duration-500 mt-8 
         ${horizontal 
           ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
           : "w-[70px] h-[688px] left-[23px] flex flex-col items-center"
         }`}
     >
       {/* Sidebar Icons */}
-      <div className={`grid ${horizontal ? "grid-cols-7 gap-x-60" : "flex flex-col items-center"}`}>
+      <div className={`grid ${horizontal ? "grid-cols-8 gap-x-40 justify-center items-center" : "flex flex-col items-center"}`}>
+
         {icons.map(({ id, Icon }) => (
           <div
             key={id}

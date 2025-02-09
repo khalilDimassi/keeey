@@ -17,10 +17,20 @@ function ChangePasswordForm() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-teal-800 mb-6">
-        Modifier le mot de passe
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      
+      <div className="flex justify-between items-center w-full">
+  <h2 className="text-2xl font-semibold text-teal-800 mb-6">
+    Modifier le mot de passe
+  </h2>
+  <button
+    type="submit"
+    className="bg-teal-800 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-teal-700 transition-all"
+  >
+    Términer
+  </button>
+</div>
+
+      <form onSubmit={handleSubmit} className="space-y-5 w-1/3">
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Mot de passe actuel
@@ -60,14 +70,7 @@ function ChangePasswordForm() {
             required
           />
         </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-teal-800 text-white p-3 rounded-md font-semibold hover:bg-teal-700 transition-all"
-          >
-            Enregistrer
-          </button>
-        </div>
+      
       </form>
     </div>
   );

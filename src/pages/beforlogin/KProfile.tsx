@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { FileText, Award } from "lucide-react";
+import { FileText, Award, BrainCircuit } from "lucide-react";
 import SearchCriteria from "./SearchCriteria";
 import Competencies from "./Competencies";
 
@@ -10,15 +10,19 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="w-full">
+       <div className="flex items-center space-x-3 mt-1 mb-7">
+    <BrainCircuit  className="text-teal-800" size={40} />
+    <h1 className="text-xl font-semibold ">Compétence</h1>
+  </div>
       <div className="relative bg-white shadow-sm rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200">
+        <div className="flex items-center justify-between ">
           {/* Tabs */}
-          <div className="flex gap-2 p-2">
+          <div className="flex ">
             <button
               className={`px-4 py-2 font-medium transition-all flex items-center gap-2 rounded-md ${
                 activeTab === "criteria"
-                  ? "text-teal-600 bg-white shadow-md border border-gray-100"
+                  ? "text-teal-600 bg-white shadow border border-gray-100" 
                   : "text-gray-500 hover:text-teal-600 hover:bg-gray-50"
               }`}
               onClick={() => setActiveTab("criteria")}
@@ -49,7 +53,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
         </div>
 
         {/* Content */}
-        <div className="hover-box p-4">
+        <div className="hover-box p-4" style={{boxShadow:"1px 10px 10px  rgba(96, 105, 110, 0.29)", borderRadius:"10px"}}>
           {activeTab === "criteria" ? <SearchCriteria /> : <Competencies />}
         </div>
 

@@ -15,8 +15,19 @@ function ContactSupportForm() {
   
     return (
       <div>
-        <h2 className="text-2xl font-semibold text-teal-800 mb-6">Contact / Support</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex justify-between items-center w-full">
+  <h2 className="text-2xl font-semibold text-teal-800 mb-6">
+    Contact / Support
+  </h2>
+  <button
+    type="submit"
+    className="bg-teal-800 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-teal-700 transition-all"
+  >
+    Envoyer
+  </button>
+</div>
+
+        <form onSubmit={handleSubmit} className="space-y-5 w-1/3">
           {/* Sujet Field */}
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Sujet</label>
@@ -44,14 +55,7 @@ function ContactSupportForm() {
           </div>
   
           {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-teal-800 text-white p-3 rounded-md font-semibold hover:bg-teal-700 transition-all"
-            >
-              Envoyer
-            </button>
-          </div>
+         
         </form>
       </div>
     );

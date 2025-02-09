@@ -21,7 +21,7 @@ function NotificationsSettings() {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <h2 className="text-2xl font-semibold text-teal-800 mb-6">
         Alertes / notifications
       </h2>
@@ -32,17 +32,17 @@ function NotificationsSettings() {
         <div className="space-y-3">
           {Object.entries(alerts).map(([key, value]) => (
             <label key={key} className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={value}
-                onChange={() => toggleAlert(key as keyof typeof alerts)}
-                className="hidden"
-              />
               <div
-                className={`w-5 h-5 border-2 rounded-md transition-all duration-300 flex items-center justify-center
-                ${value ? "bg-teal-800 border-teal-800" : "border-gray-400"}`}
+                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
+                  value ? "bg-teal-800" : "bg-gray-300"
+                }`}
+                onClick={() => toggleAlert(key as keyof typeof alerts)}
               >
-                {value && <div className="w-2.5 h-2.5 bg-white rounded-sm"></div>}
+                <div
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                    value ? "translate-x-6" : "translate-x-0"
+                  }`}
+                ></div>
               </div>
               <span className="text-gray-700">
                 {key === "offerMatch"
@@ -60,17 +60,17 @@ function NotificationsSettings() {
         <div className="space-y-3">
           {Object.entries(notificationTypes).map(([key, value]) => (
             <label key={key} className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={value}
-                onChange={() => toggleNotificationType(key as keyof typeof notificationTypes)}
-                className="hidden"
-              />
               <div
-                className={`w-5 h-5 border-2 rounded-md transition-all duration-300 flex items-center justify-center
-                ${value ? "bg-teal-800 border-teal-800" : "border-gray-400"}`}
+                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
+                  value ? "bg-teal-800" : "bg-gray-300"
+                }`}
+                onClick={() => toggleNotificationType(key as keyof typeof notificationTypes)}
               >
-                {value && <div className="w-2.5 h-2.5 bg-white rounded-sm"></div>}
+                <div
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                    value ? "translate-x-6" : "translate-x-0"
+                  }`}
+                ></div>
               </div>
               <span className="text-gray-700">
                 {key === "email" ? "e-mail" : key === "sms" ? "SMS" : "Notification push"}
@@ -82,11 +82,12 @@ function NotificationsSettings() {
 
       {/* BOUTON TERMINER */}
       <div className="flex justify-end">
-        <button className="bg-teal-800 text-white py-2 px-4 rounded-md font-semibold hover:bg-teal-700 transition-all">
+        <button className="bg-teal-800 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-teal-700 transition-all">
           Terminer
         </button>
       </div>
     </div>
   );
 }
+
 export default NotificationsSettings;

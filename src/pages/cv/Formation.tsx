@@ -47,11 +47,11 @@ const Formation = () => {
 
   return (
     <div className="space-y-4">
-      <div className="border border-gray-200 rounded-md p-4">
-        <h3 className="font-medium mb-2">Ajouter une formation</h3>
+      <div className=" p-4">
+      
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Formation</label>
+          <div >
+            <label className="block text-sm font-medium text-gray-700 mb-3">Formation</label>
             <input 
               type="text" 
               name="nom"
@@ -63,7 +63,7 @@ const Formation = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Établissement</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Établissement</label>
               <input 
                 type="text" 
                 name="etablissement"
@@ -74,7 +74,7 @@ const Formation = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Ville</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Ville</label>
               <input 
                 type="text" 
                 name="ville"
@@ -87,7 +87,7 @@ const Formation = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date de début</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Date de début</label>
               <input 
                 type="date" 
                 name="debut"
@@ -98,7 +98,7 @@ const Formation = () => {
             </div>
             {!currentFormation.present && (
               <div>
-                <label className="block text-sm font-medium text-gray-700">Date de fin</label>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Date de fin</label>
                 <input 
                   type="date" 
                   name="fin"
@@ -120,7 +120,7 @@ const Formation = () => {
             <span>À ce jour</span>
           </label>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Description</label>
             <textarea 
               name="description"
               value={currentFormation.description}

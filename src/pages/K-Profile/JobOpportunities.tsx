@@ -104,10 +104,10 @@ const JobOpportunities = () => {
   };
 
   return (
-    <div className="w-full border border-gray-100">
+    <div className=" mt-10 ">
       <div className="relative bg-white shadow-sm rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 pb-3 px-4">
+        <div className="flex items-center justify-between  pb-3 px-4">
           {/* Tabs with spacing */}
           <div className="flex gap-2 mt-2">
             <button
@@ -152,7 +152,7 @@ const JobOpportunities = () => {
         </div>
 
         {/* Job List */}
-        <div className="space-y-6 p-6">
+        <div className="space-y-6 p-6" style={{boxShadow:"1px 10px 10px  rgba(96, 105, 110, 0.29)"}}>
           {currentJobPosts.map((post) => (
             <div key={post.id} className="bg-white p-4 hover:shadow-lg transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative" onClick={() => handleJobClick(post)}>
               {/* Avatar */}
