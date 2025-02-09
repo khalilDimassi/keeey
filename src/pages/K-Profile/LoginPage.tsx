@@ -35,7 +35,7 @@ const LoginPage = () => {
       }
 
       saveToken(token);
-      navigate("/home");
+      navigate("/Layout");
     } catch (e) {
       setError("Login failed. Check your credentials.");
     }
@@ -43,20 +43,20 @@ const LoginPage = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-1 bg-gray-50">
-      <motion.div 
+      <motion.div
         className="absolute top-7 left-1/2 transform -translate-x-1/2"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
         <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="relative w-full bg-white p-9 shadow-lg"
         style={{ width: "40rem", boxShadow: "0 1px 10px 4px rgba(34, 146, 34, 0.4)", marginTop: "4rem", borderRadius: "20px" }}
-        initial={{ x: -80, opacity: 0 }} 
-        animate={{ x: 0, opacity: 1 }} 
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <button onClick={() => navigate("/")} className="text-gray-600 hover:text-gray-800">
@@ -100,7 +100,7 @@ const LoginPage = () => {
             <button className="w-full flex items-center justify-center gap-2 p-2.5 bg-green-700 text-white rounded-lg hover:bg-green-600 transition mb-10">
               Se connecter
             </button>
-            
+
             <button className="w-full flex items-center justify-center gap-2 p-2.5 border border-gray-300 rounded-md hover:bg-gray-50 transition">
               <FaGoogle className="text-red-500" />
               <span>Continuer avec Google</span>

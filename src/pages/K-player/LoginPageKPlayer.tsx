@@ -33,7 +33,7 @@ const LoginPageKPlayer = () => {
         throw new Error("Token is missing in the response.");
       }
       saveToken(token);
-      navigate("/home");
+      navigate("/Layout");
     } catch (e) {
       setError("Login failed. Check your credentials.");
     }
@@ -41,20 +41,20 @@ const LoginPageKPlayer = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-1 bg-gray-50">
-      <motion.div 
+      <motion.div
         className="absolute top-7 left-1/2 transform -translate-x-1/2"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
         <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="relative w-full bg-white p-9 shadow-lg"
         style={{ width: "40rem", boxShadow: "0 1px 10px 4px rgba(49, 85, 205, 0.4)", marginTop: "4rem", borderRadius: "20px" }}
-        initial={{ x: -80, opacity: 0 }} 
-        animate={{ x: 0, opacity: 1 }} 
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <button onClick={() => navigate("/")} className="text-gray-600 hover:text-gray-800">
@@ -65,7 +65,7 @@ const LoginPageKPlayer = () => {
         </h2>
 
         <div className="text-center text-sm text-gray-600 mb-6">
-          Vous n'avez pas de compte ? 
+          Vous n'avez pas de compte ?
           <a href="/LoginOptionsKPlayer" className="text-blue-700 ml-1 hover:underline">Inscrivez-vous ici</a>
         </div>
 
@@ -114,7 +114,7 @@ const LoginPageKPlayer = () => {
         </form>
 
         <button className="w-full text-gray-500 text-sm mt-6 hover:underline"
-          onClick={() => navigate("/LayoutKPlayer")}> 
+          onClick={() => navigate("/LayoutKPlayer")}>
           Continuer en tant qu'invité →
         </button>
       </motion.div>

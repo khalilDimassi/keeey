@@ -33,7 +33,7 @@ const LoginPagePartner = () => {
         throw new Error("Token is missing in the response.");
       }
       saveToken(token);
-      navigate("/home");
+      navigate("/Layout");
     } catch (e) {
       setError("Login failed. Check your credentials.");
     }
@@ -41,20 +41,20 @@ const LoginPagePartner = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-1 bg-gray-50">
-      <motion.div 
+      <motion.div
         className="absolute top-7 left-1/2 transform -translate-x-1/2"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
         <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="relative w-full bg-white p-9 shadow-lg"
         style={{ width: "40rem", boxShadow: "0 1px 10px 4px rgba(120, 103, 36, 0.4)", marginTop: "4rem", borderRadius: "20px" }}
-        initial={{ x: -80, opacity: 0 }} 
-        animate={{ x: 0, opacity: 1 }} 
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <button onClick={() => navigate("/")} className="text-gray-600 hover:text-gray-800">
@@ -93,9 +93,9 @@ const LoginPagePartner = () => {
           {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
 
           <div className="space-y-1 mt-6 p-3">
-            <motion.button 
+            <motion.button
               className="w-full flex items-center justify-center gap-2 p-2.5 bg-blue-800 text-white rounded-lg hover:bg-brown-700 transition mb-10"
-              style={{ backgroundColor: 'rgba(120, 103, 36, 0.4)' }}  
+              style={{ backgroundColor: 'rgba(120, 103, 36, 0.4)' }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -103,8 +103,8 @@ const LoginPagePartner = () => {
             </motion.button>
 
             {[FaGoogle, FaApple, FaFacebook].map((Icon, index) => (
-              <motion.button 
-                key={index} 
+              <motion.button
+                key={index}
                 className="w-full flex items-center justify-center gap-2 p-2.5 border border-gray-300 rounded-md hover:bg-gray-50 transition"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -116,7 +116,7 @@ const LoginPagePartner = () => {
           </div>
         </form>
 
-        <motion.button 
+        <motion.button
           className="w-full text-gray-500 text-sm mt-6 hover:underline"
           onClick={() => navigate("/LayoutKPartner")}
           whileHover={{ scale: 1.02 }}

@@ -17,25 +17,25 @@ const AddKPlayer = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
-      <motion.div 
+      <motion.div
         className="absolute top-10 left-1/2 transform -translate-x-1/2"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
-        <img src={logo} alt="Keeey Logo" className="object-contain" style={{width:"15rem"}}/>
+        <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
       </motion.div>
 
-      <motion.div 
-        className="relative w-full bg-white p-9 shadow-lg border-green-700" 
-        style={{width:"40rem", boxShadow: "0 1px 10px 4px rgba(49, 85, 205, 0.4)", marginTop:"4rem", borderRadius:"20px"}}
-        initial={{ x: -80, opacity: 0 }} 
-        animate={{ x: 0, opacity: 1 }} 
+      <motion.div
+        className="relative w-full bg-white p-9 shadow-lg border-green-700"
+        style={{ width: "40rem", boxShadow: "0 1px 10px 4px rgba(49, 85, 205, 0.4)", marginTop: "4rem", borderRadius: "20px" }}
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <div className="flex items-center mb-6">
-          <motion.button 
-            onClick={() => navigate("/LoginOptionsKPlayer")} 
+          <motion.button
+            onClick={() => navigate("/LoginOptionsKPlayer")}
             className="text-gray-600 hover:text-gray-800"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -61,7 +61,7 @@ const AddKPlayer = () => {
                 placeholder="Nom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.nom}
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
               />
             </motion.div>
             <motion.div
@@ -76,12 +76,12 @@ const AddKPlayer = () => {
                 placeholder="Prénom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.prenom}
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
               />
             </motion.div>
           </div>
 
-          <motion.div 
+          <motion.div
             className="mt-4"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -89,7 +89,7 @@ const AddKPlayer = () => {
           >
             <label className="block text-gray-600 text-sm">Adresse mail</label>
             <input
-              style={{borderRadius:"15px"}}
+              style={{ borderRadius: "15px" }}
               type="email"
               name="email"
               placeholder="exemple@mail.com"
@@ -98,7 +98,7 @@ const AddKPlayer = () => {
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="mt-4"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -106,7 +106,7 @@ const AddKPlayer = () => {
           >
             <label className="block text-gray-600 text-sm">Numéro de téléphone</label>
             <input
-              style={{borderRadius:"15px"}}
+              style={{ borderRadius: "15px" }}
               type="tel"
               name="telephone"
               placeholder="Votre numéro"
@@ -123,7 +123,7 @@ const AddKPlayer = () => {
             >
               <label className="block text-gray-600 text-sm">Mot de passe</label>
               <input
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
                 type="password"
                 name="password"
                 placeholder="Mot de passe"
@@ -140,7 +140,7 @@ const AddKPlayer = () => {
                 Confirmer le mot de passe
               </label>
               <input
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirmer le mot de passe"
@@ -154,7 +154,7 @@ const AddKPlayer = () => {
             <motion.button
               type="submit"
               className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-              style={{borderRadius:"20px"}}
+              style={{ borderRadius: "20px" }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               initial={{ y: 20, opacity: 0 }}
@@ -167,7 +167,7 @@ const AddKPlayer = () => {
             <motion.button
               type="button"
               className="w-full text-gray-500 text-sm hover:underline"
-              onClick={() => navigate("/home")}
+              onClick={() => navigate("/Layout")}
               whileHover={{ scale: 1.02 }}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
