@@ -17,10 +17,10 @@ const AddPartner = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
-      <motion.div 
+      <motion.div
         className="absolute top-10 left-1/2 transform -translate-x-1/2"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
         <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
@@ -28,9 +28,9 @@ const AddPartner = () => {
 
       {/* Form with Animation */}
       <motion.div
-         initial={{ x: -80, opacity: 0 }} 
-         animate={{ x: 0, opacity: 1 }} 
-         transition={{ duration: 1 }}
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1 }}
         className="relative w-full bg-white p-9 shadow-lg border-green-700"
         style={{
           width: "40rem",
@@ -39,8 +39,8 @@ const AddPartner = () => {
         }}
       >
         <div className="flex items-center mb-6">
-          <button 
-            onClick={() => navigate("/LoginOptionsPartner")} 
+          <button
+            onClick={() => navigate("/LoginOptionsPartner")}
             className="text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft size={24} />
@@ -141,7 +141,7 @@ const AddPartner = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="w-full text-gray-500 text-sm hover:underline"
-              onClick={() => navigate("/home")}
+              onClick={() => navigate("/Layout")}
             >
               Continuer en tant qu'invité →
             </motion.button>

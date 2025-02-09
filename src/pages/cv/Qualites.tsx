@@ -1,75 +1,101 @@
+import axios from "axios";
 import { Search, Trash } from "lucide-react";
 import { useState } from "react";
+import { getAuthHeader } from "../utils/jwt";
 
-const Qualites = () => {
-    const [qualite, setQualite] = useState("");
-    const [qualites, setQualites] = useState([
-      "Leadership",
-      "Communication",
-      "Problem-solving",
-      "Teamwork",
-      "Adaptability",
-      "Creativity",
-      "Time Management",
-      "Critical Thinking",
-      "Collaboration",
-      "Work Ethic"
-    ]);
-  
-    const handleAddQualite = () => {
-      if (qualite.trim() !== "") {
-        setQualites([...qualites, qualite]);
-        setQualite("");
+
+interface Quality {
+  quality_id: number
+  name: string
+}
+
+const Qualites = ({ data }: { data: Quality[] }) => {
+  const [qualities, setQualities] = useState<Quality[]>(data ?? []);
+  const [newQuality, setNewQuality] = useState<Quality>({
+    quality_id: 0,
+    name: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setNewQuality({ ...newQuality, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`;
+      const response = await axios.put(url, newQuality, {
+        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
+      });
+
+      if (response.status === 200) {
+        const updatedQuality = response.data;
+        setQualities((prevQualities) => {
+          const existingIndex = prevQualities.findIndex((t) => t.quality_id === updatedQuality.quality_id);
+          if (existingIndex !== -1) {
+            return prevQualities.map((t) => (t.quality_id === updatedQuality.quality_id ? updatedQuality : t));
+          }
+          return [...prevQualities, updatedQuality];
+        });
+
+        setNewQuality({ quality_id: 0, name: "" });
       }
-    };
-  
-    const handleDeleteQualite = (index: number) => {
-        setQualites(qualites.filter((_, i) => i !== index));
-      };
-      
-    return (
-      <div className="p-4">
-        {/* Champ de saisie avec icône Search */}
-        <label className="block text-sm font-medium text-gray-700">
-          Qualité
-        </label>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            value={qualite}
-            onChange={(e) => setQualite(e.target.value)}
-            placeholder='Ajouter une qualité'
-            className="w-full px-4 py-2 border border-gray-300 rounded-md pr-10"
-          />
-          <Search className="absolute right-3 top-3 text-gray-400" size={18} />
-        </div>
-  
-        {/* Liste des qualités */}
-        <div className="space-y-2">
-          {qualites.map((qual, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md bg-gray-100"
-            >
-              <span>{qual}</span>
-              <button 
-                onClick={() => handleDeleteQualite(index)}
-                className="text-red-500 hover:text-red-700"
-              >
-                <Trash size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-  
-        {/* Bouton pour ajouter une qualité */}
+    } catch (error) {
+      console.error("Error submitting certification:", error);
+    }
+  };
+
+  const handleDelete = async (quality_id: number) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { quality_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
+        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
+      });
+
+      setQualities((prev) => prev.filter((t) => t.quality_id !== quality_id));
+    } catch (error) {
+      console.error("Error deleting certification:", error);
+    }
+  };
+
+  return (
+    <div className="p-4 grid gap-2">
+      {/* Champ de saisie avec icône Search */}
+      <label className="block text-sm font-medium text-gray-700">
+        Qualité
+      </label>
+      <div className="relative mb-4 grid gap-2">
+        <input
+          type="text"
+          value={newQuality.name}
+          onChange={handleChange}
+          placeholder='Ajouter une qualité'
+          className="w-full px-4 py-2 border border-gray-300 rounded-md pr-10"
+        />
         <button
-          onClick={handleAddQualite}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={handleSubmit}
+          className="bg-gray-100 text-green px-4 py-2 rounded-md hover:bg-teal-700 w-full"
         >
-          Ajouter une qualité
+          Submit
         </button>
       </div>
-    );
-  };
-  export default Qualites;
+
+      {/* Liste des qualités */}
+      <div className="space-y-2">
+        {qualities.map((qual) => (
+          <div
+            key={qual.quality_id}
+            className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md bg-gray-100"
+          >
+            <span>{qual.name}</span>
+            <button
+              onClick={() => handleDelete(qual.quality_id)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <Trash size={18} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+export default Qualites;
