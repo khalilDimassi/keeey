@@ -1,125 +1,178 @@
+import axios from "axios";
 import { Pencil, Trash } from "lucide-react";
 import { useState } from "react";
+import { getAuthHeader } from "../utils/jwt";
 
-type ExperienceType = {
-  nom: string;
-  etablissement: string;
-  ville: string;
-  debut: string;
-  fin: string;
-  present: boolean;
-  description: string;
-};
+interface Exp {
+  experience_id: number
+  title: string
+  description: string
+  employer: string
+  city: string
+  started_at: string
+  ended_at: string
+}
 
-const Experience = () => {
-  const [experiences, setExperiences] = useState<ExperienceType[]>([]);
-  const [currentExperience, setCurrentExperience] = useState<ExperienceType>({
-    nom: "",
-    etablissement: "",
-    ville: "",
-    debut: "",
-    fin: "",
-    present: false,
+const Experience = ({ data }: { data: Exp[] }) => {
+  const [isPresent, setIsPresent] = useState(false);
+  const [experiences, setExperiences] = useState<Exp[]>(data ?? []);
+  const [newExperience, setNewExperience] = useState<Exp>({
+    experience_id: 0,
+    title: "",
     description: "",
+    employer: "",
+    city: "",
+    started_at: "",
+    ended_at: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
-    setCurrentExperience((prev) => ({
+    setNewExperience({ ...newExperience, [e.target.name]: e.target.value });
+  };
+
+  const handlePresentToggle = () => {
+    setIsPresent(!isPresent);
+    setNewExperience((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      ended_at: !isPresent ? "" : prev.ended_at,
     }));
   };
 
-  const handleAddExperience = () => {
-    setExperiences([...experiences, currentExperience]);
-    setCurrentExperience({
-      nom: "",
-      etablissement: "",
-      ville: "",
-      debut: "",
-      fin: "",
-      present: false,
-      description: "",
-    });
+  const handleSubmit = async () => {
+    try {
+      const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/experience`;
+      const response = await axios.put(url, newExperience, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": getAuthHeader().Authorization,
+        },
+      });
+
+      if (response.status === 200) {
+        const updatedExperience = response.data;
+        setExperiences((prevExperiences) => {
+          const existingIndex = prevExperiences.findIndex(
+            (t) => t.experience_id === updatedExperience.experience_id
+          );
+          if (existingIndex !== -1) {
+            return prevExperiences.map((t) =>
+              t.experience_id === updatedExperience.experience_id ? updatedExperience : t
+            );
+          }
+          return [...prevExperiences, updatedExperience];
+        });
+
+        setNewExperience({
+          experience_id: 0,
+          title: "",
+          description: "",
+          employer: "",
+          city: "",
+          started_at: "",
+          ended_at: "",
+        });
+        setIsPresent(false);
+      }
+    } catch (error) {
+      console.error("Error submitting experience:", error);
+    }
   };
 
-  const handleDeleteExperience = (index: number) => {
-    setExperiences(experiences.filter((_, i) => i !== index));
+  const handleUpdate = (experience: Exp) => {
+    setNewExperience(experience);
+    setIsPresent(experience.ended_at === ""); // If ended_at is empty, check the "present" checkbox
   };
+
+  const handleDelete = async (experience_id: number) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/experience`,
+        { experience_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": getAuthHeader().Authorization,
+          },
+        }
+      );
+
+      setExperiences((prev) => prev.filter((t) => t.experience_id !== experience_id));
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+    }
+  };
+
 
   return (
     <div className="space-y-4">
       <div className="border border-gray-200 rounded-md p-4">
-        <h3 className="font-medium mb-2">Ajouter une expérience</h3>
+        <h3 className="font-medium mb-2">{newExperience.experience_id === 0 ? "Ajouter une expérience" : "Modifier l'expérience"}</h3>
         <div className="space-y-4">
           <div className="flex flex-col">
-            <label htmlFor="nom" className="mb-1 text-gray-600">Nom du poste</label>
+            <label htmlFor="title" className="mb-1 text-gray-600">Nom du poste</label>
             <input
               type="text"
-              name="nom"
-              id="nom"
-              value={currentExperience.nom}
+              name="title"
+              id="title"
+              value={newExperience.title}
               onChange={handleChange}
               placeholder="Nom du poste"
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="etablissement" className="mb-1 text-gray-600">Nom de l'entreprise</label>
+            <label htmlFor="employer" className="mb-1 text-gray-600">Nom de l'employeur</label>
             <input
               type="text"
-              name="etablissement"
-              id="etablissement"
-              value={currentExperience.etablissement}
+              name="employer"
+              id="employer"
+              value={newExperience.employer}
               onChange={handleChange}
-              placeholder="Nom de l'entreprise"
+              placeholder="Nom de l'employeur"
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="ville" className="mb-1 text-gray-600">Ville</label>
+            <label htmlFor="city" className="mb-1 text-gray-600">Ville</label>
             <input
               type="text"
-              name="ville"
-              id="ville"
-              value={currentExperience.ville}
+              name="city"
+              id="city"
+              value={newExperience.city}
               onChange={handleChange}
               placeholder="Ville"
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="debut" className="mb-1 text-gray-600">Date de début</label>
+            <label htmlFor="started_at" className="mb-1 text-gray-600">Date de début</label>
             <input
               type="date"
-              name="debut"
-              id="debut"
-              value={currentExperience.debut}
+              name="started_at"
+              id="started_at"
+              value={newExperience.started_at}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
             />
           </div>
-          {!currentExperience.present && (
-            <div className="flex flex-col">
-              <label htmlFor="fin" className="mb-1 text-gray-600">Date de fin</label>
-              <input
-                type="date"
-                name="fin"
-                id="fin"
-                value={currentExperience.fin}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-200 rounded-md"
-              />
-            </div>
-          )}
+          <div className="flex flex-col">
+            <label htmlFor="ended_at" className="mb-1 text-gray-600">Date de fin</label>
+            <input
+              type="date"
+              name="ended_at"
+              id="ended_at"
+              value={newExperience.ended_at}
+              onChange={handleChange}
+              disabled={isPresent}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md disabled:bg-gray-200 disabled:cursor-not-allowed"
+            />
+          </div>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               name="present"
-              checked={currentExperience.present}
-              onChange={handleChange}
+              checked={isPresent}
+              onChange={handlePresentToggle}
               className="text-teal-600"
             />
             <span>À ce jour</span>
@@ -129,30 +182,30 @@ const Experience = () => {
             <textarea
               name="description"
               id="description"
-              value={currentExperience.description}
+              value={newExperience.description}
               onChange={handleChange}
               placeholder="Description"
               className="w-full px-3 py-2 border border-gray-200 rounded-md h-24"
             />
           </div>
           <button
-            onClick={handleAddExperience}
+            onClick={handleSubmit}
             className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
           >
-            Enregistrer
+            {newExperience.experience_id === 0 ? "Enregistrer" : "Mettre à jour"}
           </button>
         </div>
       </div>
 
       <div className="space-y-2">
-        {experiences.map((experience, index) => (
-          <div key={index} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
-            <span>{experience.nom}</span>
+        {experiences.map((experience) => (
+          <div key={experience.experience_id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
+            <span>{experience.title}</span>
             <div className="flex gap-2">
-              <button className="text-gray-500 hover:text-gray-700">
+              <button className="text-gray-500 hover:text-gray-700" onClick={() => handleUpdate(experience)}>
                 <Pencil size={18} />
               </button>
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDeleteExperience(index)}>
+              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(experience.experience_id)}>
                 <Trash size={18} />
               </button>
             </div>
