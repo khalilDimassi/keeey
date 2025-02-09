@@ -237,11 +237,11 @@ function Cv() {
     <div className="min-h-screen" style={{ marginTop: "10px" }}>
       {/* Top Header */}
       <div className="bg-white">
-        <div className=" mx-auto px-4 sm:px-6 py-4">
+        <div className=" mx-auto px-1 sm:px-10 py-2">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center justify-between w-full sm:w-auto">
-              <div className="flex items-center space-x-2">
-                <MdBookmark className="text-teal-600" size={27} />
+              <div className="flex items-center space-x-2 mt-10">
+                <MdBookmark className="text-teal-600" size={35} />
                 <h1 className="text-xl font-semibold ">CV</h1>
               </div>
               <button className="sm:hidden text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>

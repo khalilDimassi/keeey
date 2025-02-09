@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import logo from "../assets/logoKeeePlayer.png";
-import { Navigate, useNavigate } from "react-router-dom";
+import logo from "../assets/logoKeeePartner.png";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-
-const AddProfilePlayer = () => {
+const AddPartner = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nom: "",
@@ -17,14 +17,30 @@ const AddProfilePlayer = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
-      <div className="absolute top-10 left-1/2 transform -translate-x-1/2">
-        <img src={logo} alt="Keeey Logo" className="object-contain" style={{width:"15rem"}}/>
-      </div>
+      <motion.div 
+        className="absolute top-10 left-1/2 transform -translate-x-1/2"
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ duration: 2 }}
+      >
+        <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
+      </motion.div>
 
-      <div className="relative w-full bg-white p-9  shadow-lg border-green-700" style={{width:"40rem", boxShadow: "0 1px 10px 4px rgba(49, 85, 205, 0.4)", marginTop:"4rem",borderRadius:"20px"}}>
+      {/* Form with Animation */}
+      <motion.div
+         initial={{ x: -80, opacity: 0 }} 
+         animate={{ x: 0, opacity: 1 }} 
+         transition={{ duration: 1 }}
+        className="relative w-full bg-white p-9 shadow-lg border-green-700"
+        style={{
+          width: "40rem",
+          boxShadow: "0 1px 10px 4px rgba(120, 103, 36, 0.4)",
+          borderRadius: "20px",
+        }}
+      >
         <div className="flex items-center mb-6">
-        <button 
-            onClick={() => navigate("/LoginOptions")} 
+          <button 
+            onClick={() => navigate("/LoginOptionsPartner")} 
             className="text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft size={24} />
@@ -44,7 +60,7 @@ const AddProfilePlayer = () => {
                 placeholder="Nom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.nom}
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
               />
             </div>
             <div>
@@ -55,7 +71,7 @@ const AddProfilePlayer = () => {
                 placeholder="Prénom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.prenom}
-                style={{borderRadius:"15px"}}
+                style={{ borderRadius: "15px" }}
               />
             </div>
           </div>
@@ -63,24 +79,24 @@ const AddProfilePlayer = () => {
           <div className="mt-4">
             <label className="block text-gray-600 text-sm">Adresse mail</label>
             <input
-            style={{borderRadius:"15px"}}
               type="email"
               name="email"
               placeholder="exemple@mail.com"
               className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.email}
+              style={{ borderRadius: "15px" }}
             />
           </div>
 
           <div className="mt-4">
             <label className="block text-gray-600 text-sm">Numéro de téléphone</label>
             <input
-            style={{borderRadius:"15px"}}
               type="tel"
               name="telephone"
               placeholder="Votre numéro"
               className="w-1/2 p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.telephone}
+              style={{ borderRadius: "15px" }}
             />
           </div>
 
@@ -88,49 +104,52 @@ const AddProfilePlayer = () => {
             <div>
               <label className="block text-gray-600 text-sm">Mot de passe</label>
               <input
-              style={{borderRadius:"15px"}}
                 type="password"
                 name="password"
-                   placeholder="Mot de passe"
+                placeholder="Mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.password}
+                style={{ borderRadius: "15px" }}
               />
             </div>
             <div>
-              <label className="block text-gray-600 text-sm">
-                Confirmer le mot de passe
-              </label>
+              <label className="block text-gray-600 text-sm">Confirmer le mot de passe</label>
               <input
-              style={{borderRadius:"15px"}}
                 type="password"
                 name="confirmPassword"
-                   placeholder="Confirmer le mot de passe"
+                placeholder="Confirmer le mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.confirmPassword}
+                style={{ borderRadius: "15px" }}
               />
             </div>
           </div>
 
           <div className="mt-6 space-y-4 flex">
-            <button
+            <motion.button
               type="submit"
-              className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 transition" style={{borderRadius:"20px"}}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              style={{ borderRadius: "20px", backgroundColor: "rgba(83, 68, 11, 0.55)" }}
             >
               Inscrivez-vous
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
               type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="w-full text-gray-500 text-sm hover:underline"
-              onClick={() => navigate("/home")} 
+              onClick={() => navigate("/home")}
             >
               Continuer en tant qu'invité →
-            </button>
+            </motion.button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
-export default AddProfilePlayer;
+export default AddPartner;

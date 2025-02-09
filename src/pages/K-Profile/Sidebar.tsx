@@ -10,7 +10,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "users" | "user" | "settings" | null;
+type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "users" | "user" | "settings" | "settings2"| null;
 
 interface SidebarProps {
   onIconClick: (id: IconId) => void;
@@ -37,6 +37,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     
     { id: "user", Icon: User },
     { id: "settings", Icon: Settings },
+    { id: "settings2", Icon: Settings },
   ];
 
   const handleIconClick = (id: IconId) => {
