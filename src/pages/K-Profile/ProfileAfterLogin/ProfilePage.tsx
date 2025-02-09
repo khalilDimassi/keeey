@@ -74,9 +74,9 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-6 min-h-screen" style={{ marginLeft: "-30px" }}>
-      <div className="flex items-center space-x-4 ml-20">
-        <FaUser className="text-3xl text-blue-900" />
+    <div className="p-4 space-y-6 min-h-screen" style={{ marginLeft: "-40px" }}>
+      <div className="flex items-center space-x-4 ml-20 mt-10">
+        <FaUser className="text-3xl text-green-800 " />
         <span className="text-2xl text-gray-800" style={{ fontWeight: "bold" }}>
           Profile
         </span>
@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         <div
           className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-[30%]"
-          style={{ boxShadow: "10px 4px 15px rgba(0, 128, 0, 0.2)" }}
+          style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">
@@ -271,7 +271,7 @@ const Profile: React.FC = () => {
         {/* Mes Références Section */}
         <div
           className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-[60%]"
-          style={{ boxShadow: "10px 10px 15px rgba(0, 128, 0, 0.2)" }}
+          style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Mes Références</h2>

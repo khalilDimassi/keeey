@@ -78,7 +78,7 @@ const LoginOptionsKPlayer = () => {
 
         <motion.button 
           className="w-full text-gray-500 text-sm mt-6 hover:underline"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/LayoutKPlayer")}
           whileHover={{ scale: 1.02 }}
         >
           Continuer en tant qu'invité →
