@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { ArrowLeft } from "lucide-react";
 import logo from "../assets/logoKeeePartner.png";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,19 @@ import { motion } from "framer-motion";
 
 const AddPartner = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+
+  // Define the form data type
+  interface FormData {
+    nom: string;
+    prenom: string;
+    email: string;
+    telephone: string;
+    password: string;
+    confirmPassword: string;
+  }
+
+  // State for form data
+  const [formData, setFormData] = useState<FormData>({
     nom: "",
     prenom: "",
     email: "",
@@ -14,6 +26,11 @@ const AddPartner = () => {
     password: "",
     confirmPassword: "",
   });
+
+  // Handle input change with proper TypeScript type
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
@@ -26,7 +43,6 @@ const AddPartner = () => {
         <img src={logo} alt="Keeey Logo" className="object-contain" style={{ width: "15rem" }} />
       </motion.div>
 
-      {/* Form with Animation */}
       <motion.div
         initial={{ x: -80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -60,6 +76,7 @@ const AddPartner = () => {
                 placeholder="Nom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.nom}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </div>
@@ -71,6 +88,7 @@ const AddPartner = () => {
                 placeholder="Prénom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.prenom}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </div>
@@ -84,6 +102,7 @@ const AddPartner = () => {
               placeholder="exemple@mail.com"
               className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.email}
+              onChange={handleChange}
               style={{ borderRadius: "15px" }}
             />
           </div>
@@ -96,6 +115,7 @@ const AddPartner = () => {
               placeholder="Votre numéro"
               className="w-1/2 p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.telephone}
+              onChange={handleChange}
               style={{ borderRadius: "15px" }}
             />
           </div>
@@ -109,6 +129,7 @@ const AddPartner = () => {
                 placeholder="Mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.password}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </div>
@@ -120,6 +141,7 @@ const AddPartner = () => {
                 placeholder="Confirmer le mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.confirmPassword}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </div>

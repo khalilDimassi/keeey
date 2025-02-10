@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import logo from "../assets/logoKeeePlayer.png";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AddKPlayer = () => {
   const navigate = useNavigate();
+  
+  // State for form data
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -14,6 +16,11 @@ const AddKPlayer = () => {
     password: "",
     confirmPassword: "",
   });
+
+ // Handle input change with proper TypeScript type
+   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+     setFormData({ ...formData, [e.target.name]: e.target.value });
+   };
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4 bg-gray-50">
@@ -49,11 +56,7 @@ const AddKPlayer = () => {
 
         <form>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               <label className="block text-gray-600 text-sm">Nom</label>
               <input
                 type="text"
@@ -61,14 +64,12 @@ const AddKPlayer = () => {
                 placeholder="Nom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.nom}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </motion.div>
-            <motion.div
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
+
+            <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
               <label className="block text-gray-600 text-sm">Prénom</label>
               <input
                 type="text"
@@ -76,76 +77,62 @@ const AddKPlayer = () => {
                 placeholder="Prénom"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.prenom}
+                onChange={handleChange}
                 style={{ borderRadius: "15px" }}
               />
             </motion.div>
           </div>
 
-          <motion.div
-            className="mt-4"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+          <motion.div className="mt-4" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
             <label className="block text-gray-600 text-sm">Adresse mail</label>
             <input
-              style={{ borderRadius: "15px" }}
               type="email"
               name="email"
               placeholder="exemple@mail.com"
               className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.email}
+              onChange={handleChange}
+              style={{ borderRadius: "15px" }}
             />
           </motion.div>
 
-          <motion.div
-            className="mt-4"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
+          <motion.div className="mt-4" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
             <label className="block text-gray-600 text-sm">Numéro de téléphone</label>
             <input
-              style={{ borderRadius: "15px" }}
               type="tel"
               name="telephone"
               placeholder="Votre numéro"
               className="w-1/2 p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
               value={formData.telephone}
+              onChange={handleChange}
+              style={{ borderRadius: "15px" }}
             />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
               <label className="block text-gray-600 text-sm">Mot de passe</label>
               <input
-                style={{ borderRadius: "15px" }}
                 type="password"
                 name="password"
                 placeholder="Mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.password}
+                onChange={handleChange}
+                style={{ borderRadius: "15px" }}
               />
             </motion.div>
-            <motion.div
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              <label className="block text-gray-600 text-sm">
-                Confirmer le mot de passe
-              </label>
+
+            <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.7 }}>
+              <label className="block text-gray-600 text-sm">Confirmer le mot de passe</label>
               <input
-                style={{ borderRadius: "15px" }}
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirmer le mot de passe"
                 className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-green-500"
                 value={formData.confirmPassword}
+                onChange={handleChange}
+                style={{ borderRadius: "15px" }}
               />
             </motion.div>
           </div>
