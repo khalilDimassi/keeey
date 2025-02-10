@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import {
   LayoutGrid,
-  FileText,
-  Bookmark,
-  Target,
-  Users,
-  User,
-  Settings,
+  Building2,
+  Search,
+  UserCheck,
+  FileCog,
+  Contact,
   LucideIcon,
 } from "lucide-react";
 
 type IconId =
   | "dashboard"
-  | "fileText1"
-  | "bookmark"
-  | "target"
-  | "users"
-  | "user"
-  | "settings"
+  | "company"
+  | "userSearch"
+  | "userStar"
+  | "fileSettings"
+  | "profile"
   | null;
 
 interface IconItem {
@@ -35,12 +33,11 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
 
   const icons: IconItem[] = [
     { id: "dashboard", Icon: LayoutGrid },
-    { id: "fileText1", Icon: FileText },
-    { id: "bookmark", Icon: Bookmark },
-    { id: "target", Icon: Target },
-    { id: "users", Icon: Users },
-    { id: "user", Icon: User },
-    { id: "settings", Icon: Settings },
+    { id: "company", Icon: Building2 },
+    { id: "userSearch", Icon: Search },
+    { id: "userStar", Icon: UserCheck },
+    { id: "fileSettings", Icon: FileCog },
+    { id: "profile", Icon: Contact },
   ];
 
   const handleIconClick = (id: IconId) => {
@@ -50,14 +47,14 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
 
   return (
     <div
-      style={{ marginTop: "50px" ,background:" #215A96"}}
-      className="absolute w-[70px] h-[688px] left-[23px]  rounded-2xl flex flex-col items-center"
+      style={{ marginTop: "50px", background: "#215A96" }}
+      className="absolute w-[70px] h-[688px] left-[23px] rounded-2xl flex flex-col items-center"
     >
       <div className="w-[35.5px] h-[610.59px] flex flex-col items-center">
         {icons.map(({ id, Icon }) => (
           <div
             key={id}
-            className="relative mt-12 cursor-pointer flex items-center"
+            className="relative mt-16 cursor-pointer flex items-center"
             onClick={() => handleIconClick(id)}
           >
             {activeIcon === id && (
@@ -67,7 +64,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
                   width: "6rem",
                   height: "3.5rem",
                   border: "3px solid rgba(52, 55, 149, 0.47)",
-                  boxShadow: "3px 3px 7pxrgb(40, 41, 112)",
+                  boxShadow: "3px 3px 7px rgb(40, 41, 112)",
                 }}
               />
             )}
@@ -80,7 +77,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
             >
               <Icon
                 className={`w-8 h-8 transition-all duration-300 ${
-                  activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
+                  activeIcon === id ? "text-blue-700" : "text-white hover:text-gray-200"
                 }`}
               />
             </div>
