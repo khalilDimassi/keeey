@@ -237,7 +237,7 @@ function Cv() {
   return (
     <div className="min-h-screen">
       {/* Top Header */}
-      <div className="bg-white">
+      <div className="">
         <div className=" mx-auto  py-1">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto">
@@ -259,7 +259,7 @@ function Cv() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 py-8"   style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
+      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8"   style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column - Dynamic Content */}
           <div className="lg:col-span-7 order-2 lg:order-1">

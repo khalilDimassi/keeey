@@ -53,7 +53,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
       className={`absolute bg-teal-800 rounded-2xl transition-all duration-500 mt-8 
         ${horizontal 
           ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
-          : "w-[70px] h-[688px] left-[23px] flex flex-col items-center"
+          : "w-[60px] h-[600px] left-[23px] flex flex-col items-center"
         }`}
     >
       {/* Sidebar Icons */}
@@ -72,8 +72,8 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
               <div
                 className="absolute bg-white rounded-full"
                 style={{
-                  width: "4.5rem",
-                  height: "3.5rem",
+                  width: "6rem",
+                  height: "2.5rem",
                   border: "3px solid rgba(140, 214, 194, 0.47)",
                   boxShadow: "1px 2px 8px #a5d8ca",
                 }}
@@ -86,12 +86,12 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
                 transform: horizontal
                   ? "translateY(0px)" // Ensures icons stay centered
                   : activeIcon === id
-                  ? "translateX(30px)" // Slide animation when selected in vertical mode
+                  ? "translateX(50px)" // Slide animation when selected in vertical mode
                   : "translateX(0px)",
               }}
             >
               <Icon
-                className={`w-8 h-8 transition-all duration-500 ${
+                className={`w-6 h-6 transition-all duration-500 ${
                   activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
                 }`}
               />

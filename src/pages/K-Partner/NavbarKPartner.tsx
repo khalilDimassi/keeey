@@ -41,7 +41,7 @@ const NavbarKPartner = () => {
     <div className="flex justify-between items-center bg-white p-2 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(190, 154, 35, 0.27)" }}>
       {/* Left Side: Logo and Name */}
       <div className="flex items-center ">
-        <img src={logo} alt="Logo" style={{ width: "160px", height: "70px" }} />
+        <img src={logo} alt="Logo" style={{ width: "130px", height: "55px" }} />
 
       </div>
 

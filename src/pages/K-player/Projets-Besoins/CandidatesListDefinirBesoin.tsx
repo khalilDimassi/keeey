@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Star, Bookmark, ArrowUpRight, ChevronDown, Plus } from "lucide-react";
 
 interface Candidate {
@@ -12,6 +12,18 @@ interface Candidate {
   extraSkills: number;
 }
 
+const StarButton = () => {
+  const [isClicked, setIsClicked] = useState(false);
+
+  return (
+    <div
+      className="bg-blue-400 p-2 rounded-full flex items-center justify-center cursor-pointer"
+      onClick={() => setIsClicked(!isClicked)}
+    >
+      <Star size={18} className={isClicked ? "text-yellow-500" : "text-white"} />
+    </div>
+  );
+};
 const candidates: Candidate[] = [
   {
     id: 1,
@@ -42,25 +54,16 @@ const candidates: Candidate[] = [
     matchPercentage: "80%",
     skills: ["exp", "exp", "exp", "exp"],
     extraSkills: 4,
-  },{
-    id: 4,
-    name: "Nom Prenom",
-    rating: 4.2,
-    level: "Intermédiaire",
-    availability: "Immédiate",
-    matchPercentage: "80%",
-    skills: ["exp", "exp", "exp", "exp"],
-    extraSkills: 4,
   },
 ];
 
-const CandidatesList: React.FC = () => {
+const CandidatesListDefinirBesoin: React.FC = () => {
   return (
-    <div className="   ">
+    <div className="p-4 ">
       {/* Titre + Sélecteur */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">
-          Candidats <span className="text-gray-500">(4 Candidats)</span>
+          Candidats <span className="text-gray-500">(10 Candidats)</span>
         </h2>
         <button className="flex items-center gap-2 bg-white px-4 py-2 rounded-md border border-gray-300 shadow-sm">
           Matching <ChevronDown size={16} />
@@ -116,14 +119,16 @@ const CandidatesList: React.FC = () => {
 
             {/* Actions à droite */}
             <div className="flex items-center gap-4" >
-              <Bookmark size={35} className="text-gray-500 cursor-pointer" />
-              <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{backgroundColor:"#215A96" ,borderRadius:"10px"}}>
-                Valider l’intérêt
-              </button>
-              <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{backgroundColor:"#215A96" }}>
-                <ArrowUpRight size={20} className="text-white top-4 right-4" />
+      <StarButton />
+            <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{backgroundColor:"#215A96" }}>
+            
+                <ArrowUpRight size={15} className="text-white top-4 right-4" />
               
               </div>
+              <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{backgroundColor:"#215A96" ,borderRadius:"10px"}}>
+               ✓ Valider l’intérêt
+              </button>
+             
             </div>
           </div>
         ))}
@@ -132,4 +137,4 @@ const CandidatesList: React.FC = () => {
   );
 };
 
-export default CandidatesList;
+export default CandidatesListDefinirBesoin;

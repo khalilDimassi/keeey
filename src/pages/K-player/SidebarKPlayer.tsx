@@ -48,7 +48,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
   return (
     <div
       style={{ marginTop: "50px", background: "#215A96" }}
-      className="absolute w-[70px] h-[688px] left-[23px] rounded-2xl flex flex-col items-center"
+      className="absolute w-[60px] h-[588px] left-[23px] rounded-2xl flex flex-col items-center"
     >
       <div className="w-[35.5px] h-[610.59px] flex flex-col items-center">
         {icons.map(({ id, Icon }) => (
@@ -62,7 +62,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
                 className="absolute left-0 bg-white rounded-full"
                 style={{
                   width: "6rem",
-                  height: "3.5rem",
+                  height: "2.5rem",
                   border: "3px solid rgba(52, 55, 149, 0.47)",
                   boxShadow: "3px 3px 7px rgb(40, 41, 112)",
                 }}
@@ -76,7 +76,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
               }}
             >
               <Icon
-                className={`w-8 h-8 transition-all duration-300 ${
+                className={`w-7 h-7 transition-all duration-300 ${
                   activeIcon === id ? "text-blue-700" : "text-white hover:text-gray-200"
                 }`}
               />

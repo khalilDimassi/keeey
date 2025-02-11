@@ -41,7 +41,7 @@ const NavbarKPlayer = () => {
     <div className="flex justify-between items-center bg-white p-2 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(62, 78, 203, 0.33)" }}>
       {/* Left Side: Logo and Name */}
       <div className="flex items-center ">
-        <img src={logo} alt="Logo" style={{ width: "160px", height: "70px" }} />
+        <img src={logo} alt="Logo" style={{ width: "130px", height: "55px" }} />
 
       </div>
 
@@ -52,10 +52,10 @@ const NavbarKPlayer = () => {
       </div>
 
       {/* Right Side: Button */}
-      <button
+      <button style={{background:"#215A96"}}
         onClick={CreateAccountClick}
         className={`${authenticated ? "bg-gray-500 hover:bg-gray-600" : "bg-blue-800 hover:bg-blue-700"
-          } text-white px-4 py-2 rounded-lg flex items-center`}
+          } text-white px-2 py-1  rounded-lg flex items-center`} 
       >
         {authenticated ? <LogOut className="mr-2" /> : <UserPlus className="mr-2" />}
         {authenticated ? "Déconnecter" : "Créer un compte"}

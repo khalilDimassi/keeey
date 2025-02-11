@@ -41,7 +41,7 @@ const Navbar = () => {
     <div className="flex justify-between items-center bg-white p-2 rounded-lg" style={{ boxShadow: "0 4px 15px rgba(12, 111, 12, 0.28)" }}>
       {/* Left Side: Logo and Name */}
       <div className="flex items-center ">
-        <img src={logo} alt="Logo" style={{ width: "160px", height: "70px" }} />
+        <img src={logo} alt="Logo" style={{ width: "130px", height: "55px" }}/>
 
       </div>
 
@@ -55,7 +55,7 @@ const Navbar = () => {
       <button
         onClick={CreateAccountClick}
         className={`${authenticated ? "bg-gray-500 hover:bg-gray-700" : "bg-teal-800 hover:bg-teal-700"
-          } text-white px-4 py-2 rounded-lg flex items-center`}
+          } text-white px-2 py-1 rounded-lg flex items-center`}
       >
         {authenticated ? <LogOut className="mr-2" /> : <UserPlus className="mr-2" />}
         {authenticated ? "Déconnecter" : "Créer un compte"}

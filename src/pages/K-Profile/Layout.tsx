@@ -10,7 +10,8 @@ import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
 import JobOpportunities from "./JobOpportunities";
 import Dashboard from "./Dashboard";
-import MissionsTable from "./MissionsTable"; // Import MissionsTable
+import MissionsTable from "./MissionsTable"; 
+import Login from "./Login"; // Import the login popup component
 
 type IconId =
   | "dashboard"
@@ -24,13 +25,23 @@ type IconId =
   | null;
 
 const Layout = () => {
+  const [connecte] = useState(false); // Connection state
+  const [showLoginPopup, setShowLoginPopup] = useState(false); // Login popup state
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
-  const [showJobOpportunities] = useState(false); // Connection state
-  const [activeComponent, setActiveComponent] = useState<IconId>("competence");
+
+  const [activeComponent, setActiveComponent] = useState<IconId>(
+    connecte ? "dashboard" : "competence"
+  );
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 
   const handleIconClick = (componentId: IconId) => {
+    // Prevent navigation if not logged in (except for "competence")
+    if (!connecte && componentId !== "competence") {
+      setShowLoginPopup(true);
+      return;
+    }
+
     setActiveComponent(componentId);
     setIsSidebarHorizontal(false);
 
@@ -44,7 +55,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="w-full h-screen p-2">
+    <div className="w-full min-h-screen bg-gray-100 p-2">
       {/* Navbar */}
       <div className="w-full h-12">
         <Navbar />
@@ -53,13 +64,13 @@ const Layout = () => {
       {/* Sidebar & Main Content */}
       <div
         className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-[calc(100%-64px)]`}
-        style={{ marginTop: "40px" }}
+        style={{ marginTop: "20px" }}
       >
         {/* Sidebar */}
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
             onIconClick={handleIconClick}
-            defaultSelected="competence"
+            defaultSelected={connecte ? "dashboard" : "competence"}
             horizontal={isSidebarHorizontal}
             setHorizontal={setIsSidebarHorizontal}
           />
@@ -75,11 +86,11 @@ const Layout = () => {
             <KProfile onClose={handleCloseKProfile} />
           )}
 
-          {/* If showJobOpportunities is false, always show Oportunite */}
-          {activeComponent === "competence" && !showJobOpportunities && <Oportunite />}
+          {/* If connecte is false, always show Oportunite */}
+          {activeComponent === "competence" && !connecte && <Oportunite />}
 
-          {/* If showJobOpportunities is true, switch between JobOpportunities and JobOpportunities2 */}
-          {activeComponent === "competence" && showJobOpportunities && (
+          {/* If connecte is true, switch between JobOpportunities and JobOpportunities2 */}
+          {activeComponent === "competence" && connecte && (
             showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
           )}
 
@@ -104,6 +115,9 @@ const Layout = () => {
           {activeComponent === "target" && <MissionsTable />}
         </div>
       </div>
+
+      {/* Login Popup */}
+      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
     </div>
   );
 };
