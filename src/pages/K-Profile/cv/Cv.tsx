@@ -258,11 +258,7 @@ function Cv() {
       </div>
 
       {/* Main Content */}
-<<<<<<< HEAD
-      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8"   style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
-=======
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 py-8" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}  >
->>>>>>> 6a0500f8b682c7c66c74230d6f1979a8a86f2a54
+      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}  >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column - Dynamic Content */}
           <div className="lg:col-span-7 order-2 lg:order-1">
