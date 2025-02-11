@@ -2,6 +2,8 @@ import { BrainCircuit, ChevronDown, Download, FileText, Menu, Pencil, Trash } fr
 import { useEffect, useState } from "react";
 import { MdBookmark } from 'react-icons/md';
 import { getAuthHeader } from "../../utils/jwt";
+import { resolveMotionValue } from "framer-motion";
+import axios from "axios";
 
 interface ResumeData {
   personalData: PersonalData
@@ -48,6 +50,7 @@ interface Training {
   city: string
   started_at: string
   ended_at: string
+  present: boolean
 }
 
 interface Experience {
@@ -109,7 +112,6 @@ interface Tool {
 
 // Components
 import Experience from "./Experience";
-
 import Profil from "./Profile";
 import PersonalInfo from "./PersonalInfo";
 import Languages from "./Languages";
@@ -118,8 +120,6 @@ import Centre from "./Centre";
 import Competences from "./Competences";
 import Realisation from "./Realisation";
 import Qualites from "./Qualites";
-import { resolveMotionValue } from "framer-motion";
-import axios from "axios";
 import Formation from "./Formation";
 
 function Cv() {
@@ -142,6 +142,7 @@ function Cv() {
     "Qualités",
     "Réalisations",
     "Outils",
+    "Autorisations",
   ];
 
   // Fetch personal data when the component mounts
@@ -159,7 +160,6 @@ function Cv() {
 
         const resumeData = resumeResponse.data;
         const personalData = personalResponse.data;
-
         setResumeData({
           personalData: {
             first_name: personalData.first_name || resumeData.first_name,
@@ -201,7 +201,6 @@ function Cv() {
     fetchResumeData();
   }, []);
 
-
   const renderSection = () => {
     switch (activeSection) {
       case "Informations personnelles":
@@ -240,15 +239,15 @@ function Cv() {
       <div className="bg-white">
         <div className=" mx-auto  py-1">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center justify-between w-full sm:w-auto">
-  <div className="flex items-center space-x-3 mt-1 mb-4">
-    <FileText className="text-teal-800" size={40} />
-    <h1 className="text-xl font-semibold ">CV</h1>
-  </div>
-  <button className="sm:hidden text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-    <Menu size={24} />
-  </button>
-</div>
+            <div className="flex items-center justify-between w-full sm:w-auto">
+              <div className="flex items-center space-x-3 mt-1 mb-4">
+                <FileText className="text-teal-800" size={40} />
+                <h1 className="text-xl font-semibold ">CV</h1>
+              </div>
+              <button className="sm:hidden text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                <Menu size={24} />
+              </button>
+            </div>
 
             <button className="text-teal-800  px-4 py-2  hover:bg-teal-50 flex items-center gap-2">
               <Download size={18} />
@@ -259,14 +258,14 @@ function Cv() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 py-8"   style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 py-8" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}  >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column - Dynamic Content */}
           <div className="lg:col-span-7 order-2 lg:order-1">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">{activeSection}</h2>
-                <button className="bg-teal-800 text-white px-4 py-2 rounded-3xl hover:bg-teal-700">Enregistrer</button>
+                {/* <button className="bg-teal-800 text-white px-4 py-2 rounded-3xl hover:bg-teal-700">Enregistrer</button> */}
               </div>
               {renderSection()}
             </div>
@@ -286,9 +285,8 @@ function Cv() {
               {sections.map((section, index) => (
                 <button
                   key={index}
-                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${
-                    activeSection === section ? "bg-teal-800 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-teal-800 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`}
                   onClick={() => {
                     setActiveSection(section);
                     setMobileMenuOpen(false);
