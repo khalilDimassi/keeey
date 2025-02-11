@@ -74,40 +74,61 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
             }}
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Compétences</h2>
+              <h2 className="text-xl font-semibold">Informations generale</h2>
               <Edit size={20} className="text-blue-800 cursor-pointer" />
             </div>
 
             <div className="grid grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Titre</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Titre du besoin"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Date appel d'offre</label>
-                <input
-                  type="date"
-                  value={offerDate}
-                  onChange={(e) => setOfferDate(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Date démarrage</label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                />
-              </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Titre</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="Titre"
+                
+              />
             </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Date appelle d'offre</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="Date appelle d'offre"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Date démarrage</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="Date démarrage"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Date réponse</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="Date réponse"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Durée prévisionnelle</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="Durée prévisionnelle"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">TJM cible</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2"
+                placeholder="TJM cible"
+              />
+            </div>
+             </div>
           </div>
         </div>
       )}

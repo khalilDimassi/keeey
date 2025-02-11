@@ -95,7 +95,7 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
                 placeholder="TJM cible"
               />
             </div>
-          </div>
+             </div>
 </div>
           <CompetencesEtCriteresVoirDetaille />
 
