@@ -71,14 +71,27 @@ const Profile: React.FC = () => {
     setLoading(false);
   };
 
+  interface Referral {
+    contact_id: number,
+    first_name: string,
+    last_name: string,
+    gender: string,
+    phone: string,
+    email: string,
+    company: string,
+    occupation: string,
+  }
 
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [selectedReferral, setSelectedReferral] = useState<Referral | null>(null);
   const [contactFormData, setContactFormData] = useState({
     gender: "",
-    last_name: "",
     first_name: "",
+    last_name: "",
     email: "",
     phone: "",
     company: "",
+
     occupation: "...",
     contact_role: "REFERRAL"
   });
@@ -88,13 +101,15 @@ const Profile: React.FC = () => {
       ...contactFormData,
       [e.target.name]: e.target.value,
     });
+    console.log(contactFormData);
+
   };
 
   const handleContactSubmit = async () => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/contact`,
-        formData,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts`,
+        contactFormData,
         { headers: getAuthHeader() }
       );
       alert("Référence ajoutée avec succès");
@@ -102,6 +117,24 @@ const Profile: React.FC = () => {
       console.error("Erreur lors de l'envoi", error);
       alert("Une erreur est survenue");
     }
+  };
+
+  useEffect(() => {
+    const fetchReferrals = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/REFERRAL`, { headers: getAuthHeader() });
+        setReferrals(response.data || []);
+      } catch (error) {
+        console.error('Error fetching referrals:', error);
+        setReferrals([]);
+      }
+    };
+
+    fetchReferrals();
+  }, []);
+
+  const handleCardClick = (referral: Referral) => {
+    setSelectedReferral(referral);
   };
 
   return (
@@ -228,7 +261,7 @@ const Profile: React.FC = () => {
               <label key={label} className="flex items-center space-x-2">
                 <input
                   type="radio"
-                  name="refGender"
+                  name="gender"
                   value={label}
                   checked={contactFormData.gender === label}
                   onChange={handleChange}
@@ -242,7 +275,7 @@ const Profile: React.FC = () => {
             <label className="block">
               Nom
               <input
-                name="lastName"
+                name="first_name"
                 className="w-full p-3 border rounded mt-1"
                 placeholder="Nom"
                 value={contactFormData.first_name}
@@ -252,7 +285,7 @@ const Profile: React.FC = () => {
             <label className="block">
               Prénom
               <input
-                name="firstName"
+                name="last_name"
                 className="w-full p-3 border rounded mt-1"
                 placeholder="Prénom"
                 value={contactFormData.last_name}
@@ -297,18 +330,22 @@ const Profile: React.FC = () => {
 
           <h3 className="text-md font-semibold mt-4">Liste des références</h3>
           <div className="grid grid-cols-2 gap-2 mt-2">
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
+            {referrals.length === 0 ? (
+              <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {referrals.map((referral) => (
+                  <div
+                    key={referral.contact_id}
+                    className="p-4 border rounded bg-gray-50 shadow cursor-pointer"
+                    onClick={() => handleCardClick(referral)}
+                  >
+                    <div>{`${referral.first_name} ${referral.last_name}`}</div>
+                    <div>{referral.company}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
