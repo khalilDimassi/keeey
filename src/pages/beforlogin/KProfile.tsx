@@ -19,6 +19,17 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
         <div className="flex items-center justify-between ">
           {/* Tabs */}
           <div className="flex ">
+          <button
+              className={`px-4 py-2 font-medium transition-all flex items-center gap-2 rounded-md ${
+                activeTab === "competencies"
+                  ? "text-teal-600 bg-white shadow-md border border-gray-100"
+                  : "text-gray-500 hover:text-teal-600 hover:bg-gray-50"
+              }`}
+              onClick={() => setActiveTab("competencies")}
+            >
+              <Award className={`w-5 h-5 ${activeTab === "competencies" ? "text-teal-600" : "text-gray-400"}`} />
+              Mes Compétences
+            </button>
             <button
               className={`px-4 py-2 font-medium transition-all flex items-center gap-2 rounded-md ${
                 activeTab === "criteria"
@@ -30,17 +41,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               <FileText className={`w-5 h-5 ${activeTab === "criteria" ? "text-teal-600" : "text-gray-400"}`} />
               Mes critères de recherche
             </button>
-            <button
-              className={`px-4 py-2 font-medium transition-all flex items-center gap-2 rounded-md ${
-                activeTab === "competencies"
-                  ? "text-teal-600 bg-white shadow-md border border-gray-100"
-                  : "text-gray-500 hover:text-teal-600 hover:bg-gray-50"
-              }`}
-              onClick={() => setActiveTab("competencies")}
-            >
-              <Award className={`w-5 h-5 ${activeTab === "competencies" ? "text-teal-600" : "text-gray-400"}`} />
-              Mes Compétences
-            </button>
+          
           </div>
 
           {/* Action Buttons */}

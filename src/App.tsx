@@ -19,16 +19,14 @@ import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
 import AddPartner from './pages/K-Partner/AddPartner';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
-
-import JobOpportunities2 from './pages/K-Profile/JobOpportunities2';
-import Menu from './pages/K-Profile/ProfileAfterLogin/Menu';
+import CandidatesList from './pages/K-player/CandidatesList';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/test" element={<Menu />} />
+        <Route path="/test" element={<CandidatesList />} />
 
         <Route path="/LayoutKPartner" element={<LayoutKPartner />} />
         <Route path="/LoginOptionsPartner" element={<LoginOptionsPartner />} />
