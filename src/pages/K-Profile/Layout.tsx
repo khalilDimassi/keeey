@@ -97,7 +97,8 @@ const Layout = () => {
           {/* Show Contacts & JobOpportunities2 when "contact" is selected */}
           {activeComponent === "contact" && (
             <div className="flex flex-col gap-4">
-              <Contacts onClose={() => setActiveComponent(null)} />
+              {/* <Contacts onClose={() => setActiveComponent(null)} /> */}
+              <Contacts />
               <JobOpportunities2 />
             </div>
           )}

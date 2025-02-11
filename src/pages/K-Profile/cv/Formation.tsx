@@ -12,6 +12,7 @@ interface Training {
   city: string
   started_at: string
   ended_at: string
+  present: boolean
 }
 
 const Formation = ({ data }: { data: Training[] }) => {
@@ -24,6 +25,7 @@ const Formation = ({ data }: { data: Training[] }) => {
     city: "",
     started_at: "",
     ended_at: "",
+    present: false,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,7 +49,7 @@ const Formation = ({ data }: { data: Training[] }) => {
           return [...prevTrainings, updatedTraining];
         });
 
-        setNewTraining({ training_id: 0, name: "", description: "", organization: "", city: "", started_at: "", ended_at: "" });
+        setNewTraining({ training_id: 0, name: "", description: "", organization: "", city: "", started_at: "", ended_at: "", present: false });
       }
     } catch (error) {
       console.error("Error submitting training:", error);
@@ -74,14 +76,14 @@ const Formation = ({ data }: { data: Training[] }) => {
   return (
     <div className="space-y-4">
       <div className=" p-4">
-      
+
         <div className="space-y-4">
           <div >
             <label className="block text-sm font-medium text-gray-700 mb-3">Formation</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="nom"
-              value={currentFormation.nom}
+              value={newTraining.name}
               onChange={handleChange}
               placeholder="Nom de la formation"
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
@@ -90,10 +92,10 @@ const Formation = ({ data }: { data: Training[] }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Établissement</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="etablissement"
-                value={currentFormation.etablissement}
+                value={newTraining.organization}
                 onChange={handleChange}
                 placeholder="Établissement"
                 className="w-full px-3 py-2 border border-gray-200 rounded-md"
@@ -101,10 +103,10 @@ const Formation = ({ data }: { data: Training[] }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Ville</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="ville"
-                value={currentFormation.ville}
+                value={newTraining.city}
                 onChange={handleChange}
                 placeholder="Ville"
                 className="w-full px-3 py-2 border border-gray-200 rounded-md"
@@ -114,21 +116,21 @@ const Formation = ({ data }: { data: Training[] }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">Date de début</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 name="debut"
-                value={currentFormation.debut}
+                value={newTraining.started_at}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-200 rounded-md"
               />
             </div>
-            {!currentFormation.present && (
+            {!newTraining.present && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">Date de fin</label>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   name="fin"
-                  value={currentFormation.fin}
+                  value={newTraining.ended_at}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md"
                 />
@@ -136,10 +138,10 @@ const Formation = ({ data }: { data: Training[] }) => {
             )}
           </div>
           <label className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               name="present"
-              checked={currentFormation.present}
+              checked={newTraining.present}
               onChange={handleChange}
               className="text-teal-600"
             />
@@ -147,16 +149,16 @@ const Formation = ({ data }: { data: Training[] }) => {
           </label>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">Description</label>
-            <textarea 
+            <textarea
               name="description"
-              value={currentFormation.description}
+              value={newTraining.description}
               onChange={handleChange}
               placeholder="Description"
               className="w-full px-3 py-2 border border-gray-200 rounded-md h-24"
             />
           </div>
-          <button 
-            onClick={handleAddFormation}
+          <button
+            onClick={handleSubmit}
             className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
           >
             Enregistrer

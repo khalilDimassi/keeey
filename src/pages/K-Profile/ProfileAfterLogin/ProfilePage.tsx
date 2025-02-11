@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPencilAlt, FaPlus, FaUser } from "react-icons/fa";
 import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
@@ -8,17 +8,37 @@ import { getAuthHeader } from "../../utils/jwt";
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
     genre: "",
-    nom: "",
-    prenom: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    fonction: "",
-    telephone: "",
-    adresse: "",
-    codePostal: ""
+    occupation: "",
+    phone: "",
+    address: "",
+    zip: "",
   });
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  // Fetch user data from API on component mount
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/profile`,
+        { headers: getAuthHeader() }
+      );
+      setFormData(response.data.user);
+    } catch (err) {
+      setError("Failed to load profile data.");
+    }
+    setLoading(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,35 +55,61 @@ const Profile: React.FC = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    setIsFormSubmitted(true);
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/user-data`,
+        formData,
+        { headers: getAuthHeader() }
+      );
+      setIsEditing(false);
+      await fetchUserProfile();
+    } catch (err) {
+      setError("Failed to update profile.");
+    }
+    setLoading(false);
   };
 
+  interface Referral {
+    contact_id: number,
+    first_name: string,
+    last_name: string,
+    gender: string,
+    phone: string,
+    email: string,
+    company: string,
+    occupation: string,
+  }
 
-
-  const [contactformData, setContactFormData] = useState({
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [selectedReferral, setSelectedReferral] = useState<Referral | null>(null);
+  const [contactFormData, setContactFormData] = useState({
     gender: "",
-    last_name: "",
     first_name: "",
+    last_name: "",
     email: "",
     phone: "",
     company: "",
+
     occupation: "...",
     contact_role: "REFERRAL"
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setContactFormData({
-      ...contactformData,
+      ...contactFormData,
       [e.target.name]: e.target.value,
     });
+    console.log(contactFormData);
+
   };
 
   const handleContactSubmit = async () => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/contact`,
-        formData,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts`,
+        contactFormData,
         { headers: getAuthHeader() }
       );
       alert("Référence ajoutée avec succès");
@@ -71,6 +117,24 @@ const Profile: React.FC = () => {
       console.error("Erreur lors de l'envoi", error);
       alert("Une erreur est survenue");
     }
+  };
+
+  useEffect(() => {
+    const fetchReferrals = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/REFERRAL`, { headers: getAuthHeader() });
+        setReferrals(response.data || []);
+      } catch (error) {
+        console.error('Error fetching referrals:', error);
+        setReferrals([]);
+      }
+    };
+
+    fetchReferrals();
+  }, []);
+
+  const handleCardClick = (referral: Referral) => {
+    setSelectedReferral(referral);
   };
 
   return (
@@ -88,98 +152,53 @@ const Profile: React.FC = () => {
           style={{ boxShadow: "0 0 3px 1px rgba(12, 94, 12, 0.2)" }}
         >
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">
-              Mes Informations générales
-            </h2>
-            {isFormSubmitted && (
+            <h2 className="text-lg font-semibold">Mes Informations générales</h2>
+            {!isEditing && (
               <button
                 className="text-green-600 hover:text-green-700"
-                onClick={() => setIsFormSubmitted(false)}
+                onClick={() => setIsEditing(true)}
               >
                 <FaPencilAlt />
               </button>
             )}
           </div>
 
-          {!isFormSubmitted ? (
-            // Form Input View
+          {loading ? (
+            <p className="text-gray-500">Chargement...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : isEditing ? (
+            // Edit Form View
             <div className="space-y-4">
               <div className="flex space-x-4 mb-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="genre"
-                    checked={formData.genre === "Mr."}
-                    onChange={() => handleRadioChange("Mr.")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                  />
-                  <span>Mr.</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="genre"
-                    checked={formData.genre === "Madame"}
-                    onChange={() => handleRadioChange("Madame")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                  />
-                  <span>Madame</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="genre"
-                    checked={formData.genre === "Autre"}
-                    onChange={() => handleRadioChange("Autre")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                  />
-                  <span>Autre</span>
-                </label>
+                {["Mr.", "Madame", "Autre"].map((option) => (
+                  <label key={option} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="genre"
+                      checked={formData.genre === option}
+                      onChange={() => handleRadioChange(option)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
               </div>
 
-              <label className="block">
-                Nom
-                <input
-                  name="nom"
-                  value={formData.nom}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Nom"
-                />
-              </label>
-
-              <label className="block">
-                Prénom
-                <input
-                  name="prenom"
-                  value={formData.prenom}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Prénom"
-                />
-              </label>
-
-              <label className="block">
-                Email
-                <input
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Email"
-                />
-              </label>
-
-              <label className="block">
-                Fonction principale / Titre
-                <input
-                  name="fonction"
-                  value={formData.fonction}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Fonction principale / Titre"
-                />
-              </label>
+              {["first_name", "last_name", "email", "occupation", "address", "zip"].map(
+                (field) => (
+                  <label key={field} className="block">
+                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                    <input
+                      name={field}
+                      value={formData[field as keyof typeof formData]}
+                      onChange={handleInputChange}
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder={field}
+                    />
+                  </label>
+                )
+              )}
 
               <label className="block mb-2">Numéro de téléphone</label>
               <div className="flex items-center space-x-2 mb-2">
@@ -189,36 +208,20 @@ const Profile: React.FC = () => {
                 </select>
                 <input
                   name="telephone"
-                  value={formData.telephone}
+                  value={formData.phone}
                   onChange={handleInputChange}
                   className="w-full p-3 border rounded mt-1"
                   placeholder="Numéro de téléphone"
                 />
               </div>
 
-              <label className="block">
-                Adresse postale
-                <input
-                  name="adresse"
-                  value={formData.adresse}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Adresse postale"
-                />
-              </label>
-
-              <label className="block">
-                Code Postal
-                <input
-                  name="codePostal"
-                  value={formData.codePostal}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded mt-1"
-                  placeholder="Code Postal"
-                />
-              </label>
-
-              <div className="flex justify-end mt-4">
+              <div className="flex justify-end space-x-2 mt-4">
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
+                >
+                  Cancel
+                </button>
                 <button
                   onClick={handleSubmit}
                   className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
@@ -228,42 +231,16 @@ const Profile: React.FC = () => {
               </div>
             </div>
           ) : (
-            // Display View (after save)
+            // Display View
             <div className="space-y-3">
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Genre</span>
-                <span className="text-base">{formData.genre}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Nom</span>
-                <span className="text-base">{formData.nom}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Prénom</span>
-                <span className="text-base">{formData.prenom}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Email</span>
-                <span className="text-base">{formData.email}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">
-                  Fonction principale / Titre
-                </span>
-                <span className="text-base">{formData.fonction}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                <span className="text-base">{formData.telephone}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Adresse postale</span>
-                <span className="text-base">{formData.adresse}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-600">Code Postal</span>
-                <span className="text-base">{formData.codePostal}</span>
-              </div>
+              {Object.entries(formData).map(([key, value]) => (
+                <div key={key} className="flex flex-col">
+                  <span className="text-sm text-gray-600">
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </span>
+                  <span className="text-base">{value || '-'}</span>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -284,9 +261,9 @@ const Profile: React.FC = () => {
               <label key={label} className="flex items-center space-x-2">
                 <input
                   type="radio"
-                  name="refGender"
+                  name="gender"
                   value={label}
-                  checked={contactformData.gender === label}
+                  checked={contactFormData.gender === label}
                   onChange={handleChange}
                   className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
@@ -298,20 +275,20 @@ const Profile: React.FC = () => {
             <label className="block">
               Nom
               <input
-                name="lastName"
+                name="first_name"
                 className="w-full p-3 border rounded mt-1"
                 placeholder="Nom"
-                value={contactformData.last_name}
+                value={contactFormData.first_name}
                 onChange={handleChange}
               />
             </label>
             <label className="block">
               Prénom
               <input
-                name="firstName"
+                name="last_name"
                 className="w-full p-3 border rounded mt-1"
                 placeholder="Prénom"
-                value={contactformData.first_name}
+                value={contactFormData.last_name}
                 onChange={handleChange}
               />
             </label>
@@ -322,7 +299,7 @@ const Profile: React.FC = () => {
               name="email"
               className="w-full p-3 border rounded mt-1"
               placeholder="Adresse mail"
-              value={formData.email}
+              value={contactFormData.email}
               onChange={handleChange}
             />
           </label>
@@ -336,7 +313,7 @@ const Profile: React.FC = () => {
               name="phone"
               className="w-full p-3 border rounded"
               placeholder="Numéro de téléphone"
-              value={contactformData.phone}
+              value={contactFormData.phone}
               onChange={handleChange}
             />
           </div>
@@ -346,24 +323,29 @@ const Profile: React.FC = () => {
               name="company"
               className="w-full p-3 border rounded mt-1"
               placeholder="Entreprise"
-              value={contactformData.company}
+              value={contactFormData.company}
               onChange={handleChange}
             />
           </label>
+
           <h3 className="text-md font-semibold mt-4">Liste des références</h3>
           <div className="grid grid-cols-2 gap-2 mt-2">
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
-            <div className="p-4 border rounded bg-gray-50 shadow">
-              Web Designer - DIGIWEB
-            </div>
+            {referrals.length === 0 ? (
+              <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {referrals.map((referral) => (
+                  <div
+                    key={referral.contact_id}
+                    className="p-4 border rounded bg-gray-50 shadow cursor-pointer"
+                    onClick={() => handleCardClick(referral)}
+                  >
+                    <div>{`${referral.first_name} ${referral.last_name}`}</div>
+                    <div>{referral.company}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
