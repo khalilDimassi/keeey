@@ -41,7 +41,7 @@ function Competencies() {
           );
 
           if (skillsResponse.status === 200) {
-            const userSkills: string[] = skillsResponse.data;
+            const userSkills: string[] = skillsResponse.data || [];
             setSelectedSkills(userSkills);
 
             for (const sector of sectorDataResult) {
