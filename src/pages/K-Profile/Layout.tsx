@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Profile from "./ProfileAfterLogin/ProfilePage";
@@ -10,8 +10,9 @@ import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
 import JobOpportunities from "./JobOpportunities";
 import Dashboard from "./Dashboard";
-import MissionsTable from "./MissionsTable"; 
+import MissionsTable from "./MissionsTable";
 import Login from "./Login"; // Import the login popup component
+import { isAuthenticated } from "../utils/jwt";
 
 type IconId =
   | "dashboard"
@@ -25,7 +26,8 @@ type IconId =
   | null;
 
 const Layout = () => {
-  const [connecte] = useState(false); // Connection state
+  const [connecte] = useState(isAuthenticated); // Connection state
+
   const [showLoginPopup, setShowLoginPopup] = useState(false); // Login popup state
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);

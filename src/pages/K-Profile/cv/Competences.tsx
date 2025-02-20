@@ -5,10 +5,9 @@ import { getAuthHeader } from "../../utils/jwt";
 
 
 interface Skill {
-  skill_id: number
-  sector: string
-  job: string
-  seniority: number
+  SkillID: number
+  Name: string
+  Jobs: [] | null
 }
 
 
@@ -21,7 +20,7 @@ const Competences = ({ data }: { data: Skill[] }) => {
         headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
       });
 
-      setSkills((prev) => prev.filter((t) => t.skill_id !== skill_id));
+      setSkills((prev) => prev.filter((t) => t.SkillID !== skill_id));
     } catch (error) {
       console.error("Error deleting skill:", error);
     }
@@ -33,12 +32,12 @@ const Competences = ({ data }: { data: Skill[] }) => {
       <div className="space-y-2">
         {skills.map((skill) => (
           <div
-            key={skill.skill_id}
+            key={skill.SkillID}
             className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md bg-gray-100"
           >
-            <span>{skill.sector + ": " + skill.job}</span>
+            <span>{skill.Name}</span>
             <button
-              onClick={() => handleDelete(skill.skill_id)}
+              onClick={() => handleDelete(skill.SkillID)}
               className="text-red-500 hover:text-red-700"
             >
               <Trash size={18} />

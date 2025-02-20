@@ -75,10 +75,9 @@ interface Interest {
 }
 
 interface Skill {
-  skill_id: number
-  sector: string
-  job: string
-  seniority: number
+  SkillID: number
+  Name: string
+  Jobs: [] | null
 }
 
 interface Certificat {

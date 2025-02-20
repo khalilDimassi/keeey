@@ -1,70 +1,162 @@
 import { useState } from "react";
-import ChangePasswordForm from "./ChangePasswordForm";
-import NotificationsSettings from "./NotificationsSettings";
-import Confidentialite from "./Confidentialite";
-import ContactSupportForm from "./ContactSupportForm";
-import { MdBookmark } from "react-icons/md";
-import { ChevronRight, Settings } from "lucide-react";
+import axios from "axios";
 
-// Menu latéral avec icônes et labels corrigés
-const menuItems = [
-  { id: "change-password", label: "Modifier le mot de passe" },
-  { id: "notifications", label: "Alertes/Notifications" },
-  { id: "security", label: "Confidentialité et accès" },
-  { id: "support", label: "Contact / Support" },
-  { id: "subscriptions", label: "Abonnement" },
-];
-
-export default function Reglage() {
-  const [selectedMenu, setSelectedMenu] = useState("change-password");
-
-  return (
-    <div> <div className="flex items-center space-x-2 mb-5 ">
-    <Settings className="text-teal-800" size={35} />
-    <h1 className="text-2xl font-semibold " style={{ fontWeight: "bold" }}>Réglage</h1>
-  </div>
-    <div className="flex h-screen  ">
-       
-      {/* MENU LATERAL - Hauteur ajustée */}
-      <aside
-  className="w-72 bg-white shadow-lg rounded-lg p-4 h-fit"
-  style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
->
-  <ul className="space-y-2">
-    {menuItems.map((item) => (
-      <li
-        key={item.id}
-        className={`flex justify-between items-center gap-3 p-3 rounded-lg text-lg font-semibold cursor-pointer
-        transition-all duration-200 
-        ${selectedMenu === item.id ? "text-teal-600" : "hover:bg-gray-200 text-gray-700"}`}
-        onClick={() => setSelectedMenu(item.id)}
-      >
-        <span>{item.label}</span>
-        <ChevronRight
-          className={`w-6 h-6 transition-all duration-200 ${
-            selectedMenu === item.id ? "text-green-500" : "text-gray-500"
-          }`}
-        />
-      </li>
-    ))}
-  </ul>
-</aside>
-
-      {/* CONTENU PRINCIPAL - Hauteur pleine page */}
-      <main className="flex-1 bg-white shadow-lg rounded-lg p-10 ml-6 "  style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}>
-        {selectedMenu === "change-password" && <ChangePasswordForm />}
-        {selectedMenu === "notifications" && <NotificationsSettings />}
-        {selectedMenu === "security" && <Confidentialite />}
-        {selectedMenu === "support" && <ContactSupportForm />}
-        {selectedMenu === "subscriptions" && <p>📜 Gérer votre abonnement</p>}
-      </main>
-    </div>
-    </div>
-  );
+interface FormData {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
 }
 
+interface NotificationState {
+  show: boolean;
+  message: string;
+  type: 'success' | 'error';
+}
 
+const ChangePasswordForm = () => {
+  const [formData, setFormData] = useState<FormData>({
+    current_password: "",
+    new_password: "",
+    confirm_password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState<NotificationState>({
+    show: false,
+    message: "",
+    type: 'success'
+  });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    setNotification({ show: false, message: "", type: 'success' });
 
+    if (formData.new_password !== formData.confirm_password) {
+      setNotification({
+        show: true,
+        message: "Les mots de passe ne correspondent pas",
+        type: 'error'
+      });
+      return;
+    }
 
+    setIsLoading(true);
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/password`,
+        {
+          current_password: formData.current_password,
+          new_password: formData.new_password,
+        }
+      );
+
+      if (response.status === 200) {
+        setNotification({
+          show: true,
+          message: "Votre mot de passe a été modifié avec succès",
+          type: 'success'
+        });
+        setFormData({
+          current_password: "",
+          new_password: "",
+          confirm_password: "",
+        });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setNotification({
+          show: true,
+          message: error.response?.data?.message || "Une erreur est survenue",
+          type: 'error'
+        });
+      } else {
+        setNotification({
+          show: true,
+          message: "Une erreur est survenue",
+          type: 'error'
+        });
+      }
+    } finally {
+      setIsLoading(false);
+      // Auto-hide notification after 5 seconds
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, show: false }));
+      }, 5000);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+      {notification.show && (
+        <div className={`p-4 rounded-md mb-4 ${notification.type === 'success'
+            ? 'bg-green-50 text-green-700 border border-green-200'
+            : 'bg-red-50 text-red-700 border border-red-200'
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Mot de passe actuel
+          </label>
+          <input
+            type="password"
+            name="current_password"
+            value={formData.current_password}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nouveau mot de passe
+          </label>
+          <input
+            type="password"
+            name="new_password"
+            value={formData.new_password}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Confirmer le nouveau mot de passe
+          </label>
+          <input
+            type="password"
+            name="confirm_password"
+            value={formData.confirm_password}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            required
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
+      >
+        {isLoading ? "Chargement..." : "Modifier le mot de passe"}
+      </button>
+    </form>
+  );
+};
+
+export default ChangePasswordForm;
