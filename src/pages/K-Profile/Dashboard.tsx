@@ -43,7 +43,7 @@ const Box: React.FC<BoxProps> = ({ title, children, className }) => {
     return (
       <div className={`border p-4 rounded-lg shadow-md ${className}`}>
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
-        <ArrowUpRight className="absolute top-4 right-4 w-5 h-5 text-gray-500" />
+        
         {children}
       </div>
     );

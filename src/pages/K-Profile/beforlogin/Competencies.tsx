@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { getAuthHeader, isAuthenticated } from "../../utils/jwt";
+import Dropdown from "./Dropdown";
 
 interface Job {
   name: string;
@@ -234,9 +235,13 @@ function Competencies() {
           {/* Jobs and Skills Section */}
           {selectedSectors.length > 0 && selectedSector && selectedSectors.includes(selectedSector) && (
             <div className="rounded-lg p-4 bg-gray-50 shadow-md">
+           
               {/* Jobs Display */}
               <div className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg shadow-sm">
+                <div className="flex">
                 <h2 className="text-lg font-semibold text-gray-700">{selectedSector}</h2>
+               <Dropdown />
+                </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {selectedSectorJobs.map((job) => {
                     const selectedSkillsCount = getJobSelectedSkillsCount(job);
