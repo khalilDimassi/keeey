@@ -31,11 +31,11 @@ export function MesBesoin({ projects, onSelectProject, onDefineNeed }: ProjectsL
   };
 
   return (
-    <div className="p-3 w-full mx-auto ml-2">
+    <div className="p-2 w-full mx-auto ml-2">
       <div className="flex flex-col gap-6 ">
-        <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3 mt-1 mb-4">
-    <Search className="text-teal-800" size={40} />
+        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-3  mb-2">
+    <Search className="" style={{color: "#215A96"}} size={40} />
     <h1 className="text-xl font-semibold ">Projets/Besoins</h1>
   </div>
 

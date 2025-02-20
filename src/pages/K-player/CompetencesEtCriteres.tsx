@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Calendar, PlusCircle, Trash2 } from "lucide-react";
+import { Building2, Calendar, PlusCircle, Trash2 } from "lucide-react";
 
 const secteursOptions = [
   "Développement et Programmation",
@@ -41,7 +41,13 @@ const CompetencesEtCriteres: React.FC = () => {
   };
 
   return (
+    <div>
+       <div className="flex ml-5 items-center space-x-3 mt-1 mb-1">
+    <Building2 className="text-blue-800" size={40} />
+    <h1 className="text-xl font-semibold ">Compétences</h1>
+  </div>
     <div className="p-3 flex gap-5" >
+       
       {/* Section Compétences */}
       <div className="bg-white p-6 rounded-lg shadow-md w-1/2" style={{boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)" ,borderRadius:"10px"}}>
         <h2 className="text-lg font-semibold mb-4">Compétences</h2>
@@ -232,6 +238,7 @@ const CompetencesEtCriteres: React.FC = () => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };

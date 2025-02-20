@@ -113,7 +113,7 @@ interface DocumentUploadModalProps {
             <div className="flex justify-end mt-6">
               <button
                 type="submit"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+                className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center space-x-2"
               >
                 <FaPlus size={16} />
                 <span>Ajouter</span>

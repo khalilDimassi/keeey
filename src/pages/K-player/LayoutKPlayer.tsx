@@ -5,7 +5,7 @@ import CompetencesEtCriteres from "./CompetencesEtCriteres";
 import CandidatesList from "./CandidatesList";
 import Login from "./Login"; // Import the login popup component
 import ProjetsBesoins from "./Projets-Besoins/ProjetsBesoins";
-
+import ProfilePage from "./Profile/ProfilePage"; // Import ProfilePage component
 
 type IconId = "dashboard" | "company" | "userSearch" | "userStar" | "fileSettings" | "profile" | null;
 
@@ -54,9 +54,10 @@ const LayoutKPlayer = () => {
           {activeComponent === "dashboard" && <div>Dashboard Content Here</div>}
 
           {/* Show ProjetsBesoins when userSearch is clicked */}
-          {activeComponent === "userSearch" && (<ProjetsBesoins />
-          
-        )}
+          {activeComponent === "userSearch" && <ProjetsBesoins />}
+
+          {/* Show ProfilePage when userStar is clicked */}
+          {activeComponent === "userStar" && <ProfilePage />}
         </div>
       </div>
 
