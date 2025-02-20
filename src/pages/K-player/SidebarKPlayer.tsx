@@ -7,6 +7,8 @@ import {
   FileCog,
   Contact,
   LucideIcon,
+  Target,
+  Settings,
 } from "lucide-react";
 
 type IconId =
@@ -14,7 +16,8 @@ type IconId =
   | "company"
   | "userSearch"
   | "userStar"
-  | "fileSettings"
+  | "target"
+  | "settings"
   | "profile"
   | null;
 
@@ -36,8 +39,10 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
     { id: "company", Icon: Building2 },
     { id: "userSearch", Icon: Search },
     { id: "userStar", Icon: UserCheck },
-    { id: "fileSettings", Icon: FileCog },
+    { id: "target", Icon: Target },
     { id: "profile", Icon: Contact },
+    { id: "settings", Icon: Settings },
+  
   ];
 
   const handleIconClick = (id: IconId) => {
@@ -48,7 +53,7 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
   return (
     <div
       style={{ marginTop: "50px", background: "#215A96" }}
-      className="absolute w-[60px] h-[588px] left-[23px] rounded-2xl flex flex-col items-center"
+      className="absolute w-[60px] h-[688px] left-[23px] rounded-2xl flex flex-col items-center"
     >
       <div className="w-[35.5px] h-[610.59px] flex flex-col items-center">
         {icons.map(({ id, Icon }) => (

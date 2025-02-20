@@ -46,7 +46,7 @@ const CompetencesEtCriteres: React.FC = () => {
     <Building2 className="text-blue-800" size={40} />
     <h1 className="text-xl font-semibold ">Compétences</h1>
   </div>
-    <div className="p-3 flex gap-5" >
+    <div className="p-4 flex gap-5" >
        
       {/* Section Compétences */}
       <div className="bg-white p-6 rounded-lg shadow-md w-1/2" style={{boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)" ,borderRadius:"10px"}}>

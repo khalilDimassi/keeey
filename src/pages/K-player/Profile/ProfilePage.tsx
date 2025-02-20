@@ -12,7 +12,7 @@ const ProfilePage: React.FC = () => {
     <UserCheck className="text-blue-800" size={40} />
     <h1 className="text-xl font-semibold ">Profil</h1>
   </div>
-    <div className="p-5 flex flex-col md:flex-row gap-6 bg-gray-100">
+    <div className="p-4 flex flex-col md:flex-row gap-6 bg-gray-100">
         
       <div className="flex flex-col gap-6 w-full md:w-1/3">
         {/* Mon Profil */}

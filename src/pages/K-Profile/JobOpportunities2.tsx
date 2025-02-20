@@ -159,13 +159,13 @@ const JobOpportunities2 = () => {
         </div>
 
         <div className="w-full "style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
-          <div className="relative bg-white shadow-sm rounded-lg">
+          <div className=" bg-white shadow-sm rounded-lg">
             {/* Job List */}
             <div className="space-y-6 p-6">
               {currentJobPosts.map((post) => (
                 <div
                   key={post.id}
-                  className="bg-white p-4 hover:shadow-lg transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative"
+                  className="bg-white p-4 hover:shadow-lg transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 "
                   onClick={() => handleJobClick(post)} // Open modal when clicked
                 >
                   {/* Avatar (replaced with image) */}
