@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import { Calendar, PlusCircle, Trash2 } from "lucide-react";
 import DocumentsDevinirBesoin from "./DocumentUploadModal";
 
@@ -21,24 +21,104 @@ const CompetencesEtCriteresDocument: React.FC = () => {
   const [languageInput, setLanguageInput] = useState<string>("");
   const [languages, setLanguages] = useState<string[]>([]);
 
-  const toggleSecteur = (secteur: string) => {
-    setSelectedSecteurs((prev) =>
-      prev.includes(secteur)
-        ? prev.filter((item) => item !== secteur)
-        : [...prev, secteur]
-    );
-  };
 
+
+    const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
+    const [selectedOptions, setSelectedOptions] = useState<Record<number, number | null>>({});
+    const dropdownRef = useRef<HTMLDivElement>(null);
+  
+
+ // Gestion des sélections/désélections des secteurs
+ const toggleSecteur = (secteur: string, index: number) => {
+  const isSelected = selectedSecteurs.includes(secteur);
+  
+  if (isSelected) {
+    // Si déjà sélectionné, on désélectionne
+    setSelectedSecteurs(prev => prev.filter(item => item !== secteur));
+    // Et on supprime l'option sélectionnée
+    const newSelectedOptions = { ...selectedOptions };
+    delete newSelectedOptions[index];
+    setSelectedOptions(newSelectedOptions);
+  } else {
+    // Si pas sélectionné, on sélectionne
+    setSelectedSecteurs(prev => [...prev, secteur]);
+    // Et on sélectionne automatiquement l'option "Junior" (index 2)
+    setSelectedOptions(prev => ({
+      ...prev,
+      [index]: 2
+    }));
+  }
+};
+ // Vérifie si une option est sélectionnée
+ const isOptionSelected = (optionIndex: number, sectorIndex: number) => {
+  return selectedOptions[sectorIndex] === optionIndex;
+};
   const addLanguage = () => {
     if (languageInput.trim() !== "" && !languages.includes(languageInput)) {
       setLanguages([...languages, languageInput]);
       setLanguageInput("");
     }
   };
-
+// Détermine la couleur d'une ligne spécifique basée sur l'option sélectionnée
+const getLineColor = (sectorIndex: number, lineIndex: number) => {
+  const selectedOption = selectedOptions[sectorIndex];
+  
+  if (selectedOption === 0) {
+    // Expert - toutes les lignes sont bleues
+    return "bg-blue-600";
+  } else if (selectedOption === 1) {
+    // Intermediaire - lignes 2 et 3 sont bleues
+    return lineIndex >= 1 ? "bg-blue-600" : "bg-gray-400";
+  } else if (selectedOption === 2) {
+    // Junior - seulement la ligne 3 est bleue
+    return lineIndex === 2 ? "bg-blue-600" : "bg-gray-400";
+  }
+  
+  // Aucune option sélectionnée - toutes sont grises
+  return "bg-gray-400";
+};
   const removeLanguage = (lang: string) => {
     setLanguages(languages.filter((l) => l !== lang));
   };
+ // Toggle le dropdown menu
+  const toggleDropdown = (index: number) => {
+    setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+  };
+
+  // Sélectionner une option du dropdown
+  const selectOption = (optionIndex: number, sectorIndex: number) => {
+    // Récupérer le secteur correspondant
+    const secteur = secteursOptions[sectorIndex];
+    
+    // Ajouter automatiquement le secteur aux secteurs sélectionnés s'il n'est pas déjà sélectionné
+    if (!selectedSecteurs.includes(secteur)) {
+      setSelectedSecteurs(prev => [...prev, secteur]);
+    }
+    
+    // Mettre à jour l'option sélectionnée
+    setSelectedOptions({
+      ...selectedOptions,
+      [sectorIndex]: optionIndex
+    });
+    
+    // Fermer le dropdown
+    setOpenDropdownIndex(null);
+  };
+
+  // Fermer le dropdown quand on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdownIndex(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
 
   return (
     <div className="my-2 bg-gray-100 min-h-screen flex gap-6">
@@ -67,30 +147,79 @@ const CompetencesEtCriteresDocument: React.FC = () => {
             </button>
           ))}
         </div>
-        {/* Secteurs */}
-        <p className="text-gray-600 mb-2">Secteur</p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {secteursOptions.map((secteur, index) => (
-            <button
-              key={index}
-              className={`px-3 py-2 rounded-md border ${
-                selectedSecteurs.includes(secteur)
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-              onClick={() => toggleSecteur(secteur)}
-            >
-              {secteur} +
-            </button>
-          ))}
-        </div>
+   {/* Secteurs */}
+   <p className="text-gray-600 mb-2">Secteur</p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {secteursOptions.map((secteur, index) => (
+              <div key={index} className="flex bg-gray-100 border relative">
+                <button
+                  name="fr"
+                  className={`px-3 flex py-2 ${
+                    selectedSecteurs.includes(secteur)
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                  onClick={() => toggleSecteur(secteur, index)}
+                >
+                  {secteur}
+                </button>
+                <div className="relative">
+                  <button
+                    name="mn"
+                    className="group px-2"
+                    onClick={() => toggleDropdown(index)}
+                  >
+                    <div className="flex flex-col justify-between w-[15px] h-[12px] duration-500 overflow-hidden group-focus:rotate-180">
+                      <div className={`h-[2px] w-7 ${getLineColor(index, 0)}`}></div>
+                      <div className={`h-[2px] w-7 ${getLineColor(index, 1)}`}></div>
+                      <div className={`h-[2px] w-7 ${getLineColor(index, 2)}`}></div>
+                    </div>
+                  </button>
+                  {openDropdownIndex === index && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 top-full bg-white border border-gray-200 rounded-md shadow-lg"
+                      style={{ minWidth: "150px", marginLeft: "30px", marginTop: "-90px" }}
+                    >
+                      <div className="py-1">
+                        <button
+                          onClick={() => selectOption(0, index)}
+                          className={`block w-full text-left px-4 py-2 ${
+                            isOptionSelected(0, index) 
+                              ? "bg-blue-600 text-white" 
+                              : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          Expert
+                        </button>
+                        <button
+                          onClick={() => selectOption(1, index)}
+                          className={`block w-full text-left px-4 py-2 ${
+                            isOptionSelected(1, index) 
+                              ? "bg-blue-600 text-white" 
+                              : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          Intermediaire
+                        </button>
+                        <button
+                          onClick={() => selectOption(2, index)}
+                          className={`block w-full text-left px-4 py-2 ${
+                            isOptionSelected(2, index) 
+                              ? "bg-blue-600 text-white" 
+                              : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          Junior
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {/* Séniorité */}
-        <p className="text-gray-600 mb-2">Séniorité</p>
-        <div className="flex items-center">
-          <input type="range" className="w-full" />
-          <span className="ml-2 text-gray-700">Expert</span>
-        </div>
 
         {/* Outils */}
         <p className="text-gray-600 mt-4">Outils / habilitations</p>
