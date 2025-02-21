@@ -4,7 +4,7 @@ import axios from "axios";
 import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
-import logo from "../assets/logoKeeePartner.png";
+import logo from "../assets/logoKeeePartner.svg";
 import { saveToken } from "../utils/jwt";
 
 const LoginPagePartner = () => {
@@ -42,7 +42,7 @@ const LoginPagePartner = () => {
   return (
     <div className="flex justify-center items-center min-h-screen px-2 bg-gray-50">
     <motion.div
-      className="absolute top-10 left-1/2 transform -translate-x-1/2"
+      className="absolute top-6 left-1/2 transform -translate-x-1/2"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
@@ -51,8 +51,8 @@ const LoginPagePartner = () => {
     </motion.div>
 
       <motion.div
-        className="relative w-full bg-white p-6 shadow-lg"
-        style={{ maxWidth: "28rem", height: "30rem", boxShadow: "0 1px 8px 3px rgba(120, 103, 36, 0.4)", marginTop: "8rem", borderRadius: "15px" }}
+        className="relative w-full bg-white p-6 shadow-lg rounded-2xl"
+        style={{ maxWidth: "28rem", boxShadow: "0 1px 8px 3px rgba(120, 103, 36, 0.4)" }}
         initial={{ x: -80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
@@ -61,23 +61,25 @@ const LoginPagePartner = () => {
           <ArrowLeft size={20} />
         </button>
        
-        <h2 className="text-center text-sm font-bold text-gray-700 mb-2">
-          Connectez-vous à votre compte K-Player
+        <h2 className="text-center text-lg font-bold text-gray-700 mb-2">
+          Connectez-vous à votre compte K-Partner
         </h2>
         <div className="text-center text-xs text-gray-600 mb-4">
-          Vous n'avez pas de compte ? <a href="/LoginOptionsPartner" className="text-blue-700 ml-1 hover:underline">Inscrivez-vous ici</a>
+          Vous n'avez pas de compte ? <a href="/LoginOptionsPartner" className="text-yellow-700 ml-1 hover:underline">Inscrivez-vous ici</a>
         </div>
         <form className="space-y-3" onSubmit={handleLogin}>
           <div>
             <label className="block text-gray-600 text-xs">Email</label>
-            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-1 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500 text-xs" />
+            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-yellow-600 text-sm"
+         />
           </div>
           <div>
             <label className="block text-gray-600 text-xs">Mot de passe</label>
-            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-1 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500 text-xs" />
+            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-yellow-600 text-sm"
+         />
           </div>
           {error && <p className="text-red-500 text-xs text-center mt-1">{error}</p>}
-          <button className="w-full flex items-center justify-center gap-2 p-2 bg-blue-800 text-white rounded-lg  transition text-xs" style={{ borderRadius: "20px", backgroundColor: 'rgba(83, 68, 11, 0.55)' }}  >Se connecter</button>
+          <button className="w-full flex items-center justify-center gap-2 p-2 bg-blue-800 text-white rounded-lg  transition text-sm" style={{  backgroundColor: 'rgba(83, 68, 11, 0.55)' }}  >Se connecter</button>
           <div className="space-y-2">
             <button className="w-full flex items-center justify-center gap-2 p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition text-xs">
               <FaGoogle className="text-red-500" />

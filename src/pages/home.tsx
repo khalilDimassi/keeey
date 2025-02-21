@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';  // Import Framer Motion
-import logo from "./assets/logo.png";
-import KProfile from "./assets/k-profile.png";
-import KPlayer from "./assets/k-player.png";
-import KPartner from "./assets/k-partner.png";
+import logo from "./assets/logo.svg";
+import KProfile from "./assets/k-profile.svg";
+import KPlayer from "./assets/k-player.svg";
+import KPartner from "./assets/k-partner.svg";
 
 const Home = () => {
   const navigate = useNavigate();

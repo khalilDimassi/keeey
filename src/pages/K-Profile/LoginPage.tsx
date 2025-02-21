@@ -1,4 +1,4 @@
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import axios from "axios";
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";

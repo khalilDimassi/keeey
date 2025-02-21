@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import logo from "../assets/logoKeeePlayer.png";
+import logo from "../assets/logoKeeePlayer.svg";
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut } from "lucide-react";
 import { getAuthHeader, isAuthenticated, removeToken } from "../utils/jwt";

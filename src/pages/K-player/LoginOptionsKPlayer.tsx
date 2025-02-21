@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
+import { FaGoogle, FaApple, FaFacebook, FaEnvelope } from "react-icons/fa";
 import { motion } from "framer-motion";
-import logo from "../assets/logoKeeePlayer.png";
+import logo from "../assets/logoKeeePlayer.svg";
 
 const LoginOptionsKPlayer = () => {
   const navigate = useNavigate();
@@ -77,6 +77,7 @@ const LoginOptionsKPlayer = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
+             <FaEnvelope className="text-white" />
             <span>Continuer avec email</span>
           </motion.button>
         </div>

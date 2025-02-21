@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import { ArrowLeft } from "lucide-react";
-import logo from "../assets/logoKeeePartner.png";
+import logo from "../assets/logoKeeePartner.svg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -56,7 +56,7 @@ const AddPartner = () => {
             <ArrowLeft size={22} />
           </button>
           <h2 className="text-lg font-bold text-gray-700 flex-grow text-center pr-4">
-            Créer votre compte K-Profile
+            Créer votre compte K-Partner
           </h2>
         </div>
 

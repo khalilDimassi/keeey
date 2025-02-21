@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import { FaGoogle, FaApple, FaFacebook, FaEnvelope } from "react-icons/fa";
 
 const LoginOptions = () => {

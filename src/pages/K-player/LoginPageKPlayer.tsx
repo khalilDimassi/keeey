@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
 import { ArrowLeft } from "lucide-react";
-import logo from "../assets/logoKeeePlayer.png";
+import logo from "../assets/logoKeeePlayer.svg";
 import { saveToken } from "../utils/jwt";
 import { motion } from "framer-motion";
 
@@ -35,7 +35,7 @@ const LoginPageKPlayer = () => {
   return (
     <div className="flex justify-center items-center min-h-screen px-2 bg-gray-50">
     <motion.div
-      className="absolute top-10 left-1/2 transform -translate-x-1/2"
+      className="absolute top-6 left-1/2 transform -translate-x-1/2"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
@@ -45,7 +45,7 @@ const LoginPageKPlayer = () => {
 
       <motion.div
         className="relative w-full bg-white p-6 shadow-lg"
-        style={{ maxWidth: "28rem", height: "30rem", boxShadow: "0 1px 8px 3px rgba(49, 85, 205, 0.4)", marginTop: "8rem", borderRadius: "15px" }}
+        style={{ maxWidth: "28rem", boxShadow: "0 1px 8px 3px rgba(49, 85, 205, 0.4)", borderRadius: "18px" }}
         initial={{ x: -80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
@@ -63,11 +63,13 @@ const LoginPageKPlayer = () => {
         <form className="space-y-3" onSubmit={handleLogin}>
           <div>
             <label className="block text-gray-600 text-xs">Email</label>
-            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-1 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500 text-xs" />
+            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-sm"
+         />
           </div>
           <div>
             <label className="block text-gray-600 text-xs">Mot de passe</label>
-            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-1 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500 text-xs" />
+            <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-sm"
+         />
           </div>
           {error && <p className="text-red-500 text-xs text-center mt-1">{error}</p>}
           <button className="w-full flex items-center justify-center gap-2 p-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 transition text-xs">Se connecter</button>

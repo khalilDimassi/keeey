@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import { ArrowLeft } from "lucide-react";
-import logo from "../assets/logoKeeePlayer.png";
+import logo from "../assets/logoKeeePlayer.svg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -44,7 +44,7 @@ const AddKPlayer = () => {
         initial={{ x: -80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1 }}
-        className="relative w-full bg-white p-6 shadow-lg border-green-700"
+        className="relative w-full bg-white p-6 shadow-lg border-blue-700"
         style={{
           width: "30rem",
           boxShadow: "0 1px 8px 3px rgba(49, 85, 205, 0.35)",
@@ -68,7 +68,7 @@ const AddKPlayer = () => {
                 type="text"
                 name="nom"
                 placeholder="Nom"
-                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 value={formData.nom}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
@@ -80,7 +80,7 @@ const AddKPlayer = () => {
                 type="text"
                 name="prenom"
                 placeholder="Prénom"
-                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 value={formData.prenom}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
@@ -94,7 +94,7 @@ const AddKPlayer = () => {
               type="email"
               name="email"
               placeholder="exemple@mail.com"
-              className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+              className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               value={formData.email}
               onChange={handleChange}
               style={{ borderRadius: "12px" }}
@@ -107,7 +107,7 @@ const AddKPlayer = () => {
               type="tel"
               name="telephone"
               placeholder="Votre numéro"
-              className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+              className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               value={formData.telephone}
               onChange={handleChange}
               style={{ borderRadius: "12px" }}
@@ -121,7 +121,7 @@ const AddKPlayer = () => {
                 type="password"
                 name="password"
                 placeholder="Mot de passe"
-                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 value={formData.password}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
@@ -133,7 +133,7 @@ const AddKPlayer = () => {
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirmer le mot de passe"
-                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-green-500"
+                className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
