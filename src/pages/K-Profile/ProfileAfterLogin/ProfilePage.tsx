@@ -7,7 +7,7 @@ import { getAuthHeader } from "../../utils/jwt";
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
-    genre: "",
+    gender: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
   const handleRadioChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      genre: value
+      gender: value
     }));
   };
 
@@ -175,8 +175,8 @@ const Profile: React.FC = () => {
                   <label key={option} className="flex items-center space-x-2">
                     <input
                       type="radio"
-                      name="genre"
-                      checked={formData.genre === option}
+                      name="gender"
+                      checked={formData.gender === option}
                       onChange={() => handleRadioChange(option)}
                       className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
