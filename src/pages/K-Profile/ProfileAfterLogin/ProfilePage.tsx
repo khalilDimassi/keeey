@@ -106,8 +106,6 @@ const Profile: React.FC = () => {
       ...contactFormData,
       [e.target.name]: e.target.value,
     });
-    console.log(contactFormData);
-
   };
 
   const fetchReferrals = async () => {

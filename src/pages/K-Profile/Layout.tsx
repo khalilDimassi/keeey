@@ -26,20 +26,20 @@ type IconId =
   | null;
 
 const Layout = () => {
-  const [connecte] = useState(isAuthenticated); // Connection state
+  const [isOnline] = useState(isAuthenticated); // Connection state
 
   const [showLoginPopup, setShowLoginPopup] = useState(false); // Login popup state
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
 
   const [activeComponent, setActiveComponent] = useState<IconId>(
-    connecte ? "dashboard" : "competence"
+    isOnline ? "dashboard" : "competence"
   );
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 
   const handleIconClick = (componentId: IconId) => {
     // Prevent navigation if not logged in (except for "competence")
-    if (!connecte && componentId !== "competence") {
+    if (!isOnline && componentId !== "competence") {
       setShowLoginPopup(true);
       return;
     }
@@ -72,7 +72,7 @@ const Layout = () => {
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
             onIconClick={handleIconClick}
-            defaultSelected={connecte ? "dashboard" : "competence"}
+            defaultSelected={isOnline ? "dashboard" : "competence"}
             horizontal={isSidebarHorizontal}
             setHorizontal={setIsSidebarHorizontal}
           />
@@ -88,11 +88,11 @@ const Layout = () => {
             <KProfile onClose={handleCloseKProfile} />
           )}
 
-          {/* If connecte is false, always show Oportunite */}
-          {activeComponent === "competence" && !connecte && <Oportunite />}
+          {/* If isOnline is false, always show Oportunite */}
+          {activeComponent === "competence" && !isOnline && <Oportunite />}
 
-          {/* If connecte is true, switch between JobOpportunities and JobOpportunities2 */}
-          {activeComponent === "competence" && connecte && (
+          {/* If isOnline is true, switch between JobOpportunities and JobOpportunities2 */}
+          {activeComponent === "competence" && isOnline && (
             showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
           )}
 
@@ -101,7 +101,7 @@ const Layout = () => {
             <div className="flex flex-col gap-4">
               {/* <Contacts onClose={() => setActiveComponent(null)} /> */}
               <Contacts />
-              <JobOpportunities2 />
+              {/* <JobOpportunities2 /> */}
             </div>
           )}
 

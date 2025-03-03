@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import { FileText, Award, X } from "lucide-react";
 import ContactsList from "./ContactsList";
 import Cooptation from "./Cooptation";
@@ -12,7 +11,27 @@ const ROLES = { CONTACT: "DEFAULT", COOPTATION: "SPONSOR" }
 const Contacts = () => {
   const [activeTab, setActiveTab] = useState("contacts");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [contacts, setContacts] = useState([]);
+  interface Contact {
+    ID: number,
+    user_id: string;
+    first_name: string,
+    last_name: string,
+    gender: string,
+    phone: string,
+    email: string,
+    company: string,
+    occupation: string,
+    role: string,
+    nb_curr_opportunity: null;
+    nb_done_opportunity: null;
+    nb_days: null;
+    note: any;
+    favorite: boolean;
+    created_at: string;
+    updated_at: string;
+  }
+
+  const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -27,39 +46,48 @@ const Contacts = () => {
     note: null
   });
 
-  const currentRole = activeTab === "contacts" ? ROLES.CONTACT : ROLES.COOPTATION;
+  // Filtered contacts based on active tab
+  const filteredContacts = allContacts.filter(contact =>
+    contact.role === (activeTab === "contacts" ? ROLES.CONTACT : ROLES.COOPTATION)
+  );
 
-  const fetchContacts = async () => {
+  const fetchAllContacts = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/${currentRole}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts`,
         { headers: getAuthHeader() }
       );
-      setContacts(response.data);
+      setAllContacts(response.data);
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      console.error("Error fetching all contacts:", error);
     }
   };
 
   useEffect(() => {
-    fetchContacts();
-  }, [activeTab]);
+    fetchAllContacts();
+  }, []);
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (['nb_curr_opportunity', 'nb_days', 'nb_done_opportunity'].includes(name)) {
+      const numericValue = value === '' ? null : Number(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: numericValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-
-    // Remove null values from the request
     const requestData: { [key: string]: any } = {
       ...formData,
-      contact_role: currentRole
+      contact_role: activeTab === "contacts" ? ROLES.CONTACT : ROLES.COOPTATION
     };
 
     Object.keys(requestData).forEach(key => {
@@ -76,7 +104,7 @@ const Contacts = () => {
       );
 
       setIsModalOpen(false);
-      fetchContacts();
+      fetchAllContacts();
       setFormData({
         first_name: "",
         last_name: "",
@@ -93,6 +121,14 @@ const Contacts = () => {
     } catch (error) {
       console.error("Error adding contact:", error);
     }
+  };
+
+  const handleContactDeleted = () => {
+    fetchAllContacts();
+  };
+
+  const handleContactUpdated = () => {
+    fetchAllContacts();
   };
 
   return (
@@ -138,9 +174,17 @@ const Contacts = () => {
         {/* Content */}
         <div className="p-4 shadow-lg rounded-lg">
           {activeTab === "contacts" ? (
-            <ContactsList contacts={contacts} onContactDeleted={fetchContacts} />
+            <ContactsList
+              contacts={filteredContacts}
+              onContactDeleted={handleContactDeleted}
+              onContactUpdated={handleContactUpdated}
+            />
           ) : (
-            <Cooptation contacts={contacts} onContactDeleted={fetchContacts} />
+            <Cooptation
+              contacts={filteredContacts}
+              onContactDeleted={handleContactDeleted}
+              onContactUpdated={handleContactUpdated}
+            />
           )}
         </div>
       </div>
