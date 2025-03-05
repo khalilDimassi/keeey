@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Search, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuthHeader } from "../../utils/jwt";
 
 
@@ -9,56 +9,56 @@ interface Quality {
   name: string
 }
 
-const Qualites = ({ data }: { data: Quality[] }) => {
+const Qualites = ({ data, onDataUpdated }: { data: Quality[], onDataUpdated: () => void }) => {
   const [qualities, setQualities] = useState<Quality[]>(data ?? []);
   const [newQuality, setNewQuality] = useState<Quality>({
     id: 0,
     name: "",
   });
 
+  useEffect(() => {
+    setQualities(data ?? []);
+  }, [data]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNewQuality({ ...newQuality, [e.target.name]: e.target.value });
+    const { value } = e.target as HTMLInputElement;
+    setNewQuality(prev => ({
+      ...prev,
+      name: value
+    }));
   };
 
   const handleSubmit = async () => {
     try {
-      const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`;
-      const response = await axios.put(url, newQuality, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/quality`,
+        newQuality,
+        { headers: { "Content-Type": "application/json", ...getAuthHeader() } }
+      );
 
-      if (response.status === 200) {
-        const updatedQuality = response.data;
-        setQualities((prevQualities) => {
-          const existingIndex = prevQualities.findIndex((t) => t.id === updatedQuality.id);
-          if (existingIndex !== -1) {
-            return prevQualities.map((t) => (t.id === updatedQuality.id ? updatedQuality : t));
-          }
-          return [...prevQualities, updatedQuality];
-        });
-
-        setNewQuality({ id: 0, name: "" });
-      }
+      setNewQuality({ id: 0, name: "" });
+      onDataUpdated();
     } catch (error) {
-      console.error("Error submitting certification:", error);
+      console.error("Error submitting quality:", error);
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/quality`,
+        { id },
+        { headers: { "Content-Type": "application/json", ...getAuthHeader() } }
+      );
 
-      setQualities((prev) => prev.filter((t) => t.id !== id));
+      onDataUpdated();
     } catch (error) {
-      console.error("Error deleting certification:", error);
+      console.error("Error deleting quality:", error);
     }
   };
 
   return (
     <div className="p-4 grid gap-2">
-      {/* Champ de saisie avec icône Search */}
       <label className="block text-sm font-medium text-gray-700">
         Qualité
       </label>

@@ -21,12 +21,7 @@ interface PersonalData {
   description: string;
 }
 
-interface PersonalDataProps {
-  personalData: PersonalData;
-  onDataUpdated: () => void;
-}
-
-const PersonalInfo = ({ personalData, onDataUpdated }: PersonalDataProps) => {
+const PersonalInfo = ({ personalData, onDataUpdated }: { personalData: PersonalData, onDataUpdated: () => void }) => {
   const [formData, setFormData] = useState<PersonalData>({
     first_name: "",
     last_name: "",
@@ -99,7 +94,7 @@ const PersonalInfo = ({ personalData, onDataUpdated }: PersonalDataProps) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': getAuthHeader().Authorization,
+            ...getAuthHeader()
           },
         }
       );

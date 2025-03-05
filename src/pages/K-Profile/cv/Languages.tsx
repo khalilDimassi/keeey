@@ -9,13 +9,8 @@ interface Language {
   level: number;
 }
 
-interface LanguagesProps {
-  data: Language[];
-  onDataUpdated: () => void;
-}
 
-
-const Languages = ({ data, onDataUpdated }: LanguagesProps) => {
+const Languages = ({ data, onDataUpdated }: { data: Language[], onDataUpdated: () => void }) => {
   const [niveau, setNiveau] = useState<number>(50);
   const [languages, setLanguages] = useState<Language[]>(data ?? []);
   const [newLanguage, setNewLanguage] = useState<Language>({
@@ -70,7 +65,7 @@ const Languages = ({ data, onDataUpdated }: LanguagesProps) => {
     try {
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/language`,
-        { language_id: id },
+        { id },
         {
           headers: {
             "Content-Type": "application/json",

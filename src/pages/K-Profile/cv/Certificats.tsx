@@ -1,87 +1,120 @@
 import axios from "axios";
-import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Pencil, Trash, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getAuthHeader } from "../../utils/jwt";
 
-// Définition du type Certificat
 interface Cert {
   id: number
   name: string
   description: string
   started_at: string
   ended_at: string
+  present: boolean
 }
 
-const Certificat = ({ data }: { data: Cert[] }) => {
-  const [isPermanent, setIsPermanent] = useState(false);
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    month: 'long',
+    year: 'numeric'
+  });
+};
+
+const Certificat = ({ data, onDataUpdated }: { data: Cert[], onDataUpdated: () => void }) => {
   const [certifications, setCertifications] = useState<Cert[]>(data ?? []);
+  const [expandedCertificationId, setExpandedCertificationId] = useState<number | null>(null);
   const [newCertification, setNewCertification] = useState<Cert>({
     id: 0,
     name: "",
     description: "",
     started_at: "",
     ended_at: "",
+    present: false,
   });
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    setCertifications(data ?? []);
+  }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNewCertification({ ...newCertification, [e.target.name]: e.target.value });
-  };
-
-  const handlePermanentToggle = () => {
-    setIsPermanent(!isPermanent);
-    setNewCertification((prev) => ({
+    const { name, value, type, checked } = e.target as HTMLInputElement;
+    setNewCertification(prev => ({
       ...prev,
-      ended_at: !isPermanent ? "" : prev.ended_at,
+      [name === 'nom' ? 'name' :
+        name === 'description' ? 'description' :
+          name === 'dateObtention' ? 'started_at' :
+            name === 'expiration' ? 'ended_at' :
+              name === 'permanent' ? 'present' :
+                name]:
+        type === 'checkbox' ? checked : value
     }));
   };
 
   const handleSubmit = async () => {
     try {
-      const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`;
-      const response = await axios.put(url, newCertification, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`,
+        isEditing ? newCertification : { ...newCertification, id: 0 },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeader()
+          },
+        }
+      );
+
+      setNewCertification({
+        id: 0,
+        name: "",
+        description: "",
+        started_at: "",
+        ended_at: "",
+        present: false
       });
-
-      if (response.status === 200) {
-        const updatedCertification = response.data;
-        setCertifications((prevCertifications) => {
-          const existingIndex = prevCertifications.findIndex((t) => t.id === updatedCertification.id);
-          if (existingIndex !== -1) {
-            return prevCertifications.map((t) => (t.id === updatedCertification.id ? updatedCertification : t));
-          }
-          return [...prevCertifications, updatedCertification];
-        });
-
-        setNewCertification({ id: 0, name: "", description: "", started_at: "", ended_at: "" });
-      }
+      setIsEditing(false);
+      onDataUpdated();
     } catch (error) {
       console.error("Error submitting certification:", error);
     }
   };
 
   const handleUpdate = (certification: Cert) => {
-    setNewCertification(certification);
+    setNewCertification({
+      ...certification,
+      present: !certification.ended_at
+    });
+    setIsEditing(true);
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
-
-      setCertifications((prev) => prev.filter((t) => t.id !== id));
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`,
+        { id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeader()
+          }
+        }
+      );
+      onDataUpdated();
     } catch (error) {
       console.error("Error deleting certification:", error);
     }
   };
 
+  const toggleCertificationExpand = (id: number) => {
+    setExpandedCertificationId(prev => prev === id ? null : id);
+  };
+
   return (
     <div className="space-y-4">
-      <div className="border border-gray-200 rounded-md p-4">
-        <h3 className="font-medium mb-2">{newCertification.id === 0 ? "Ajouter une certificat" : "Modifier la certificat"}</h3>
+      <div className="p-4">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nom du certificat</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Nom du certificat</label>
             <input
               type="text"
               name="nom"
@@ -91,33 +124,9 @@ const Certificat = ({ data }: { data: Cert[] }) => {
               className="w-full px-3 py-2 border border-gray-200 rounded-md"
             />
           </div>
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Organisme</label>
-              <input
-                type="text"
-                name="organisme"
-                // value={currentCertificat.organisme}
-                onChange={handleChange}
-                placeholder="Nom de l'organisme"
-                className="w-full px-3 py-2 border border-gray-200 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Ville</label>
-              <input
-                type="text"
-                name="ville"
-                // value={newCertification.}
-                onChange={handleChange}
-                placeholder="Ville"
-                className="w-full px-3 py-2 border border-gray-200 rounded-md"
-              />
-            </div>
-          </div> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date d'obtention</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Date d'obtention</label>
               <input
                 type="date"
                 name="dateObtention"
@@ -126,29 +135,31 @@ const Certificat = ({ data }: { data: Cert[] }) => {
                 className="w-full px-3 py-2 border border-gray-200 rounded-md"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Date d'expiration</label>
-              <input
-                type="date"
-                name="expiration"
-                value={newCertification.ended_at}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-200 rounded-md"
-              />
-            </div>
+            {!newCertification.present && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Date d'expiration</label>
+                <input
+                  type="date"
+                  name="expiration"
+                  value={newCertification.ended_at}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md"
+                />
+              </div>
+            )}
           </div>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               name="permanent"
-              checked={isPermanent}
-              onChange={handlePermanentToggle}
+              checked={newCertification.present}
+              onChange={handleChange}
               className="text-teal-600"
             />
             <span>Certificat permanent</span>
           </label>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Description</label>
             <textarea
               name="description"
               value={newCertification.description}
@@ -159,31 +170,64 @@ const Certificat = ({ data }: { data: Cert[] }) => {
           </div>
           <button
             onClick={handleSubmit}
-            className="bg-gray-100 text-green px-4 py-2 rounded-md hover:bg-teal-700 w-full"
+            className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
           >
-            {newCertification.id === 0 ? "Enregistrer" : "Mettre à jour"}
+            {isEditing ? 'Mettre à jour' : 'Enregistrer'}
           </button>
         </div>
       </div>
 
-      {/* Liste des certificats enregistrés */}
       <div className="space-y-2">
-        {certifications.map((certificat, index) => (
-          <div key={index} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
-            <div>
-              <p className="font-medium">{certificat.name}</p>
-              <p className="text-sm text-gray-500">
-                {certificat.started_at}
-              </p>
+        {certifications.map((certification) => (
+          <div key={certification.id} className="border border-gray-200 rounded-md">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleCertificationExpand(certification.id);
+              }}
+              className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <span className="font-medium">{certification.name}</span>
+              <div className="flex gap-2 items-center">
+                {expandedCertificationId === certification.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdate(certification);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <Pencil size={18} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(certification.id);
+                  }}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <Trash size={18} />
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button className="text-blue-500 hover:text-blue-700" onClick={() => handleUpdate(certificat)}>
-                <Pencil size={18} />
-              </button>
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(certificat.id)}>
-                <Trash2 size={18} />
-              </button>
-            </div>
+            {expandedCertificationId === certification.id && (
+              <div className="p-3 bg-gray-50 border-t border-gray-200">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 font-semibold">Période</p>
+                    <p>
+                      {formatDate(certification.started_at)} - {!certification.ended_at ? 'Présent' : formatDate(certification.ended_at)}
+                    </p>
+                  </div>
+                </div>
+                {certification.description && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 font-semibold">Description</p>
+                    <p className="text-gray-800">{certification.description}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
