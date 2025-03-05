@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { saveToken } from "../utils/jwt";
+import { saveToken } from "../../utils/jwt";
 import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -40,7 +40,7 @@ const LoginPage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
-        <img src={logo} alt="Keeey Logo" className="w-48 object-contain" onClick={() => navigate("/")}/>
+        <img src={logo} alt="Keeey Logo" className="w-48 object-contain" onClick={() => navigate("/")} />
       </motion.div>
       <motion.div
         className="relative w-full bg-white p-6 shadow-lg rounded-2xl"

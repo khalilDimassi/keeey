@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut } from "lucide-react";
-import { getAuthHeader, isAuthenticated, removeToken } from "../utils/jwt";
+import { getAuthHeader, isAuthenticated, removeToken } from "../../utils/jwt";
 import axios from "axios";
 
 const Navbar = () => {
@@ -57,11 +57,10 @@ const Navbar = () => {
       {/* Right Side: Button */}
       <button
         onClick={CreateAccountClick}
-        className={`${
-          authenticated
+        className={`${authenticated
             ? "bg-gray-600 hover:bg-gray-800"
             : "bg-teal-700 hover:bg-teal-900"
-        } text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all duration-200 ease-in-out transform hover:scale-105`}
+          } text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all duration-200 ease-in-out transform hover:scale-105`}
       >
         {authenticated ? <LogOut size={18} /> : <UserPlus size={18} />}
         <span className="font-medium">

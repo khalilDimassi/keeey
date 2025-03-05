@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 import axios from "axios";
 
 interface Training {

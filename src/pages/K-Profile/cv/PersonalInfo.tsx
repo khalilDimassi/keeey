@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Save, Upload } from "lucide-react";
 import axios from "axios";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 
 interface PersonalData {
   first_name: string;

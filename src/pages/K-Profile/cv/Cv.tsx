@@ -1,6 +1,6 @@
 import { ChevronDown, Download, FileText, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 import axios from "axios";
 // Components
 import Experience from "./Experience";

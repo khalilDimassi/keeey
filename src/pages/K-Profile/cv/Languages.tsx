@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 
 interface Language {
   id: number;

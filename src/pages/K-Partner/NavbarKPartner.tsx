@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import logo from "../assets/logoKeeePartner.svg"
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut } from "lucide-react";
-import { getAuthHeader, isAuthenticated, removeToken } from "../utils/jwt";
+import { getAuthHeader, isAuthenticated, removeToken } from "../../utils/jwt";
 import axios from "axios";
 
 const NavbarKPartner = () => {
@@ -46,16 +46,16 @@ const NavbarKPartner = () => {
       </div>
 
       {/* Center: Profile Name */}
-      <div className="text-blue-600 font-semibold" style={{color:"rgb(145, 116, 44)"}}>
+      <div className="text-blue-600 font-semibold" style={{ color: "rgb(145, 116, 44)" }}>
         {userName ? userName : "K-Profile"}{" "}
-        <span className="text-gray-500" style={{color:" #A58E56"}}>{userName ? "" : "(Guest)"} </span>
+        <span className="text-gray-500" style={{ color: " #A58E56" }}>{userName ? "" : "(Guest)"} </span>
       </div>
 
       {/* Right Side: Button */}
       <button
         onClick={CreateAccountClick}
         className={`${authenticated ? "bg-gray-500 hover:bg-gray-600" : "bg-blue-800 hover:bg-blue-700"
-          } text-white px-4 py-2 rounded-lg flex items-center`} style={{background:" #A58E56"}}
+          } text-white px-4 py-2 rounded-lg flex items-center`} style={{ background: " #A58E56" }}
       >
         {authenticated ? <LogOut className="mr-2" /> : <UserPlus className="mr-2" />}
         {authenticated ? "Déconnecter" : "Créer un compte"}

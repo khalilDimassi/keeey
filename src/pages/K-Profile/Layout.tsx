@@ -11,7 +11,7 @@ import JobOpportunities from "./JobOpportunities";
 import Dashboard from "./Dashboard";
 import MissionsTable from "./MissionsTable";
 import Login from "./Login"; // Import the login popup component
-import { isAuthenticated } from "../utils/jwt";
+import { isAuthenticated } from "../../utils/jwt";
 
 type IconId =
   | "dashboard"

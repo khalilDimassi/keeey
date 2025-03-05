@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Pencil, Trash, ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 
 interface Project {
   id: number

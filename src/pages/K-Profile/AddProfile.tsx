@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { saveToken } from "../utils/jwt";
+import { saveToken } from "../../utils/jwt";
 import { motion } from "framer-motion";
 
 const AddProfile = () => {
