@@ -1,23 +1,32 @@
 import axios from "axios";
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuthHeader } from "../../utils/jwt";
 
-// Type pour les langues ajoutées
 interface Language {
-  language_id: number;
+  id: number;
   name: string;
   level: number;
 }
 
-const Languages = ({ data }: { data: Language[] }) => {
+interface LanguagesProps {
+  data: Language[];
+  onDataUpdated: () => void;
+}
+
+
+const Languages = ({ data, onDataUpdated }: LanguagesProps) => {
   const [niveau, setNiveau] = useState<number>(50);
   const [languages, setLanguages] = useState<Language[]>(data ?? []);
   const [newLanguage, setNewLanguage] = useState<Language>({
-    language_id: 0,
+    id: 0,
     name: "",
-    level: 50,
+    level: 40,
   });
+
+  useEffect(() => {
+    setLanguages(data ?? []);
+  }, [data]);
 
   const niveauTexte = (level: number) => {
     if (level <= 20) return "Débutant";
@@ -48,32 +57,20 @@ const Languages = ({ data }: { data: Language[] }) => {
       });
 
       if (response.status === 200) {
-        const updatedLanguage = response.data;
-        setLanguages((prevLanguages) => {
-          const existingIndex = prevLanguages.findIndex(
-            (t) => t.language_id === updatedLanguage.language_id
-          );
-          if (existingIndex !== -1) {
-            return prevLanguages.map((t) =>
-              t.language_id === updatedLanguage.language_id ? updatedLanguage : t
-            );
-          }
-          return [...prevLanguages, updatedLanguage];
-        });
-
-        setNewLanguage({ language_id: 0, name: "", level: 50 });
+        setNewLanguage({ id: 0, name: "", level: 50 });
         setNiveau(50);
       }
+      onDataUpdated();
     } catch (error) {
       console.error("Error submitting language:", error);
     }
   };
 
-  const handleDelete = async (language_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/language`,
-        { language_id, name: null },
+        { language_id: id },
         {
           headers: {
             "Content-Type": "application/json",
@@ -81,8 +78,7 @@ const Languages = ({ data }: { data: Language[] }) => {
           },
         }
       );
-
-      setLanguages((prev) => prev.filter((t) => t.language_id !== language_id));
+      onDataUpdated();
     } catch (error) {
       console.error("Error deleting language:", error);
     }
@@ -128,14 +124,14 @@ const Languages = ({ data }: { data: Language[] }) => {
       <div className="space-y-2">
         {languages.map((lang) => (
           <div
-            key={lang.language_id}
+            key={lang.id}
             className="flex justify-between items-center border p-2 rounded-md bg-gray-50"
           >
             <span className="text-gray-700">
               {lang.name} - {niveauTexte(lang.level)}
             </span>
             <button
-              onClick={() => handleDelete(lang.language_id)}
+              onClick={() => handleDelete(lang.id)}
               className="text-red-500 hover:text-red-700"
             >
               <Trash2 size={18} />

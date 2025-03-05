@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getAuthHeader } from "../../utils/jwt";
 
 interface Exp {
-  experience_id: number
+  id: number
   title: string
   description: string
   employer: string
@@ -17,7 +17,7 @@ const Experience = ({ data }: { data: Exp[] }) => {
   const [isPresent, setIsPresent] = useState(false);
   const [experiences, setExperiences] = useState<Exp[]>(data ?? []);
   const [newExperience, setNewExperience] = useState<Exp>({
-    experience_id: 0,
+    id: 0,
     title: "",
     description: "",
     employer: "",
@@ -52,18 +52,18 @@ const Experience = ({ data }: { data: Exp[] }) => {
         const updatedExperience = response.data;
         setExperiences((prevExperiences) => {
           const existingIndex = prevExperiences.findIndex(
-            (t) => t.experience_id === updatedExperience.experience_id
+            (t) => t.id === updatedExperience.id
           );
           if (existingIndex !== -1) {
             return prevExperiences.map((t) =>
-              t.experience_id === updatedExperience.experience_id ? updatedExperience : t
+              t.id === updatedExperience.id ? updatedExperience : t
             );
           }
           return [...prevExperiences, updatedExperience];
         });
 
         setNewExperience({
-          experience_id: 0,
+          id: 0,
           title: "",
           description: "",
           employer: "",
@@ -83,11 +83,11 @@ const Experience = ({ data }: { data: Exp[] }) => {
     setIsPresent(experience.ended_at === ""); // If ended_at is empty, check the "present" checkbox
   };
 
-  const handleDelete = async (experience_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/experience`,
-        { experience_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null },
+        { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null },
         {
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const Experience = ({ data }: { data: Exp[] }) => {
         }
       );
 
-      setExperiences((prev) => prev.filter((t) => t.experience_id !== experience_id));
+      setExperiences((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("Error deleting experience:", error);
     }
@@ -106,7 +106,7 @@ const Experience = ({ data }: { data: Exp[] }) => {
   return (
     <div className="space-y-4">
       <div className=" p-4">
-       
+
         <div className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="title" className="mb-1 text-gray-600">Nom du poste</label>
@@ -192,20 +192,20 @@ const Experience = ({ data }: { data: Exp[] }) => {
             onClick={handleSubmit}
             className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
           >
-            {newExperience.experience_id === 0 ? "Enregistrer" : "Mettre à jour"}
+            {newExperience.id === 0 ? "Enregistrer" : "Mettre à jour"}
           </button>
         </div>
       </div>
 
       <div className="space-y-2">
         {experiences.map((experience) => (
-          <div key={experience.experience_id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
+          <div key={experience.id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
             <span>{experience.title}</span>
             <div className="flex gap-2">
               <button className="text-gray-500 hover:text-gray-700" onClick={() => handleUpdate(experience)}>
                 <Pencil size={18} />
               </button>
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(experience.experience_id)}>
+              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(experience.id)}>
                 <Trash size={18} />
               </button>
             </div>

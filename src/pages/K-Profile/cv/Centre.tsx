@@ -5,14 +5,14 @@ import { Trash2 } from "lucide-react";
 
 
 interface Interest {
-  interest_id: number
+  id: number
   name: string
 }
 
 const Centre = ({ data }: { data: Interest[] }) => {
   const [interests, setInterests] = useState<Interest[]>(data ?? []);
   const [newInterest, setNewInterest] = useState<Interest>({
-    interest_id: 0,
+    id: 0,
     name: "",
   });
 
@@ -30,27 +30,27 @@ const Centre = ({ data }: { data: Interest[] }) => {
       if (response.status === 200) {
         const updatedInterest = response.data;
         setInterests((prevInterests) => {
-          const existingIndex = prevInterests.findIndex((t) => t.interest_id === updatedInterest.interest_id);
+          const existingIndex = prevInterests.findIndex((t) => t.id === updatedInterest.id);
           if (existingIndex !== -1) {
-            return prevInterests.map((t) => (t.interest_id === updatedInterest.interest_id ? updatedInterest : t));
+            return prevInterests.map((t) => (t.id === updatedInterest.id ? updatedInterest : t));
           }
           return [...prevInterests, updatedInterest];
         });
 
-        setNewInterest({ interest_id: 0, name: "" });
+        setNewInterest({ id: 0, name: "" });
       }
     } catch (error) {
       console.error("Error submitting certification:", error);
     }
   };
 
-  const handleDelete = async (interest_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { interest_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
         headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
       });
 
-      setInterests((prev) => prev.filter((t) => t.interest_id !== interest_id));
+      setInterests((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("Error deleting certification:", error);
     }
@@ -82,12 +82,12 @@ const Centre = ({ data }: { data: Interest[] }) => {
       {/* Liste des certificats enregistrés */}
       <div className="space-y-2">
         {interests.map((interest) => (
-          <div key={interest.interest_id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
+          <div key={interest.id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
             <div>
               <p className="font-medium">{interest.name}</p>
             </div>
             <div className="flex gap-2">
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(interest.interest_id)}>
+              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(interest.id)}>
                 <Trash2 size={18} />
               </button>
             </div>

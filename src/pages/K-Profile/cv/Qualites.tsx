@@ -5,14 +5,14 @@ import { getAuthHeader } from "../../utils/jwt";
 
 
 interface Quality {
-  quality_id: number
+  id: number
   name: string
 }
 
 const Qualites = ({ data }: { data: Quality[] }) => {
   const [qualities, setQualities] = useState<Quality[]>(data ?? []);
   const [newQuality, setNewQuality] = useState<Quality>({
-    quality_id: 0,
+    id: 0,
     name: "",
   });
 
@@ -30,27 +30,27 @@ const Qualites = ({ data }: { data: Quality[] }) => {
       if (response.status === 200) {
         const updatedQuality = response.data;
         setQualities((prevQualities) => {
-          const existingIndex = prevQualities.findIndex((t) => t.quality_id === updatedQuality.quality_id);
+          const existingIndex = prevQualities.findIndex((t) => t.id === updatedQuality.id);
           if (existingIndex !== -1) {
-            return prevQualities.map((t) => (t.quality_id === updatedQuality.quality_id ? updatedQuality : t));
+            return prevQualities.map((t) => (t.id === updatedQuality.id ? updatedQuality : t));
           }
           return [...prevQualities, updatedQuality];
         });
 
-        setNewQuality({ quality_id: 0, name: "" });
+        setNewQuality({ id: 0, name: "" });
       }
     } catch (error) {
       console.error("Error submitting certification:", error);
     }
   };
 
-  const handleDelete = async (quality_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { quality_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
         headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
       });
 
-      setQualities((prev) => prev.filter((t) => t.quality_id !== quality_id));
+      setQualities((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("Error deleting certification:", error);
     }
@@ -82,12 +82,12 @@ const Qualites = ({ data }: { data: Quality[] }) => {
       <div className="space-y-2">
         {qualities.map((qual) => (
           <div
-            key={qual.quality_id}
+            key={qual.id}
             className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md bg-gray-100"
           >
             <span>{qual.name}</span>
             <button
-              onClick={() => handleDelete(qual.quality_id)}
+              onClick={() => handleDelete(qual.id)}
               className="text-red-500 hover:text-red-700"
             >
               <Trash size={18} />

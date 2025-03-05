@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Upload } from "lucide-react";
+import { Save, Upload } from "lucide-react";
+import axios from "axios";
+import { getAuthHeader } from "../../utils/jwt";
 
 interface PersonalData {
   first_name: string;
@@ -16,10 +18,15 @@ interface PersonalData {
   driving_permit: string;
   nationality: string;
   linked_in: string;
+  description: string;
 }
 
-const PersonalInfo = ({ data }: { data: PersonalData }) => {
-  console.log("Data from parent:", data); // Debugging
+interface PersonalDataProps {
+  personalData: PersonalData;
+  onDataUpdated: () => void;
+}
+
+const PersonalInfo = ({ personalData, onDataUpdated }: PersonalDataProps) => {
   const [formData, setFormData] = useState<PersonalData>({
     first_name: "",
     last_name: "",
@@ -35,23 +42,80 @@ const PersonalInfo = ({ data }: { data: PersonalData }) => {
     driving_permit: "",
     nationality: "",
     linked_in: "",
+    description: "",
   });
 
+  const [changedFields, setChangedFields] = useState<Partial<PersonalData>>({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   useEffect(() => {
-    if (data) {
-      setFormData(data);
+    if (personalData) {
+      setFormData(personalData);
     }
-  }, [data]);
+  }, [personalData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === "radio" ? (checked ? value : formData.gender) : value;
+
+    // Track changes compared to original data
+    const key = name as keyof PersonalData;
+    const originalValue = personalData[key];
+
     setFormData({
       ...formData,
-      [name]: type === "radio" ? (checked ? value : formData.gender) : value,
+      [key]: newValue,
     });
+
+    // Only add to changedFields if the value is different from original
+    if (newValue !== originalValue) {
+      setChangedFields(prev => ({
+        ...prev,
+        [key]: newValue
+      }));
+    } else {
+      // Type-safe removal of field
+      setChangedFields(prev => {
+        const newChangedFields = { ...prev };
+        delete newChangedFields[key];
+        return newChangedFields;
+      });
+    }
   };
 
-  if (!data) {
+  const handleSave = async () => {
+    if (Object.keys(changedFields).length === 0) {
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/personal/v2`,
+        changedFields,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': getAuthHeader().Authorization,
+          },
+        }
+      );
+
+      // Reset changed fields after successful save
+      setChangedFields({});
+      onDataUpdated();
+    } catch (error) {
+      console.error("Error saving personal data:", error);
+      setSaveError("Erreur lors de la sauvegarde des informations personnelles");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (personalData === null) {
     return <div className="text-gray-500">Chargement des informations personnelles...</div>;
   }
 
@@ -222,6 +286,24 @@ const PersonalInfo = ({ data }: { data: PersonalData }) => {
         onChange={handleChange}
         className="w-full px-3 py-2 border border-gray-200 rounded-md"
       />
+      {/* Save Button */}
+      <div className="mt-4 flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors disabled:opacity-50"
+        >
+          <Save size={20} />
+          {isSaving ? 'Sauvegarde en cours...' : 'Sauvegarder'}
+        </button>
+      </div>
+
+      {/* Error Message */}
+      {saveError && (
+        <div className="mt-2 text-red-500 text-sm">
+          {saveError}
+        </div>
+      )}
     </div>
   );
 };

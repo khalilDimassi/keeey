@@ -5,7 +5,7 @@ import { getAuthHeader } from "../../utils/jwt";
 
 // Définition du type Certificat
 interface Cert {
-  certification_id: number
+  id: number
   name: string
   description: string
   started_at: string
@@ -16,7 +16,7 @@ const Certificat = ({ data }: { data: Cert[] }) => {
   const [isPermanent, setIsPermanent] = useState(false);
   const [certifications, setCertifications] = useState<Cert[]>(data ?? []);
   const [newCertification, setNewCertification] = useState<Cert>({
-    certification_id: 0,
+    id: 0,
     name: "",
     description: "",
     started_at: "",
@@ -45,14 +45,14 @@ const Certificat = ({ data }: { data: Cert[] }) => {
       if (response.status === 200) {
         const updatedCertification = response.data;
         setCertifications((prevCertifications) => {
-          const existingIndex = prevCertifications.findIndex((t) => t.certification_id === updatedCertification.certification_id);
+          const existingIndex = prevCertifications.findIndex((t) => t.id === updatedCertification.id);
           if (existingIndex !== -1) {
-            return prevCertifications.map((t) => (t.certification_id === updatedCertification.certification_id ? updatedCertification : t));
+            return prevCertifications.map((t) => (t.id === updatedCertification.id ? updatedCertification : t));
           }
           return [...prevCertifications, updatedCertification];
         });
 
-        setNewCertification({ certification_id: 0, name: "", description: "", started_at: "", ended_at: "" });
+        setNewCertification({ id: 0, name: "", description: "", started_at: "", ended_at: "" });
       }
     } catch (error) {
       console.error("Error submitting certification:", error);
@@ -63,13 +63,13 @@ const Certificat = ({ data }: { data: Cert[] }) => {
     setNewCertification(certification);
   };
 
-  const handleDelete = async (certification_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { certification_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
         headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
       });
 
-      setCertifications((prev) => prev.filter((t) => t.certification_id !== certification_id));
+      setCertifications((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("Error deleting certification:", error);
     }
@@ -78,7 +78,7 @@ const Certificat = ({ data }: { data: Cert[] }) => {
   return (
     <div className="space-y-4">
       <div className="border border-gray-200 rounded-md p-4">
-        <h3 className="font-medium mb-2">{newCertification.certification_id === 0 ? "Ajouter une certificat" : "Modifier la certificat"}</h3>
+        <h3 className="font-medium mb-2">{newCertification.id === 0 ? "Ajouter une certificat" : "Modifier la certificat"}</h3>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Nom du certificat</label>
@@ -161,7 +161,7 @@ const Certificat = ({ data }: { data: Cert[] }) => {
             onClick={handleSubmit}
             className="bg-gray-100 text-green px-4 py-2 rounded-md hover:bg-teal-700 w-full"
           >
-            {newCertification.certification_id === 0 ? "Enregistrer" : "Mettre à jour"}
+            {newCertification.id === 0 ? "Enregistrer" : "Mettre à jour"}
           </button>
         </div>
       </div>
@@ -180,7 +180,7 @@ const Certificat = ({ data }: { data: Cert[] }) => {
               <button className="text-blue-500 hover:text-blue-700" onClick={() => handleUpdate(certificat)}>
                 <Pencil size={18} />
               </button>
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(certificat.certification_id)}>
+              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(certificat.id)}>
                 <Trash2 size={18} />
               </button>
             </div>

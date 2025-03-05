@@ -3,49 +3,144 @@ import { Trash } from "lucide-react";
 import { useState } from "react";
 import { getAuthHeader } from "../../utils/jwt";
 
+import { Button } from "../../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 
 interface Skill {
-  SkillID: number
-  Name: string
-  Jobs: [] | null
+  id: number;
+  name: string;
+  seniority: number;
 }
 
+interface Job {
+  id: number;
+  name: string;
+  skills: Skill[];
+}
 
-const Competences = ({ data }: { data: Skill[] }) => {
-  const [skills, setSkills] = useState<Skill[]>(data ?? []);
+interface Sector {
+  id: number;
+  name: string;
+  jobs: Job[];
+}
 
-  const handleDelete = async (skill_id: number) => {
+interface CompetencesProps {
+  data: Sector[];
+  onDataDeleted: () => void;
+}
+
+const getSkillLevel = (seniority: number): string => {
+  if (seniority <= 33) return "Beginner";
+  if (seniority <= 66) return "Intermediate";
+  return "Master";
+};
+
+const getSkillLevelColor = (level: string): string => {
+  switch (level) {
+    case "Beginner": return "text-blue-600";
+    case "Intermediate": return "text-green-600";
+    case "Master": return "text-red-600";
+    default: return "text-gray-600";
+  }
+};
+
+const Competences = ({ data, onDataDeleted }: CompetencesProps) => {
+  const [sectors, setSectors] = useState<Sector[]>(data ?? []);
+
+  const handleDeleteSkill = async (skillName: string) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill`, { skill_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
+      // Prepare the new list of skills to keep
+      const remainingSkills = sectors.flatMap(sector =>
+        sector.jobs.flatMap(job =>
+          job.skills
+            .filter(skill => skill.name !== skillName)
+            .map(skill => skill.name)
+        )
+      );
 
-      setSkills((prev) => prev.filter((t) => t.SkillID !== skill_id));
+      // Send delete request
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill/v2`,
+        { skills: remainingSkills },
+        { headers: getAuthHeader() }
+      );
+
+      // Update local state by removing the skill
+      const updatedSectors = sectors.map(sector => ({
+        ...sector,
+        jobs: sector.jobs.map(job => ({
+          ...job,
+          skills: job.skills.filter(skill => skill.name !== skillName)
+        }))
+      }));
+
+      setSectors(updatedSectors);
+      onDataDeleted();
     } catch (error) {
       console.error("Error deleting skill:", error);
+      // Optional: Add error handling UI
     }
   };
 
   return (
-    <div className="p-4 grid gap-2">
-      {/* Liste des compétences */}
-      <div className="space-y-2">
-        {skills.map((skill) => (
-          <div
-            key={skill.SkillID}
-            className="flex justify-between items-center border border-gray-300 px-4 py-2 rounded-md bg-gray-100"
-          >
-            <span>{skill.Name}</span>
-            <button
-              onClick={() => handleDelete(skill.SkillID)}
-              className="text-red-500 hover:text-red-700"
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-gray-800">Skill Competency</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Accordion type="multiple" className="space-y-2">
+          {sectors.map((sector) => (
+            <AccordionItem
+              key={sector.id}
+              value={`sector-${sector.id}`}
+              className="border border-gray-200 rounded-md"
             >
-              <Trash size={18} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
+              <AccordionTrigger className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors">
+                <span className="text-lg font-semibold text-gray-700">{sector.name}</span>
+              </AccordionTrigger>
+              <AccordionContent className="p-2">
+                {sector.jobs.map((job) => (
+                  <div
+                    key={job.id}
+                    className="bg-white shadow-sm rounded-md mb-2 p-3"
+                  >
+                    <div className="font-medium text-gray-600 mb-2">{job.name}</div>
+                    <div className="space-y-1">
+                      {job.skills.map((skill) => {
+                        const skillLevel = getSkillLevel(skill.seniority);
+                        const levelColor = getSkillLevelColor(skillLevel);
+                        return (
+                          <div
+                            key={skill.id}
+                            className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-sm"
+                          >
+                            <div className="flex items-center">
+                              <span className="mr-2">{skill.name}</span>
+                              <span className={`text-sm ${levelColor}`}>
+                                ({skillLevel})
+                              </span>
+                            </div>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => handleDeleteSkill(skill.name)}
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </CardContent>
+    </Card>
   );
 }
 

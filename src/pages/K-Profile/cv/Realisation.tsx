@@ -5,7 +5,7 @@ import { Pencil, Trash } from "lucide-react";
 
 
 interface Project {
-  project_id: number
+  id: number
   name: string
   description: string
 }
@@ -13,7 +13,7 @@ interface Project {
 const Realisation = ({ data }: { data: Project[] }) => {
   const [projects, setProjects] = useState<Project[]>(data ?? []);
   const [newProject, setNewProject] = useState<Project>({
-    project_id: 0,
+    id: 0,
     name: "",
     description: "",
   });
@@ -32,14 +32,14 @@ const Realisation = ({ data }: { data: Project[] }) => {
       if (response.status === 200) {
         const updatedProject = response.data;
         setProjects((prevProjects) => {
-          const existingIndex = prevProjects.findIndex((t) => t.project_id === updatedProject.project_id);
+          const existingIndex = prevProjects.findIndex((t) => t.id === updatedProject.id);
           if (existingIndex !== -1) {
-            return prevProjects.map((t) => (t.project_id === updatedProject.project_id ? updatedProject : t));
+            return prevProjects.map((t) => (t.id === updatedProject.id ? updatedProject : t));
           }
           return [...prevProjects, updatedProject];
         });
 
-        setNewProject({ project_id: 0, name: "", description: "" });
+        setNewProject({ id: 0, name: "", description: "" });
       }
     } catch (error) {
       console.error("Error submitting project:", error);
@@ -50,13 +50,13 @@ const Realisation = ({ data }: { data: Project[] }) => {
     setNewProject(project);
   };
 
-  const handleDelete = async (project_id: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/project`, { project_id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/project`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
         headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
       });
 
-      setProjects((prev) => prev.filter((t) => t.project_id !== project_id));
+      setProjects((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       console.error("Error deleting project:", error);
     }
@@ -76,14 +76,14 @@ const Realisation = ({ data }: { data: Project[] }) => {
         className="w-full p-2 border border-gray-300 rounded-md"
         placeholder="Describe your realisation here..."
       ></textarea>
-      <button onClick={handleSubmit} className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">{newProject.project_id === 0 ? "Enregistrer" : "Mettre à jour"}</button>
+      <button onClick={handleSubmit} className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">{newProject.id === 0 ? "Enregistrer" : "Mettre à jour"}</button>
       <div className="mt-4">
         {projects.map((project) => (
-          <div key={project.project_id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
+          <div key={project.id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">
             <span>{project.name}</span>
             <div className="flex gap-2">
               <button className="text-gray-500 hover:text-gray-700" onClick={() => handleUpdate(project)}><Pencil size={18} /></button>
-              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(project.project_id)}><Trash size={18} /></button>
+              <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(project.id)}><Trash size={18} /></button>
             </div>
           </div>
         ))}

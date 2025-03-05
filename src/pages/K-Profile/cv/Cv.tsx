@@ -1,114 +1,7 @@
-import { BrainCircuit, ChevronDown, Download, FileText, Menu, Pencil, Trash } from "lucide-react";
+import { ChevronDown, Download, FileText, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { MdBookmark } from 'react-icons/md';
 import { getAuthHeader } from "../../utils/jwt";
-import { resolveMotionValue } from "framer-motion";
 import axios from "axios";
-
-interface ResumeData {
-  personalData: PersonalData
-  profile: Profile
-  trainings: Training[]
-  experiences: Experience[]
-  certifications: Certificat[]
-  interests: Interest[]
-  skills: Skill[]
-  projects: Project[]
-  qualities: Quality[]
-  languages: Language[]
-  authorizations: Authorization[]
-  tools: Tool[]
-}
-
-interface PersonalData {
-  first_name: string
-  last_name: string
-  title: string
-  email: string
-  phone: string
-  gender: string
-  street: string
-  zip_code: string
-  city: string
-  birthdate: string
-  birthplace: string
-  driving_permit: string
-  nationality: string
-  linked_in: string
-  img: string
-}
-
-interface Profile {
-  description: string
-}
-
-interface Training {
-  training_id: number
-  name: string
-  description: string
-  organization: string
-  city: string
-  started_at: string
-  ended_at: string
-  present: boolean
-}
-
-interface Experience {
-  experience_id: number
-  title: string
-  description: string
-  employer: string
-  city: string
-  started_at: string
-  ended_at: string
-}
-
-interface Language {
-  language_id: number
-  name: string
-  level: number
-}
-
-interface Interest {
-  interest_id: number
-  name: string
-}
-
-interface Skill {
-  SkillID: number
-  Name: string
-  Jobs: [] | null
-}
-
-interface Certificat {
-  certification_id: number
-  name: string
-  description: string
-  started_at: string
-  ended_at: string
-}
-
-interface Quality {
-  quality_id: number
-  name: string
-}
-
-interface Project {
-  project_id: number
-  name: string
-  description: string
-}
-
-interface Authorization {
-  authorization_id: number
-  name: string
-}
-
-interface Tool {
-  tool_id: number
-  name: string
-}
-
 // Components
 import Experience from "./Experience";
 import Profil from "./Profile";
@@ -120,6 +13,94 @@ import Competences from "./Competences";
 import Realisation from "./Realisation";
 import Qualites from "./Qualites";
 import Formation from "./Formation";
+
+interface ResumeData {
+  personalInfo: PersonalData;
+  trainings: {
+    id: number;
+    name: string;
+    description: string;
+    organization: string;
+    city: string;
+    started_at: string;
+    ended_at: string;
+    present: boolean;
+  }[];
+  experiences: {
+    id: number;
+    title: string;
+    description: string;
+    employer: string;
+    city: string;
+    started_at: string;
+    ended_at: string;
+  }[];
+  certifications: {
+    id: number;
+    name: string;
+    description: string;
+    started_at: string;
+    ended_at: string;
+  }[];
+  interests: {
+    id: number;
+    name: string;
+  }[];
+  sectors: {
+    id: number;
+    name: string;
+    jobs: {
+      id: number;
+      name: string;
+      skills: {
+        id: number;
+        name: string;
+        seniority: number;
+      }[];
+    }[];
+  }[];
+  projects: {
+    id: number;
+    name: string;
+    description: string;
+  }[];
+  qualities: {
+    id: number;
+    name: string;
+  }[];
+  languages: {
+    id: number;
+    name: string;
+    level: number;
+  }[];
+  authorizations: {
+    id: number;
+    name: string;
+  }[];
+  tools: {
+    id: number;
+    name: string;
+  }[];
+}
+
+interface PersonalData {
+  first_name: string
+  last_name: string
+  title: string
+  email: string
+  phone: string
+  gender: string
+  img: string
+  street: string
+  zip_code: string
+  city: string
+  birthdate: string
+  birthplace: string
+  driving_permit: string
+  nationality: string
+  linked_in: string
+  description: string
+}
 
 function Cv() {
   const [activeSection, setActiveSection] = useState("Informations personnelles");
@@ -144,88 +125,92 @@ function Cv() {
     "Autorisations",
   ];
 
+  const fetchResumeData = async () => {
+    try {
+      const [resumeResponse] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/v2`, {
+          headers: getAuthHeader(),
+        })
+      ]);
+
+      const resumeData = resumeResponse.data;
+      setResumeData({
+        personalInfo: {
+          first_name: resumeData.personal_info.first_name || '',
+          last_name: resumeData.personal_info.last_name || '',
+          title: resumeData.personal_info.title || '',
+          email: resumeData.personal_info.email || '',
+          phone: resumeData.personal_info.phone || '',
+          gender: resumeData.personal_info.gender || '',
+          img: resumeData.personal_info.img || '',
+          street: resumeData.personal_info.street || '',
+          zip_code: resumeData.personal_info.zip_code || '',
+          city: resumeData.personal_info.city || '',
+          birthdate: resumeData.personal_info.birthdate || '',
+          birthplace: resumeData.personal_info.birthplace || '',
+          driving_permit: resumeData.personal_info.driving_permit || '',
+          nationality: resumeData.personal_info.nationality || '',
+          linked_in: resumeData.personal_info.linked_in || '',
+          description: resumeData.personal_info.description || '',
+        },
+        trainings: resumeData.trainings || [],
+        experiences: resumeData.experiences || [],
+        certifications: resumeData.certifications || [],
+        interests: resumeData.interests || [],
+        sectors: resumeData.sectors || [],
+        projects: resumeData.projects || [],
+        qualities: resumeData.qualities || [],
+        languages: resumeData.languages || [],
+        authorizations: resumeData.authorizations || [],
+        tools: resumeData.tools || [],
+      });
+    } catch (error) {
+      setError(error);
+      console.error('Error fetching resume data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch personal data when the component mounts
   useEffect(() => {
-    const fetchResumeData = async () => {
-      try {
-        const [resumeResponse, personalResponse] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume`, {
-            headers: getAuthHeader(),
-          }),
-          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/personal`, {
-            headers: getAuthHeader(),
-          }),
-        ]);
-
-        const resumeData = resumeResponse.data;
-        const personalData = personalResponse.data;
-        setResumeData({
-          personalData: {
-            first_name: personalData.first_name || resumeData.first_name,
-            last_name: personalData.last_name || resumeData.last_name,
-            title: personalData.title || resumeData.title,
-            email: personalData.email || resumeData.email,
-            phone: personalData.phone || resumeData.phone,
-            gender: personalData.gender || resumeData.gender,
-            street: personalData.street || resumeData.street,
-            zip_code: personalData.zip_code || resumeData.zip_code,
-            city: personalData.city || resumeData.city,
-            birthdate: personalData.birthdate || resumeData.birthdate,
-            birthplace: personalData.birthplace || resumeData.birthplace,
-            driving_permit: personalData.driving_permit || resumeData.driving_permit,
-            nationality: personalData.nationality || resumeData.nationality,
-            linked_in: personalData.linked_in || resumeData.linkedin,
-            img: personalData.img,
-          },
-          profile: { description: resumeData.profile_description },
-          trainings: resumeData.trainings,
-          experiences: resumeData.experiences,
-          certifications: resumeData.certifications,
-          interests: resumeData.interests,
-          skills: resumeData.skills,
-          projects: resumeData.projects,
-          qualities: resumeData.qualities,
-          languages: resumeData.languages,
-          authorizations: resumeData.authorizations,
-          tools: resumeData.tools,
-        });
-      } catch (error) {
-        setError(error);
-        console.error('Error fetching resume data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchResumeData();
   }, []);
 
+  const handleDataUpdated = () => {
+    fetchResumeData();
+  };
+
   const renderSection = () => {
+    if (resumeData === null || !resumeData) {
+      return <div className="text-gray-500">Chargement de resume...</div>;
+    }
+
     switch (activeSection) {
       case "Informations personnelles":
-        return <PersonalInfo data={resumeData?.personalData ?? { first_name: '', last_name: '', title: '', email: '', phone: '', gender: '', street: '', zip_code: '', city: '', birthdate: '', birthplace: '', driving_permit: '', nationality: '', linked_in: '', img: '' }} />;
+        return <PersonalInfo personalData={resumeData.personalInfo} onDataUpdated={handleDataUpdated} />;
       case "Profil":
-        return <Profil data={resumeData?.profile ?? { description: '' }} />;
+        return <Profil data={resumeData.personalInfo.description} onDataUpdated={handleDataUpdated} />;
       case "Formations":
-        return <Formation data={resumeData?.trainings ?? []} />;
+        return <Formation data={resumeData.trainings} />;
       case "Expérience professionnelle":
-        return <Experience data={resumeData?.experiences ?? []} />;
+        return <Experience data={resumeData.experiences} />;
       case "Certificats":
-        return <Certificats data={resumeData?.certifications ?? []} />;
+        return <Certificats data={resumeData.certifications} />;
       case "Centre d'intérêt":
-        return <Centre data={resumeData?.interests ?? []} />;
+        return <Centre data={resumeData.interests} />;
       case "Compétences":
-        return <Competences data={resumeData?.skills ?? []} />;
+        return <Competences data={resumeData.sectors} onDataDeleted={handleDataUpdated} />;
       case "Réalisations":
-        return <Realisation data={resumeData?.projects ?? []} />;
+        return <Realisation data={resumeData.projects} />;
       case "Qualités":
-        return <Qualites data={resumeData?.qualities ?? []} />;
+        return <Qualites data={resumeData.qualities} />;
       case "Langue":
-        return <Languages data={resumeData?.languages ?? []} />;
+        return <Languages data={resumeData.languages} onDataUpdated={handleDataUpdated} />;
       // case "Outils":
-      //   return <Outils data={resumeData?.tools ?? []} />;
+      //   return <Outils data={resumeData.tools} />;
       // case "Autorisations":
-      //   return <Authorizations data={resumeData?.authorizations ?? []} />;
+      //   return <Authorizations data={resumeData.authorizations} />;
 
       default:
         return <div className="text-gray-500">Section en construction...</div>;

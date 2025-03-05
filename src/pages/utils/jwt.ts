@@ -28,5 +28,5 @@ export const isAuthenticated = (): boolean => {
 // Utility to get the Authorization header
 export const getAuthHeader = () => {
     const token = getToken();
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
 };
