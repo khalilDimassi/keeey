@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
@@ -25,10 +25,6 @@ interface Sector {
   jobs: Job[];
 }
 
-interface CompetencesProps {
-  data: Sector[];
-  onDataDeleted: () => void;
-}
 
 const getSkillLevel = (seniority: number): string => {
   if (seniority <= 33) return "Beginner";
@@ -45,7 +41,7 @@ const getSkillLevelColor = (level: string): string => {
   }
 };
 
-const Competences = ({ data, onDataDeleted }: CompetencesProps) => {
+const Competences = ({ data, onDataDeleted }: { data: Sector[], onDataDeleted: () => void }) => {
   const [sectors, setSectors] = useState<Sector[]>(data ?? []);
 
   const handleDeleteSkill = async (skillName: string) => {

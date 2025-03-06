@@ -4,7 +4,7 @@ import axios from "axios";
 import { FaGoogle, FaApple, FaFacebook } from "react-icons/fa";
 import { ArrowLeft } from "lucide-react";
 import logo from "../assets/logoKeeePlayer.svg";
-import { saveToken } from "../utils/jwt";
+import { saveToken } from "../../utils/jwt";
 import { motion } from "framer-motion";
 
 const LoginPageKPlayer = () => {
@@ -34,14 +34,14 @@ const LoginPageKPlayer = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-2 bg-gray-50">
-    <motion.div
-      className="absolute top-6 left-1/2 transform -translate-x-1/2"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 2 }}
-    >
-      <img src={logo} alt="Keeey Logo" className="w-48 object-contain" onClick={() => navigate("/")}/>
-    </motion.div>
+      <motion.div
+        className="absolute top-6 left-1/2 transform -translate-x-1/2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+      >
+        <img src={logo} alt="Keeey Logo" className="w-48 object-contain" onClick={() => navigate("/")} />
+      </motion.div>
 
       <motion.div
         className="relative w-full bg-white p-6 shadow-lg"
@@ -53,7 +53,7 @@ const LoginPageKPlayer = () => {
         <button onClick={() => navigate("/")} className="text-gray-600 hover:text-gray-800">
           <ArrowLeft size={20} />
         </button>
-       
+
         <h2 className="text-center text-sm font-bold text-gray-700 mb-2">
           Connectez-vous à votre compte K-Player
         </h2>
@@ -64,12 +64,12 @@ const LoginPageKPlayer = () => {
           <div>
             <label className="block text-gray-600 text-xs">Email</label>
             <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-sm"
-         />
+            />
           </div>
           <div>
             <label className="block text-gray-600 text-xs">Mot de passe</label>
             <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-sm"
-         />
+            />
           </div>
           {error && <p className="text-red-500 text-xs text-center mt-1">{error}</p>}
           <button className="w-full flex items-center justify-center gap-2 p-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 transition text-xs">Se connecter</button>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FileText, Award, X } from "lucide-react";
 import ContactsList from "./ContactsList";
 import Cooptation from "./Cooptation";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 import axios from "axios";
 
 const GENDERS = ["Mr.", "Madame", "Autre"]

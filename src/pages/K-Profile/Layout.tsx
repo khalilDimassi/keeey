@@ -4,7 +4,6 @@ import Sidebar from "./Sidebar";
 import Profile from "./ProfileAfterLogin/ProfilePage";
 import KProfile from "./beforlogin/KProfile";
 import Oportunite from "./beforlogin/Oportunite";
-import JobOpportunities2 from "./JobOpportunities2";
 import Cv from "./cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
@@ -12,7 +11,7 @@ import JobOpportunities from "./JobOpportunities";
 import Dashboard from "./Dashboard";
 import MissionsTable from "./MissionsTable";
 import Login from "./Login"; // Import the login popup component
-import { isAuthenticated } from "../utils/jwt";
+import { isAuthenticated } from "../../utils/jwt";
 
 type IconId =
   | "dashboard"
@@ -93,7 +92,8 @@ const Layout = () => {
 
           {/* If isOnline is true, switch between JobOpportunities and JobOpportunities2 */}
           {activeComponent === "competence" && isOnline && (
-            showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
+            <JobOpportunities />
+            // showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
           )}
 
           {/* Show Contacts & JobOpportunities2 when "contact" is selected */}

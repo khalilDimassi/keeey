@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { useEffect, useState } from "react";
+import { getAuthHeader } from "../../../utils/jwt";
 import { Trash2 } from "lucide-react";
 
 
@@ -9,50 +9,52 @@ interface Interest {
   name: string
 }
 
-const Centre = ({ data }: { data: Interest[] }) => {
+const Centre = ({ data, onDataUpdated }: { data: Interest[], onDataUpdated: () => void }) => {
   const [interests, setInterests] = useState<Interest[]>(data ?? []);
   const [newInterest, setNewInterest] = useState<Interest>({
     id: 0,
     name: "",
   });
 
+  useEffect(() => {
+    setInterests(data ?? []);
+  }, [data]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNewInterest({ ...newInterest, [e.target.name]: e.target.value });
+    const { value } = e.target as HTMLInputElement;
+    setNewInterest(prev => ({
+      ...prev,
+      name: value
+    }));
   };
 
   const handleSubmit = async () => {
     try {
-      const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`;
-      const response = await axios.put(url, newInterest, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
+      console.log(newInterest)
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/interest`,
+        newInterest,
+        { headers: { "Content-Type": "application/json", ...getAuthHeader() } }
+      );
 
-      if (response.status === 200) {
-        const updatedInterest = response.data;
-        setInterests((prevInterests) => {
-          const existingIndex = prevInterests.findIndex((t) => t.id === updatedInterest.id);
-          if (existingIndex !== -1) {
-            return prevInterests.map((t) => (t.id === updatedInterest.id ? updatedInterest : t));
-          }
-          return [...prevInterests, updatedInterest];
-        });
-
-        setNewInterest({ id: 0, name: "" });
-      }
+      setNewInterest({ id: 0, name: "" })
+      onDataUpdated()
     } catch (error) {
-      console.error("Error submitting certification:", error);
+      console.error("Error submitting interest:", error);
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/certification`, { id, name: null, description: null, organization: null, city: null, started_at: null, ended_at: null }, {
-        headers: { "Content-Type": "application/json", "Authorization": getAuthHeader().Authorization },
-      });
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/interest`,
+        { id },
+        { headers: { "Content-Type": "application/json", ...getAuthHeader() } }
+      );
 
-      setInterests((prev) => prev.filter((t) => t.id !== id));
+      onDataUpdated()
     } catch (error) {
-      console.error("Error deleting certification:", error);
+      console.error("Error deleting interest:", error);
     }
   };
 
@@ -79,7 +81,7 @@ const Centre = ({ data }: { data: Interest[] }) => {
         </button>
       </div>
 
-      {/* Liste des certificats enregistrés */}
+      {/* Liste des centres d'intérêt enregistrés */}
       <div className="space-y-2">
         {interests.map((interest) => (
           <div key={interest.id} className="flex justify-between items-center border border-gray-200 p-3 rounded-md">

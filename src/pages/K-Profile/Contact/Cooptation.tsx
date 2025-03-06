@@ -1,6 +1,6 @@
 import { Star, Trash2 } from "lucide-react";
 import axios from "axios";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 import { useState, useEffect } from "react";
 
 interface Contact {

@@ -1,6 +1,6 @@
 import { ChevronDown, Download, FileText, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+import { getAuthHeader } from "../../../utils/jwt";
 import axios from "axios";
 // Components
 import Experience from "./Experience";
@@ -36,6 +36,7 @@ interface ResumeData {
     city: string;
     started_at: string;
     ended_at: string;
+    present: boolean;
   }[];
   certifications: {
     id: number;
@@ -43,6 +44,7 @@ interface ResumeData {
     description: string;
     started_at: string;
     ended_at: string;
+    present: boolean;
   }[];
   interests: {
     id: number;
@@ -194,19 +196,19 @@ function Cv() {
       case "Profil":
         return <Profil data={resumeData.personalInfo.description} onDataUpdated={handleDataUpdated} />;
       case "Formations":
-        return <Formation data={resumeData.trainings} />;
+        return <Formation data={resumeData.trainings} onDataUpdated={handleDataUpdated} />;
       case "Expérience professionnelle":
-        return <Experience data={resumeData.experiences} />;
+        return <Experience data={resumeData.experiences} onDataUpdated={handleDataUpdated} />;
       case "Certificats":
-        return <Certificats data={resumeData.certifications} />;
+        return <Certificats data={resumeData.certifications} onDataUpdated={handleDataUpdated} />;
       case "Centre d'intérêt":
-        return <Centre data={resumeData.interests} />;
+        return <Centre data={resumeData.interests} onDataUpdated={handleDataUpdated} />;
       case "Compétences":
         return <Competences data={resumeData.sectors} onDataDeleted={handleDataUpdated} />;
       case "Réalisations":
-        return <Realisation data={resumeData.projects} />;
+        return <Realisation data={resumeData.projects} onDataUpdated={handleDataUpdated} />;
       case "Qualités":
-        return <Qualites data={resumeData.qualities} />;
+        return <Qualites data={resumeData.qualities} onDataUpdated={handleDataUpdated} />;
       case "Langue":
         return <Languages data={resumeData.languages} onDataUpdated={handleDataUpdated} />;
        case "Outils":

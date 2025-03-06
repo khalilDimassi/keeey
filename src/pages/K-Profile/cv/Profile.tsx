@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Edit, Trash2, Save } from 'lucide-react';
-import { getAuthHeader } from '../../utils/jwt';
+import { getAuthHeader } from '../../../utils/jwt';
 import { Button } from "../../../components/ui/button";
 
 const Profil = ({ data, onDataUpdated }: { data: string, onDataUpdated: () => void }) => {
