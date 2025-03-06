@@ -2,9 +2,10 @@ import logo from "../../assets/logo.svg";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { saveToken } from "../../utils/jwt";
+
 import { FaGoogle, FaApple, FaGithub } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { saveToken } from "../../../utils/jwt";
 
 const LoginPage = () => {
   const navigate = useNavigate();
