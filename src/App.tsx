@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
 
 
-import AddProfile from './pages/K-Profile/AddProfile';
-import LoginOptions from './pages/K-Profile/LoginOptions';
-import LoginPage from './pages/K-Profile/LoginPage';
+
+import LoginOptions from './pages/K-Profile/LoginPage_Option/LoginOptions';
+import LoginPage from './pages/K-Profile/LoginPage_Option/LoginPage';
 import Layout from './pages/K-Profile/Layout';
 
 
@@ -21,6 +21,9 @@ import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
 import CandidatesList from './pages/K-player/CandidatesList';
 import ProfilePage from './pages/K-player/Profile/ProfilePage';
+import LoginContainer from './pages/K-Profile/LoginPage_Option/LoginContainer';
+
+import AddProfile from './pages/K-Profile/LoginPage_Option/AddProfile';
 
 function App() {
   return (
@@ -45,8 +48,8 @@ function App() {
 
 
         <Route path="/Layout" element={<Layout />} />
-        <Route path="/LoginPage" element={<LoginPage />} />
-        <Route path="/LoginOptions" element={<LoginOptions />} />
+        <Route path="/Login" element={<LoginContainer />} />
+
         <Route path="/Register" element={<AddProfile />} />
 
       </Routes>

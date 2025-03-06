@@ -1,9 +1,9 @@
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 import axios from "axios";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { saveToken } from "../utils/jwt";
+import { saveToken } from "../../utils/jwt";
 import { motion } from "framer-motion";
 
 const AddProfile = () => {
@@ -79,7 +79,7 @@ const AddProfile = () => {
         }}
       >
         <div className="flex items-center mb-4">
-          <button onClick={() => navigate("/LoginOptions")} className="text-gray-600 hover:text-gray-800">
+          <button onClick={() => navigate("/Login")} className="text-gray-600 hover:text-gray-800">
             <ArrowLeft size={20} />
           </button>
           <h2 className="text-lg font-bold text-gray-700 flex-grow text-center">
@@ -175,8 +175,8 @@ const AddProfile = () => {
               type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full bg-green-800 text-white py-2 rounded-md hover:bg-green-700 transition"
-              style={{ borderRadius: "12px" }}
+              className="w-full text-white py-2 rounded-md hover:bg-green-700 transition"
+              style={{ borderRadius: "12px",background: "#307A7D" }}
             >
               Inscrivez-vous
             </motion.button>

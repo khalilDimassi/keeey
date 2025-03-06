@@ -9,7 +9,7 @@ interface Interest {
   name: string
 }
 
-const Outils = ({ data }: { data: Interest[] }) => {
+const Autorisations = ({ data }: { data: Interest[] }) => {
   const [interests, setInterests] = useState<Interest[]>(data ?? []);
   const [newInterest, setNewInterest] = useState<Interest>({
     id: 0,
@@ -66,7 +66,7 @@ const Outils = ({ data }: { data: Interest[] }) => {
           name="centre"
           value={newInterest.name}
           onChange={handleChange}
-          placeholder="Entrez un Outil"
+          placeholder="Entrez un Autorisation"
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
         />
         <button
@@ -96,4 +96,4 @@ const Outils = ({ data }: { data: Interest[] }) => {
   );
 };
 
-export default Outils;
+export default Autorisations;

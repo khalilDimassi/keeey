@@ -13,6 +13,8 @@ import Competences from "./Competences";
 import Realisation from "./Realisation";
 import Qualites from "./Qualites";
 import Formation from "./Formation";
+import Outils from "./Outils";
+import Autorisations from "./Autorisations";
 
 interface ResumeData {
   personalInfo: PersonalData;
@@ -207,10 +209,10 @@ function Cv() {
         return <Qualites data={resumeData.qualities} />;
       case "Langue":
         return <Languages data={resumeData.languages} onDataUpdated={handleDataUpdated} />;
-      // case "Outils":
-      //   return <Outils data={resumeData.tools} />;
-      // case "Autorisations":
-      //   return <Authorizations data={resumeData.authorizations} />;
+       case "Outils":
+       return <Outils data={resumeData.tools} />;
+       case "Autorisations":
+         return <Autorisations data={resumeData.authorizations} />;
 
       default:
         return <div className="text-gray-500">Section en construction...</div>;
@@ -245,7 +247,7 @@ function Cv() {
       <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}  >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column - Dynamic Content */}
-          <div className="lg:col-span-7 order-2 lg:order-1">
+          <div className="lg:col-span-8 order-1 lg:order-2">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">{activeSection}</h2>
@@ -256,7 +258,7 @@ function Cv() {
           </div>
 
           {/* Right Column - Navigation */}
-          <div className={`lg:col-span-5 order-1 lg:order-2 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
+          <div className={`lg:col-span-4 order-2 lg:order-1 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
             <div className="flex justify-center gap-4 mt-4 mb-4">
               <button className="bg-white text-teal-800 px-4 w-1/2 py-2 rounded-3xl border border-teal-800 hover:bg-gray-100">
                 Télécharger un CV existant

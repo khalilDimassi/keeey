@@ -17,7 +17,7 @@ const Navbar = () => {
       removeToken();
       navigate("/");
     } else {
-      navigate("/LoginPage");
+      navigate("/Login");
     }
   };
 
