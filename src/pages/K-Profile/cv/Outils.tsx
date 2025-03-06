@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
-import { getAuthHeader } from "../../utils/jwt";
+
 import { Trash2 } from "lucide-react";
+import { getAuthHeader } from "../../../utils/jwt";
 
 
 interface Interest {
