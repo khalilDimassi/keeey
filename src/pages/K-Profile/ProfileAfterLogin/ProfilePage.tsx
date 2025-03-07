@@ -4,20 +4,7 @@ import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
 import { getAuthHeader } from "../../../utils/jwt";
-interface Cooptation {
-  id: number;
-  name: string;
-  position: string;
-  company: string;
-}
-const cooptations: Cooptation[] = [
-  { id: 1, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-  { id: 2, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-  { id: 3, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-  { id: 4, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-  { id: 5, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-  { id: 6, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
-];
+import { ChevronRight, User } from "lucide-react";
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
     gender: "",
@@ -362,51 +349,49 @@ const Profile: React.FC = () => {
 
 
           <div className="flex gap-2 relative">
-  <button
-    style={{
-      boxShadow: activeForm === "cooptations"
-        ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
-        : "none"
-    }}
-    className={`px-8 py-3  font-medium transition-all relative ${
-      activeForm === "cooptations"
-        ? "text-gray-900 bg-white rounded-t-3xl z-10"
-        : "text-gray-400 bg-gray-100/50"
-    }`}
-    onClick={() => setActiveForm("cooptations")}
-  >
-    Mes cooptations
-  </button>
+            <button
+              style={{
+                boxShadow: activeForm === "cooptations"
+                  ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+                  : "none"
+              }}
+              className={`px-8 py-3  font-medium transition-all relative ${activeForm === "cooptations"
+                ? "text-gray-900 bg-white rounded-t-2xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
+              onClick={() => setActiveForm("cooptations")}
+            >
+              Mes cooptations
+            </button>
 
-  <button
-    style={{
-      boxShadow: activeForm === "references"
-        ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
-        : "none"
-    }}
-    className={`px-8 py-3 font-medium transition-all relative ${
-      activeForm === "references"
-        ? "text-gray-900 bg-white rounded-t-2xl z-10"
-        : "text-gray-400 bg-gray-100/50"
-    }`}
-    onClick={() => setActiveForm("references")}
-  >
-    Mes Références
-  </button>
-</div>
+            <button
+              style={{
+                boxShadow: activeForm === "references"
+                  ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+                  : "none"
+              }}
+              className={`px-8 py-3 font-medium transition-all relative ${activeForm === "references"
+                ? "text-gray-900 bg-white rounded-t-2xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
+              onClick={() => setActiveForm("references")}
+            >
+              Mes Références
+            </button>
+          </div>
 
 
 
 
 
           {/* Forms */}
-          <div  className="   w-full ">
+          <div className="   w-full ">
             {activeForm === "cooptations" && (
 
 
               <div
                 className="bg-white p-6   w-full md:w-full"
-                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"0px 20px 20px 20px"}}
+                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "0px 20px 20px 20px" }}
               >
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Mes cooptations</h2>
@@ -453,182 +438,202 @@ const Profile: React.FC = () => {
                     />
                   </label>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2 mb-2">
-  <label className="block">
-    Adresse mail
-    <input
-      name="email"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Adresse mail"
-      value={contactFormData.email}
-      onChange={handleChange}
-    />
-  </label>
-  <label className="block">
-    Numéro de téléphone
-    <div className="flex items-center space-x-2 mt-1">
-      <select className="p-3 border rounded bg-white">
-        <option>🇫🇷</option>
-        <option>🇬🇧</option>
-      </select>
-      <input
-        name="phone"
-        className="w-full p-3 border rounded"
-        placeholder="Numéro de téléphone"
-        value={contactFormData.phone}
-        onChange={handleChange}
-      />
-    </div>
-  </label>
-</div>
-
-                
-            
-<div className="grid grid-cols-2 gap-2 mb-2">
-  <label className="block">
-    Entreprise
-    <input
-      name="company"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Entreprise"
-      value={contactFormData.company}
-      onChange={handleChange}
-    />
-  </label>
-  <label className="block">
-    Fonction principale / Titre
-    <input
-      name="job_title"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Fonction principale / Titre"
-     // value={contactFormData.job_title}
-      onChange={handleChange}
-    />
-  </label>
-</div>
-
-                <h3 className="text-md font-semibold mt-4">Liste des références</h3>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {referrals.length === 0 ? (
-                    <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {referrals.map((referral) => (
-                        <div
-                          key={referral.ID}
-                          className="p-4 border rounded bg-gray-50 shadow cursor-pointer relative"
-                        >
-                          <div
-                            className="w-full h-full"
-                            onClick={() => handleCardClick(referral)}
-                          >
-                            <div>{`${referral.first_name} ${referral.last_name}`}</div>
-                            <div>{referral.company}</div>
-                          </div>
-                          <button
-                            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteReferral(referral.ID);
-                            }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
+                  <label className="block">
+                    Adresse mail
+                    <input
+                      name="email"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Adresse mail"
+                      value={contactFormData.email}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Numéro de téléphone
+                    <div className="flex items-center space-x-2 mt-1">
+                      <select className="p-3 border rounded bg-white">
+                        <option>🇫🇷</option>
+                        <option>🇬🇧</option>
+                      </select>
+                      <input
+                        name="phone"
+                        className="w-full p-3 border rounded"
+                        placeholder="Numéro de téléphone"
+                        value={contactFormData.phone}
+                        onChange={handleChange}
+                      />
                     </div>
-                  )}
+                  </label>
                 </div>
+
+
+
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <label className="block">
+                    Entreprise
+                    <input
+                      name="company"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Entreprise"
+                      value={contactFormData.company}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Fonction principale / Titre
+                    <input
+                      name="job_title"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Fonction principale / Titre"
+                      // value={contactFormData.job_title}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+
+                <div className=" p-6">
+                  <div className="max-w-3xl ">
+                    <div className="flex justify-between items-center mb-6">
+                      <h1 className="text-xl font-semibold text-gray-800">Liste des cooptations</h1>
+                      <button className="text-blue-600 hover:text-blue-800 flex items-center">
+                        Voir tout
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </button>
+                    </div>
+
+                    {referrals.length === 0 ? (
+                      <p><span role="img" aria-label="cute face">😊</span>Aucune cooptations trouvée pour le moment.</p>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" >
+                        {referrals.map((referral) => (
+                          <div
+                            key={referral.ID} onClick={() => handleCardClick(referral)}
+                            className="bg-white rounded-xl border shadow hover:shadow-md transition-shadow p-5 cursor-pointer relative"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center">
+                                <div className="bg-gray-100 p-2 rounded-full">
+                                  <User className="w-5 h-5 text-gray-600" />
+                                </div>
+                                <div className="ml-3">
+                                  <p className="text-sm text-gray-600">{`${referral.first_name} ${referral.last_name}`}</p>
+                                  <h3 className="font-medium text-gray-900">{referral.company}</h3>
+                                </div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-gray-400" />
+                            </div>
+                            <button
+                              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteReferral(referral.ID);
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+
+
 
                 {/* Referral Modal Popup */}
                 {selectedReferral && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-semibold">Détails de la référence</h3>
+                  <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ease-in-out">
+                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full border-l-4  transform transition-all duration-300 ease-in-out" style={{ borderColor: "#30797F" }}>
+                      <div className="flex justify-between items-center mb-5">
+                        <h3 className="text-xl font-semibold " style={{ color: "#30797F" }}>Détails de la cooptations</h3>
                         <button
                           onClick={() => setSelectedReferral(null)}
-                          className="text-gray-500 hover:text-gray-700"
+                          className="text-gray-500 hover:text-green-700 transition-colors duration-200"
+                          aria-label="Fermer"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                           </svg>
                         </button>
                       </div>
 
-                      <div className="space-y-3">
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Civilité</span>
-                          <span className="text-base">{selectedReferral.gender || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Prénom</span>
-                          <span className="text-base">{selectedReferral.first_name || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Nom</span>
-                          <span className="text-base">{selectedReferral.last_name || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Adresse e-mail</span>
-                          <span className="text-base">{selectedReferral.email || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                          <span className="text-base">{selectedReferral.phone || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Entreprise</span>
-                          <span className="text-base">{selectedReferral.company || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Profession</span>
-                          <span className="text-base">{selectedReferral.occupation || '-'}</span>
-                        </div>
-
-                        {selectedReferral.nb_curr_opportunity !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Opportunités en cours</span>
-                            <span className="text-base">{selectedReferral.nb_curr_opportunity}</span>
+                      <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-green-50 p-3 rounded-lg" >
+                            <span className="text-sm font-medium" style={{ color: "#30797F" }}>Civilité</span>
+                            <p className="text-base mt-1">{selectedReferral.gender || '-'}</p>
                           </div>
-                        )}
 
-                        {selectedReferral.nb_done_opportunity !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Opportunités terminées</span>
-                            <span className="text-base">{selectedReferral.nb_done_opportunity}</span>
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Prénom</span>
+                            <p className="text-base mt-1">{selectedReferral.first_name || '-'}</p>
                           </div>
-                        )}
 
-                        {selectedReferral.nb_days !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Nombre de jours</span>
-                            <span className="text-base">{selectedReferral.nb_days}</span>
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Nom</span>
+                            <p className="text-base mt-1">{selectedReferral.last_name || '-'}</p>
                           </div>
-                        )}
+
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Adresse e-mail</span>
+                            <p className="text-base mt-1 break-words">{selectedReferral.email || '-'}</p>
+                          </div>
+
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Numéro de téléphone</span>
+                            <p className="text-base mt-1">{selectedReferral.phone || '-'}</p>
+                          </div>
+
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Entreprise</span>
+                            <p className="text-base mt-1">{selectedReferral.company || '-'}</p>
+                          </div>
+
+                          <div className="bg-green-50 p-3 rounded-lg">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Profession</span>
+                            <p className="text-base mt-1">{selectedReferral.occupation || '-'}</p>
+                          </div>
+
+                          {selectedReferral.nb_curr_opportunity !== null && (
+                            <div className="bg-green-50 p-3 rounded-lg">
+                              <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Opportunités en cours</span>
+                              <p className="text-base mt-1">{selectedReferral.nb_curr_opportunity}</p>
+                            </div>
+                          )}
+
+                          {selectedReferral.nb_done_opportunity !== null && (
+                            <div className="bg-green-50 p-3 rounded-lg">
+                              <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Opportunités terminées</span>
+                              <p className="text-base mt-1">{selectedReferral.nb_done_opportunity}</p>
+                            </div>
+                          )}
+
+                          {selectedReferral.nb_days !== null && (
+                            <div className="bg-green-50 p-3 rounded-lg">
+                              <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Nombre de jours</span>
+                              <p className="text-base mt-1">{selectedReferral.nb_days}</p>
+                            </div>
+                          )}
+                        </div>
 
                         {selectedReferral.note && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Note</span>
-                            <span className="text-base">{selectedReferral.note}</span>
+                          <div className="bg-green-50 p-3 rounded-lg mt-4">
+                            <span className="text-sm text-green-600 font-medium" style={{ color: "#30797F" }}>Note</span>
+                            <p className="text-base mt-1 whitespace-pre-wrap">{selectedReferral.note}</p>
                           </div>
                         )}
                       </div>
 
                       <div className="mt-6 flex justify-end">
                         <button
-                          onClick={() => setSelectedReferral(null)}
-                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                          onClick={() => setSelectedReferral(null)} style={{ background: "#30797F" }}
+                          className=" hover:bg-green-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
                         >
                           Fermer
                         </button>
@@ -691,180 +696,242 @@ const Profile: React.FC = () => {
                   </label>
                 </div>
                 <div className="grid grid-cols-2 gap-2 mb-2">
-  <label className="block">
-    Adresse mail
-    <input
-      name="email"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Adresse mail"
-      value={contactFormData.email}
-      onChange={handleChange}
-    />
-  </label>
-  <label className="block">
-    Numéro de téléphone
-    <div className="flex items-center space-x-2 mt-1">
-      <select className="p-3 border rounded bg-white">
-        <option>🇫🇷</option>
-        <option>🇬🇧</option>
-      </select>
-      <input
-        name="phone"
-        className="w-full p-3 border rounded"
-        placeholder="Numéro de téléphone"
-        value={contactFormData.phone}
-        onChange={handleChange}
-      />
-    </div>
-  </label>
-</div>
-
-                
-            
-<div className="grid grid-cols-2 gap-2 mb-2">
-  <label className="block">
-    Entreprise
-    <input
-      name="company"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Entreprise"
-      value={contactFormData.company}
-      onChange={handleChange}
-    />
-  </label>
-  <label className="block">
-    Fonction principale / Titre
-    <input
-      name="job_title"
-      className="w-full p-3 border rounded mt-1"
-      placeholder="Fonction principale / Titre"
-     // value={contactFormData.job_title}
-      onChange={handleChange}
-    />
-  </label>
-</div>
-
-                <h3 className="text-md font-semibold mt-4">Liste des références</h3>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {referrals.length === 0 ? (
-                    <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {referrals.map((referral) => (
-                        <div
-                          key={referral.ID}
-                          className="p-4 border rounded bg-gray-50 shadow cursor-pointer relative"
-                        >
-                          <div
-                            className="w-full h-full"
-                            onClick={() => handleCardClick(referral)}
-                          >
-                            <div>{`${referral.first_name} ${referral.last_name}`}</div>
-                            <div>{referral.company}</div>
-                          </div>
-                          <button
-                            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteReferral(referral.ID);
-                            }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
+                  <label className="block">
+                    Adresse mail
+                    <input
+                      name="email"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Adresse mail"
+                      value={contactFormData.email}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Numéro de téléphone
+                    <div className="flex items-center space-x-2 mt-1">
+                      <select className="p-3 border rounded bg-white">
+                        <option>🇫🇷</option>
+                        <option>🇬🇧</option>
+                      </select>
+                      <input
+                        name="phone"
+                        className="w-full p-3 border rounded"
+                        placeholder="Numéro de téléphone"
+                        value={contactFormData.phone}
+                        onChange={handleChange}
+                      />
                     </div>
-                  )}
+                  </label>
                 </div>
+
+
+
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <label className="block">
+                    Entreprise
+                    <input
+                      name="company"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Entreprise"
+                      value={contactFormData.company}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Fonction principale / Titre
+                    <input
+                      name="job_title"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Fonction principale / Titre"
+                      // value={contactFormData.job_title}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+
+
+
+
+
+
+
+
+
+                <div className=" p-6">
+                  <div className="max-w-3xl ">
+                    <div className="flex justify-between items-center mb-6">
+                      <h1 className="text-xl font-semibold text-gray-800">Liste des Réferences</h1>
+                      <button className="text-blue-600 hover:text-blue-800 flex items-center">
+                        Voir tout
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </button>
+                    </div>
+
+                    {referrals.length === 0 ? (
+                      <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {referrals.map((referral) => (
+                          <div
+                          onClick={() => handleCardClick(referral)}
+                            key={referral.ID}
+                            className="bg-white rounded-xl border shadow hover:shadow-md transition-shadow p-5 cursor-pointer relative"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center">
+                                <div className="bg-gray-100 p-2 rounded-full">
+                                  <User className="w-5 h-5 text-gray-600" />
+                                </div>
+
+                                <div className="ml-3">
+                                  <p className="text-sm text-gray-600">{`${referral.first_name} ${referral.last_name}`}</p>
+                                  <h3 className="font-medium text-gray-900">{referral.company}</h3>
+                                </div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-gray-400" />
+                            </div>
+
+                            <button
+                              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteReferral(referral.ID);
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+
+
+
 
                 {/* Referral Modal Popup */}
                 {selectedReferral && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-semibold">Détails de la référence</h3>
-                        <button
-                          onClick={() => setSelectedReferral(null)}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                          </svg>
-                        </button>
+                  <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50 transition-all duration-300 ease-in-out">
+                    <div className="bg-white p-0 rounded-xl shadow-2xl max-w-md w-full overflow-hidden">
+                      {/* Header with gradient */}
+                      <div className="p-5 text-white" style={{ background: 'linear-gradient(to right,rgb(23, 43, 44),rgb(46, 167, 179))' }}>
+                      <div className="flex justify-between items-center">
+                          <h3 className="text-xl font-bold">Détails de la référence</h3>
+                          <button
+                            onClick={() => setSelectedReferral(null)}
+                            className="text-white hover:text-green-100 transition-colors duration-200"
+                            aria-label="Fermer"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Civilité</span>
-                          <span className="text-base">{selectedReferral.gender || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Prénom</span>
-                          <span className="text-base">{selectedReferral.first_name || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Nom</span>
-                          <span className="text-base">{selectedReferral.last_name || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Adresse e-mail</span>
-                          <span className="text-base">{selectedReferral.email || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                          <span className="text-base">{selectedReferral.phone || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Entreprise</span>
-                          <span className="text-base">{selectedReferral.company || '-'}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-sm text-gray-600">Profession</span>
-                          <span className="text-base">{selectedReferral.occupation || '-'}</span>
-                        </div>
-
-                        {selectedReferral.nb_curr_opportunity !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Opportunités en cours</span>
-                            <span className="text-base">{selectedReferral.nb_curr_opportunity}</span>
+                      {/* Content area with drop shadow at top */}
+                      <div className="p-6 shadow-inner max-h-96 overflow-y-auto">
+                        <div className="space-y-4">
+                          {/* Personal information section */}
+                          <div className="mb-6">
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations personnelles</h4>
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Civilité</span>
+                                <p className="font-medium mt-1">{selectedReferral.gender || '-'}</p>
+                              </div>
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Prénom</span>
+                                <p className="font-medium mt-1">{selectedReferral.first_name || '-'}</p>
+                              </div>
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Nom</span>
+                                <p className="font-medium mt-1">{selectedReferral.last_name || '-'}</p>
+                              </div>
+                            </div>
                           </div>
-                        )}
 
-                        {selectedReferral.nb_done_opportunity !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Opportunités terminées</span>
-                            <span className="text-base">{selectedReferral.nb_done_opportunity}</span>
+                          {/* Contact information section */}
+                          <div className="mb-6">
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Contact</h4>
+                            <div className="space-y-4">
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Adresse e-mail</span>
+                                <p className="font-medium mt-1 break-words">{selectedReferral.email || '-'}</p>
+                              </div>
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Numéro de téléphone</span>
+                                <p className="font-medium mt-1">{selectedReferral.phone || '-'}</p>
+                              </div>
+                            </div>
                           </div>
-                        )}
 
-                        {selectedReferral.nb_days !== null && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Nombre de jours</span>
-                            <span className="text-base">{selectedReferral.nb_days}</span>
+                          {/* Professional information section */}
+                          <div className="mb-6">
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations professionnelles</h4>
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Entreprise</span>
+                                <p className="font-medium mt-1">{selectedReferral.company || '-'}</p>
+                              </div>
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-gray-500">Profession</span>
+                                <p className="font-medium mt-1">{selectedReferral.occupation || '-'}</p>
+                              </div>
+                            </div>
                           </div>
-                        )}
 
-                        {selectedReferral.note && (
-                          <div className="flex flex-col">
-                            <span className="text-sm text-gray-600">Note</span>
-                            <span className="text-base">{selectedReferral.note}</span>
-                          </div>
-                        )}
+                          {/* Opportunities section - only shown if at least one opportunity field exists */}
+                          {(selectedReferral.nb_curr_opportunity !== null ||
+                            selectedReferral.nb_done_opportunity !== null ||
+                            selectedReferral.nb_days !== null) && (
+                              <div className="mb-6">
+                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Opportunités</h4>
+                                <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                                  {selectedReferral.nb_curr_opportunity !== null && (
+                                    <div>
+                                      <span className="text-xs uppercase tracking-wider text-gray-500">En cours</span>
+                                      <p className="font-medium mt-1">{selectedReferral.nb_curr_opportunity}</p>
+                                    </div>
+                                  )}
+                                  {selectedReferral.nb_done_opportunity !== null && (
+                                    <div>
+                                      <span className="text-xs uppercase tracking-wider text-gray-500">Terminées</span>
+                                      <p className="font-medium mt-1">{selectedReferral.nb_done_opportunity}</p>
+                                    </div>
+                                  )}
+                                  {selectedReferral.nb_days !== null && (
+                                    <div>
+                                      <span className="text-xs uppercase tracking-wider text-gray-500">Nombre de jours</span>
+                                      <p className="font-medium mt-1">{selectedReferral.nb_days}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                          {/* Notes section - only shown if notes exist */}
+                          {selectedReferral.note && (
+                            <div>
+                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Notes</h4>
+                              <div className="bg-green-50 p-3 rounded-lg">
+                                <p className="text-base whitespace-pre-wrap">{selectedReferral.note}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="mt-6 flex justify-end">
+                      {/* Footer with action button */}
+                      <div className="bg-gray-50 p-4 flex justify-end border-t border-gray-100">
                         <button
-                          onClick={() => setSelectedReferral(null)}
-                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                          onClick={() => setSelectedReferral(null)}style={{background:"#30797F"}}
+                          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-xl transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-md"
                         >
                           Fermer
                         </button>
