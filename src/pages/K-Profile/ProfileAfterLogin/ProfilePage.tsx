@@ -4,7 +4,20 @@ import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
 import { getAuthHeader } from "../../../utils/jwt";
-
+interface Cooptation {
+  id: number;
+  name: string;
+  position: string;
+  company: string;
+}
+const cooptations: Cooptation[] = [
+  { id: 1, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+  { id: 2, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+  { id: 3, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+  { id: 4, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+  { id: 5, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+  { id: 6, name: 'nom et prenom', position: 'Web Designer', company: 'DIGIWEB' },
+];
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
     gender: "",
@@ -195,6 +208,7 @@ const Profile: React.FC = () => {
       }
     }
   };
+  const [activeForm, setActiveForm] = useState("cooptations"); // Default form
 
   return (
     <div className="p-1 space-y-6 min-h-screen w-full " >
@@ -207,7 +221,7 @@ const Profile: React.FC = () => {
 
       <div className="flex flex-col md:flex-row gap-6 ">
         <div
-          className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-[30%]"
+          className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-[40%]"
           style={{ boxShadow: "0 0 3px 1px rgba(12, 94, 12, 0.2)" }}
         >
           <div className="flex justify-between items-center mb-4">
@@ -343,218 +357,535 @@ const Profile: React.FC = () => {
           )}
         </div>
 
-        {/* Mes Références Section */}
-        <div
-          className="bg-white p-6 rounded-2xl shadow-md border w-full md:w-full"
-          style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Mes Références</h2>
-            <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
-              <PlusCircle size={40} />
-            </button>
-          </div>
-          <div className="flex space-x-4 mb-4">
-            {["Mr.", "Madame", "Autre"].map((label) => (
-              <label key={label} className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="gender"
-                  value={label}
-                  checked={contactFormData.gender === label}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-          </div>
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <label className="block">
-              Nom
-              <input
-                name="first_name"
-                className="w-full p-3 border rounded mt-1"
-                placeholder="Nom"
-                value={contactFormData.first_name}
-                onChange={handleChange}
-              />
-            </label>
-            <label className="block">
-              Prénom
-              <input
-                name="last_name"
-                className="w-full p-3 border rounded mt-1"
-                placeholder="Prénom"
-                value={contactFormData.last_name}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <label className="block mb-2">
-            Adresse mail
-            <input
-              name="email"
-              className="w-full p-3 border rounded mt-1"
-              placeholder="Adresse mail"
-              value={contactFormData.email}
-              onChange={handleChange}
-            />
-          </label>
-          <label className="block mb-2">Numéro de téléphone</label>
-          <div className="flex items-center space-x-2 mb-2">
-            <select className="p-3 border rounded bg-white">
-              <option>🇫🇷</option>
-              <option>🇬🇧</option>
-            </select>
-            <input
-              name="phone"
-              className="w-full p-3 border rounded"
-              placeholder="Numéro de téléphone"
-              value={contactFormData.phone}
-              onChange={handleChange}
-            />
-          </div>
-          <label className="block mb-2">
-            Entreprise
-            <input
-              name="company"
-              className="w-full p-3 border rounded mt-1"
-              placeholder="Entreprise"
-              value={contactFormData.company}
-              onChange={handleChange}
-            />
-          </label>
+        <div className="w-full md:w-60%]">
+          {/* Tabs */}
 
-          <h3 className="text-md font-semibold mt-4">Liste des références</h3>
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {referrals.length === 0 ? (
-              <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {referrals.map((referral) => (
-                  <div
-                    key={referral.ID}
-                    className="p-4 border rounded bg-gray-50 shadow cursor-pointer relative"
-                  >
-                    <div
-                      className="w-full h-full"
-                      onClick={() => handleCardClick(referral)}
-                    >
-                      <div>{`${referral.first_name} ${referral.last_name}`}</div>
-                      <div>{referral.company}</div>
+
+          <div className="flex gap-2 relative">
+  <button
+    style={{
+      boxShadow: activeForm === "cooptations"
+        ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+        : "none"
+    }}
+    className={`px-8 py-3  font-medium transition-all relative ${
+      activeForm === "cooptations"
+        ? "text-gray-900 bg-white rounded-t-3xl z-10"
+        : "text-gray-400 bg-gray-100/50"
+    }`}
+    onClick={() => setActiveForm("cooptations")}
+  >
+    Mes cooptations
+  </button>
+
+  <button
+    style={{
+      boxShadow: activeForm === "references"
+        ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+        : "none"
+    }}
+    className={`px-8 py-3 font-medium transition-all relative ${
+      activeForm === "references"
+        ? "text-gray-900 bg-white rounded-t-2xl z-10"
+        : "text-gray-400 bg-gray-100/50"
+    }`}
+    onClick={() => setActiveForm("references")}
+  >
+    Mes Références
+  </button>
+</div>
+
+
+
+
+
+          {/* Forms */}
+          <div  className="   w-full ">
+            {activeForm === "cooptations" && (
+
+
+              <div
+                className="bg-white p-6   w-full md:w-full"
+                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"0px 20px 20px 20px"}}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Mes cooptations</h2>
+                  <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
+                    <PlusCircle size={40} />
+                  </button>
+                </div>
+                <div className="flex space-x-4 mb-4">
+                  {["Mr.", "Madame", "Autre"].map((label) => (
+                    <label key={label} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={label}
+                        checked={contactFormData.gender === label}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+
+
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <label className="block">
+                    Nom
+                    <input
+                      name="first_name"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Nom"
+                      value={contactFormData.first_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Prénom
+                    <input
+                      name="last_name"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Prénom"
+                      value={contactFormData.last_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 mb-2">
+  <label className="block">
+    Adresse mail
+    <input
+      name="email"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Adresse mail"
+      value={contactFormData.email}
+      onChange={handleChange}
+    />
+  </label>
+  <label className="block">
+    Numéro de téléphone
+    <div className="flex items-center space-x-2 mt-1">
+      <select className="p-3 border rounded bg-white">
+        <option>🇫🇷</option>
+        <option>🇬🇧</option>
+      </select>
+      <input
+        name="phone"
+        className="w-full p-3 border rounded"
+        placeholder="Numéro de téléphone"
+        value={contactFormData.phone}
+        onChange={handleChange}
+      />
+    </div>
+  </label>
+</div>
+
+                
+            
+<div className="grid grid-cols-2 gap-2 mb-2">
+  <label className="block">
+    Entreprise
+    <input
+      name="company"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Entreprise"
+      value={contactFormData.company}
+      onChange={handleChange}
+    />
+  </label>
+  <label className="block">
+    Fonction principale / Titre
+    <input
+      name="job_title"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Fonction principale / Titre"
+     // value={contactFormData.job_title}
+      onChange={handleChange}
+    />
+  </label>
+</div>
+
+                <h3 className="text-md font-semibold mt-4">Liste des références</h3>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {referrals.length === 0 ? (
+                    <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {referrals.map((referral) => (
+                        <div
+                          key={referral.ID}
+                          className="p-4 border rounded bg-gray-50 shadow cursor-pointer relative"
+                        >
+                          <div
+                            className="w-full h-full"
+                            onClick={() => handleCardClick(referral)}
+                          >
+                            <div>{`${referral.first_name} ${referral.last_name}`}</div>
+                            <div>{referral.company}</div>
+                          </div>
+                          <button
+                            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteReferral(referral.ID);
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                    <button
-                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteReferral(referral.ID);
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                        <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                      </svg>
-                    </button>
+                  )}
+                </div>
+
+                {/* Referral Modal Popup */}
+                {selectedReferral && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-semibold">Détails de la référence</h3>
+                        <button
+                          onClick={() => setSelectedReferral(null)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Civilité</span>
+                          <span className="text-base">{selectedReferral.gender || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Prénom</span>
+                          <span className="text-base">{selectedReferral.first_name || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Nom</span>
+                          <span className="text-base">{selectedReferral.last_name || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Adresse e-mail</span>
+                          <span className="text-base">{selectedReferral.email || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Numéro de téléphone</span>
+                          <span className="text-base">{selectedReferral.phone || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Entreprise</span>
+                          <span className="text-base">{selectedReferral.company || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Profession</span>
+                          <span className="text-base">{selectedReferral.occupation || '-'}</span>
+                        </div>
+
+                        {selectedReferral.nb_curr_opportunity !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Opportunités en cours</span>
+                            <span className="text-base">{selectedReferral.nb_curr_opportunity}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.nb_done_opportunity !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Opportunités terminées</span>
+                            <span className="text-base">{selectedReferral.nb_done_opportunity}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.nb_days !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Nombre de jours</span>
+                            <span className="text-base">{selectedReferral.nb_days}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.note && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Note</span>
+                            <span className="text-base">{selectedReferral.note}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-6 flex justify-end">
+                        <button
+                          onClick={() => setSelectedReferral(null)}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                        >
+                          Fermer
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                ))}
+                )}
               </div>
+
+            )}
+
+            {activeForm === "references" && (
+
+
+              <div
+                className="bg-white p-6 rounded-2xl shadow-md  w-full md:w-full"
+                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Mes Références</h2>
+                  <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
+                    <PlusCircle size={40} />
+                  </button>
+                </div>
+                <div className="flex space-x-4 mb-4">
+                  {["Mr.", "Madame", "Autre"].map((label) => (
+                    <label key={label} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={label}
+                        checked={contactFormData.gender === label}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <label className="block">
+                    Nom
+                    <input
+                      name="first_name"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Nom"
+                      value={contactFormData.first_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label className="block">
+                    Prénom
+                    <input
+                      name="last_name"
+                      className="w-full p-3 border rounded mt-1"
+                      placeholder="Prénom"
+                      value={contactFormData.last_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-2">
+  <label className="block">
+    Adresse mail
+    <input
+      name="email"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Adresse mail"
+      value={contactFormData.email}
+      onChange={handleChange}
+    />
+  </label>
+  <label className="block">
+    Numéro de téléphone
+    <div className="flex items-center space-x-2 mt-1">
+      <select className="p-3 border rounded bg-white">
+        <option>🇫🇷</option>
+        <option>🇬🇧</option>
+      </select>
+      <input
+        name="phone"
+        className="w-full p-3 border rounded"
+        placeholder="Numéro de téléphone"
+        value={contactFormData.phone}
+        onChange={handleChange}
+      />
+    </div>
+  </label>
+</div>
+
+                
+            
+<div className="grid grid-cols-2 gap-2 mb-2">
+  <label className="block">
+    Entreprise
+    <input
+      name="company"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Entreprise"
+      value={contactFormData.company}
+      onChange={handleChange}
+    />
+  </label>
+  <label className="block">
+    Fonction principale / Titre
+    <input
+      name="job_title"
+      className="w-full p-3 border rounded mt-1"
+      placeholder="Fonction principale / Titre"
+     // value={contactFormData.job_title}
+      onChange={handleChange}
+    />
+  </label>
+</div>
+
+                <h3 className="text-md font-semibold mt-4">Liste des références</h3>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {referrals.length === 0 ? (
+                    <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {referrals.map((referral) => (
+                        <div
+                          key={referral.ID}
+                          className="p-4 border rounded bg-gray-50 shadow cursor-pointer relative"
+                        >
+                          <div
+                            className="w-full h-full"
+                            onClick={() => handleCardClick(referral)}
+                          >
+                            <div>{`${referral.first_name} ${referral.last_name}`}</div>
+                            <div>{referral.company}</div>
+                          </div>
+                          <button
+                            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteReferral(referral.ID);
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Referral Modal Popup */}
+                {selectedReferral && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-semibold">Détails de la référence</h3>
+                        <button
+                          onClick={() => setSelectedReferral(null)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Civilité</span>
+                          <span className="text-base">{selectedReferral.gender || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Prénom</span>
+                          <span className="text-base">{selectedReferral.first_name || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Nom</span>
+                          <span className="text-base">{selectedReferral.last_name || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Adresse e-mail</span>
+                          <span className="text-base">{selectedReferral.email || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Numéro de téléphone</span>
+                          <span className="text-base">{selectedReferral.phone || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Entreprise</span>
+                          <span className="text-base">{selectedReferral.company || '-'}</span>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600">Profession</span>
+                          <span className="text-base">{selectedReferral.occupation || '-'}</span>
+                        </div>
+
+                        {selectedReferral.nb_curr_opportunity !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Opportunités en cours</span>
+                            <span className="text-base">{selectedReferral.nb_curr_opportunity}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.nb_done_opportunity !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Opportunités terminées</span>
+                            <span className="text-base">{selectedReferral.nb_done_opportunity}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.nb_days !== null && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Nombre de jours</span>
+                            <span className="text-base">{selectedReferral.nb_days}</span>
+                          </div>
+                        )}
+
+                        {selectedReferral.note && (
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-600">Note</span>
+                            <span className="text-base">{selectedReferral.note}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-6 flex justify-end">
+                        <button
+                          onClick={() => setSelectedReferral(null)}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                        >
+                          Fermer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
             )}
           </div>
-
-          {/* Referral Modal Popup */}
-          {selectedReferral && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-semibold">Détails de la référence</h3>
-                  <button
-                    onClick={() => setSelectedReferral(null)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Civilité</span>
-                    <span className="text-base">{selectedReferral.gender || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Prénom</span>
-                    <span className="text-base">{selectedReferral.first_name || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Nom</span>
-                    <span className="text-base">{selectedReferral.last_name || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Adresse e-mail</span>
-                    <span className="text-base">{selectedReferral.email || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                    <span className="text-base">{selectedReferral.phone || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Entreprise</span>
-                    <span className="text-base">{selectedReferral.company || '-'}</span>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600">Profession</span>
-                    <span className="text-base">{selectedReferral.occupation || '-'}</span>
-                  </div>
-
-                  {selectedReferral.nb_curr_opportunity !== null && (
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-600">Opportunités en cours</span>
-                      <span className="text-base">{selectedReferral.nb_curr_opportunity}</span>
-                    </div>
-                  )}
-
-                  {selectedReferral.nb_done_opportunity !== null && (
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-600">Opportunités terminées</span>
-                      <span className="text-base">{selectedReferral.nb_done_opportunity}</span>
-                    </div>
-                  )}
-
-                  {selectedReferral.nb_days !== null && (
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-600">Nombre de jours</span>
-                      <span className="text-base">{selectedReferral.nb_days}</span>
-                    </div>
-                  )}
-
-                  {selectedReferral.note && (
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-600">Note</span>
-                      <span className="text-base">{selectedReferral.note}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-6 flex justify-end">
-                  <button
-                    onClick={() => setSelectedReferral(null)}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
-                  >
-                    Fermer
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
+
+
+
+
+
+
+
+
+
       </div>
       {/* Updated Documents Section */}
       <DocumentsSection />

@@ -128,7 +128,7 @@ interface DocumentUploadModalProps {
 const DocumentsSection: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg "  style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)"}}>
+        <div className="p-4 bg-white shadow-md rounded-xl "  style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)"}}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Documents</h2>
             <button className="text-green-700 hover:text-blue-700"  onClick={() => setIsModalOpen(true)}>

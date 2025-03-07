@@ -40,7 +40,7 @@ const Navbar = () => {
 
   return (
     <div
-      className="flex justify-between items-center bg-white p-3 rounded-lg shadow-md"
+      className="flex justify-between items-center bg-white p-3 rounded-xl shadow-md"
       style={{ boxShadow: "0 4px 15px rgba(12, 111, 12, 0.28)" }}
     >
       {/* Left Side: Logo */}
