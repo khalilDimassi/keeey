@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Sectors, { Sector, UserSelection } from './Sectors';
 import Criteria from './Criteria';
 import axios from 'axios';
-import { getAuthHeader } from '../../../../utils/jwt';
+import { getAuthHeader } from '../../../../../utils/jwt';
 
 type SectorSuggestionsResponse = Sector[];
 type InitialSelectionsResponse = UserSelection[];

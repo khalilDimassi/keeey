@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Building2, PencilLine } from 'lucide-react';
 import axios from 'axios';
-import { getAuthHeader } from '../../../utils/jwt';
+import { getAuthHeader } from '../../../../utils/jwt';
 import { FaPencilAlt } from 'react-icons/fa';
-import DocumentsSection from '../ProfileAfterLogin/DocumentsSection';
+import DocumentsSection from '../../ProfileAfterLogin/DocumentsSection';
 
 
 interface CompanyInfo {

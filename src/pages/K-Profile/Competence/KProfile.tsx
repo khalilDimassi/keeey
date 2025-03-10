@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { FileText, Award } from "lucide-react";
-import SearchCriteria from "./SearchCriteria";
-import Competencies from "./Mode guest/Competencies";
 import { isAuthenticated } from "../../../utils/jwt";
 
-import InformationsGnerales from "./InformationsGnerales";
-import CompetencesCriteres from "./competences & criteres/CompetencesCriteres"
-// import CompetencesCriteres from "./CompetencesCriteres";
-import CvCompetences from "./CvCompetences";
+import SearchCriteria from "./mode guest/SearchCriteria";
+import Competencies from "./mode guest/Competencies";
+
+import InformationsGnerales from "./mode online/InformationsGnerales";
+import CompetencesCriteres from "./mode online/competences & criteres/CompetencesCriteres"
+import CvCompetences from "./mode online/CvCompetences";
 
 const KProfile = ({ onClose }: { onClose: () => void }) => {
-
-  const [isOnline] = useState(isAuthenticated); // Connection state
+  const [isOnline] = useState(isAuthenticated);
   const [activeTab, setActiveTab] = useState(isOnline ? "Informations" : "criteria");
   return (
     <div className="w-full">

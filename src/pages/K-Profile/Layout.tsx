@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 
 import Profile from "./ProfileAfterLogin/ProfilePage";
 import KProfile from "./Competence/KProfile";
-import Oportunite from "./Competence/Oportunite";
+import Oportunite from "./Competence/mode online/Oportunite";
 import Cv from "./cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
