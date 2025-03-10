@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaPencilAlt, FaPlus, FaUser } from "react-icons/fa";
+import { FaPencilAlt, FaUser } from "react-icons/fa";
 import DocumentsSection from "./DocumentsSection";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
@@ -153,20 +153,6 @@ const Profile: React.FC = () => {
       alert("Une erreur est survenue");
     }
   };
-
-  useEffect(() => {
-    const fetchReferrals = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/REFERRAL`, { headers: getAuthHeader() });
-        setReferrals(response.data || []);
-      } catch (error) {
-        console.error('Error fetching referrals:', error);
-        setReferrals([]);
-      }
-    };
-
-    fetchReferrals();
-  }, []);
 
   const handleCardClick = (referral: Referral) => {
     setSelectedReferral(referral);
@@ -380,25 +366,27 @@ const Profile: React.FC = () => {
             </button>
           </div>
 
-
-
-
-
           {/* Forms */}
-          <div className="   w-full ">
-            {activeForm === "cooptations" && (
-
-
+          {/* Forms */}
+          <div className="w-full">
+            {(activeForm === "cooptations" || activeForm === "references") && (
               <div
-                className="bg-white p-6   w-full md:w-full"
-                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "0px 20px 20px 20px" }}
+                className="bg-white p-6 w-full md:w-full"
+                style={{
+                  boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)",
+                  borderRadius: activeForm === "cooptations" ? "0px 20px 20px 20px" : "rounded-2xl"
+                }}
               >
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">Mes cooptations</h2>
+                  <h2 className="text-lg font-semibold">
+                    {activeForm === "cooptations" ? "Mes cooptations" : "Mes Références"}
+                  </h2>
                   <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
                     <PlusCircle size={40} />
                   </button>
                 </div>
+
+                {/* Gender Radio Buttons */}
                 <div className="flex space-x-4 mb-4">
                   {["Mr.", "Madame", "Autre"].map((label) => (
                     <label key={label} className="flex items-center space-x-2">
@@ -415,7 +403,7 @@ const Profile: React.FC = () => {
                   ))}
                 </div>
 
-
+                {/* Name Fields */}
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <label className="block">
                     Nom
@@ -439,6 +427,7 @@ const Profile: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Contact Fields */}
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <label className="block">
                     Adresse mail
@@ -468,8 +457,7 @@ const Profile: React.FC = () => {
                   </label>
                 </div>
 
-
-
+                {/* Company Fields */}
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <label className="block">
                     Entreprise
@@ -487,18 +475,19 @@ const Profile: React.FC = () => {
                       name="job_title"
                       className="w-full p-3 border rounded mt-1"
                       placeholder="Fonction principale / Titre"
-                      // value={contactFormData.job_title}
+                      value={contactFormData.occupation}
                       onChange={handleChange}
                     />
                   </label>
                 </div>
 
-
-
-                <div className=" p-6">
-                  <div className="max-w-3xl ">
+                {/* List of Items */}
+                <div className="p-6">
+                  <div className="max-w-3xl">
                     <div className="flex justify-between items-center mb-6">
-                      <h1 className="text-xl font-semibold text-gray-800">Liste des cooptations</h1>
+                      <h1 className="text-xl font-semibold text-gray-800">
+                        Liste des {activeForm === "cooptations" ? "cooptations" : "Réferences"}
+                      </h1>
                       <button className="text-blue-600 hover:text-blue-800 flex items-center">
                         Voir tout
                         <ChevronRight className="w-4 h-4 ml-1" />
@@ -506,311 +495,16 @@ const Profile: React.FC = () => {
                     </div>
 
                     {referrals.length === 0 ? (
-                      <p><span role="img" aria-label="cute face">😊</span>Aucune cooptations trouvée pour le moment.</p>
-                    ) : (
-                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" >
-                        {referrals.map((referral) => (
-                          <div
-                            key={referral.ID} onClick={() => handleCardClick(referral)}
-                            className="bg-white rounded-xl border shadow hover:shadow-md transition-shadow p-5 cursor-pointer relative"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-center">
-                                <div className="bg-gray-100 p-2 rounded-full">
-                                  <User className="w-5 h-5 text-gray-600" />
-                                </div>
-                                <div className="ml-3">
-                                  <p className="text-sm text-gray-600">{`${referral.first_name} ${referral.last_name}`}</p>
-                                  <h3 className="font-medium text-gray-900">{referral.company}</h3>
-                                </div>
-                              </div>
-                              <ChevronRight className="w-5 h-5 text-gray-400" />
-                            </div>
-                            <button
-                              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteReferral(referral.ID);
-                              }}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                              </svg>
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-
-
-
-                {/* Referral Modal Popup */}
-                
-
-{selectedReferral && (
-                  <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50 transition-all duration-300 ease-in-out">
-                    <div className="bg-white p-0 rounded-xl shadow-2xl max-w-md w-full overflow-hidden">
-                      {/* Header with gradient */}
-                      <div className="p-5 text-white" style={{ background: 'linear-gradient(to right,rgb(23, 43, 44),rgb(46, 167, 179))' }}>
-                      <div className="flex justify-between items-center">
-                          <h3 className="text-xl font-bold">Détails de la cooptation</h3>
-                          <button
-                            onClick={() => setSelectedReferral(null)}
-                            className="text-white hover:text-green-100 transition-colors duration-200"
-                            aria-label="Fermer"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Content area with drop shadow at top */}
-                      <div className="p-6 shadow-inner max-h-96 overflow-y-auto">
-                        <div className="space-y-4">
-                          {/* Personal information section */}
-                          <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations personnelles</h4>
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Civilité</span>
-                                <p className="font-medium mt-1">{selectedReferral.gender || '-'}</p>
-                              </div>
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Prénom</span>
-                                <p className="font-medium mt-1">{selectedReferral.first_name || '-'}</p>
-                              </div>
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Nom</span>
-                                <p className="font-medium mt-1">{selectedReferral.last_name || '-'}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Contact information section */}
-                          <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Contact</h4>
-                            <div className="space-y-4">
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Adresse e-mail</span>
-                                <p className="font-medium mt-1 break-words">{selectedReferral.email || '-'}</p>
-                              </div>
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Numéro de téléphone</span>
-                                <p className="font-medium mt-1">{selectedReferral.phone || '-'}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Professional information section */}
-                          <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations professionnelles</h4>
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Entreprise</span>
-                                <p className="font-medium mt-1">{selectedReferral.company || '-'}</p>
-                              </div>
-                              <div>
-                                <span className="text-xs uppercase tracking-wider text-gray-500">Profession</span>
-                                <p className="font-medium mt-1">{selectedReferral.occupation || '-'}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Opportunities section - only shown if at least one opportunity field exists */}
-                          {(selectedReferral.nb_curr_opportunity !== null ||
-                            selectedReferral.nb_done_opportunity !== null ||
-                            selectedReferral.nb_days !== null) && (
-                              <div className="mb-6">
-                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Opportunités</h4>
-                                <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                                  {selectedReferral.nb_curr_opportunity !== null && (
-                                    <div>
-                                      <span className="text-xs uppercase tracking-wider text-gray-500">En cours</span>
-                                      <p className="font-medium mt-1">{selectedReferral.nb_curr_opportunity}</p>
-                                    </div>
-                                  )}
-                                  {selectedReferral.nb_done_opportunity !== null && (
-                                    <div>
-                                      <span className="text-xs uppercase tracking-wider text-gray-500">Terminées</span>
-                                      <p className="font-medium mt-1">{selectedReferral.nb_done_opportunity}</p>
-                                    </div>
-                                  )}
-                                  {selectedReferral.nb_days !== null && (
-                                    <div>
-                                      <span className="text-xs uppercase tracking-wider text-gray-500">Nombre de jours</span>
-                                      <p className="font-medium mt-1">{selectedReferral.nb_days}</p>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                          {/* Notes section - only shown if notes exist */}
-                          {selectedReferral.note && (
-                            <div>
-                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Notes</h4>
-                              <div className="bg-green-50 p-3 rounded-lg">
-                                <p className="text-base whitespace-pre-wrap">{selectedReferral.note}</p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Footer with action button */}
-                      <div className="bg-gray-50 p-4 flex justify-end border-t border-gray-100">
-                        <button
-                          onClick={() => setSelectedReferral(null)}style={{background:"#30797F"}}
-                          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-xl transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-md"
-                        >
-                          Fermer
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-
-              </div>
-
-            )}
-
-            {activeForm === "references" && (
-
-
-              <div
-                className="bg-white p-6 rounded-2xl shadow-md  w-full md:w-full"
-                style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">Mes Références</h2>
-                  <button onClick={handleContactSubmit} className="text-green-700 hover:text-blue-700">
-                    <PlusCircle size={40} />
-                  </button>
-                </div>
-                <div className="flex space-x-4 mb-4">
-                  {["Mr.", "Madame", "Autre"].map((label) => (
-                    <label key={label} className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value={label}
-                        checked={contactFormData.gender === label}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                      />
-                      <span>{label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  <label className="block">
-                    Nom
-                    <input
-                      name="first_name"
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Nom"
-                      value={contactFormData.first_name}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label className="block">
-                    Prénom
-                    <input
-                      name="last_name"
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Prénom"
-                      value={contactFormData.last_name}
-                      onChange={handleChange}
-                    />
-                  </label>
-                </div>
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  <label className="block">
-                    Adresse mail
-                    <input
-                      name="email"
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Adresse mail"
-                      value={contactFormData.email}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label className="block">
-                    Numéro de téléphone
-                    <div className="flex items-center space-x-2 mt-1">
-                      <select className="p-3 border rounded bg-white">
-                        <option>🇫🇷</option>
-                        <option>🇬🇧</option>
-                      </select>
-                      <input
-                        name="phone"
-                        className="w-full p-3 border rounded"
-                        placeholder="Numéro de téléphone"
-                        value={contactFormData.phone}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </label>
-                </div>
-
-
-
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  <label className="block">
-                    Entreprise
-                    <input
-                      name="company"
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Entreprise"
-                      value={contactFormData.company}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label className="block">
-                    Fonction principale / Titre
-                    <input
-                      name="job_title"
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Fonction principale / Titre"
-                      // value={contactFormData.job_title}
-                      onChange={handleChange}
-                    />
-                  </label>
-                </div>
-
-
-
-
-
-
-
-
-
-                <div className=" p-6">
-                  <div className="max-w-3xl ">
-                    <div className="flex justify-between items-center mb-6">
-                      <h1 className="text-xl font-semibold text-gray-800">Liste des Réferences</h1>
-                      <button className="text-blue-600 hover:text-blue-800 flex items-center">
-                        Voir tout
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                      </button>
-                    </div>
-
-                    {referrals.length === 0 ? (
-                      <p><span role="img" aria-label="cute face">😊</span>Aucune référence trouvée pour le moment.</p>
+                      <p>
+                        <span role="img" aria-label="cute face">😊</span>
+                        Aucune {activeForm === "cooptations" ? "cooptations" : "référence"} trouvée pour le moment.
+                      </p>
                     ) : (
                       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {referrals.map((referral) => (
                           <div
-                          onClick={() => handleCardClick(referral)}
                             key={referral.ID}
+                            onClick={() => handleCardClick(referral)}
                             className="bg-white rounded-xl border shadow hover:shadow-md transition-shadow p-5 cursor-pointer relative"
                           >
                             <div className="flex items-start justify-between">
@@ -818,7 +512,6 @@ const Profile: React.FC = () => {
                                 <div className="bg-gray-100 p-2 rounded-full">
                                   <User className="w-5 h-5 text-gray-600" />
                                 </div>
-
                                 <div className="ml-3">
                                   <p className="text-sm text-gray-600">{`${referral.first_name} ${referral.last_name}`}</p>
                                   <h3 className="font-medium text-gray-900">{referral.company}</h3>
@@ -826,7 +519,6 @@ const Profile: React.FC = () => {
                               </div>
                               <ChevronRight className="w-5 h-5 text-gray-400" />
                             </div>
-
                             <button
                               className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                               onClick={(e) => {
@@ -846,18 +538,16 @@ const Profile: React.FC = () => {
                   </div>
                 </div>
 
-
-
-
-
-                {/* Referral Modal Popup */}
+                {/* Shared Modal Popup */}
                 {selectedReferral && (
                   <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50 transition-all duration-300 ease-in-out">
                     <div className="bg-white p-0 rounded-xl shadow-2xl max-w-md w-full overflow-hidden">
                       {/* Header with gradient */}
                       <div className="p-5 text-white" style={{ background: 'linear-gradient(to right,rgb(23, 43, 44),rgb(46, 167, 179))' }}>
-                      <div className="flex justify-between items-center">
-                          <h3 className="text-xl font-bold">Détails de la référence</h3>
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-xl font-bold">
+                            Détails de {activeForm === "cooptations" ? "la cooptation" : "la référence"}
+                          </h3>
                           <button
                             onClick={() => setSelectedReferral(null)}
                             className="text-white hover:text-green-100 transition-colors duration-200"
@@ -875,7 +565,9 @@ const Profile: React.FC = () => {
                         <div className="space-y-4">
                           {/* Personal information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations personnelles</h4>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                              Informations personnelles
+                            </h4>
                             <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                               <div>
                                 <span className="text-xs uppercase tracking-wider text-gray-500">Civilité</span>
@@ -894,7 +586,9 @@ const Profile: React.FC = () => {
 
                           {/* Contact information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Contact</h4>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                              Contact
+                            </h4>
                             <div className="space-y-4">
                               <div>
                                 <span className="text-xs uppercase tracking-wider text-gray-500">Adresse e-mail</span>
@@ -909,7 +603,9 @@ const Profile: React.FC = () => {
 
                           {/* Professional information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1"style={{color:"#30797F"}}>Informations professionnelles</h4>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                              Informations professionnelles
+                            </h4>
                             <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                               <div>
                                 <span className="text-xs uppercase tracking-wider text-gray-500">Entreprise</span>
@@ -927,7 +623,9 @@ const Profile: React.FC = () => {
                             selectedReferral.nb_done_opportunity !== null ||
                             selectedReferral.nb_days !== null) && (
                               <div className="mb-6">
-                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Opportunités</h4>
+                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                                  Opportunités
+                                </h4>
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                                   {selectedReferral.nb_curr_opportunity !== null && (
                                     <div>
@@ -954,7 +652,9 @@ const Profile: React.FC = () => {
                           {/* Notes section - only shown if notes exist */}
                           {selectedReferral.note && (
                             <div>
-                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1">Notes</h4>
+                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                                Notes
+                              </h4>
                               <div className="bg-green-50 p-3 rounded-lg">
                                 <p className="text-base whitespace-pre-wrap">{selectedReferral.note}</p>
                               </div>
@@ -966,7 +666,8 @@ const Profile: React.FC = () => {
                       {/* Footer with action button */}
                       <div className="bg-gray-50 p-4 flex justify-end border-t border-gray-100">
                         <button
-                          onClick={() => setSelectedReferral(null)}style={{background:"#30797F"}}
+                          onClick={() => setSelectedReferral(null)}
+                          style={{ background: "#30797F" }}
                           className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-xl transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-md"
                         >
                           Fermer
@@ -976,19 +677,9 @@ const Profile: React.FC = () => {
                   </div>
                 )}
               </div>
-
             )}
           </div>
         </div>
-
-
-
-
-
-
-
-
-
       </div>
       {/* Updated Documents Section */}
       <DocumentsSection />
