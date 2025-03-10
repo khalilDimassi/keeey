@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Phone, Building2, Upload, PencilLine } from 'lucide-react';
+import { Building2, PencilLine } from 'lucide-react';
 import axios from 'axios';
 import { getAuthHeader } from '../../../utils/jwt';
 import { FaPencilAlt } from 'react-icons/fa';
@@ -23,8 +23,8 @@ function InformationsGnerales() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   // Fetch user data from API on component mount
-   useEffect(() => {
+
+  useEffect(() => {
     fetchUserProfile();
   }, []);
 
@@ -41,6 +41,7 @@ function InformationsGnerales() {
     }
     setLoading(false);
   };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -56,6 +57,7 @@ function InformationsGnerales() {
     }
     setLoading(false);
   };
+
   const [formData, setFormData] = useState({
     gender: "",
     first_name: "",
@@ -73,13 +75,13 @@ function InformationsGnerales() {
     siret: 'exemple',
   };
 
-  const documents = [
-    { id: 'kbis', name: 'K-BIS' },
-    { id: 'rib', name: 'RIB' },
-    { id: 'urssaf', name: 'Attestation Urssaf' },
-    { id: 'cv', name: 'CV' },
-    { id: 'portfolio', name: 'Portefolio' },
-  ];
+  // const documents = [
+  //   { id: 'kbis', name: 'K-BIS' },
+  //   { id: 'rib', name: 'RIB' },
+  //   { id: 'urssaf', name: 'Attestation Urssaf' },
+  //   { id: 'cv', name: 'CV' },
+  //   { id: 'portfolio', name: 'Portefolio' },
+  // ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -91,139 +93,139 @@ function InformationsGnerales() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column - Personal Information Form */}
-        <div className="bg-white p-6  w-full md:w-[30%]">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Mes Informations générales</h2>
-                    {!isEditing && (
-                      <button
-                        className="text-green-600 hover:text-green-700"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        <FaPencilAlt />
-                      </button>
-                    )}
-                  </div>
-        
-                  {loading ? (
-                    <p className="text-gray-500">Chargement...</p>
-                  ) : error ? (
-                    <p className="text-red-500">{error}</p>
-                  ) : isEditing ? (
-                    // Edit Form View
-                    <div className="space-y-4">
-                      <div className="flex space-x-4 mb-4">
-                        {["Mr.", "Madame", "Autre"].map((option) => (
-                          <label key={option} className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              name="gender"
-                              checked={formData.gender === option}
-                              onChange={() => handleRadioChange(option)}
-                              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                            />
-                            <span>{option}</span>
-                          </label>
-                        ))}
-                      </div>
-        
-                      {["first_name", "last_name", "email", "occupation", "address", "zip"].map(
-                        (field) => (
-                          <label key={field} className="block">
-                            {field.charAt(0).toUpperCase() + field.slice(1)}
-                            <input
-                              name={field}
-                              value={formData[field as keyof typeof formData]}
-                              onChange={handleInputChange}
-                              className="w-full p-3 border rounded mt-1"
-                              placeholder={field}
-                            />
-                          </label>
-                        )
-                      )}
-        
-                      <label className="block mb-2">Numéro de téléphone</label>
-                      <div className="flex items-center space-x-2 mb-2">
-                        <select className="p-3 border rounded bg-white">
-                          <option>🇫🇷</option>
-                          <option>🇬🇧</option>
-                        </select>
-                        <input
-                          name="telephone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          className="w-full p-3 border rounded mt-1"
-                          placeholder="Numéro de téléphone"
-                        />
-                      </div>
-        
-                      <div className="flex justify-end space-x-2 mt-4">
-                        <button
-                          onClick={() => setIsEditing(false)}
-                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleSubmit}
-                          className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    // Display View 
-                    <div className="space-y-3">
-                      {/* Gender */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Civilité</span>
-                        <span className="text-base">{formData.gender || '-'}</span>
-                      </div>
-        
-                      {/* Last name */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Nom</span>
-                        <span className="text-base">{formData.last_name || '-'}</span>
-                      </div>
-        
-                      {/* First name */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Prénom</span>
-                        <span className="text-base">{formData.first_name || '-'}</span>
-                      </div>
-        
-                      {/* Email */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Adresse e-mail</span>
-                        <span className="text-base">{formData.email || '-'}</span>
-                      </div>
-        
-                      {/* Occupation */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Profession</span>
-                        <span className="text-base">{formData.occupation || '-'}</span>
-                      </div>
-        
-                      {/* Phone */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                        <span className="text-base">{formData.phone || '-'}</span>
-                      </div>
-        
-                      {/* Address */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Adresse</span>
-                        <span className="text-base">{formData.address || '-'}</span>
-                      </div>
-        
-                      {/* Zip */}
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-600">Code postal</span>
-                        <span className="text-base">{formData.zip || '-'}</span>
-                      </div>
-                    </div>
-                  )}
+          <div className="bg-white p-6  w-full md:w-[30%]">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Mes Informations générales</h2>
+              {!isEditing && (
+                <button
+                  className="text-green-600 hover:text-green-700"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <FaPencilAlt />
+                </button>
+              )}
+            </div>
+
+            {loading ? (
+              <p className="text-gray-500">Chargement...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : isEditing ? (
+              // Edit Form View
+              <div className="space-y-4">
+                <div className="flex space-x-4 mb-4">
+                  {["Mr.", "Madame", "Autre"].map((option) => (
+                    <label key={option} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="gender"
+                        checked={formData.gender === option}
+                        onChange={() => handleRadioChange(option)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
                 </div>
+
+                {["first_name", "last_name", "email", "occupation", "address", "zip"].map(
+                  (field) => (
+                    <label key={field} className="block">
+                      {field.charAt(0).toUpperCase() + field.slice(1)}
+                      <input
+                        name={field}
+                        value={formData[field as keyof typeof formData]}
+                        onChange={handleInputChange}
+                        className="w-full p-3 border rounded mt-1"
+                        placeholder={field}
+                      />
+                    </label>
+                  )
+                )}
+
+                <label className="block mb-2">Numéro de téléphone</label>
+                <div className="flex items-center space-x-2 mb-2">
+                  <select className="p-3 border rounded bg-white">
+                    <option>🇫🇷</option>
+                    <option>🇬🇧</option>
+                  </select>
+                  <input
+                    name="telephone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border rounded mt-1"
+                    placeholder="Numéro de téléphone"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2 mt-4">
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Display View 
+              <div className="space-y-3">
+                {/* Gender */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Civilité</span>
+                  <span className="text-base">{formData.gender || '-'}</span>
+                </div>
+
+                {/* Last name */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Nom</span>
+                  <span className="text-base">{formData.last_name || '-'}</span>
+                </div>
+
+                {/* First name */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Prénom</span>
+                  <span className="text-base">{formData.first_name || '-'}</span>
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Adresse e-mail</span>
+                  <span className="text-base">{formData.email || '-'}</span>
+                </div>
+
+                {/* Occupation */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Profession</span>
+                  <span className="text-base">{formData.occupation || '-'}</span>
+                </div>
+
+                {/* Phone */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Numéro de téléphone</span>
+                  <span className="text-base">{formData.phone || '-'}</span>
+                </div>
+
+                {/* Address */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Adresse</span>
+                  <span className="text-base">{formData.address || '-'}</span>
+                </div>
+
+                {/* Zip */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">Code postal</span>
+                  <span className="text-base">{formData.zip || '-'}</span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Right Column - Company Info and Documents */}
           <div className="bg-white p-6  w-full md:w-[70%]">
@@ -239,7 +241,7 @@ function InformationsGnerales() {
                   <PencilLine className="h-5 w-5" />
                 </button>
               </div>
-              
+
               <div className="space-y-2">
                 <div>
                   <span className="text-sm font-medium text-gray-700">Nom : </span>

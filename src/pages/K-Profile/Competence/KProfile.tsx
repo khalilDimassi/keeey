@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { FileText, Award, BrainCircuit } from "lucide-react";
+import { FileText, Award } from "lucide-react";
 import SearchCriteria from "./SearchCriteria";
 import Competencies from "./Competencies";
 import { isAuthenticated } from "../../../utils/jwt";
 
 import InformationsGnerales from "./InformationsGnerales";
-import CompetencesCriteres from "./CompetencesCriteres";
+import CompetencesCriteres from "./competences & criteres/CompetencesCriteres"
+// import CompetencesCriteres from "./CompetencesCriteres";
 import CvCompetences from "./CvCompetences";
 
 const KProfile = ({ onClose }: { onClose: () => void }) => {
-  
+
   const [isOnline] = useState(isAuthenticated); // Connection state
   const [activeTab, setActiveTab] = useState(isOnline ? "Informations" : "criteria");
   return (
@@ -27,7 +27,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
 
         <h1 className="text-xl font-semibold ">Compétence</h1>
       </div>
-      
+
       {isOnline ? (
         <>
           <div className="flex gap-2 relative">
@@ -37,11 +37,10 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
                   : "none"
               }}
-              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${
-                activeTab === "Informations"
-                  ? "text-gray-900 bg-white rounded-t-xl z-10"
-                  : "text-gray-400 bg-gray-100/50"
-              }`}
+              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Informations"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
               onClick={() => setActiveTab("Informations")}
             >
               Informations Générales
@@ -52,11 +51,10 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
                   : "none"
               }}
-              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${
-                activeTab === "Compétences_Critères"
-                  ? "text-gray-900 bg-white rounded-t-xl z-10"
-                  : "text-gray-400 bg-gray-100/50"
-              }`}
+              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "Compétences_Critères"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
               onClick={() => setActiveTab("Compétences_Critères")}
             >
               Compétences & Critères
@@ -67,52 +65,51 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
                   : "none"
               }}
-              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${
-                activeTab === "CV_compéténces"
-                  ? "text-gray-900 bg-white rounded-t-xl z-10"
-                  : "text-gray-400 bg-gray-100/50"
-              }`}
+              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "CV_compéténces"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
               onClick={() => setActiveTab("CV_compéténces")}
             >
               CV / Dossier de compéténces
             </button>
-            
-          
+
+
           </div>
-          
+
           <div className="relative bg-white " >
             <div className="hover-box p-4" style={{ boxShadow: "1px 10px 10px rgba(96, 105, 110, 0.29)", borderRadius: "20px" }}>
               {activeTab === "Informations" && <InformationsGnerales />}
               {activeTab === "Compétences_Critères" && <CompetencesCriteres />}
               {activeTab === "CV_compéténces" && <CvCompetences />}
               <button
-        className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
-        onClick={onClose}
-      >
-        <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g filter="url(#filter0_d_9011_8527)">
-            <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <path d="M36 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <mask id="path-4-inside-1_9011_8527" fill="white">
-              <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" />
-            </mask>
-            <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" stroke-width="2" mask="url(#path-4-inside-1_9011_8527)" />
-          </g>
-          <defs>
-            <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
-              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-              <feOffset />
-              <feGaussianBlur stdDeviation="5" />
-              <feComposite in2="hardAlpha" operator="out" />
-              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-              <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_9011_8527" />
-              <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9011_8527" result="shape" />
-            </filter>
-          </defs>
-        </svg>
-      </button>
+                className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
+                onClick={onClose}
+              >
+                <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g filter="url(#filter0_d_9011_8527)">
+                    <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <path d="M36 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <mask id="path-4-inside-1_9011_8527" fill="white">
+                      <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" />
+                    </mask>
+                    <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" stroke-width="2" mask="url(#path-4-inside-1_9011_8527)" />
+                  </g>
+                  <defs>
+                    <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                      <feOffset />
+                      <feGaussianBlur stdDeviation="5" />
+                      <feComposite in2="hardAlpha" operator="out" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_9011_8527" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9011_8527" result="shape" />
+                    </filter>
+                  </defs>
+                </svg>
+              </button>
             </div>
           </div>
         </>
@@ -125,11 +122,10 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
                   : "none"
               }}
-              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${
-                activeTab === "competencies"
-                  ? "text-gray-900 bg-white rounded-t-xl z-10"
-                  : "text-gray-400 bg-gray-100/50"
-              }`}
+              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "competencies"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
               onClick={() => setActiveTab("competencies")}
             >
               <Award className={`w-5 h-5 ${activeTab === "competencies" ? "text-teal-600" : "text-gray-400"}`} />
@@ -142,57 +138,56 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
                   : "none"
               }}
-              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${
-                activeTab === "criteria"
-                  ? "text-gray-900 bg-white rounded-t-xl z-10"
-                  : "text-gray-400 bg-gray-100/50"
-              }`}
+              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "criteria"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
               onClick={() => setActiveTab("criteria")}
             >
               <FileText className={`w-5 h-5 ${activeTab === "criteria" ? "text-teal-600" : "text-gray-400"}`} />
               Mes critères de recherche
             </button>
           </div>
-          
+
           <div className="relative bg-white rounded-xl">
             <div className="hover-box p-4" style={{ boxShadow: "1px 10px 10px rgba(96, 105, 110, 0.29)", borderRadius: "20px" }}>
               {activeTab === "criteria" ? <SearchCriteria /> : <Competencies />}
-                {/* Close Button */}
-      <button
-        className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
-        onClick={onClose}
-      >
-        <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g filter="url(#filter0_d_9011_8527)">
-            <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <path d="M36 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-            <mask id="path-4-inside-1_9011_8527" fill="white">
-              <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" />
-            </mask>
-            <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" stroke-width="2" mask="url(#path-4-inside-1_9011_8527)" />
-          </g>
-          <defs>
-            <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
-              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-              <feOffset />
-              <feGaussianBlur stdDeviation="5" />
-              <feComposite in2="hardAlpha" operator="out" />
-              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-              <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_9011_8527" />
-              <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9011_8527" result="shape" />
-            </filter>
-          </defs>
-        </svg>
-      </button>
+              {/* Close Button */}
+              <button
+                className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
+                onClick={onClose}
+              >
+                <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g filter="url(#filter0_d_9011_8527)">
+                    <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <path d="M36 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <mask id="path-4-inside-1_9011_8527" fill="white">
+                      <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" />
+                    </mask>
+                    <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" stroke-width="2" mask="url(#path-4-inside-1_9011_8527)" />
+                  </g>
+                  <defs>
+                    <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                      <feOffset />
+                      <feGaussianBlur stdDeviation="5" />
+                      <feComposite in2="hardAlpha" operator="out" />
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_9011_8527" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9011_8527" result="shape" />
+                    </filter>
+                  </defs>
+                </svg>
+              </button>
             </div>
           </div>
-      
+
         </>
       )}
 
-     
+
     </div>
   );
 };

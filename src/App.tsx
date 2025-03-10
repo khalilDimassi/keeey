@@ -4,8 +4,8 @@ import Home from './pages/home';
 
 
 
-import LoginOptions from './pages/K-Profile/LoginPage_Option/LoginOptions';
-import LoginPage from './pages/K-Profile/LoginPage_Option/LoginPage';
+// import LoginOptions from './pages/K-Profile/LoginPage_Option/LoginOptions';
+// import LoginPage from './pages/K-Profile/LoginPage_Option/LoginPage';
 import Layout from './pages/K-Profile/Layout';
 
 
@@ -19,7 +19,7 @@ import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
 import AddPartner from './pages/K-Partner/AddPartner';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
-import CandidatesList from './pages/K-player/CandidatesList';
+// import CandidatesList from './pages/K-player/CandidatesList';
 import ProfilePage from './pages/K-player/Profile/ProfilePage';
 import LoginContainer from './pages/K-Profile/LoginPage_Option/LoginContainer';
 
