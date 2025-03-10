@@ -48,36 +48,35 @@ const LoginContainerKPlayer = () => {
           >
             <div className="max-w-sm mx-auto p-4 text-black">
               <ul className="list-disc pl-10 text-lg font-semibold">
-                <li>Freelance</li>
-                <li>Indépendant</li>
-                <li>Consultant</li>
+                <li>Entreprise</li>
+                <li>Industrie</li>
+                <li>Grand Compte</li>
+                <li>PME/TPE</li>
               </ul>
               
               <p className="mt-4">
-                Vous êtes à la <span className="text-blue-800 font-semibold">recherche de vos prochaines missions</span>
+                Vous êtes à la <span className="text-blue-800 font-semibold">recherche de Talents pour vos Projets</span>
               </p>
               
               <p className="mt-4 font-bold">Et vous souhaitez :</p>
               
-              <ul className="mt-2 space-y-2">
+              <ul className="mt-2 space-y-3">
                 <li>
-                  <span className="text-blue-800 font-semibold">Garder le contact</span> avec vos anciens clients et votre réseau
+                  <span className="text-blue-800 font-semibold">Obtenir rapidement des Profils pertinents</span>
                 </li>
                 <li>
-                  <span className="text-blue-800  font-semibold">Garder le contrôle</span> sur la visibilité de votre profil
+                  <span className="text-blue-800  font-semibold">Gérer la diffusion</span>  de vos offres de missions
                 </li>
                 <li>
-                  Gérer facilement votre <span className="text-blue-800  font-semibold">dossier de compétences</span>
+               <span className="text-blue-800  font-semibold">Suivre les missions</span> de vos consultants 
                 </li>
                 <li>
-                  Centraliser vos <span className="text-blue-800  font-semibold">références professionnelles</span>
-                </li>
-                <li>
-                  <span className="text-blue-800  font-semibold">Suivre vos missions</span>
+                <span className="text-blue-800  font-semibold">Garder le contact</span> avec vos  partenaires et votre réseau
                 </li>
                 <li>
                   <span className="text-blue-800  font-semibold">Rester informé(e)</span> de la tendance du marché
                 </li>
+                
               </ul>
             </div>
           </motion.div>
