@@ -52,7 +52,7 @@ const Home = () => {
 
         {/* K-Player */}
         <motion.div 
-          onClick={() => navigate("/LoginPageKPlayer")}
+          onClick={() => navigate("/LoginKplayer")}
           className="cursor-pointer flex justify-center"
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }}

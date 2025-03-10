@@ -10,7 +10,7 @@ import Reglage from "./Reglage/Reglage";
 import JobOpportunities from "./JobOpportunities";
 import Dashboard from "./Dashboard";
 import MissionsTable from "./MissionsTable";
-import Login from "./Login"; // Import the login popup component
+import Login from "./LoginPupap"; // Import the login popup component
 import { isAuthenticated } from "../../utils/jwt";
 import Sidebar from "./Sidebar";
 

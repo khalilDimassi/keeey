@@ -33,8 +33,7 @@ const LoginPage = () => {
   };
 
   return (
-   
-    
+     
       <motion.div
         className="relative w-full max-w-sm sm:max-w-md md:max-w-lg bg-white p-6 sm:p-8 shadow-lg rounded-2xl "
         style={{ boxShadow: "0 1px 6px 2px rgba(34, 146, 34, 0.3)" }}
