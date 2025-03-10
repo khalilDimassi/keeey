@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+
 import Profile from "./ProfileAfterLogin/ProfilePage";
-import KProfile from "./beforlogin/KProfile";
-import Oportunite from "./beforlogin/Oportunite";
+import KProfile from "./Competence/KProfile";
+import Oportunite from "./Competence/Oportunite";
 import Cv from "./cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
@@ -12,6 +12,7 @@ import Dashboard from "./Dashboard";
 import MissionsTable from "./MissionsTable";
 import Login from "./Login"; // Import the login popup component
 import { isAuthenticated } from "../../utils/jwt";
+import Sidebar from "./Sidebar";
 
 type IconId =
   | "dashboard"

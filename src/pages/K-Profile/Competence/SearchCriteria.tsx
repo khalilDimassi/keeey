@@ -22,10 +22,10 @@ function SearchCriteria() {
     ];
 
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-2 gap-6 items-start">
+        <div className="p-4 ">
+            <div className="grid grid-cols-2 gap-6 items-start ">
                 {/* Type de contrat souhaité */}
-                <div className="space-y-3">
+                <div className="space-y-3 ">
                     <h2 className="text-lg font-medium">Type de contrat souhaité</h2>
                     <div className="space-y-2">
                         {contractTypes.map((contract) => (
