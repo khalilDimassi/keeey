@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FileText, Award } from "lucide-react";
 import SearchCriteria from "./SearchCriteria";
-import Competencies from "./Competencies";
+import Competencies from "./Mode guest/Competencies";
 import { isAuthenticated } from "../../../utils/jwt";
 
 import InformationsGnerales from "./InformationsGnerales";
