@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import { ArrowLeft } from "lucide-react";
-import logo from "../assets/logoKeeePlayer.svg";
+import logo from "../../assets/logoKeeePlayer.svg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -52,7 +52,7 @@ const AddKPlayer = () => {
         }}
       >
         <div className="flex items-center mb-5">
-          <button onClick={() => navigate("/LoginOptionsKPlayer")} className="text-gray-600 hover:text-gray-800">
+          <button onClick={() => navigate("/LoginKplayer")} className="text-gray-600 hover:text-gray-800">
             <ArrowLeft size={22} />
           </button>
           <h2 className="text-lg font-bold text-gray-700 flex-grow text-center pr-4">
