@@ -10,6 +10,10 @@ import {
   BrainCircuit, // ✅ Alternative for Competence
   LucideIcon
 } from "lucide-react";
+import Dashbord from "./SidebarIcons/Dashbord";
+import CompetenceSVG from "./SidebarIcons/CompetenceSVG";
+import CvSvG from "./SidebarIcons/CvSVG";
+import TargetSVG from "./SidebarIcons/TargetSVG";
 
 type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact"| null;
 
@@ -28,20 +32,17 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
       setActiveIcon(null);
     }
   }, [horizontal]);
-
- 
   const icons: { id: IconId; Icon: LucideIcon }[] = [
-    { id: "dashboard", Icon: LayoutGrid },
-    { id: "competence", Icon: BrainCircuit },
-    { id: "fileText1", Icon: FileText },
+    { id: "dashboard", Icon: Dashbord },  // ✅ Now correctly typed
+    { id: "competence", Icon: CompetenceSVG },
+    { id: "fileText1", Icon: CvSvG },
     { id: "bookmark", Icon: Bookmark },
-    { id: "target", Icon: Target },
+    { id: "target", Icon: TargetSVG },
     { id: "contact", Icon: Contact },
     { id: "user", Icon: User },
     { id: "settings", Icon: Settings },
-];
-
-
+  ];
+  
   const handleIconClick = (id: IconId) => {
     setActiveIcon(id);
     setHorizontal(false); // Switch back to vertical mode
@@ -91,10 +92,11 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
               }}
             >
               <Icon
-                className={`w-6 h-6 transition-all duration-500 ${
-                  activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
-                }`}
-              />
+  className={`w-6 h-6 transition-all duration-500 ${
+    activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
+  }`}
+/>
+
             </div>
           </div>
         ))}

@@ -154,13 +154,13 @@ function Competencies() {
     : [];
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-4  ">
       {isLoading ? (
         <div className="text-center text-gray-600">Chargement des secteurs...</div>
       ) : (
         <>
           {/* Save Button */}
-          <div className="flex justify-end">
+          <div className="flex justify-end ">
             <button
               onClick={handleSaveSkills}
               disabled={!connecte || selectedSkills.length === 0 || isSaving}
