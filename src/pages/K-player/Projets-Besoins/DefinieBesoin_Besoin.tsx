@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft, Edit } from "lucide-react";
 import CompetencesEtCriteresDocument from "./CompetencesEtCriteresDocumetDefinirBesoin_Besoin";
 import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
-import CompetencesEtCriteres from "../CompetencesEtCriteres";
+import CompetencesEtCriteres from "../Competence/CompetencesEtCriteres";
 
 interface DefineNeedFormProps {
   onBack: () => void;
@@ -31,9 +31,8 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
           <div className="inline-flex rounded-full border border-gray-300 mr-60">
             <button
               onClick={handleBesoinClick}
-              className={`px-4 py-2 ${
-                !isEmptyBox ? "bg-[#215A96] text-white" : "bg-white text-black"
-              }`}
+              className={`px-4 py-2 ${!isEmptyBox ? "bg-[#215A96] text-white" : "bg-white text-black"
+                }`}
               style={{
                 borderRadius: "20px 0 0 20px",
                 border: "1px solid #215A96",
@@ -43,9 +42,8 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
             </button>
             <button
               onClick={handleEmptyBoxClick}
-              className={`px-4 py-2 ${
-                isEmptyBox ? "bg-[#215A96] text-white" : "bg-white text-black"
-              }`}
+              className={`px-4 py-2 ${isEmptyBox ? "bg-[#215A96] text-white" : "bg-white text-black"
+                }`}
               style={{
                 borderRadius: "0 20px 20px 0",
                 border: "1px solid #215A96",
@@ -79,64 +77,64 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
             </div>
 
             <div className="grid grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Titre</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="Titre"
-                
-              />
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Titre</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="Titre"
+
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Date appelle d'offre</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="Date appelle d'offre"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Date démarrage</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="Date démarrage"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Date réponse</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="Date réponse"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Durée prévisionnelle</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="Durée prévisionnelle"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">TJM cible</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2"
+                  placeholder="TJM cible"
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Date appelle d'offre</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="Date appelle d'offre"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Date démarrage</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="Date démarrage"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Date réponse</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="Date réponse"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Durée prévisionnelle</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="Durée prévisionnelle"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">TJM cible</label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2"
-                placeholder="TJM cible"
-              />
-            </div>
-             </div>
           </div>
         </div>
       )}
 
       {isEmptyBox ? (
         <div className="p+3 ">
-          
-<CompetencesEtCriteres />
+
+          <CompetencesEtCriteres />
 
 
 

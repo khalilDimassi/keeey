@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import NavbarKPlayer from "./NavbarKPlayer";
 import SidebarKPlayer from "./SidebarKPlayer";
-import CompetencesEtCriteres from "./CompetencesEtCriteres";
+import CompetencesEtCriteres from "./Competence/CompetencesEtCriteres";
 import CandidatesList from "./CandidatesList";
-import Login from "./Login"; // Import the login popup component
+import Login from "./Login";
 import ProjetsBesoins from "./Projets-Besoins/ProjetsBesoins";
-import ProfilePage from "./Profile/ProfilePage"; // Import ProfilePage component
-import Mission from "./Mission/Mission"; // Import Mission component
+import ProfilePage from "./Profile/ProfilePage";
+import Mission from "./Mission/Mission";
 import ContactPage from "./Contact/ContactPage";
 import Reglage from "./Reglage/Reglage";
+import { isAuthenticated } from "../../utils/jwt";
 
 
 type IconId =
@@ -22,18 +23,18 @@ type IconId =
   | null;
 
 const LayoutKPlayer = () => {
-  const [connecte] = useState(true); // Connection state
+  const [isOnline] = useState(isAuthenticated);
   const [activeComponent, setActiveComponent] = useState<IconId>(
-    connecte ? "dashboard" : "company"
+    isOnline ? "dashboard" : "company"
   );
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // Login popup state
+  const [showLoginPopup, setShowLoginPopup] = useState(!isOnline);
 
   const handleIconClick = (componentId: IconId) => {
-    if (!connecte && componentId !== "company") {
+    if (!isOnline && componentId !== "company") {
       setShowLoginPopup(true);
       return;
     }
-    setActiveComponent(componentId); // Set the selected component
+    setActiveComponent(componentId);
   };
 
   return (
@@ -49,7 +50,7 @@ const LayoutKPlayer = () => {
         <div className="w-28">
           <SidebarKPlayer
             onIconClick={handleIconClick}
-            defaultSelected={connecte ? "dashboard" : "company"}
+            defaultSelected={isOnline ? "dashboard" : "company"}
           />
         </div>
 

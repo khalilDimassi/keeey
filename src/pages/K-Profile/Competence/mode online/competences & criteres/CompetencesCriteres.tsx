@@ -124,7 +124,11 @@ const CompetencesCriteres: React.FC = () => {
           ) : error ? (
             <div className="text-center py-4 text-red-500">{error}</div>
           ) : (
-            <Sectors sectors={sectors} initialSelections={initialSelections} onSelectionChange={handleSelectionChange} />
+            <Sectors
+              sectors={sectors}
+              initialSelections={initialSelections}
+              onSelectionChange={handleSelectionChange}
+            />
           )}
         </div>
         <div className="w-full md:w-1/2 px-4">
