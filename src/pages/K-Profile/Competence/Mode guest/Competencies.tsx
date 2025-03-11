@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { getAuthHeader, isAuthenticated } from "../../../../utils/jwt";
-import Dropdown from "./Dropdown";
+import Dropdown from './Dropdown'
 
 interface Job {
   name: string;
