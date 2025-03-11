@@ -1,258 +1,244 @@
-import React, { useRef, useState,useEffect } from "react";
+import React, { useState } from "react";
 import { Calendar, PlusCircle, Trash2 } from "lucide-react";
 import DocumentsDevinirBesoin from "./DocumentUploadModal";
 
+export interface Job {
+  id: number;
+  job: string;
+}
 
-const secteursOptions = [
-  "Développement et Programmation",
-  "Infrastructures et Réseaux",
-  "Gestion de Projet et Consulting",
-  "Marketing Digital et Communication",
-  "Cybersécurité",
-  "Administration des Bases de Données",
-  "Data et Intelligence Artificielle (IA)",
-  "Web, Design et UX/UI",
-];
+export interface Sector {
+  id: number;
+  sector: string;
+  jobs: Job[];
+}
 
-const CompetencesEtCriteresDocument: React.FC = () => {
-  const [selectedSecteurs, setSelectedSecteurs] = useState<string[]>([]);
+interface CompetencesProps {
+  sectors: Sector[];
+}
+
+const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors }) => {
   const [selectedContract, setSelectedContract] = useState<string>("CDI");
   const [remoteWork, setRemoteWork] = useState<string>("Non");
-  const [languageInput, setLanguageInput] = useState<string>("");
-  const [languages, setLanguages] = useState<string[]>([]);
 
+  const [selectedSectors, setSelectedSectors] = useState<number[]>([]);
+  const [activeSector, setActiveSector] = useState<number | null>(null);
+  const [seniority, setSeniority] = useState<{ [key: number]: number }>({});
+  const [selectedJobs, setSelectedJobs] = useState<{ [key: number]: number[] }>({});
 
-
-    const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
-    const [selectedOptions, setSelectedOptions] = useState<Record<number, number | null>>({});
-    const dropdownRef = useRef<HTMLDivElement>(null);
-  
-
- // Gestion des sélections/désélections des secteurs
- const toggleSecteur = (secteur: string, index: number) => {
-  const isSelected = selectedSecteurs.includes(secteur);
-  
-  if (isSelected) {
-    // Si déjà sélectionné, on désélectionne
-    setSelectedSecteurs(prev => prev.filter(item => item !== secteur));
-    // Et on supprime l'option sélectionnée
-    const newSelectedOptions = { ...selectedOptions };
-    delete newSelectedOptions[index];
-    setSelectedOptions(newSelectedOptions);
-  } else {
-    // Si pas sélectionné, on sélectionne
-    setSelectedSecteurs(prev => [...prev, secteur]);
-    // Et on sélectionne automatiquement l'option "Junior" (index 2)
-    setSelectedOptions(prev => ({
-      ...prev,
-      [index]: 2
-    }));
-  }
-};
- // Vérifie si une option est sélectionnée
- const isOptionSelected = (optionIndex: number, sectorIndex: number) => {
-  return selectedOptions[sectorIndex] === optionIndex;
-};
-  const addLanguage = () => {
-    if (languageInput.trim() !== "" && !languages.includes(languageInput)) {
-      setLanguages([...languages, languageInput]);
-      setLanguageInput("");
-    }
-  };
-// Détermine la couleur d'une ligne spécifique basée sur l'option sélectionnée
-const getLineColor = (sectorIndex: number, lineIndex: number) => {
-  const selectedOption = selectedOptions[sectorIndex];
-  
-  if (selectedOption === 0) {
-    // Expert - toutes les lignes sont bleues
-    return "bg-blue-600";
-  } else if (selectedOption === 1) {
-    // Intermediaire - lignes 2 et 3 sont bleues
-    return lineIndex >= 1 ? "bg-blue-600" : "bg-gray-400";
-  } else if (selectedOption === 2) {
-    // Junior - seulement la ligne 3 est bleue
-    return lineIndex === 2 ? "bg-blue-600" : "bg-gray-400";
-  }
-  
-  // Aucune option sélectionnée - toutes sont grises
-  return "bg-gray-400";
-};
-  const removeLanguage = (lang: string) => {
-    setLanguages(languages.filter((l) => l !== lang));
-  };
- // Toggle le dropdown menu
-  const toggleDropdown = (index: number) => {
-    setOpenDropdownIndex(openDropdownIndex === index ? null : index);
-  };
-
-  // Sélectionner une option du dropdown
-  const selectOption = (optionIndex: number, sectorIndex: number) => {
-    // Récupérer le secteur correspondant
-    const secteur = secteursOptions[sectorIndex];
-    
-    // Ajouter automatiquement le secteur aux secteurs sélectionnés s'il n'est pas déjà sélectionné
-    if (!selectedSecteurs.includes(secteur)) {
-      setSelectedSecteurs(prev => [...prev, secteur]);
-    }
-    
-    // Mettre à jour l'option sélectionnée
-    setSelectedOptions({
-      ...selectedOptions,
-      [sectorIndex]: optionIndex
-    });
-    
-    // Fermer le dropdown
-    setOpenDropdownIndex(null);
-  };
-
-  // Fermer le dropdown quand on clique ailleurs
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpenDropdownIndex(null);
+  const toggleSector = (sectorId: number) => {
+    if (selectedSectors.includes(sectorId)) {
+      setSelectedSectors(selectedSectors.filter(id => id !== sectorId));
+      setSeniority(prev => {
+        const updated = { ...prev };
+        delete updated[sectorId];
+        return updated;
+      });
+      setSelectedJobs(prev => {
+        const updated = { ...prev };
+        delete updated[sectorId];
+        return updated;
+      });
+      if (activeSector === sectorId) {
+        const remainingSectors = selectedSectors.filter(id => id !== sectorId);
+        setActiveSector(remainingSectors.length > 0 ? remainingSectors[0] : null);
       }
-    };
+    } else if (selectedSectors.length < 3) {
+      setSelectedSectors([...selectedSectors, sectorId]);
+      setSeniority(prev => ({ ...prev, [sectorId]: 1 }));
+      setSelectedJobs(prev => ({ ...prev, [sectorId]: [] }));
+      setActiveSector(sectorId);
+    }
+  };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-  
+  const handleSeniorityChange = (sectorId: number, value: number) => {
+    setSeniority(prev => ({ ...prev, [sectorId]: value }));
+  };
+
+  const toggleJob = (sectorId: number, jobId: number) => {
+    setSelectedJobs(prev => {
+      const jobs = prev[sectorId] || [];
+      if (jobs.includes(jobId)) {
+        return { ...prev, [sectorId]: jobs.filter(id => id !== jobId) };
+      } else {
+        return { ...prev, [sectorId]: [...jobs, jobId] };
+      }
+    });
+  };
+
+  const [tools, setTools] = useState<string[]>([]);
+  const [certifications, setCertifications] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [qualities, setQualities] = useState<string[]>([]);
+
+  const [toolInput, setToolInput] = useState<string>("");
+  const [certificationInput, setCertificationInput] = useState<string>("");
+  const [languageInput, setLanguageInput] = useState<string>("");
+  const [qualityInput, setQualityInput] = useState<string>("");
+
+  // Add item to a list
+  const addItem = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
+    if (item.trim() !== "" && !list.includes(item)) {
+      setList([...list, item]);
+      setInput("");
+    }
+  };
+
+  // Remove item from a list
+  const removeItem = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+    setList(list.filter((i) => i !== item));
+  };
+
+  // Collect and return user selections
+  const collectSelections = () => {
+    const selections = selectedSectors.map(sectorId => ({
+      id: sectorId,
+      seniority: seniority[sectorId],
+      jobs: selectedJobs[sectorId] || [],
+    }));
+    // onSelectionChange(selections);
+  };
+
+
+  // Render seniority slider
+  const renderSenioritySlider = (sectorId: number) => {
+    const seniorityLevels = [
+      { level: 1, name: "Junior", description: "1 - 4 ans" },
+      { level: 2, name: "Mid-Level", description: "5 - 9 ans" },
+      { level: 3, name: "Senior", description: "10 - 14 ans" },
+      { level: 4, name: "Lead", description: "15 - 19 ans" },
+      { level: 5, name: "Principal", description: "20+ ans" },
+    ];
+    const currentLevel = seniority[sectorId] || 1;
+    const currentSeniority = seniorityLevels.find(level => level.level === currentLevel);
+
+    return (
+      <div className="my-4">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>{currentSeniority?.name}</span>
+          <span>{currentSeniority?.description}</span>
+        </div>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          value={currentLevel}
+          onChange={(e) => handleSeniorityChange(sectorId, parseInt(e.target.value))}
+          className="w-full"
+        />
+      </div>
+    );
+  };
+
+  // Render jobs list
+  const renderJobs = (sectorId: number) => {
+    const sector = sectors.find(s => s.id === sectorId);
+    if (!sector) return null;
+    return (
+      <div className="flex flex-wrap gap-2 my-4">
+        {sector.jobs.map(job => (
+          <button
+            key={job.id}
+            className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300'
+              }`}
+            onClick={() => toggleJob(sectorId, job.id)}
+          >
+            {job.job} <span className="ml-1">+</span>
+          </button>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="my-2 bg-gray-100 min-h-screen flex gap-6">
-      {/* Left side: Compétences */}
-      <div className="bg-white p-6 rounded-lg shadow-md w-1/2" style={{boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)" ,borderRadius:"10px"}}>
-       <h2 className="text-lg font-semibold mb-4">Compétences</h2>
-        {/* Secteur (Encadré) */}
+      <div
+        className="bg-white p-6 rounded-lg shadow-md w-1/2"
+        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+      >
+        <h2 className="text-lg font-semibold mb-4">Compétences</h2>
+        {/* Secteur */}
         <p className="text-black font-semibold mb-2">Secteur</p>
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {[
-            "Automobile / Equipementiers",
-            "Ferroviaire",
-            "Aérospatial",
-            "Défense",
-            "Life Science",
-            "Énergie",
-            "Naval",
-            "Industrie Mécanique / Électronique / Multi secteurs",
-          ].map((item, index) => (
+        <div className="grid grid-cols-3 gap-2 mb-4" style={{ width: "auto" }}>
+          {sectors.map(sector => (
             <button
-              key={index}
-              className="flex items-center gap-2 border rounded-md p-2 text-gray-700"
+              key={sector.id}
+              className={`
+              px-4 py-2 rounded-full text-sm flex items-center 
+              ${selectedSectors.includes(sector.id) ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300'}
+            `}
+              onClick={() => toggleSector(sector.id)}
+              disabled={!selectedSectors.includes(sector.id) && selectedSectors.length >= 3}
             >
-              <input type="checkbox" className="w-4 h-4 accent-blue-600" />
-              {item}
+              {sector.sector} <span className="ml-1">{selectedSectors.includes(sector.id) ? '-' : '+'}</span>
             </button>
           ))}
         </div>
-   {/* Secteurs */}
-   <p className="text-gray-600 mb-2">Secteur</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {secteursOptions.map((secteur, index) => (
-              <div key={index} className="flex bg-gray-100 border relative">
-                <button
-                  name="fr"
-                  className={`px-3 flex py-2 ${
-                    selectedSecteurs.includes(secteur)
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
-                  onClick={() => toggleSecteur(secteur, index)}
-                >
-                  {secteur}
-                </button>
-                <div className="relative">
-                  <button
-                    name="mn"
-                    className="group px-2"
-                    onClick={() => toggleDropdown(index)}
-                  >
-                    <div className="flex flex-col justify-between w-[15px] h-[12px] duration-500 overflow-hidden group-focus:rotate-180">
-                      <div className={`h-[2px] w-7 ${getLineColor(index, 0)}`}></div>
-                      <div className={`h-[2px] w-7 ${getLineColor(index, 1)}`}></div>
-                      <div className={`h-[2px] w-7 ${getLineColor(index, 2)}`}></div>
-                    </div>
-                  </button>
-                  {openDropdownIndex === index && (
-                    <div
-                      ref={dropdownRef}
-                      className="absolute z-10 top-full bg-white border border-gray-200 rounded-md shadow-lg"
-                      style={{ minWidth: "150px", marginLeft: "30px", marginTop: "-90px" }}
-                    >
-                      <div className="py-1">
-                        <button
-                          onClick={() => selectOption(0, index)}
-                          className={`block w-full text-left px-4 py-2 ${
-                            isOptionSelected(0, index) 
-                              ? "bg-blue-600 text-white" 
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Expert
-                        </button>
-                        <button
-                          onClick={() => selectOption(1, index)}
-                          className={`block w-full text-left px-4 py-2 ${
-                            isOptionSelected(1, index) 
-                              ? "bg-blue-600 text-white" 
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Intermediaire
-                        </button>
-                        <button
-                          onClick={() => selectOption(2, index)}
-                          className={`block w-full text-left px-4 py-2 ${
-                            isOptionSelected(2, index) 
-                              ? "bg-blue-600 text-white" 
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Junior
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
 
+        {/* Selected sectors display */}
+        {selectedSectors.length > 0 && (
+          <div className="flex justify-center items-center">
+            <div
+              className="inline-flex border border-gray-300 rounded-md overflow-hidden mb-6"
+              style={{ borderRadius: "20px" }}
+            >
+              {selectedSectors.map(sectorId => (
+                <button
+                  key={sectorId}
+                  className={`px-4 py-2 ${activeSector === sectorId
+                    ? "bg-blue-600 text-white"
+                    : "bg-white border-r border-gray-300"
+                    }`}
+                  onClick={() => setActiveSector(sectorId)}
+                >
+                  {activeSector === sectorId && (
+                    <span className="inline-flex items-center justify-center w-4 h-4 bg-blue-600 text-white rounded-full mr-1 text-xs">
+                      ✓
+                    </span>
+                  )}
+                  {sectors.find(s => s.id === sectorId)?.sector}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Jobs */}
+        {activeSector !== null && (
+          <div className="my-6">
+            {renderSenioritySlider(activeSector)}
+            <br></br>
+            <p className="text-gray-600 mb-2">Metier</p>
+            {renderJobs(activeSector)}
+          </div>
+        )}
 
         {/* Outils */}
-        <p className="text-gray-600 mt-4">Outils / habilitations</p>
-        <input type="text" className="w-full border p-2 rounded-md mt-1" />
-
-        {/* Langues */}
-        <p className="text-gray-600 mt-4">Langues</p>
-        <div className="flex items-center gap-2 mb-4">
+        <p className="text-gray-600 mt-4">Outils</p>
+        <div className="flex items-center gap-1 mb-4">
           <input
             type="text"
-            value={languageInput}
-            onChange={(e) => setLanguageInput(e.target.value)}
-            placeholder="Ajouter une langue"
+            value={toolInput}
+            onChange={(e) => setToolInput(e.target.value)}
+            placeholder="Ajouter un outil"
             className="w-full border p-2 rounded-md"
           />
           <button
-            onClick={addLanguage}
+            onClick={() => addItem(toolInput, tools, setTools, setToolInput)}
             className="text-blue-600 hover:text-blue-800"
           >
             <PlusCircle size={28} />
           </button>
         </div>
-
-        {/* Affichage des langues ajoutées */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {languages.map((lang, index) => (
+          {tools.map((tool, index) => (
             <div
               key={index}
               className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
             >
-              <span>{lang}</span>
+              <span>{tool}</span>
               <button
-                onClick={() => removeLanguage(lang)}
+                onClick={() => removeItem(tool, tools, setTools)}
                 className="text-white"
               >
                 <Trash2 size={18} />
@@ -261,15 +247,113 @@ const getLineColor = (sectorIndex: number, lineIndex: number) => {
           ))}
         </div>
 
-        {/* Qualités relationnelles */}
+        {/* Habilitations */}
+        <p className="text-gray-600 mt-4">Habilitations</p>
+        <div className="flex items-center gap-1 mb-4">
+          <input
+            type="text"
+            value={certificationInput}
+            onChange={(e) => setCertificationInput(e.target.value)}
+            placeholder="Ajouter une habilitation"
+            className="w-full border p-2 rounded-md"
+          />
+          <button
+            onClick={() => addItem(certificationInput, certifications, setCertifications, setCertificationInput)}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            <PlusCircle size={28} />
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {certifications.map((certification, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+            >
+              <span>{certification}</span>
+              <button
+                onClick={() => removeItem(certification, certifications, setCertifications)}
+                className="text-white"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Langues */}
+        <p className="text-gray-600 mt-4">Langues</p>
+        <div className="flex items-center gap-1 mb-4">
+          <input
+            type="text"
+            value={languageInput}
+            onChange={(e) => setLanguageInput(e.target.value)}
+            placeholder="Ajouter une langue"
+            className="w-full border p-2 rounded-md"
+          />
+          <button
+            onClick={() => addItem(languageInput, languages, setLanguages, setLanguageInput)}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            <PlusCircle size={28} />
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {languages.map((lang, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+            >
+              <span>{lang}</span>
+              <button
+                onClick={() => removeItem(lang, languages, setLanguages)}
+                className="text-white"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Qualités Relationnelles */}
         <p className="text-gray-600 mt-4">Qualités Relationnelles</p>
-        <input type="text" className="w-full border p-2 rounded-md mt-1" />
+        <div className="flex items-center gap-1 mb-4">
+          <input
+            type="text"
+            value={qualityInput}
+            onChange={(e) => setQualityInput(e.target.value)}
+            placeholder="Ajouter une qualité"
+            className="w-full border p-2 rounded-md"
+          />
+          <button
+            onClick={() => addItem(qualityInput, qualities, setQualities, setQualityInput)}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            <PlusCircle size={28} />
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {qualities.map((quality, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+            >
+              <span>{quality}</span>
+              <button
+                onClick={() => removeItem(quality, qualities, setQualities)}
+                className="text-white"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Right side: Critères and DocumentUploadModal */}
       <div className="flex flex-col w-1/2 gap-6">
         {/* Section Critères */}
-        <div className="bg-white p-6 rounded-lg shadow-md w-full"style={{boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)" ,borderRadius:"10px"}}>
+        <div className="bg-white p-6 rounded-lg shadow-md w-full" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
           <h2 className="text-lg font-semibold mb-4">Critères</h2>
 
           {/* Type de contrat */}

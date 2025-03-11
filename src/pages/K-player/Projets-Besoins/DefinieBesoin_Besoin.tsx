@@ -1,21 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Edit } from "lucide-react";
 import CompetencesEtCriteresDocument from "./CompetencesEtCriteresDocumetDefinirBesoin_Besoin";
-import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
 import CompetencesEtCriteres from "../Competence/CompetencesEtCriteres";
+import CandidatesList from "../CandidatesList";
+import { Sector } from "../Competence/Competences";
+import axios from "axios";
+// import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
+
+type SectorSuggestionsResponse = Sector[];
 
 interface DefineNeedFormProps {
   onBack: () => void;
 }
 
-export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) => {
-  const [title, setTitle] = useState("");
-  const [offerDate, setOfferDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [isEmptyBox, setIsEmptyBox] = useState(false);
 
+
+export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) => {
+  // const [title, setTitle] = useState("");
+  // const [offerDate, setOfferDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  const [isEmptyBox, setIsEmptyBox] = useState(false);
   const handleBesoinClick = () => setIsEmptyBox(false);
   const handleEmptyBoxClick = () => setIsEmptyBox(true);
+
+  const [sectors, setSectors] = useState<Sector[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSectors = async () => {
+    try {
+      const response = await axios.get<SectorSuggestionsResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/sectors`
+      );
+      setSectors(response.data);
+    } catch (err) {
+      setError('Failed to fetch sectors. Please try again later.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSectors();
+  }, []);
 
   return (
     <div className="p-4 w-full mx-auto">
@@ -53,7 +81,6 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
             </button>
           </div>
         </div>
-
         <button
           className="bg-blue-700 text-white px-4 py-2 rounded-lg"
           style={{ backgroundColor: "#215A96", borderRadius: "20px" }}
@@ -133,21 +160,22 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
 
       {isEmptyBox ? (
         <div className="p+3 ">
-
           <CompetencesEtCriteres />
-
-
-
-
-
-
         </div>
       ) : (
-        <CompetencesEtCriteresDocument />
+        // loading ? (
+        //   <div className="text-center py-4">Loading...</div>
+        // ) : error ? (
+        //   <div className="text-center py-4 text-red-500">{error}</div>
+        // ) : (
+        //   <CompetencesEtCriteresDocument sectors={sectors} />
+        // )
+        <CompetencesEtCriteresDocument sectors={sectors} />
       )}
 
       <div className="mt-6">
-        <CandidatesListDefinirBesoin />
+        {/* <CandidatesListDefinirBesoin /> */}
+        <CandidatesList />
       </div>
     </div>
   );
