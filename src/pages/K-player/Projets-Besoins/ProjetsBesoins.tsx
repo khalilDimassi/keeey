@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 
 
 import { projects } from './projects';
-import { VoirDetaile } from './VoirDetaile';
+
 import { MesBesoin } from './MesBesoin';
 import { DefinieBesoin_Besoin } from './DefinieBesoin_Besoin';
-import CandidatesList from '../CandidatesList';
+
+import { VoirDetaile } from './VoireDetaille/VoirDetaile';
 
 
 export interface Project {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft, Edit } from "lucide-react";
 import CompetencesEtCriteresDocument from "./CompetencesEtCriteresDocumetDefinirBesoin_Besoin";
 import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
-import CompetencesEtCriteres from "../CompetencesEtCriteres";
+import CompetencesEtCriteres from "../Competances/CompetencesEtCriteres";
 
 interface DefineNeedFormProps {
   onBack: () => void;

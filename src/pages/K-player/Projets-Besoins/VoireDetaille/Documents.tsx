@@ -6,7 +6,7 @@ import { FaPlus, FaTimes, FaUpload } from "react-icons/fa";
 const documents = [
   { id: 1, name: "K-BIS" },
   { id: 2, name: "RIB" },
-  { id: 3, name: "Attestation Urssaf" }
+  
 ];
 
 interface DocumentUploadModalProps {
@@ -128,7 +128,7 @@ interface DocumentUploadModalProps {
 const Documents: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg "  style={{ boxShadow: "0 0 4px 1px rgba(8, 33, 64, 0.2)"}}>
+        <div className="px-4 bg-white  rounded-lg "  >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Documents</h2>
             <button className="text-blue-700 hover:text-blue-700"  onClick={() => setIsModalOpen(true)}>
@@ -139,9 +139,9 @@ const Documents: React.FC = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
       />
-          <div className="flex space-x-4">
+          <div className="flex space-x-4" >
             {documents.map((doc) => (
-              <div key={doc.id} className="flex flex-col items-center justify-center shadow-sm border rounded-lg p-2"style={{width:"10rem",height:"8rem"}}>
+              <div key={doc.id}  className="flex flex-col items-center justify-center shadow-sm border rounded-lg p-2"style={{width:"10rem",height:"8rem",boxShadow: "0 0 4px 1px rgba(8, 33, 64, 0.2)"}} >
                 <div className="w-full h-full bg-gray-300 rounded-md"></div>
                 <p className="text-sm mt-2">{doc.name}</p>
               </div>

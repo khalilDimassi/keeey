@@ -19,7 +19,7 @@ import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
 import AddPartner from './pages/K-Partner/AddPartner';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
-import CandidatesList from './pages/K-player/CandidatesList';
+import CandidatesList from './pages/K-player/Competances/CandidatesList';
 import ProfilePage from './pages/K-player/Profile/ProfilePage';
 import LoginContainer from './pages/K-Profile/LoginPage_OptionKprofile/LoginContainer';
 

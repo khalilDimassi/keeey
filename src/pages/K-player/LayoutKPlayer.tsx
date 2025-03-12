@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import NavbarKPlayer from "./NavbarKPlayer";
 import SidebarKPlayer from "./SidebarKPlayer";
-import CompetencesEtCriteres from "./CompetencesEtCriteres";
-import CandidatesList from "./CandidatesList";
+import CompetencesEtCriteres from "./Competances/CompetencesEtCriteres";
+import CandidatesList from "./Competances/CandidatesList";
 import Login from "./Login"; // Import the login popup component
 import ProjetsBesoins from "./Projets-Besoins/ProjetsBesoins";
 import ProfilePage from "./Profile/ProfilePage"; // Import ProfilePage component

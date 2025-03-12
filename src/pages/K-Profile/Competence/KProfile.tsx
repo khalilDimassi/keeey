@@ -86,10 +86,10 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               {activeTab === "Compétences_Critères" && <CompetencesCriteres />}
               {activeTab === "CV_compéténces" && <CvCompetences />}
               <button
-        className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
-        onClick={onClose}
-      >
-        <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+            className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
+             onClick={onClose}
+           >
+          <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_d_9011_8527)">
             <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
             <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
@@ -111,8 +111,8 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9011_8527" result="shape" />
             </filter>
           </defs>
-        </svg>
-      </button>
+          </svg>
+         </button>
             </div>
           </div>
         </>
