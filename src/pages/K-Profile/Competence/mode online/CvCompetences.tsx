@@ -1,10 +1,7 @@
-import { ChevronDown, Download, FileText, Menu } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 
 function CvCompetences() {
- 
-
   const sections = [
     "Informations personnelles",
     "Profil",
@@ -20,16 +17,11 @@ function CvCompetences() {
     "Autorisations",
   ];
 
-
   return (
     <div className="min-h-screen">
-    
-
       {/* Main Content */}
-      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 "   >
+      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6" >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-
           {/* Right Column - Navigation */}
           <div className={`lg:col-span-4 order-2 lg:order-1 `}>
             <div className="flex justify-center gap-4 mt-4 mb-4">
@@ -46,7 +38,7 @@ function CvCompetences() {
                   key={index}
                   className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors"
                     }`}
-                
+
                 >
                   <span>{section}</span>
                   <ChevronDown size={20} />

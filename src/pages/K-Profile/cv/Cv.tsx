@@ -186,8 +186,16 @@ function Cv() {
   };
 
   const renderSection = () => {
-    if (resumeData === null || !resumeData) {
-      return <div className="text-gray-500">Chargement de resume...</div>;
+    if (loading) {
+      return <div className="text-gray-500">Chargement en cours...</div>;
+    }
+
+    if (error) {
+      return <div className="text-red-500">Une erreur est survenue: {String(error)}</div>;
+    }
+
+    if (!resumeData) {
+      return <div className="text-gray-500">Aucune donnée disponible.</div>;
     }
 
     switch (activeSection) {
@@ -211,10 +219,10 @@ function Cv() {
         return <Qualites data={resumeData.qualities} onDataUpdated={handleDataUpdated} />;
       case "Langue":
         return <Languages data={resumeData.languages} onDataUpdated={handleDataUpdated} />;
-       case "Outils":
-       return <Outils data={resumeData.tools} />;
-       case "Autorisations":
-         return <Autorisations data={resumeData.authorizations} />;
+      case "Outils":
+        return <Outils data={resumeData.tools} />;
+      case "Autorisations":
+        return <Autorisations data={resumeData.authorizations} />;
 
       default:
         return <div className="text-gray-500">Section en construction...</div>;

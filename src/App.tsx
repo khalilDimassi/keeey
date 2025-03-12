@@ -1,12 +1,9 @@
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
-
-
-
-import LoginOptions from './pages/K-Profile/LoginPage_OptionKprofile/LoginOptions';
-import LoginPage from './pages/K-Profile/LoginPage_OptionKprofile/LoginPage';
 import Layout from './pages/K-Profile/Layout';
+//  import LoginOptions from './pages/K-Profile/LoginPage_OptionKprofile/LoginOptions';
+// import LoginPage from './pages/K-Profile/LoginPage_OptionKprofile/LoginPage';
 
 
 
@@ -19,9 +16,13 @@ import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
 import AddPartner from './pages/K-Partner/AddPartner';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
+<<<<<<< HEAD
 import CandidatesList from './pages/K-player/Competances/CandidatesList';
+=======
+>>>>>>> d20a625c1091dc0f0a742e527aa2ae44693059da
 import ProfilePage from './pages/K-player/Profile/ProfilePage';
 import LoginContainer from './pages/K-Profile/LoginPage_OptionKprofile/LoginContainer';
+// import CandidatesList from './pages/K-player/CandidatesList';
 
 import AddProfile from './pages/K-Profile/LoginPage_OptionKprofile/AddProfile';
 import LoginContainerKPlayer from './pages/K-player/LoginPage_OptionKplayer/LoginContainer';
@@ -46,7 +47,7 @@ function App() {
         <Route path="/LoginPageKPlayer" element={<LoginPageKPlayer />} />
         <Route path="/AddKPlayer" element={<AddKPlayer />} />
 
-        
+
         <Route path="/LoginKplayer" element={<LoginContainerKPlayer />} />
 
 

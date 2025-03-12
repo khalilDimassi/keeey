@@ -1,33 +1,60 @@
 import { useState, ChangeEvent } from "react";
 import { ArrowLeft } from "lucide-react";
 import logo from "../../assets/logoKeeePlayer.svg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { saveToken } from "../../../utils/jwt";
+import axios from "axios";
 
 const AddKPlayer = () => {
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const user_role = location.state?.user_role || "K-PLAYER";
 
-  interface FormData {
-    nom: string;
-    prenom: string;
-    email: string;
-    telephone: string;
-    password: string;
-    confirmPassword: string;
-  }
-
-  const [formData, setFormData] = useState<FormData>({
-    nom: "",
-    prenom: "",
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
-    telephone: "",
+    phone: "",
     password: "",
     confirmPassword: "",
+    user_role: user_role,
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/register`,
+        formData
+      );
+
+      const token = response?.data?.token;
+      if (!token) {
+        throw new Error("Token is missing in the response.");
+      }
+
+      saveToken(token);
+      navigate("/LayoutKPlayer");
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Une erreur est survenue. Veuillez réessayer."
+      );
+    }
+  };
+
 
   return (
     <div className="flex justify-center items-center min-h-screen px-2 bg-gray-50">
@@ -60,28 +87,28 @@ const AddKPlayer = () => {
           </h2>
         </div>
 
-        <form>
+        <form onSubmit={handleRegister}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-gray-600 text-sm">Nom</label>
+              <label className="block text-gray-600 text-sm">Prénom</label>
               <input
                 type="text"
-                name="nom"
-                placeholder="Nom"
+                name="first_name"
+                placeholder="Prénom"
                 className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                value={formData.nom}
+                value={formData.first_name}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
               />
             </div>
             <div>
-              <label className="block text-gray-600 text-sm">Prénom</label>
+              <label className="block text-gray-600 text-sm">Nom</label>
               <input
                 type="text"
-                name="prenom"
-                placeholder="Prénom"
+                name="last_name"
+                placeholder="Nom"
                 className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                value={formData.prenom}
+                value={formData.last_name}
                 onChange={handleChange}
                 style={{ borderRadius: "12px" }}
               />
@@ -105,10 +132,10 @@ const AddKPlayer = () => {
             <label className="block text-gray-600 text-sm">Téléphone</label>
             <input
               type="tel"
-              name="telephone"
+              name="phone"
               placeholder="Votre numéro"
               className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              value={formData.telephone}
+              value={formData.phone}
               onChange={handleChange}
               style={{ borderRadius: "12px" }}
             />
@@ -140,6 +167,8 @@ const AddKPlayer = () => {
               />
             </div>
           </div>
+
+          {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
 
           <div className="mt-5 flex space-x-3">
             <motion.button

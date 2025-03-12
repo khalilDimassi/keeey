@@ -7,10 +7,10 @@ import Oportunite from "./Competence/Oportunite";
 import Cv from "./cv/Cv";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
-import JobOpportunities from "./JobOpportunities";
+import JobOpportunities from "./Competence/mode online/JobOpportunities";
 import Dashboard from "./Dashboard";
 import MissionsTable from "./MissionsTable";
-import Login from "./LoginPupap"; // Import the login popup component
+import Login from "./LoginPupap";
 import { isAuthenticated } from "../../utils/jwt";
 import Sidebar from "./Sidebar";
 
@@ -28,7 +28,7 @@ type IconId =
 const Layout = () => {
   const [isOnline] = useState(isAuthenticated); // Connection state
 
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // Login popup state
+  const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated); // Login popup state
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
 
