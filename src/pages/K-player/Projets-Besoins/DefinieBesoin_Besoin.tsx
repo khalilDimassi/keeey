@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, Edit } from "lucide-react";
 import CompetencesEtCriteresDocument from "./CompetencesEtCriteresDocumetDefinirBesoin_Besoin";
-<<<<<<< HEAD
-import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
-import CompetencesEtCriteres from "../Competances/CompetencesEtCriteres";
-=======
+
+
 import CompetencesEtCriteres from "../Competence/CompetencesEtCriteres";
-import CandidatesList from "../CandidatesList";
+
 import { Sector } from "../Competence/Competences";
 import axios from "axios";
+import CandidatesList from "../Competances/CandidatesList";
 // import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
 
 type SectorSuggestionsResponse = Sector[];
->>>>>>> d20a625c1091dc0f0a742e527aa2ae44693059da
+
 
 interface DefineNeedFormProps {
   onBack: () => void;

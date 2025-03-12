@@ -1,21 +1,17 @@
 import { useState } from "react";
 import NavbarKPlayer from "./NavbarKPlayer";
 import SidebarKPlayer from "./SidebarKPlayer";
-<<<<<<< HEAD
-import CompetencesEtCriteres from "./Competances/CompetencesEtCriteres";
-import CandidatesList from "./Competances/CandidatesList";
-import Login from "./Login"; // Import the login popup component
-=======
-import CompetencesEtCriteres from "./Competence/CompetencesEtCriteres";
-import CandidatesList from "./CandidatesList";
-import Login from "./Login";
->>>>>>> d20a625c1091dc0f0a742e527aa2ae44693059da
+
+
 import ProjetsBesoins from "./Projets-Besoins/ProjetsBesoins";
 import ProfilePage from "./Profile/ProfilePage";
 import Mission from "./Mission/Mission";
 import ContactPage from "./Contact/ContactPage";
 import Reglage from "./Reglage/Reglage";
 import { isAuthenticated } from "../../utils/jwt";
+import CompetencesEtCriteres from "./Competence/CompetencesEtCriteres";
+import CandidatesList from "./Competances/CandidatesList";
+import Login from "./Login";
 
 
 type IconId =

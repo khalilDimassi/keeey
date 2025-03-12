@@ -16,10 +16,10 @@ import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
 import AddPartner from './pages/K-Partner/AddPartner';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
-<<<<<<< HEAD
+
 import CandidatesList from './pages/K-player/Competances/CandidatesList';
-=======
->>>>>>> d20a625c1091dc0f0a742e527aa2ae44693059da
+
+
 import ProfilePage from './pages/K-player/Profile/ProfilePage';
 import LoginContainer from './pages/K-Profile/LoginPage_OptionKprofile/LoginContainer';
 // import CandidatesList from './pages/K-player/CandidatesList';

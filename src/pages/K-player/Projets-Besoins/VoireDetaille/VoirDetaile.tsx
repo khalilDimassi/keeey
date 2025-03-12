@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Edit, Info } from 'lucide-react';
-import CompetencesEtCriteres from '../../Competances/CompetencesEtCriteres';
+
 import CompetencesEtCriteresVoirDetaille from './CompetencesEtCriteresVoirDetaille';
 import Documents from './Documents';
 import CandidatesList from '../../Competances/CandidatesList';
