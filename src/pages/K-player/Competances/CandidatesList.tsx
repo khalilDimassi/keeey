@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Star, Bookmark, ArrowUpRight, ChevronDown } from "lucide-react";
 
@@ -49,6 +49,23 @@ const CandidatesList: React.FC = () => {
     { level: 5, name: "Principal", description: "20+ ans" },
   ];
 
+  const [showExtraJobs, setShowExtraJobs] = useState(false);
+  const extraJobsRef = useRef<HTMLDivElement>(null);
+
+  // Close the extra jobs list when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: { target: any; }) => {
+      if (extraJobsRef.current && !extraJobsRef.current.contains(event.target)) {
+        setShowExtraJobs(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="">
       {/* Titre + Sélecteur */}
@@ -65,69 +82,91 @@ const CandidatesList: React.FC = () => {
       <div className="space-y-3">
         {candidates.map((candidate) => {
           const jobs = candidate.jobs ?? [];
+
           const highestSeniorityJob = getHighestSeniorityJob(jobs);
+          const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSeniorityJob.seniority);
           const extraJobsCount = jobs.length - 1;
 
           return (
             <div
               key={candidate.user_id}
-              className="bg-white p-3 rounded-lg shadow-md flex items-center justify-between gap-4"
+              className="bg-white p-3 rounded-lg shadow-md grid grid-cols-7 gap-4 items-center"
               style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
             >
               {/* Badge correspondance */}
-              <span className="bg-blue-300 text-blue-800 px-3 py-1 text-sm font-semibold rounded-md">
-                80% correspondant
-              </span>
+              <div className="col-span-1">
+                <span className="bg-blue-300 text-blue-800 px-3 py-1 text-sm font-semibold rounded-md">
+                  80% correspondant
+                </span>
+              </div>
 
               {/* Nom + Détails */}
-              <span className="font-semibold">{`${candidate.first_name} ${candidate.last_name}`}</span>
+              <div className="col-span-1">
+                <span className="font-semibold">{`${candidate.first_name} ${candidate.last_name}`}</span>
+              </div>
 
               {/* Évaluation */}
-              <div className="flex items-center gap-1">
+              <div className="col-span-1 flex items-center gap-1">
                 <Star size={16} className="text-yellow-500" />
                 <span className="text-gray-600">{candidate.rating}</span>
               </div>
 
               {/* Niveau */}
-              <span className="text-gray-500">{`Seniority: ${highestSeniorityJob.seniority}`}</span>
+              <div className="col-span-1">
+                <span className="text-gray-500">
+                  {highestSeniorityLevel ? `${highestSeniorityLevel.name}: ${highestSeniorityLevel.description}` : "-"}
+                </span>
+              </div>
 
               {/* Disponibilité */}
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
-                {candidate.availability}
-              </span>
+              <div className="col-span-1">
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
+                  {candidate.availability}
+                </span>
+              </div>
 
               {/* Compétences */}
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600 text-sm">Compétences :</span>
-                <span className="bg-blue-300 text-blue-800 w-14 px-2 py-1 text-xs rounded items-center">
+              <div className="col-span-1 flex items-center gap-4">
+                <span className="text-gray-600 text-sm">Metiers:</span>
+                <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded inline-flex items-center">
                   {highestSeniorityJob.job}
                 </span>
                 {extraJobsCount > 0 && (
-                  <div className="relative">
-                    <span className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full cursor-pointer">
+                  <div className="relative" ref={extraJobsRef}>
+                    <button
+                      onClick={() => setShowExtraJobs(!showExtraJobs)}
+                      className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full cursor-pointer"
+                    >
                       +{extraJobsCount}
-                    </span>
-                    <div className="absolute hidden bg-white p-2 rounded-lg shadow-md mt-2">
-                      {jobs.slice(1).map((job, index) => {
-                        const seniorityLevel = seniorityLevels.find(level => level.level === job.seniority) || {
-                          level: 0,
-                          name: "Unknown",
-                          description: "Unknown",
-                        };
+                    </button>
+                    {showExtraJobs && (
+                      <div className="absolute bg-white p-2 rounded-lg shadow-md mt-2 max-h-40 overflow-y-auto">
+                        <ul className="space-y-2">
+                          {jobs.slice(1).map((job, index) => {
+                            const seniorityLevel = seniorityLevels.find(level => level.level === job.seniority) || {
+                              level: 0,
+                              name: "Unknown",
+                              description: "Unknown",
+                            };
 
-                        return (
-                          <div key={index} className="text-xs text-gray-600">
-                            {job.job} - {seniorityLevel.name} ({seniorityLevel.description})
-                          </div>
-                        );
-                      })}
-                    </div>
+                            return (
+                              <li key={index} className="text-xs text-gray-600 border-b border-gray-200 pb-2">
+                                <div>{job.job}</div>
+                                <div>
+                                  {seniorityLevel.name}: {seniorityLevel.description}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Actions à droite */}
-              <div className="flex items-center gap-4">
+              <div className="col-span-1 flex items-center gap-4">
                 <Bookmark size={35} className="text-gray-500 cursor-pointer" />
                 <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{ backgroundColor: "#215A96", borderRadius: "10px" }}>
                   Valider l’intérêt

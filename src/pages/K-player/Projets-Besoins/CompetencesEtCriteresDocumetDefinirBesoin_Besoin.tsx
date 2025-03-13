@@ -77,7 +77,12 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors }) 
   const [qualityInput, setQualityInput] = useState<string>("");
 
   // Add item to a list
-  const addItem = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
+  const addItem = (
+    item: string,
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+    setInput: React.Dispatch<React.SetStateAction<string>>
+  ) => {
     if (item.trim() !== "" && !list.includes(item)) {
       setList([...list, item]);
       setInput("");

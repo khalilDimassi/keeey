@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Mail, ArrowUpRight, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface Candidate {
     id: number;
