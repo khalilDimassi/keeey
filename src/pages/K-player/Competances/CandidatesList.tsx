@@ -82,11 +82,9 @@ const CandidatesList: React.FC = () => {
       <div className="space-y-3">
         {candidates.map((candidate) => {
           const jobs = candidate.jobs ?? [];
-
           const highestSeniorityJob = getHighestSeniorityJob(jobs);
           const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSeniorityJob.seniority);
           const extraJobsCount = jobs.length - 1;
-
           return (
             <div
               key={candidate.user_id}

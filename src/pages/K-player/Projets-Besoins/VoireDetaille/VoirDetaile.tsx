@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Edit, Info } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 import CompetencesEtCriteresVoirDetaille from './CompetencesEtCriteresVoirDetaille';
-import Documents from './Documents';
-import CandidatesList from '../../Competances/CandidatesList';
 import CandidatesListDefinirBesoin from '../CandidatesListDefinirBesoin';
 import Informations from './Informations';
 import Candidats from './Candidats';
 import Diffusion from './Diffusion';
+import { Project } from '../ProjetsBesoins';
 
 
 interface ProjectDetailsProps {
   project: Project;
   onBack: () => void;
 }
-export interface Project {
-  id: number;
-  title: string;
-  reference: string;
-  date: string;
-  status: string;
-  participants: string[];
-}
+
 export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
   const [activeTab, setActiveTab] = useState("Informations");
   return (
@@ -51,8 +43,8 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
                 : "none"
             }}
             className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Informations"
-                ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+              ? "text-gray-900 bg-white rounded-t-xl z-10"
+              : "text-gray-400 bg-gray-100/50"
               }`}
             onClick={() => setActiveTab("Informations")}
           >
@@ -65,8 +57,8 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
                 : "none"
             }}
             className={`px-6 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "Compétences_Critères"
-                ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+              ? "text-gray-900 bg-white rounded-t-xl z-10"
+              : "text-gray-400 bg-gray-100/50"
               }`}
             onClick={() => setActiveTab("Compétences_Critères")}
           >
@@ -79,8 +71,8 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
                 : "none"
             }}
             className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Candidats"
-                ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+              ? "text-gray-900 bg-white rounded-t-xl z-10"
+              : "text-gray-400 bg-gray-100/50"
               }`}
             onClick={() => setActiveTab("Candidats")}
           >
@@ -98,8 +90,8 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
                 : "none"
             }}
             className={`px-6 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Diffusion"
-                ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+              ? "text-gray-900 bg-white rounded-t-xl z-10"
+              : "text-gray-400 bg-gray-100/50"
               }`}
             onClick={() => setActiveTab("Diffusion")}
           >
@@ -113,8 +105,8 @@ export function VoirDetaile({ project, onBack }: ProjectDetailsProps) {
 
 
         <div className={`relative bg-white p-4 shadow-lg  ${activeTab === "Informations"
-            ? "rounded-b-xl rounded-r-xl"
-            : "rounded-xl"
+          ? "rounded-b-xl rounded-r-xl"
+          : "rounded-xl"
           }`} >
           <div className="hover-box p-4" >
             {activeTab === "Informations" && <Informations />}
