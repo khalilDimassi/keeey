@@ -11,9 +11,7 @@ import Layout from './pages/K-Profile/Layout';
 import LoginOptionsKPlayer from './pages/K-player/LoginPage_OptionKplayer/LoginOptionsKPlayer';
 import LoginPageKPlayer from './pages/K-player/LoginPage_OptionKplayer/LoginPageKPlayer';
 import AddKPlayer from './pages/K-player/LoginPage_OptionKplayer/AddKPlayer';
-import LoginOptionsPartner from './pages/K-Partner/LoginOptionsPartner';
-import LoginPagePartner from './pages/K-Partner/LoginPagePartner';
-import AddPartner from './pages/K-Partner/AddPartner';
+
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
 
@@ -26,6 +24,8 @@ import LoginContainer from './pages/K-Profile/LoginPage_OptionKprofile/LoginCont
 
 import AddProfile from './pages/K-Profile/LoginPage_OptionKprofile/AddProfile';
 import LoginContainerKPlayer from './pages/K-player/LoginPage_OptionKplayer/LoginContainer';
+import AddPartner from './pages/K-Partner/LoginPage_OptionKpartner/AddPartner';
+import LoginContainerKPartner from './pages/K-Partner/LoginPage_OptionKpartner/LoginContainer';
 
 function App() {
   return (
@@ -36,8 +36,7 @@ function App() {
 
 
         <Route path="/LayoutKPartner" element={<LayoutKPartner />} />
-        <Route path="/LoginOptionsPartner" element={<LoginOptionsPartner />} />
-        <Route path="/LoginPagePartner" element={<LoginPagePartner />} />
+        
         <Route path="/AddPartner" element={<AddPartner />} />
 
 
@@ -49,11 +48,11 @@ function App() {
 
 
         <Route path="/LoginKplayer" element={<LoginContainerKPlayer />} />
-
-
+        <Route path="/Login" element={<LoginContainer />} />
+        <Route path="/LoginKPartner" element={<LoginContainerKPartner />} />
 
         <Route path="/Layout" element={<Layout />} />
-        <Route path="/Login" element={<LoginContainer />} />
+    
 
         <Route path="/Register" element={<AddProfile />} />
 

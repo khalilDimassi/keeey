@@ -45,7 +45,7 @@ const Navbar = () => {
     >
       {/* Left Side: Logo */}
       <div className="flex items-center">
-        <img src={logo} alt="Logo" className="w-32 h-14" />
+        <img src={logo} alt="Logo" className="w-32 h-14"  onClick={() => navigate("/")}/>
       </div>
 
       {/* Center: Profile Name */}
