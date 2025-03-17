@@ -1,5 +1,3 @@
-
-// MesBesoin.tsx
 import { ChevronRight } from 'lucide-react';
 import { Project } from './ProjetsBesoins';
 
@@ -39,7 +37,7 @@ export function MesBesoin({ projects, onSelectProject }: ProjectsListProps) {
 
           {/* Reference */}
           <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center">
-            Référence: {project.reference}
+            {project.reference}
           </span>
 
           {/* Date */}

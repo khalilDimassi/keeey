@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavbarKPlayer from "./NavbarKPlayer";
 import SidebarKPlayer from "./SidebarKPlayer";
 
@@ -11,7 +11,10 @@ import Reglage from "./Reglage/Reglage";
 import { isAuthenticated } from "../../utils/jwt";
 import CompetencesEtCriteres from "./Competence/CompetencesEtCriteres";
 import CandidatesList from "./Competances/CandidatesList";
+import axios from "axios";
 import Login from "./Login";
+import { SectorSuggestionsResponse } from "./Projets-Besoins/DefinieBesoin_Besoin";
+import { Sector } from "./Competence/Competences";
 
 
 type IconId =
@@ -39,6 +42,28 @@ const LayoutKPlayer = () => {
     setActiveComponent(componentId);
   };
 
+  const [sectors, setSectors] = useState<Sector[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSectors = async () => {
+    try {
+      const response = await axios.get<SectorSuggestionsResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/sectors`
+      );
+      setSectors(response.data);
+    } catch (err) {
+      setError('Failed to fetch sectors. Please try again later.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSectors();
+  }, []);
+
   return (
     <div className="w-full p-2 bg-gray-100">
       {/* Navbar */}
@@ -60,7 +85,7 @@ const LayoutKPlayer = () => {
         <div className="flex flex-col w-full mt-14 px-6">
           {activeComponent === "company" && (
             <>
-              <CompetencesEtCriteres />
+              <CompetencesEtCriteres sectors={sectors} loading={loading} error={error} />
               <div className="mt-6">
                 <CandidatesList />
               </div>

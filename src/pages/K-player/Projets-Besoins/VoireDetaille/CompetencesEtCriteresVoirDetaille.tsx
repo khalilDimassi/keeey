@@ -8,7 +8,7 @@ const CompetencesEtCriteresVoirDetaille = () => {
       <div className=" bg-white  rounded-lg ">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Compétences</h2>
-            <Edit size={20} className="text-blue-800 cursor-pointer" />
+          <Edit size={20} className="text-blue-800 cursor-pointer" />
         </div>
 
         <div className="space-y-6">
@@ -20,10 +20,10 @@ const CompetencesEtCriteresVoirDetaille = () => {
           <div className="space-y-2">
             <h3 className="text-sm text-gray-600">Métier</h3>
             <div className="flex gap-2">
-              <button className="bg-blue-700 text-white px-4 py-2 rounded-xltext-sm font-semibold" style={{backgroundColor:"#215A96" ,borderRadius:"10px"}}>
+              <button className="bg-blue-700 text-white px-4 py-2 rounded-xltext-sm font-semibold" style={{ backgroundColor: "#215A96", borderRadius: "10px" }}>
                 Développement et Programmation
               </button>
-              <button className="bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold" style={{backgroundColor:"#215A96" ,borderRadius:"10px"}}>
+              <button className="bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold" style={{ backgroundColor: "#215A96", borderRadius: "10px" }}>
                 Infrastructures et Réseaux
               </button>
             </div>
@@ -32,9 +32,9 @@ const CompetencesEtCriteresVoirDetaille = () => {
           <div>
             <h3 className="text-sm text-gray-600">Niveau</h3>
             <div className="flex items-center" >
-          <input type="range" className="w-full " />
-          <span className="ml-2 text-gray-700">Expert</span>
-        </div>
+              <input type="range" className="w-full " />
+              <span className="ml-2 text-gray-700">Expert</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -62,7 +62,7 @@ const CompetencesEtCriteresVoirDetaille = () => {
       <div className="bg-white  rounded-lg p-6" >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Critères</h2>
-            <Edit size={20} className="text-blue-800 cursor-pointer" />
+          <Edit size={20} className="text-blue-800 cursor-pointer" />
         </div>
 
         <div className="space-y-4">
@@ -74,23 +74,23 @@ const CompetencesEtCriteresVoirDetaille = () => {
           <div className="grid grid-cols-2 ">
             <div className="space-y-2">
               <h3 className="text-sm text-gray-600">Date démarrage souhaité</h3>
-              
+
               <div className="space-x-4">
 
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
-              25/12/2024
-            </span>
-            <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
-              25/12/2024
-            </span>
-            </div>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
+                  25/12/2024
+                </span>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
+                  25/12/2024
+                </span>
+              </div>
             </div>
             <div className="space-y-2">
               <h3 className="text-sm text-gray-600">Durée prévisionnelle</h3>
               <div className="space-x-4">
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> 15 jours </span>
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> 15 jours </span>
-</div>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> 15 jours </span>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> 15 jours </span>
+              </div>
 
 
             </div>
@@ -100,8 +100,8 @@ const CompetencesEtCriteresVoirDetaille = () => {
             <div className="space-y-2">
               <h3 className="text-sm text-gray-600">TJM ou salaire cible / Max</h3>
               <div className="space-x-4">
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> exemple  </span>
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> exemple </span>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> exemple  </span>
+                <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded"> exemple </span>
               </div>
             </div>
             <div className="space-y-2">

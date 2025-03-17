@@ -1,28 +1,18 @@
+// Modified DefinieBesoin_Besoin.tsx
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Edit } from "lucide-react";
-import CompetencesEtCriteresDocument from "./CompetencesEtCriteresDocumetDefinirBesoin_Besoin";
-
-
-import CompetencesEtCriteres from "../Competence/CompetencesEtCriteres";
+import { ArrowLeft } from "lucide-react";
+import axios from "axios";
 
 import { Sector } from "../Competence/Competences";
-import axios from "axios";
-import CandidatesList from "../Competances/CandidatesList";
-// import CandidatesListDefinirBesoin from "./CandidatesListDefinirBesoin";
+import DefineBesoinForm from "./Define Besoin Vivier/DefineBesoinForm";
+import DefineVivierForm from "./Define Besoin Vivier/DefineVivierForm";
 
-type SectorSuggestionsResponse = Sector[];
-
-
+export type SectorSuggestionsResponse = Sector[];
 interface DefineNeedFormProps {
   onBack: () => void;
 }
 
-
-
 export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) => {
-  // const [title, setTitle] = useState("");
-  // const [offerDate, setOfferDate] = useState("");
-  // const [startDate, setStartDate] = useState("");
   const [isEmptyBox, setIsEmptyBox] = useState(false);
   const handleBesoinClick = () => setIsEmptyBox(false);
   const handleEmptyBoxClick = () => setIsEmptyBox(true);
@@ -54,8 +44,7 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
       <div className="flex justify-between items-center mb-4">
         <button onClick={onBack} className="flex items-center gap-2 text-gray-600">
           <ArrowLeft size={20} />
-          <span className="text-lg font-medium">Détails du besoin</span>
-          <span className="text-sm text-gray-400">voir le résultat ci-dessous</span>
+          <span className="text-lg font-medium">Détails du {isEmptyBox ? `Vivier` : `Besoin`}</span>
         </button>
 
         {/* Centered button group */}
@@ -81,7 +70,7 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
                 border: "1px solid #215A96",
               }}
             >
-              Vivre
+              Vivier
             </button>
           </div>
         </div>
@@ -93,94 +82,19 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
         </button>
       </div>
 
-      {!isEmptyBox && (
-        <div className="mb-8 mt-8 ">
-          <div
-            className="bg-white shadow-lg rounded-lg p-6"
-            style={{
-              boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)",
-              borderRadius: "10px",
-            }}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Informations generale</h2>
-              <Edit size={20} className="text-blue-800 cursor-pointer" />
-            </div>
-
-            <div className="grid grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Titre</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Titre"
-
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Date appelle d'offre</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Date appelle d'offre"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Date démarrage</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Date démarrage"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Date réponse</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Date réponse"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Durée prévisionnelle</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="Durée prévisionnelle"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">TJM cible</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2"
-                  placeholder="TJM cible"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {isEmptyBox ? (
-        <div className="p+3 ">
-          <CompetencesEtCriteres />
+        <div className="p+3">
+          <DefineVivierForm sectors={sectors} loading={loading} error={error} />
         </div>
       ) : (
-        // loading ? (
-        //   <div className="text-center py-4">Loading...</div>
-        // ) : error ? (
-        //   <div className="text-center py-4 text-red-500">{error}</div>
-        // ) : (
-        //   <CompetencesEtCriteresDocument sectors={sectors} />
-        // )
-        <CompetencesEtCriteresDocument sectors={sectors} />
+        loading ? (
+          <div className="text-center py-4">Loading...</div>
+        ) : error ? (
+          <div className="text-center py-4 text-red-500">{error}</div>
+        ) : (
+          <DefineBesoinForm sectors={sectors} loading={loading} error={error} />
+        )
       )}
-
-      <div className="mt-6">
-        {/* <CandidatesListDefinirBesoin /> */}
-        <CandidatesList />
-      </div>
     </div>
   );
 };

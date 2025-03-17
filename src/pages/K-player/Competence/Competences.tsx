@@ -87,14 +87,14 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
   };
 
   // Collect and return user selections
-  const collectSelections = () => {
-    const selections = selectedSectors.map(sectorId => ({
-      id: sectorId,
-      seniority: seniority[sectorId],
-      jobs: selectedJobs[sectorId] || [],
-    }));
-    // onSelectionChange(selections);
-  };
+  // const collectSelections = () => {
+  //   const selections = selectedSectors.map(sectorId => ({
+  //     id: sectorId,
+  //     seniority: seniority[sectorId],
+  //     jobs: selectedJobs[sectorId] || [],
+  //   }));
+  // //  onSelectionChange(selections);
+  // };
 
   // Render seniority slider
   const renderSenioritySlider = (sectorId: number) => {

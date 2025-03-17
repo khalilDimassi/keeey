@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Competences, { Sector } from "./Competences";
 import Criteres from "./Criteres";
 import { Building2 } from "lucide-react";
-import axios from "axios";
 
-type SectorSuggestionsResponse = Sector[];
+interface CompetencesProps {
+  sectors: Sector[];
+  loading: boolean;
+  error: string | null;
+}
 
-const CompetencesEtCriteres: React.FC = () => {
-  const [sectors, setSectors] = useState<Sector[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const CompetencesEtCriteres: React.FC<CompetencesProps> = ({ sectors, loading, error }) => {
 
   const [selectedContract, setSelectedContract] = useState<string>("CDI");
   const [remoteWork, setRemoteWork] = useState<string>("Non");
-
-  const fetchSectors = async () => {
-    try {
-      const response = await axios.get<SectorSuggestionsResponse>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/sectors`
-      );
-      setSectors(response.data);
-    } catch (err) {
-      setError('Failed to fetch sectors. Please try again later.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSectors();
-  }, []);
 
 
   return (
