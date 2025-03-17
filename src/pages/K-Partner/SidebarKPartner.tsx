@@ -14,9 +14,10 @@ import Dashbord from "./SidebarIcons/Dashbord";
 import CompetenceSVG from "./SidebarIcons/CompetenceSVG";
 import CvSvG from "./SidebarIcons/CvSVG";
 import TargetSVG from "./SidebarIcons/TargetSVG";
-import Staff_recruiting from "./SidebarIcons/staff_recruiting";
+
 import GroupContacr from "./SidebarIcons/GroupContacr";
 import Contactetoile from "./SidebarIcons/Contactetoile";
+import Staff_recruiting from "./SidebarIcons/Staff_recruiting";
 
 type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact"| null;
 
@@ -57,7 +58,7 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
     <div
       className={`absolute rounded-2xl transition-all duration-500 mt-14 
         ${horizontal 
-          ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
+          ? " h-16 grid  place-items-center mt-[]"  // Moves up when horizontal
           : "w-[60px] h-[600px] left-[23px] flex flex-col items-center"
         }`}
         style={{ background: "#A89B7B" }}
