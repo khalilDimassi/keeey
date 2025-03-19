@@ -7,8 +7,8 @@ import { isAuthenticated } from "../../../utils/jwt";
 import InformationsGnerales from "./mode online/InformationsGnerales";
 import CompetencesCriteres from "./mode online/competences & criteres/CompetencesCriteres"
 import CvCompetences from "./mode online/CvCompetences";
-import SearchCriteria from "./Mode guest/SearchCriteria";
-import Competencies from "./Mode guest/Competencies";
+import SearchCriteria from "./mode guest/SearchCriteria";
+import Competencies from "./mode guest/Competencies";
 
 
 const KProfile = ({ onClose }: { onClose: () => void }) => {
