@@ -16,18 +16,20 @@ export interface KProfile {
 }
 
 export interface Project {
+  id: number;
   opportunity_id: number;
   title: string;
   reference: string;
   start_at: string;
   status: string;
+  opportunity_role: string;
+
   first_name: string;
   last_name: string;
   user_id: string;
   kprofiles: KProfile[];
-  date?: string;
-  participants?: string[];
-  id?: number;
+  date: string;
+  participants: string[];
 }
 
 function ProjetsBesoins() {
