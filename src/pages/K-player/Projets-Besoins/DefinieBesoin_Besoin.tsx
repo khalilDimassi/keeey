@@ -44,7 +44,7 @@ export const DefinieBesoin_Besoin: React.FC<DefineNeedFormProps> = ({ onBack }) 
       <div className="flex justify-between items-center mb-4">
         <button onClick={onBack} className="flex items-center gap-2 text-gray-600">
           <ArrowLeft size={20} />
-          <span className="text-lg font-medium">Détails du {isEmptyBox ? `Vivier` : `Besoin`}</span>
+          <span className="text-lg font-medium">Creation du {isEmptyBox ? `Vivier` : `Besoin`}</span>
         </button>
 
         {/* Centered button group */}

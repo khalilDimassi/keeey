@@ -5,7 +5,7 @@ import { Plus, Search } from 'lucide-react';
 
 import { MesBesoin } from './MesBesoin';
 import { DefinieBesoin_Besoin } from './DefinieBesoin_Besoin';
-import { VoirDetaile } from './VoireDetaille/VoirDetaile';
+import { OpportunityDetails } from './VoireDetaille/OpportunityDetails';
 import { getAuthHeader } from '../../../utils/jwt';
 import CandidatesList from '../Competances/CandidatesList';
 
@@ -15,7 +15,7 @@ export interface KProfile {
   user_id: string;
 }
 
-export interface Project {
+export interface Opportunity {
   id: number;
   opportunity_id: number;
   title: string;
@@ -33,33 +33,33 @@ export interface Project {
 }
 
 function ProjetsBesoins() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [Opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [showDefineNeed, setShowDefineNeed] = useState(false);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchOpportunities = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/personal`,
           { headers: { ...getAuthHeader() } }
         );
 
-        setProjects(response.data ?? []);
+        setOpportunities(response.data ?? []);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch projects');
+        setError('Failed to fetch Opportunities');
         setLoading(false);
-        console.error('Error fetching projects:', err);
+        console.error('Error fetching Opportunities:', err);
       }
     };
 
-    fetchProjects();
+    fetchOpportunities();
   }, []);
 
-  const renderProjectsList = () => {
+  const renderOpportunitiesList = () => {
     if (loading) {
       return <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
         <div className="p-8 text-center">Chargement...</div>
@@ -72,7 +72,7 @@ function ProjetsBesoins() {
       </div>;
     }
 
-    if (projects.length === 0) {
+    if (Opportunities.length === 0) {
       return <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
         <div className="p-8 text-center">
           <p className="text-gray-600">Aucun projet trouvé</p>
@@ -81,8 +81,8 @@ function ProjetsBesoins() {
     }
 
     return <MesBesoin
-      projects={projects}
-      onSelectProject={setSelectedProject}
+      Opportunities={Opportunities}
+      onSelectOpportunity={setSelectedOpportunity}
     />;
   };
 
@@ -90,11 +90,15 @@ function ProjetsBesoins() {
     <div className="bg-gray-100">
       {showDefineNeed ? (
         <DefinieBesoin_Besoin onBack={() => setShowDefineNeed(false)} />
-      ) : selectedProject ? (
-        <VoirDetaile
-          project={selectedProject}
-          onBack={() => setSelectedProject(null)}
-        />
+      ) : selectedOpportunity ? (
+        (() => {
+          return (
+            <OpportunityDetails
+              opportunity_id={selectedOpportunity.opportunity_id}
+              onBack={() => setSelectedOpportunity(null)}
+            />
+          );
+        })()
       ) : (
         <div className="p-2 w-full mx-auto ml-2">
           <div className="flex flex-col gap-6 ">
@@ -127,7 +131,7 @@ function ProjetsBesoins() {
             </div>
           </div>
 
-          {renderProjectsList()}
+          {renderOpportunitiesList()}
         </div>
       )}
 

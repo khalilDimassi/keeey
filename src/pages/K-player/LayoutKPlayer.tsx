@@ -106,7 +106,7 @@ const LayoutKPlayer = () => {
           {/* Show ContactPage when profile is clicked */}
           {activeComponent === "profile" && <ContactPage />}
 
-          {/* ✅ Show Reglage when settings is clicked */}
+          {/* Show Reglage when settings is clicked */}
           {activeComponent === "settings" && <Reglage />}
         </div>
       </div>

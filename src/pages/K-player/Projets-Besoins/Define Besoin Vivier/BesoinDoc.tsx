@@ -148,7 +148,7 @@ const BesoinDoc: React.FC = () => {
                     <p className="text-sm mt-2">{doc.name}</p>
                 </div>
                 ))} */}
-                service not available for the moment. . . .
+                Service non disponible pour le moment. . . .
             </div>
         </div>
     );
