@@ -75,8 +75,8 @@ interface SkillsAndCriteriasProps {
 
 const SkillsAndCriterias = ({ opportunityData, onSave, isSaving }: SkillsAndCriteriasProps) => {
   const [sectors, setSectors] = useState<Sector[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_loading, setLoading] = useState<boolean>(true);
+  const [_error, setError] = useState<string | null>(null);
   const [editingSkills, setEditingSkills] = useState<boolean>(false);
   const [editingCriteria, setEditingCriteria] = useState<boolean>(false);
 

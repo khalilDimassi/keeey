@@ -134,11 +134,6 @@ function ProjetsBesoins() {
           {renderOpportunitiesList()}
         </div>
       )}
-
-
-      <div className="mt-6">
-        <CandidatesList />
-      </div>
     </div>
   );
 }

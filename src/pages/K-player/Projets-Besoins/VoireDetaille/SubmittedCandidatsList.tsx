@@ -75,7 +75,7 @@ const CandidatesListDefinirBesoin: React.FC = () => {
         {candidates.map((candidate) => (
           <div
             key={candidate.id}
-            className="bg-white p-3 rounded-lg shadow-md flex items-center justify-between gap-4"style={{boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)" ,borderRadius:"10px"}}
+            className="bg-white p-3 rounded-lg shadow-md flex items-center justify-between gap-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
             <span className="bg-blue-300 text-blue-800 px-3 py-1 text-sm font-semibold rounded-md">
@@ -119,16 +119,16 @@ const CandidatesListDefinirBesoin: React.FC = () => {
 
             {/* Actions à droite */}
             <div className="flex items-center gap-4" >
-      <StarButton />
-            <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{backgroundColor:"#215A96" }}>
-            
+              <StarButton />
+              <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{ backgroundColor: "#215A96" }}>
+
                 <ArrowUpRight size={15} className="text-white top-4 right-4" />
-              
+
               </div>
-              <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{backgroundColor:"#215A96" ,borderRadius:"10px"}}>
-               ✓ Valider l’intérêt
+              <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{ backgroundColor: "#215A96", borderRadius: "10px" }}>
+                ✓ Valider l’intérêt
               </button>
-             
+
             </div>
           </div>
         ))}

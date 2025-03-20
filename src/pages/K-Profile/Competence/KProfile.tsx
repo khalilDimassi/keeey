@@ -89,17 +89,17 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               >
                 <svg width="34" height="34" viewBox="5 4 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g filter="url(#filter0_d_9011_8527)">
-                    <path d="M28 40V16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-                    <path d="M20 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
-                    <path d="M36 26L28 16" stroke="#30797F" stroke-width="3" stroke-linecap="round" />
+                    <path d="M28 40V16" stroke="#30797F" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M20 26L28 16" stroke="#30797F" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M36 26L28 16" stroke="#30797F" strokeWidth="3" strokeLinecap="round" />
                     <mask id="path-4-inside-1_9011_8527" fill="white">
                       <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" />
                     </mask>
-                    <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" stroke-width="2" mask="url(#path-4-inside-1_9011_8527)" />
+                    <path d="M46 27.5539C46 37.2487 37.9411 45.1078 28 45.1078C18.0589 45.1078 10 37.2487 10 27.5539C10 17.8592 18.0589 10 28 10C37.9411 10 46 17.8592 46 27.5539ZM12.0581 27.5539C12.0581 36.1402 19.1955 43.1007 28 43.1007C36.8045 43.1007 43.9419 36.1402 43.9419 27.5539C43.9419 18.9676 36.8045 12.0071 28 12.0071C19.1955 12.0071 12.0581 18.9676 12.0581 27.5539Z" fill="#30797F" stroke="#30797F" strokeWidth="2" mask="url(#path-4-inside-1_9011_8527)" />
                   </g>
                   <defs>
-                    <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <filter id="filter0_d_9011_8527" x="0" y="0" width="56" height="55.1078" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                      <feFlood floodOpacity="0" result="BackgroundImageFix" />
                       <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
                       <feOffset />
                       <feGaussianBlur stdDeviation="5" />

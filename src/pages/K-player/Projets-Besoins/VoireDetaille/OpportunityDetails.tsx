@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
-import CandidatesListDefinirBesoin from '../CandidatesListDefinirBesoin';
-import Informations from './Informations';
-import Candidats from './Candidats';
-import Diffusion from './Diffusion';
+import CandidatesListDefinirBesoin from './SubmittedCandidatsList';
+import Informations from './GeneralInformationTab';
+import Candidats from './SavedCandidatesTab';
+import Diffusion from './DiffusionConfigTab';
 import axios from 'axios';
 import { getAuthHeader } from '../../../../utils/jwt';
-import SkillsAndCriterias from './CompetencesEtCriteresVoirDetaille';
+import SkillsAndCriterias from './SkillsAndCriteriaTab';
+import CandidatesList from '../../Competances/CandidatesList';
 
 export interface OpportunityDetails {
   opportunity_id: number;
@@ -213,7 +214,7 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
           </div>
 
           <div className="mt-6">
-            <CandidatesListDefinirBesoin />
+            <CandidatesList ApiType='SUBMITTED' OpportunityID={opportunityDetails?.opportunity_id} />
           </div>
         </>
       )}
