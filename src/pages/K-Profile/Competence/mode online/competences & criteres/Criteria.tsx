@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { getAuthHeader } from '../../../../../utils/jwt';
 
@@ -99,7 +99,7 @@ const Criteria: React.FC<CriteriaProps> = ({
 
       // Send the PUT request to the API
       const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/criteria`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/search-criteria`,
         updateData,
         {
           headers: {
@@ -120,6 +120,16 @@ const Criteria: React.FC<CriteriaProps> = ({
       setIsSaving(false);
     }
   };
+
+  const handleRadioChange = (value: string) => {
+    setAvailability(value);
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAvailability(e.target.value);
+  };
+
+  const isDate = /^\d{4}-\d{2}-\d{2}$/.test(availability);
 
   return (
     <>
@@ -176,7 +186,7 @@ const Criteria: React.FC<CriteriaProps> = ({
           </div>
           <div className='w-full'>
             <div className="flex justify-between text-sm mb-1">
-              <span>0 km</span>
+              <span>{distanceValue} km</span>
               <span>100km</span>
             </div>
             <input
@@ -239,8 +249,8 @@ const Criteria: React.FC<CriteriaProps> = ({
               type="radio"
               name="availability"
               value="immediate"
-              checked={availability === 'immediate'}
-              onChange={() => setAvailability('immediate')}
+              checked={availability === "immediate" && !isDate}
+              onChange={() => handleRadioChange("immediate")}
               className="mr-2"
             />
             Immédiate
@@ -250,8 +260,8 @@ const Criteria: React.FC<CriteriaProps> = ({
               type="radio"
               name="availability"
               value="one_month"
-              checked={availability === 'one_month'}
-              onChange={() => setAvailability('one_month')}
+              checked={availability === "one_month" && !isDate}
+              onChange={() => handleRadioChange("one_month")}
               className="mr-2"
             />
             &gt; 1 mois
@@ -261,13 +271,19 @@ const Criteria: React.FC<CriteriaProps> = ({
               type="radio"
               name="availability"
               value="three_months"
-              checked={availability === 'three_months'}
-              onChange={() => setAvailability('three_months')}
+              checked={availability === "three_months" && !isDate}
+              onChange={() => handleRadioChange("three_months")}
               className="mr-2"
             />
             &gt; 3 mois
           </label>
-          <input type="text" placeholder="jj/mm/AA" className="border border-gray-300 rounded p-2 w-32" />
+          <input
+            type="date"
+            placeholder="jj/mm/AA"
+            value={isDate ? availability : ""}
+            onChange={handleDateChange}
+            className="border border-gray-300 rounded p-2 w-32"
+          />
         </div>
       </div>
 

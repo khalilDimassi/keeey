@@ -111,7 +111,7 @@ const CompetencesCriteres: React.FC = () => {
         [key]: false
       }), {});
 
-      // Set active contract tags
+      // Set active contract tags   
       if (data.contract_roles && data.contract_roles.length > 0) {
         data.contract_roles.forEach(tag => {
           if (resetContractTags.hasOwnProperty(tag)) {
@@ -140,6 +140,7 @@ const CompetencesCriteres: React.FC = () => {
         }), {});
         setMobility(resetMobility);
       }
+
 
       // Set location
       if (data.crit_location) {
