@@ -11,12 +11,51 @@ type TagsState = {
   [key: string]: boolean;
 };
 
+type SearchCriteriaResponse = {
+  contract_roles?: string[];
+  organization_roles?: string[];
+  crit_daily_rate?: number;
+  crit_yearly_rate?: number;
+  crit_mobility?: string;
+  crit_location?: string;
+  crit_distance?: string;
+  availability?: string;
+};
 
 const CompetencesCriteres: React.FC = () => {
   const [initialSelections, setInitialSelections] = useState<UserSelection[]>([]);
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [location, setLocation] = useState<string>('');
+
+  const [contractTags, setContractTags] = useState<TagsState>({
+    'FREELANCE': false,
+    'CONSULTANT': false,
+    'PORTAGE': false,
+    'CDI': false,
+    'CDD': false,
+    'CDI-C': false
+  });
+
+  const [companyTags, setCompanyTags] = useState<TagsState>({
+    'LARGE': false,
+    'INDUSTRUAL': false,
+    'PME/TPE': false,
+    'ESN': false,
+    'OTHER': false,
+  });
+
+  const [mobility, setMobility] = useState<TagsState>({
+    'Locale': true,
+    'Régionale': false,
+    'France': false,
+    'Internationale': false
+  });
+
+  const [distanceValue, setDistanceValue] = useState(30);
+  const [transportMode, setTransportMode] = useState('personal');
+  const [availability, setAvailability] = useState('immediate');
 
   const fetchSectors = async () => {
     try {
@@ -48,8 +87,88 @@ const CompetencesCriteres: React.FC = () => {
     }
   };
 
+  const fetchCriteria = async () => {
+    try {
+      const response = await axios.get<SearchCriteriaResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/search-criteria`,
+        {
+          headers: {
+            ...getAuthHeader(),
+          },
+        }
+      );
+
+      const data = response.data;
+
+      // Reset all tags to false first
+      const resetContractTags: TagsState = Object.keys(contractTags).reduce((acc, key) => ({
+        ...acc,
+        [key]: false
+      }), {});
+
+      const resetCompanyTags: TagsState = Object.keys(companyTags).reduce((acc, key) => ({
+        ...acc,
+        [key]: false
+      }), {});
+
+      // Set active contract tags
+      if (data.contract_roles && data.contract_roles.length > 0) {
+        data.contract_roles.forEach(tag => {
+          if (resetContractTags.hasOwnProperty(tag)) {
+            resetContractTags[tag] = true;
+          }
+        });
+      }
+      setContractTags(resetContractTags);
+
+      // Set active company tags
+      if (data.organization_roles && data.organization_roles.length > 0) {
+        data.organization_roles.forEach(tag => {
+          if (resetCompanyTags.hasOwnProperty(tag)) {
+            resetCompanyTags[tag] = true;
+          }
+        });
+      }
+      setCompanyTags(resetCompanyTags);
+
+      // Set mobility options
+      if (data.crit_mobility) {
+        const mobilityOptions = data.crit_mobility.split(',');
+        const resetMobility = Object.keys(mobility).reduce((acc, key) => ({
+          ...acc,
+          [key]: mobilityOptions.includes(key)
+        }), {});
+        setMobility(resetMobility);
+      }
+
+      // Set location
+      if (data.crit_location) {
+        setLocation(data.crit_location);
+      }
+
+      // Set distance
+      if (data.crit_distance) {
+        setDistanceValue(parseInt(data.crit_distance) || 30);
+      }
+
+      // Set availability
+      if (data.availability) {
+        setAvailability(data.availability.toLowerCase());
+      }
+
+    } catch (err) {
+      console.error('Failed to fetch criteria:', err);
+    }
+  };
+
+  const refreshData = () => {
+    fetchCriteria();
+    fetchInitialSelection();
+  };
+
   useEffect(() => {
     fetchSectors();
+    fetchCriteria();
     fetchInitialSelection();
   }, []);
 
@@ -70,33 +189,6 @@ const CompetencesCriteres: React.FC = () => {
       console.error('Failed to update skills:', error);
     }
   };
-
-  const [contractTags, setContractTags] = useState<TagsState>({
-    'Freelance / Indépendant': false,
-    'Portage': false,
-    'CDI': false,
-    'CDD': false,
-    'CDI-C': false
-  });
-
-  const [companyTags, setCompanyTags] = useState<TagsState>({
-    'Tout / Pas de critère': false,
-    'Entreprise Industrielle / Client final': false,
-    'Bureaux d\'Études / ESN / Conseil': false,
-    'Grandes Entreprises': false,
-    'PME/TPE': false
-  });
-
-  const [mobility, setMobility] = useState<TagsState>({
-    'Locale': true,
-    'Régionale': false,
-    'France': false,
-    'Internationale': false
-  });
-
-  const [distanceValue, setDistanceValue] = useState(30);
-  const [transportMode, setTransportMode] = useState('personal');
-  const [availability, setAvailability] = useState('immediate');
 
   const toggleTag = (category: string, tag: string) => {
     switch (category) {
@@ -144,6 +236,9 @@ const CompetencesCriteres: React.FC = () => {
             setDistanceValue={setDistanceValue}
             setTransportMode={setTransportMode}
             setAvailability={setAvailability}
+            location={location}
+            setLocation={setLocation}
+            refreshData={refreshData}
           />
         </div>
       </div>

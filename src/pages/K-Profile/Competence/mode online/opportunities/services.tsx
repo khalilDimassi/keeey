@@ -1,6 +1,6 @@
+import { OpportunityListItem } from "./types";
 import { getAuthHeader } from "../../../../../utils/jwt";
 import axios from "axios";
-import { OpportunityListItem } from "./types";
 
 
 export const fetchOpportunitiesList = async (): Promise<OpportunityListItem[]> => {

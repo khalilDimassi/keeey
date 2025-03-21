@@ -11,7 +11,7 @@ const JobOpportunities = () => {
   const [contractType, setContractType] = useState("all");
   const [opportunityItems, setOpportunityItems] = useState<OpportunityListItem[]>([]);
   const [savedOpportunityItems, setSavedOpportunityItems] = useState<OpportunityListItem[]>([]);
-  const [contactOpportunityItems, setContactOpportunityItems] = useState<OpportunityListItem[]>([]);
+  const [contactOpportunityItems, _setContactOpportunityItems] = useState<OpportunityListItem[]>([]);
   const [currentItems, setCurrentItems] = useState<OpportunityListItem[]>([]);
   const [selectedOpportunityId, setSelectedOpportunityId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,6 +31,20 @@ const JobOpportunities = () => {
       const opportunitiesData = await fetchOpportunitiesList();
       const savedOpportunityIds = await fetchSavedOpportunityIds();
 
+
+      if (opportunitiesData.length === 0) {
+        setOpportunityItems([]);
+        setSavedOpportunityItems([]);
+        setError(`Failed to fetch opportunities. No record found!`);
+        setLoading(false);
+        return;
+      }
+
+      if (savedOpportunityIds.length === 0) {
+        setSavedOpportunityItems([]);
+      }
+
+      // Process opportunitiesData if valid
       const listItems = opportunitiesData.map(opp => ({
         opportunity_id: opp.opportunity_id,
         title: opp.title,
@@ -42,17 +56,19 @@ const JobOpportunities = () => {
       }));
 
       setOpportunityItems(listItems);
-      const savedItems = listItems.filter(item =>
-        savedOpportunityIds.includes(item.opportunity_id)
-      );
-      setSavedOpportunityItems(savedItems);
 
-      // For contact-based opportunities (keep as is for now)
-      setContactOpportunityItems(listItems.slice(2, 4));
+      // Filter saved items only if savedOpportunityIds is valid
+      if (savedOpportunityIds && savedOpportunityIds.length > 0) {
+        const savedItems = listItems.filter(item =>
+          savedOpportunityIds.includes(item.opportunity_id)
+        );
+        setSavedOpportunityItems(savedItems);
+      }
 
+      setLoading(false);
     } catch (err) {
       console.error(err);
-      setError('Failed to fetch opportunities. Please try again later.');
+      setError(`Failed to fetch opportunities. Please try again later: ${err}`);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { getAuthHeader } from '../../../../../utils/jwt';
 
 type CriteriaProps = {
   contractTags: { [key: string]: boolean };
@@ -7,11 +9,25 @@ type CriteriaProps = {
   distanceValue: number;
   transportMode: string;
   availability: string;
+  location?: string;
   toggleTag: (category: string, tag: string) => void;
   toggleMobility: (option: string) => void;
   setDistanceValue: (value: number) => void;
   setTransportMode: (mode: string) => void;
   setAvailability: (availability: string) => void;
+  setLocation?: (location: string) => void;
+  refreshData: () => void;
+};
+
+type SearchCriteriaUpdateRequest = {
+  contract_roles?: string[];
+  organization_roles?: string[];
+  crit_daily_rate?: number;
+  crit_yearly_rate?: number;
+  crit_mobility?: string;
+  crit_location?: string;
+  crit_distance?: string;
+  availability?: string;
 };
 
 const Criteria: React.FC<CriteriaProps> = ({
@@ -21,12 +37,90 @@ const Criteria: React.FC<CriteriaProps> = ({
   distanceValue,
   transportMode,
   availability,
+  location = '',
   toggleTag,
   toggleMobility,
   setDistanceValue,
   setTransportMode,
-  setAvailability
+  setAvailability,
+  setLocation = () => { },
+  refreshData
 }) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
+  };
+
+  const handleSaveCriteria = async () => {
+    try {
+      setIsSaving(true);
+
+      // Prepare data in the required format
+      const updateData: SearchCriteriaUpdateRequest = {};
+
+      // Only include fields that have values
+      const activeContractTags = Object.entries(contractTags)
+        .filter(([_, active]) => active)
+        .map(([tag]) => tag);
+
+      const activeCompanyTags = Object.entries(companyTags)
+        .filter(([_, active]) => active)
+        .map(([tag]) => tag);
+
+      // Only include non-empty arrays
+      if (activeContractTags.length > 0) {
+        updateData.contract_roles = activeContractTags;
+      }
+
+      if (activeCompanyTags.length > 0) {
+        updateData.organization_roles = activeCompanyTags;
+      }
+
+      // Get the active mobility option(s)
+      const activeMobilityOptions = Object.entries(mobility)
+        .filter(([_, active]) => active)
+        .map(([option]) => option);
+
+      if (activeMobilityOptions.length > 0) {
+        updateData.crit_mobility = activeMobilityOptions.join(',');
+      }
+
+      // Include location if it exists
+      if (location.trim()) {
+        updateData.crit_location = location;
+      }
+
+      // Include distance as string
+      updateData.crit_distance = distanceValue.toString();
+
+      // Include availability
+      updateData.availability = availability.toUpperCase();
+
+      // Send the PUT request to the API
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/criteria`,
+        updateData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeader()
+          }
+        }
+      );
+
+      console.log('Criteria updated successfully:', response.data);
+
+      // Refresh data to update UI
+      refreshData();
+
+    } catch (error) {
+      console.error('Failed to update criteria:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       <h3 className="text-gray-600 mb-3 text-sm">Type de contrat souhaité/accepté</h3>
@@ -72,7 +166,13 @@ const Criteria: React.FC<CriteriaProps> = ({
         </div>
         <div className='flex gap-2 items-center justify-center'>
           <div>
-            <input type="text" placeholder="Ville" className="border border-gray-300 rounded p-2 w-full" />
+            <input
+              type="text"
+              placeholder="Ville"
+              value={location}
+              onChange={handleLocationChange}
+              className="border border-gray-300 rounded p-2 w-full"
+            />
           </div>
           <div className='w-full'>
             <div className="flex justify-between text-sm mb-1">
@@ -169,6 +269,16 @@ const Criteria: React.FC<CriteriaProps> = ({
           </label>
           <input type="text" placeholder="jj/mm/AA" className="border border-gray-300 rounded p-2 w-32" />
         </div>
+      </div>
+
+      <div className="mt-8">
+        <button
+          onClick={handleSaveCriteria}
+          disabled={isSaving}
+          className="bg-teal-700 text-white px-6 py-2 rounded hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
+        >
+          {isSaving ? 'Enregistrement...' : 'Enregistrer les critères'}
+        </button>
       </div>
     </>
   );
