@@ -7,7 +7,6 @@ import { MesBesoin } from './MesBesoin';
 import { DefinieBesoin_Besoin } from './DefinieBesoin_Besoin';
 import { OpportunityDetails } from './VoireDetaille/OpportunityDetails';
 import { getAuthHeader } from '../../../utils/jwt';
-import CandidatesList from '../Competances/CandidatesList';
 
 export interface KProfile {
   first_name: string;

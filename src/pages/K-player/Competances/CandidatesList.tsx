@@ -8,6 +8,19 @@ interface Job {
   seniority: number;
 }
 
+interface MatchPercentages {
+  total_match_percentage: number;
+  jobs_match_percentage: number;
+  seniority_match_percentage: number;
+  availability_match_percentage: number;
+  rate_match_percentage: number;
+  mobility_match_percentage: number;
+  languages_match_percentage: number;
+  tools_match_percentage: number;
+  authorizations_match_percentage: number;
+  qualities_match_percentage: number;
+}
+
 interface CandidateSuggestion {
   user_id: string;
   first_name: string;
@@ -15,7 +28,9 @@ interface CandidateSuggestion {
   rating: number;
   availability: string;
   jobs: Job[] | null;
-  matchPercentage?: string; // Added for the alternative design
+  totalMatchPercentage?: number;
+  isStarred?: boolean;
+  isValidated?: boolean;
 }
 
 interface CandidatesListProps {
@@ -30,13 +45,28 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
 
   const fetchCandidates = async (path: string, auth?: { Authorization: string }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1${path}`, { headers: auth });
+      const response = await axios.get<CandidateSuggestion[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1${path}`, { headers: auth });
 
       const candidatesWithDefaultJobs = response.data.map((candidate: CandidateSuggestion) => ({
         ...candidate,
         jobs: candidate.jobs ?? [],
-        matchPercentage: candidate.matchPercentage ?? "-"
       }));
+
+      // Loop through candidates to fetch match percentages for each one
+      for (const candidate of candidatesWithDefaultJobs) {
+        try {
+          const matchResponse = await axios.get<MatchPercentages>(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${OpportunityID}/${candidate.user_id}/matching`
+          );
+
+          candidate.totalMatchPercentage = Math.round(matchResponse.data.total_match_percentage);
+
+        } catch (error) {
+          console.error(`Error fetching match percentages for candidate ${candidate.user_id}:`, error);
+          // Continue with the next candidate even if one fails
+        }
+      }
+
       setCandidateSuggestion(candidatesWithDefaultJobs);
     } catch (error) {
       console.error("Error fetching candidates:", error);
@@ -47,12 +77,58 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
   useEffect(() => {
     if (ApiType === "SUBMITTED") {
       fetchCandidates(`/private/opportunities/${OpportunityID}/candidates/submitted`, getAuthHeader());
-    } else if (ApiType === "STARRED") {
-      fetchCandidates(`/private/opportunities/${OpportunityID}/candidates/starred`, getAuthHeader());
     } else {
       fetchCandidates('/public/opportunities/suggestions/candidates');
     }
   }, [ApiType, OpportunityID]);
+
+  // Handle starring a candidate
+  const handleStarCandidate = async (userId: string) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${OpportunityID}/candidates/${userId}/star`,
+        {},
+        { headers: getAuthHeader() }
+      );
+
+      // Update local state to reflect the change
+      setCandidateSuggestion(prev =>
+        prev.map(candidate =>
+          candidate.user_id === userId
+            ? { ...candidate, isStarred: true }
+            : candidate
+        )
+      );
+
+      console.log("Candidate starred successfully:", response.data);
+    } catch (error) {
+      console.error("Error starring candidate:", error);
+    }
+  };
+
+  // Handle validating interest for a candidate
+  const handleValidateInterest = async (userId: string) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${OpportunityID}/candidates/${userId}/validate`,
+        {},
+        { headers: getAuthHeader() }
+      );
+
+      // Update local state to reflect the change
+      setCandidateSuggestion(prev =>
+        prev.map(candidate =>
+          candidate.user_id === userId
+            ? { ...candidate, isValidated: true }
+            : candidate
+        )
+      );
+
+      console.log("Candidate interest validated successfully:", response.data);
+    } catch (error) {
+      console.error("Error validating candidate interest:", error);
+    }
+  };
 
   const getHighestSeniorityJob = (jobs: Job[]) => {
     if (jobs.length === 0) return { job: "No job", seniority: 0 };
@@ -111,7 +187,7 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
             {/* Badge correspondance */}
             <div className="col-span-1">
               <span className="bg-blue-300 text-blue-800 px-3 py-1 text-sm font-semibold rounded-md">
-                - correspondant
+                {candidate.totalMatchPercentage ? `${Math.round(candidate.totalMatchPercentage)}%` : "-"} correspondant
               </span>
             </div>
 
@@ -185,9 +261,18 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
 
             {/* Actions à droite */}
             <div className="col-span-1 flex items-center gap-4">
-              <Bookmark size={35} className="text-gray-500 cursor-pointer" />
-              <button className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2" style={{ backgroundColor: "#215A96", borderRadius: "10px" }}>
-                Valider l'intérêt
+              <Bookmark
+                size={35}
+                className={`${candidate.isStarred ? 'text-yellow-500 fill-yellow-500' : 'text-gray-500'} cursor-pointer`}
+                onClick={() => handleStarCandidate(candidate.user_id)}
+              />
+              <button
+                className={`${candidate.isValidated ? 'bg-green-600' : 'bg-blue-800'} text-white px-4 py-2 rounded-3xl flex items-center gap-2`}
+                style={{ backgroundColor: candidate.isValidated ? "#22C55E" : "#215A96", borderRadius: "10px" }}
+                onClick={() => handleValidateInterest(candidate.user_id)}
+                disabled={candidate.isValidated}
+              >
+                {candidate.isValidated ? 'Intérêt validé' : 'Valider l\'intérêt'}
               </button>
               <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{ backgroundColor: "#215A96" }}>
                 <ArrowUpRight size={20} className="text-white top-4 right-4" />
@@ -199,13 +284,35 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
     </div>
   );
 
+
+  const lightGray = [209, 213, 219]
+  const blue = [59, 130, 246]
+
+  const interpolateColor = (percentage: number) => {
+    const r = Math.round(lightGray[0] + (blue[0] - lightGray[0]) * (percentage / 100));
+    const g = Math.round(lightGray[1] + (blue[1] - lightGray[1]) * (percentage / 100));
+    const b = Math.round(lightGray[2] + (blue[2] - lightGray[2]) * (percentage / 100));
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  const getTextColor = (backgroundColor: string) => {
+    const rgb = backgroundColor.match(/\d+/g)?.map(Number);
+    if (!rgb) return "black";
+    const brightness = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+    return brightness > 0.5 ? "black" : "white";
+  };
+
+
+
   const renderSubmittedView = () => (
     <div className="space-y-3">
       {candidateSuggestion.map((candidate) => {
         const jobs = candidate.jobs ?? [];
         const highestSeniorityJob = getHighestSeniorityJob(jobs);
         const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSeniorityJob.seniority);
-        const extraJobsCount = jobs.length - 1;
+        const extraJobsCount = jobs.length - 2;
+        const backgroundColor = interpolateColor(candidate.totalMatchPercentage ?? 0);
+        const textColor = getTextColor(backgroundColor);
 
         return (
           <div
@@ -214,8 +321,15 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
             style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
-            <span className="bg-blue-300 text-blue-800 px-3 py-1 text-sm font-semibold rounded-md">
-              {candidate.matchPercentage || "80%"} correspondant
+            <span
+              className="px-3 py-1 text-sm font-semibold rounded-md"
+              style={{
+
+                backgroundColor,
+                color: textColor,
+              }}
+            >
+              {candidate.totalMatchPercentage ?? 0}% correspondant
             </span>
 
             {/* Nom + Détails */}
@@ -229,7 +343,7 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
 
             {/* Niveau */}
             <span className="text-gray-500">
-              {highestSeniorityLevel ? highestSeniorityLevel.name : "Intermédiaire"}
+              Seniority: {highestSeniorityLevel ? highestSeniorityLevel.name : "-"}
             </span>
 
             {/* Disponibilité */}
@@ -239,11 +353,11 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
 
             {/* Compétences */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-600 text-sm">Compétences :</span>
+              <span className="text-gray-600 text-sm">Compétences:</span>
               <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded items-center">
                 {highestSeniorityJob.job}
               </span>
-              {jobs.slice(1, 4).map((job, index) => (
+              {jobs.slice(1, 2).map((job, index) => (
                 <span
                   key={index}
                   className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded items-center"
@@ -251,26 +365,31 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
                   {job.job}
                 </span>
               ))}
-              {extraJobsCount > 3 && (
+              {extraJobsCount && (
                 <span className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full">
-                  +{extraJobsCount - 3}
+                  +{extraJobsCount}
                 </span>
               )}
             </div>
 
             {/* Actions à droite */}
             <div className="flex items-center gap-4">
-              <div className="bg-blue-400 p-2 rounded-full flex items-center justify-center cursor-pointer">
-                <Star size={18} className="text-white" />
+              <div
+                className={`${candidate.isStarred ? 'bg-yellow-500' : 'bg-black'} p-2 rounded-full flex items-center justify-center cursor-pointer`}
+                onClick={() => handleStarCandidate(candidate.user_id)}
+              >
+                <Star fill={`${candidate.isStarred ? 'black' : 'white'}`} size={18} className="text-white" />
               </div>
               <div className="bg-blue-800 p-2 rounded-full flex items-center justify-center" style={{ backgroundColor: "#215A96" }}>
                 <ArrowUpRight size={15} className="text-white" />
               </div>
               <button
-                className="bg-blue-800 text-white px-4 py-2 rounded-3xl flex items-center gap-2"
-                style={{ backgroundColor: "#215A96", borderRadius: "10px" }}
+                className={`${candidate.isValidated ? 'bg-green-600' : 'bg-blue-800'} text-white px-4 py-2 rounded-3xl flex items-center gap-2`}
+                style={{ backgroundColor: candidate.isValidated ? "#22C55E" : "#215A96", borderRadius: "10px" }}
+                onClick={() => handleValidateInterest(candidate.user_id)}
+                disabled={candidate.isValidated}
               >
-                <Check size={16} /> Valider l'intérêt
+                <Check size={16} /> {candidate.isValidated ? 'Intérêt validé' : 'Valider l\'intérêt'}
               </button>
             </div>
           </div>

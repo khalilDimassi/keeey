@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
-
-import CandidatesListDefinirBesoin from './SubmittedCandidatsList';
-import Informations from './GeneralInformationTab';
-import Candidats from './SavedCandidatesTab';
-import Diffusion from './DiffusionConfigTab';
-import axios from 'axios';
 import { getAuthHeader } from '../../../../utils/jwt';
-import SkillsAndCriterias from './SkillsAndCriteriaTab';
+import axios from 'axios';
+
 import CandidatesList from '../../Competances/CandidatesList';
+import Informations from './GeneralInformationTab';
+import SkillsAndCriterias from './SkillsAndCriteriaTab';
+import Diffusion from './DiffusionConfigTab';
+import StarredCandidatesComp from './StarredCandidatesTab';
 
 export interface OpportunityDetails {
   opportunity_id: number;
@@ -36,18 +35,26 @@ export interface OpportunityDetails {
   updated_at: string;
 }
 
-interface OpportunityCandidates {
+export interface MatchPercentages {
+  total_match_percentage: number;
+  jobs_match_percentage: number;
+  seniority_match_percentage: number;
+  availability_match_percentage: number;
+  rate_match_percentage: number;
+  mobility_match_percentage: number;
+  languages_match_percentage: number;
+  tools_match_percentage: number;
+  authorizations_match_percentage: number;
+  qualities_match_percentage: number;
+}
+
+export interface StarredCandidates {
   id: string;
   first_name: string;
   last_name: string;
-  title: string;
-  availability: string;
   occupation: string;
-  sector: string;
-  seniority: number;
-  rate: number;
-  mobility: string;
   status: string;
+  matching_scores: MatchPercentages;
 }
 
 interface OpportunityDetailsProps {
@@ -58,15 +65,51 @@ interface OpportunityDetailsProps {
 export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetailsProps) {
   const [activeTab, setActiveTab] = useState("Informations");
   const [opportunityDetails, setOpportunityDetails] = useState<OpportunityDetails | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [starredCandidates, setStarredCandidates] = useState<StarredCandidates[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
 
-  useEffect(() => {
-    loadOpportunityDetails();
-  }, [opportunity_id]);
+  const fetchStarredCandidates = async (opportunity_id: number) => {
+    try {
+      const response = await axios.get<StarredCandidates[]>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/candidates/starred`,
+        { headers: getAuthHeader(), }
+      );
 
-  const loadOpportunityDetails = async () => {
+      const candidates = response.data.map((candidate: StarredCandidates) => ({
+        ...candidate
+      }));
+
+      if (!candidates || candidates.length === 0) {
+        setStarredCandidates([])
+        return
+      }
+
+      // Loop through candidates to fetch match percentages for each one
+      for (const candidate of candidates) {
+        try {
+          const matchResponse = await axios.get<MatchPercentages>(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunity_id}/${candidate.id}/matching`
+          );
+
+          candidate.matching_scores = matchResponse.data;
+
+        } catch (error) {
+          console.error(`Error fetching match percentages for candidate ${candidate.id}:`, error);
+          // Continue with the next candidate even if one fails
+        }
+      }
+
+      setStarredCandidates(candidates);
+    } catch (error) {
+      console.error("Error fetching candidates:", error);
+      // Optionally, you can set an error state here and display it in the UI
+      setLoading(false);
+    }
+  };
+
+  const loadOpportunityDetails = async (opportunity_id: number) => {
     setLoading(true);
     try {
       const response = await axios.get<OpportunityDetails>(
@@ -81,7 +124,13 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
     } finally {
       setLoading(false);
     }
+
+    fetchStarredCandidates(opportunity_id);
   };
+
+  useEffect(() => {
+    loadOpportunityDetails(opportunity_id);
+  }, [opportunity_id]);
 
   const updateOpportunityDetails = async (changedData: Partial<OpportunityDetails>) => {
     setSaving(true);
@@ -119,7 +168,6 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
         >
           <ArrowLeft size={20} />
           <span className="text-lg font-medium">Détails du besoin</span>
-          <span className="text-sm text-gray-400">voir le résultat ci-dessous</span>
         </button>
       </div>
 
@@ -160,17 +208,17 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
             </button>
             <button
               style={{
-                boxShadow: activeTab === "Candidats"
+                boxShadow: activeTab === "Candidates"
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
                   : "none"
               }}
-              className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Candidats"
+              className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Candidates"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
                 : "text-gray-400 bg-gray-100/50"
                 }`}
-              onClick={() => setActiveTab("Candidats")}
+              onClick={() => setActiveTab("Candidates")}
             >
-              Candidats
+              Candidates
               <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.33203 23.5002L14.9987 19.1793L20.6654 23.5002L18.5404 16.4877L24.207 12.4502H17.2654L14.9987 5.0835L12.732 12.4502H5.79036L11.457 16.4877L9.33203 23.5002ZM14.9987 29.1668C13.039 29.1668 11.1973 28.795 9.4737 28.0512C7.75009 27.3075 6.25078 26.2981 4.97578 25.0231C3.70078 23.7481 2.69141 22.2488 1.94766 20.5252C1.20391 18.8016 0.832031 16.9599 0.832031 15.0002C0.832031 13.0404 1.20391 11.1988 1.94766 9.47516C2.69141 7.75155 3.70078 6.25225 4.97578 4.97725C6.25078 3.70225 7.75009 2.69287 9.4737 1.94912C11.1973 1.20537 13.039 0.833496 14.9987 0.833496C16.9584 0.833496 18.8001 1.20537 20.5237 1.94912C22.2473 2.69287 23.7466 3.70225 25.0216 4.97725C26.2966 6.25225 27.306 7.75155 28.0497 9.47516C28.7935 11.1988 29.1654 13.0404 29.1654 15.0002C29.1654 16.9599 28.7935 18.8016 28.0497 20.5252C27.306 22.2488 26.2966 23.7481 25.0216 25.0231C23.7466 26.2981 22.2473 27.3075 20.5237 28.0512C18.8001 28.795 16.9584 29.1668 14.9987 29.1668Z" fill="#1D1B20" />
               </svg>
@@ -208,13 +256,13 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
                 onSave={updateOpportunityDetails}
                 isSaving={saving}
               />}
-              {activeTab === "Candidats" && <Candidats />}
+              {activeTab === "Candidates" && <StarredCandidatesComp candidates={starredCandidates} />}
               {activeTab === "Diffusion" && <Diffusion />}
             </div>
           </div>
 
           <div className="mt-6">
-            <CandidatesList ApiType='SUBMITTED' OpportunityID={opportunityDetails?.opportunity_id} />
+            <CandidatesList ApiType='SUBMITTED' OpportunityID={opportunity_id} />
           </div>
         </>
       )}
