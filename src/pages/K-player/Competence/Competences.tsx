@@ -135,7 +135,9 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
         {sector.jobs.map(job => (
           <button
             key={job.id}
-            className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300'
+            className={`flex items-center px-3 py-2 border  shadow rounded-xl ${selectedJobs[sectorId]?.includes(job.id) ?
+              'bg-[#215A96] text-white' :
+              'border-black bg-gray-50 text-gray-700'
               }`}
             onClick={() => toggleJob(sectorId, job.id)}
           >
@@ -160,8 +162,8 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
             <button
               key={sector.id}
               className={`
-              px-4 py-2 rounded-full text-sm flex items-center 
-              ${selectedSectors.includes(sector.id) ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300'}
+              flex items-center px-3 py-2 border shadow rounded-xl 
+              ${selectedSectors.includes(sector.id) ? 'bg-[#215A96] text-white' : 'border-black bg-gray-50 text-gray-700'}
             `}
               onClick={() => toggleSector(sector.id)}
               disabled={!selectedSectors.includes(sector.id) && selectedSectors.length >= 3}
@@ -182,15 +184,13 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
                 <button
                   key={sectorId}
                   className={`px-4 py-2 ${activeSector === sectorId
-                    ? "bg-blue-600 text-white"
-                    : "bg-white border-r border-gray-300"
+                    ? 'bg-[#215A96] text-white'
+                    : 'border-black bg-gray-50 text-gray-700'
                     }`}
                   onClick={() => setActiveSector(sectorId)}
                 >
                   {activeSector === sectorId && (
-                    <span className="inline-flex items-center justify-center w-4 h-4 bg-blue-600 text-white rounded-full mr-1 text-xs">
-                      ✓
-                    </span>
+                    <span className="inline-flex items-center justify-center w-4 h-4 bg-[#215A96] text-white rounded-full mr-1 text-xs"></span>
                   )}
                   {sectors.find(s => s.id === sectorId)?.sector}
                 </button>
@@ -230,7 +230,7 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
           {tools.map((tool, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
             >
               <span>{tool}</span>
               <button
@@ -264,7 +264,7 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
           {certifications.map((certification, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
             >
               <span>{certification}</span>
               <button
@@ -298,7 +298,7 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
           {languages.map((lang, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
             >
               <span>{lang}</span>
               <button
@@ -332,7 +332,7 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
           {qualities.map((quality, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
             >
               <span>{quality}</span>
               <button
