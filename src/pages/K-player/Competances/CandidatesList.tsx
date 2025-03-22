@@ -55,11 +55,15 @@ const CandidatesList = ({ ApiType, OpportunityID }: CandidatesListProps) => {
       // Loop through candidates to fetch match percentages for each one
       for (const candidate of candidatesWithDefaultJobs) {
         try {
-          const matchResponse = await axios.get<MatchPercentages>(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${OpportunityID}/${candidate.user_id}/matching`
-          );
+          if (OpportunityID && OpportunityID != 0) {
+            const matchResponse = await axios.get<MatchPercentages>(
+              `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${OpportunityID}/${candidate.user_id}/matching`
+            );
 
-          candidate.totalMatchPercentage = Math.round(matchResponse.data.total_match_percentage);
+            candidate.totalMatchPercentage = Math.round(matchResponse.data.total_match_percentage);
+          } else {
+            candidate.totalMatchPercentage = 0
+          }
 
         } catch (error) {
           console.error(`Error fetching match percentages for candidate ${candidate.user_id}:`, error);

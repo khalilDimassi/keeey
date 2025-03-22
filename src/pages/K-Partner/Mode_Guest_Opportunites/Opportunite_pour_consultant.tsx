@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 
 
-  
-  const Opportunite_pour_consultant = () => {
+
+const Opportunite_pour_consultant = () => {
   const [distance, setDistance] = useState(0);
   const [seniority, setSeniority] = useState(50);
 
@@ -13,12 +13,21 @@ import { Plus } from 'lucide-react';
         {/* Left Column - Compétences */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Compétences</h2>
-          
+
           {/* Secteur */}
           <div className="mb-6">
             <p className=" text-gray-600 mb-2">Secteur</p>
             <div className="flex flex-wrap gap-2">
-              {['Automobile / Equipementiers', 'Ferroviaire', 'Aérospatial', 'Défense', 'Life Science', 'Energie', 'Naval', 'Industrie Mécanique / Electronique / Multi secteurs'].map((sector) => (
+              {[
+                'Automobile / Equipementiers',
+                'Ferroviaire',
+                'Aérospatial',
+                'Défense',
+                'Life Science',
+                'Energie',
+                'Naval',
+                'Industrie Mécanique / Electronique / Multi secteurs'
+              ].map((sector) => (
                 <label key={sector} className="flex items-center bg-gray-50 space-x-2 px-3 py-1.5 rounded-xl border shadow">
                   <input type="checkbox" className="rounded border-gray-300" />
                   <span className="">{sector}</span>
@@ -43,9 +52,10 @@ import { Plus } from 'lucide-react';
               ].map((job) => (
                 <button
                   key={job.text}
-                  className={`flex items-center px-3 py-2 border  shadow rounded-xl  ${
-                    job.active ? 'bg-[#B5A48B] text-white ' : ' border-black bg-gray-50 text-gray-700'
-                  }`}
+                  className={`flex items-center px-3 py-2 border  shadow rounded-xl  ${job.active ?
+                    'bg-[#B5A48B] text-white ' :
+                    'border-black bg-gray-50 text-gray-700'
+                    }`}
                 >
                   {job.text}
                   <Plus className="w-4 h-4 ml-1" />
@@ -104,7 +114,7 @@ import { Plus } from 'lucide-react';
         {/* Right Column - Critères */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Critères</h2>
-          
+
           {/* Location */}
           <div className="mb-6">
             <p className=" text-gray-600 mb-2">Localisation</p>

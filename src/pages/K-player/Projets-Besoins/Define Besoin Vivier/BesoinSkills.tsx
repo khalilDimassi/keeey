@@ -81,9 +81,9 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                     <button
                         type="button"
                         key={job.id}
-                        className={`px-4 py-2 rounded-full text-sm flex items-center ${formData.selectedJobs[sectorId]?.includes(job.id)
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white border border-gray-300'
+                        className={`flex items-center px-3 py-2 border  shadow rounded-xl ${formData.selectedJobs[sectorId]?.includes(job.id)
+                            ? 'bg-[#215A96] text-white'
+                            : 'border-black bg-gray-50 text-gray-700'
                             }`}
                         onClick={() => toggleJob(sectorId, job.id)}
                     >
@@ -122,10 +122,10 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                             <button
                                 type="button"
                                 key={sector.id}
-                                className={`
-                  px-4 py-2 rounded-full text-sm flex items-center 
-                  ${formData.selectedSectors.includes(sector.id) ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300'}
-                `}
+                                className={`flex items-center px-3 py-2 border shadow rounded-xl ${formData.selectedSectors.includes(sector.id) ?
+                                    'bg-[#215A96] text-white' :
+                                    'border-black bg-gray-50 text-gray-700'
+                                    }`}
                                 onClick={() => toggleSector(sector.id)}
                                 disabled={!formData.selectedSectors.includes(sector.id) && formData.selectedSectors.length >= 3}
                             >
@@ -146,15 +146,13 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                                         type="button"
                                         key={sectorId}
                                         className={`px-4 py-2 ${formData.activeSector === sectorId
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-white border-r border-gray-300"
+                                            ? "bg-[#215A96] text-white"
+                                            : "border-black bg-gray-50 text-gray-700"
                                             }`}
                                         onClick={() => setActiveSector(sectorId)}
                                     >
                                         {formData.activeSector === sectorId && (
-                                            <span className="inline-flex items-center justify-center w-4 h-4 bg-blue-600 text-white rounded-full mr-1 text-xs">
-                                                ✓
-                                            </span>
+                                            <span className="inline-flex items-center justify-center w-4 h-4 bg-[#215A96] text-white rounded-full mr-1 text-xs"></span>
                                         )}
                                         {sectors.find((s) => s.id === sectorId)?.sector}
                                     </button>
@@ -186,7 +184,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         <button
                             type="button"
                             onClick={() => handleAddItemClick("tools", toolInput, setToolInput)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-[#215A96] hover:text-blue-800"
                         >
                             <PlusCircle size={28} />
                         </button>
@@ -195,7 +193,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         {formData.tools.map((tool, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+                                className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
                             >
                                 <span>{tool}</span>
                                 <button
@@ -222,7 +220,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         <button
                             type="button"
                             onClick={() => handleAddItemClick("authorizations", authorizationInput, setAuthorizationInput)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-[#215A96] hover:text-blue-800"
                         >
                             <PlusCircle size={28} />
                         </button>
@@ -231,7 +229,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         {formData.authorizations.map((authorization, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+                                className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
                             >
                                 <span>{authorization}</span>
                                 <button
@@ -258,7 +256,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         <button
                             type="button"
                             onClick={() => handleAddItemClick("languages", languageInput, setLanguageInput)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-[#215A96] hover:text-blue-800"
                         >
                             <PlusCircle size={28} />
                         </button>
@@ -267,7 +265,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         {formData.languages.map((lang, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+                                className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
                             >
                                 <span>{lang}</span>
                                 <button
@@ -294,7 +292,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         <button
                             type="button"
                             onClick={() => handleAddItemClick("qualities", qualityInput, setQualityInput)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-[#215A96] hover:text-blue-800"
                         >
                             <PlusCircle size={28} />
                         </button>
@@ -303,7 +301,7 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
                         {formData.qualities.map((quality, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-2 bg-blue-600 text-white rounded-md p-2"
+                                className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
                             >
                                 <span>{quality}</span>
                                 <button

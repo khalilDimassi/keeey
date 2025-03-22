@@ -27,7 +27,7 @@ const BesoinCrit: React.FC<BesoinCritProps> = ({ formData, updateFormData }) => 
             {/* Type de contrat */}
             <p className="text-gray-600 mb-2">Type de contrat proposé</p>
             <div className="flex gap-4 mb-4">
-                {["CDI", "FREELANCE", "CONSULTANT"].map((contract) => (
+                {["CDI", "CDD", "CDI-C", "FREELANCE", "CONSULTANT", "PORTAGE"].map((contract) => (
                     <label key={contract} className="flex items-center gap-2">
                         <input
                             type="checkbox"
