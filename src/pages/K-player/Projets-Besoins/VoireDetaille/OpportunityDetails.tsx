@@ -77,16 +77,15 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
         { headers: getAuthHeader(), }
       );
 
-      const candidates = response.data.map((candidate: StarredCandidates) => ({
-        ...candidate
-      }));
-
-      if (!candidates || candidates.length === 0) {
+      if (!response.data || response.data.length === 0) {
         setStarredCandidates([])
         return
       }
 
-      // Loop through candidates to fetch match percentages for each one
+      const candidates = response.data.map((candidate: StarredCandidates) => ({
+        ...candidate
+      }));
+
       for (const candidate of candidates) {
         try {
           const matchResponse = await axios.get<MatchPercentages>(
@@ -97,14 +96,12 @@ export function OpportunityDetails({ opportunity_id, onBack }: OpportunityDetail
 
         } catch (error) {
           console.error(`Error fetching match percentages for candidate ${candidate.id}:`, error);
-          // Continue with the next candidate even if one fails
         }
       }
 
       setStarredCandidates(candidates);
     } catch (error) {
       console.error("Error fetching candidates:", error);
-      // Optionally, you can set an error state here and display it in the UI
       setLoading(false);
     }
   };
