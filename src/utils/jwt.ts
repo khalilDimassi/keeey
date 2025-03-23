@@ -30,3 +30,31 @@ export const getAuthHeader = () => {
     const token = getToken();
     return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
 };
+
+
+const USER_ID_KEY = "user_id";
+
+// Save user ID in localStorage
+export const saveUserId = (userId: string) => {
+    localStorage.setItem(USER_ID_KEY, userId);
+};
+
+// Retrieve user ID from localStorage
+export const getUserId = (): string | null => {
+    return localStorage.getItem(USER_ID_KEY);
+};
+
+// Remove user ID from localStorage (Logout)
+export const removeUserId = () => {
+    localStorage.removeItem(USER_ID_KEY);
+};
+
+// Update user ID (Re-login or profile update)
+export const updateUserId = (newUserId: string) => {
+    saveUserId(newUserId);
+};
+
+// Check if user ID exists
+export const hasUserId = (): boolean => {
+    return getUserId() !== null;
+};

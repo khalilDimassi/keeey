@@ -5,6 +5,7 @@ import { fetchOpportunitiesList, fetchSavedOpportunityIds } from "./opportunitie
 
 import OpportunityList from "./opportunities/OpportunityList";
 import OpportunityDetailModal from "./opportunities/OpportunityDetailModal";
+import { getUserId } from "../../../../utils/jwt";
 
 const JobOpportunities = () => {
   const [activeTab, setActiveTab] = useState("Opportunités");
@@ -13,7 +14,7 @@ const JobOpportunities = () => {
   const [savedOpportunityItems, setSavedOpportunityItems] = useState<OpportunityListItem[]>([]);
   const [contactOpportunityItems, _setContactOpportunityItems] = useState<OpportunityListItem[]>([]);
   const [currentItems, setCurrentItems] = useState<OpportunityListItem[]>([]);
-  const [selectedOpportunityId, setSelectedOpportunityId] = useState<number | null>(null);
+  const [selectedOpportunity, setSelectedOpportunityId] = useState<OpportunityListItem | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +29,7 @@ const JobOpportunities = () => {
   const loadInitialData = async () => {
     setLoading(true);
     try {
-      const opportunitiesData = await fetchOpportunitiesList();
+      const opportunitiesData = await fetchOpportunitiesList(getUserId() ?? '');
       const savedOpportunityIds = await fetchSavedOpportunityIds();
 
 
@@ -53,6 +54,7 @@ const JobOpportunities = () => {
         created_at: opp.created_at,
         crit_location: opp.crit_location,
         crit_remote: opp.crit_remote,
+        matching: opp.matching
       }));
 
       setOpportunityItems(listItems);
@@ -94,8 +96,8 @@ const JobOpportunities = () => {
     setActiveTab(tab);
   };
 
-  const handleOpportunityClick = (opportunityId: number) => {
-    setSelectedOpportunityId(opportunityId);
+  const handleOpportunityClick = (selectedOpportunity: OpportunityListItem) => {
+    setSelectedOpportunityId(selectedOpportunity);
   };
 
   const handleCloseModal = () => {
@@ -178,9 +180,10 @@ const JobOpportunities = () => {
       </div>
 
       {/* Detail Modal - Only rendered when an opportunity is selected */}
-      {selectedOpportunityId && (
+      {selectedOpportunity && (
         <OpportunityDetailModal
-          opportunityId={selectedOpportunityId}
+          opportunityId={selectedOpportunity.opportunity_id}
+          opportunityMatch={selectedOpportunity.matching?.total_match_percentage ?? 0}
           onClose={handleCloseModal}
         />
       )}

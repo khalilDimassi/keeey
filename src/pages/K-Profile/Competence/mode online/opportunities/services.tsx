@@ -1,18 +1,34 @@
-import { OpportunityListItem } from "./types";
+import { MatchPercentages, OpportunityListItem } from "./types";
 import { getAuthHeader } from "../../../../../utils/jwt";
 import axios from "axios";
 
 
-export const fetchOpportunitiesList = async (): Promise<OpportunityListItem[]> => {
+export const fetchOpportunitiesList = async (candidateID?: string): Promise<OpportunityListItem[]> => {
     try {
         const response = await axios.get<OpportunityListItem[]>(
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/list`
         );
 
+        for (const opportunity of response.data) {
+            try {
+                if (opportunity.opportunity_id && opportunity.opportunity_id != 0) {
+                    const matchResponse = await axios.get<MatchPercentages>(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunity.opportunity_id}/${candidateID}/matching`
+                    );
+
+                    opportunity.matching = matchResponse.data ?? null;
+                } else {
+                    opportunity.matching = null
+                }
+
+            } catch (error) {
+                console.error(`Error fetching match percentages for opportunity ${opportunity.opportunity_id}:`, error);
+            }
+        }
+
         return response.data ?? [];
     } catch (error) {
         console.error("Failed to fetch opportunities list:", error);
-        // Optionally, show an error message to the user
         return [];
     }
 };

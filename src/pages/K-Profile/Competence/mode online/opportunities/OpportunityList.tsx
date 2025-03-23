@@ -9,7 +9,7 @@ interface OpportunityListProps {
     items: OpportunityListItem[];
     loading: boolean;
     error: string | null;
-    onItemClick: (opportunityId: number) => void;
+    onItemClick: (selectedOpportunity: OpportunityListItem) => void;
 }
 
 const ITEMS_PER_PAGE = 5;
@@ -167,9 +167,9 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
 
 
     // Helper function to calculate match percentage
-    const calculateMatchPercentage = (_opportunity: OpportunityListItem): string => {
-        // TODO: inject actual filtring logic
-        return `${80}%`;
+    const calculateMatchPercentage = (opportunity: OpportunityListItem): string => {
+        const result = Math.round(opportunity.matching?.total_match_percentage ?? 0)
+        return `${result}%`;
     };
 
 
@@ -227,7 +227,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                         key={item.opportunity_id}
                         ref={isLastItem ? setLastItemRef : null}
                         className="bg-white p-4 hover:shadow-lg transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
-                        onClick={() => onItemClick(item.opportunity_id)}
+                        onClick={() => onItemClick(item)}
                     >
                         {/* Avatar - using placeholder */}
                         <img

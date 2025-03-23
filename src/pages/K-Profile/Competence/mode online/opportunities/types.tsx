@@ -5,7 +5,21 @@ export interface OpportunityListItem {
     contract_role: string,
     description: string,
     crit_location: string,
-    crit_remote: boolean
+    crit_remote: boolean,
+    matching: MatchPercentages | null,
+}
+
+export interface MatchPercentages {
+    total_match_percentage: number;
+    jobs_match_percentage: number;
+    seniority_match_percentage: number;
+    availability_match_percentage: number;
+    rate_match_percentage: number;
+    mobility_match_percentage: number;
+    languages_match_percentage: number;
+    tools_match_percentage: number;
+    authorizations_match_percentage: number;
+    qualities_match_percentage: number;
 }
 
 export interface Opportunity {

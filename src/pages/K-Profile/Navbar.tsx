@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut } from "lucide-react";
-import { getAuthHeader, isAuthenticated, removeToken } from "../../utils/jwt";
+import { getAuthHeader, isAuthenticated, removeToken, saveUserId } from "../../utils/jwt";
 import axios from "axios";
 
 const Navbar = () => {
@@ -29,8 +29,9 @@ const Navbar = () => {
           headers: getAuthHeader(),
         })
         .then((response) => {
-          const { first_name, last_name } = response.data.user;
+          const { first_name, last_name, ID } = response.data.user;
           setUserName(`${first_name} ${last_name}`);
+          saveUserId(ID);
         })
         .catch((error) => {
           console.error("Error fetching profile:", error);
@@ -45,7 +46,7 @@ const Navbar = () => {
     >
       {/* Left Side: Logo */}
       <div className="flex items-center">
-        <img src={logo} alt="Logo" className="w-32 h-14"  onClick={() => navigate("/")}/>
+        <img src={logo} alt="Logo" className="w-32 h-14" onClick={() => navigate("/")} />
       </div>
 
       {/* Center: Profile Name */}
@@ -58,8 +59,8 @@ const Navbar = () => {
       <button
         onClick={CreateAccountClick}
         className={`${authenticated
-            ? "bg-gray-600 hover:bg-gray-800"
-            : "bg-teal-700 hover:bg-teal-900"
+          ? "bg-gray-600 hover:bg-gray-800"
+          : "bg-teal-700 hover:bg-teal-900"
           } text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all duration-200 ease-in-out transform hover:scale-105`}
       >
         {authenticated ? <LogOut size={18} /> : <UserPlus size={18} />}

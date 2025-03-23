@@ -6,10 +6,11 @@ import { submitToOpportunity, saveOpportunity } from "./services";
 
 interface OpportunityDetailModalProps {
     opportunityId: number;
+    opportunityMatch: number;
     onClose: () => void;
 }
 
-const OpportunityDetailModal = ({ opportunityId, onClose }: OpportunityDetailModalProps) => {
+const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose }: OpportunityDetailModalProps) => {
     const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -85,11 +86,6 @@ const OpportunityDetailModal = ({ opportunityId, onClose }: OpportunityDetailMod
         return timeAgo.trim();
     };
 
-    const calculateMatchPercentage = (_opportunity: Opportunity): string => {
-        // TODO: inject actual filtring logic
-        return `${80}%`;
-    };
-
     const getStatusNameInFrench = (status: string) => {
         switch (status) {
             case 'PENDING':
@@ -160,7 +156,7 @@ const OpportunityDetailModal = ({ opportunityId, onClose }: OpportunityDetailMod
                     {/* Salary and Tags */}
                     <div className="flex flex-wrap items-center gap-3 mb-6">
                         <div className="px-4 py-2 rounded-lg bg-teal-600 text-white font-medium">
-                            {calculateMatchPercentage(opportunity)}
+                            {opportunityMatch}%
                         </div>
                         <div className="px-4 py-2 rounded-lg bg-green-100 text-green-800 font-medium text-sm">
                             Correspondant à votre profil
