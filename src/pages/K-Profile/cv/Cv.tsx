@@ -212,7 +212,7 @@ function Cv() {
       case "Centre d'intérêt":
         return <Centre data={resumeData.interests} onDataUpdated={handleDataUpdated} />;
       case "Compétences":
-        return <Competences data={resumeData.sectors} onDataDeleted={handleDataUpdated} />;
+        return <Competences data={resumeData.sectors} />;
       case "Réalisations":
         return <Realisation data={resumeData.projects} onDataUpdated={handleDataUpdated} />;
       case "Qualités":

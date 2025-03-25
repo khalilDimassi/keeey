@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Sectors, { Sector, UserSelection } from './Sectors';
 import Criteria from './Criteria';
 import axios from 'axios';
@@ -11,7 +11,7 @@ type TagsState = {
   [key: string]: boolean;
 };
 
-type SearchCriteriaResponse = {
+export type SearchCriteria = {
   contract_roles?: string[];
   organization_roles?: string[];
   crit_daily_rate?: number;
@@ -89,7 +89,7 @@ const CompetencesCriteres: React.FC = () => {
 
   const fetchCriteria = async () => {
     try {
-      const response = await axios.get<SearchCriteriaResponse>(
+      const response = await axios.get<SearchCriteria>(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/search-criteria`,
         {
           headers: {
@@ -173,25 +173,96 @@ const CompetencesCriteres: React.FC = () => {
     fetchInitialSelection();
   }, []);
 
-  const handleSelectionChange = async (selections: UserSelection[]) => {
+
+  const [sectorsChanged, setSectorsChanged] = useState(false);
+  const [criteriaChanged, setCriteriaChanged] = useState(false);
+  const [currentSelections, setCurrentSelections] = useState<UserSelection[]>([]);
+
+  const handleSelectionChange = useCallback(async (selections: UserSelection[]) => {
+    setCurrentSelections(selections);
+    setSectorsChanged(true);
+  }, []);
+
+  // New function to handle saving both sectors and criteria
+  const handleSaveAll = async () => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill/v3`,
-        selections,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            ...getAuthHeader(),
-          },
+      setLoading(true);
+
+      // Save sectors if changed
+      if (sectorsChanged) {
+        await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill/v3`,
+          currentSelections,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...getAuthHeader(),
+            },
+          }
+        );
+        setSectorsChanged(false);
+      }
+
+      // Save criteria if changed
+      if (criteriaChanged) {
+        const updateData: SearchCriteria = {};
+
+        const activeContractTags = Object.entries(contractTags)
+          .filter(([_, active]) => active)
+          .map(([tag]) => tag);
+
+        const activeCompanyTags = Object.entries(companyTags)
+          .filter(([_, active]) => active)
+          .map(([tag]) => tag);
+
+        if (activeContractTags.length > 0) {
+          updateData.contract_roles = activeContractTags;
         }
-      );
-      console.log('API Response:', response.data);
+
+        if (activeCompanyTags.length > 0) {
+          updateData.organization_roles = activeCompanyTags;
+        }
+
+        const activeMobilityOptions = Object.entries(mobility)
+          .filter(([_, active]) => active)
+          .map(([option]) => option);
+
+        if (activeMobilityOptions.length > 0) {
+          updateData.crit_mobility = activeMobilityOptions.join(',');
+        }
+
+        if (location.trim()) {
+          updateData.crit_location = location;
+        }
+
+        updateData.crit_distance = distanceValue.toString();
+        updateData.availability = availability.toUpperCase();
+
+        await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/search-criteria`,
+          updateData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...getAuthHeader()
+            }
+          }
+        );
+        setCriteriaChanged(false);
+      }
+
+      // Refresh data after saving
+      refreshData();
     } catch (error) {
-      console.error('Failed to update skills:', error);
+      console.error('Failed to save:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Modify toggleTag to track criteria changes
   const toggleTag = (category: string, tag: string) => {
+    setCriteriaChanged(true);
     switch (category) {
       case 'contract':
         setContractTags({ ...contractTags, [tag]: !contractTags[tag] });
@@ -204,8 +275,30 @@ const CompetencesCriteres: React.FC = () => {
     }
   };
 
+  // Modify other criteria-related functions to track changes
   const toggleMobility = (option: string) => {
+    setCriteriaChanged(true);
     setMobility({ ...mobility, [option]: !mobility[option] });
+  };
+
+  const handleDistanceChange = (value: number) => {
+    setCriteriaChanged(true);
+    setDistanceValue(value);
+  };
+
+  const handleTransportModeChange = (mode: string) => {
+    setCriteriaChanged(true);
+    setTransportMode(mode);
+  };
+
+  const handleAvailabilityChange = (availability: string) => {
+    setCriteriaChanged(true);
+    setAvailability(availability);
+  };
+
+  const handleLocationChange = (location: string) => {
+    setCriteriaChanged(true);
+    setLocation(location);
   };
 
   return (
@@ -234,13 +327,25 @@ const CompetencesCriteres: React.FC = () => {
             availability={availability}
             toggleTag={toggleTag}
             toggleMobility={toggleMobility}
-            setDistanceValue={setDistanceValue}
-            setTransportMode={setTransportMode}
-            setAvailability={setAvailability}
+            setDistanceValue={handleDistanceChange}
+            setTransportMode={handleTransportModeChange}
+            setAvailability={handleAvailabilityChange}
             location={location}
-            setLocation={setLocation}
+            setLocation={handleLocationChange}
             refreshData={refreshData}
           />
+          {/* Add the shared save button */}
+          {(sectorsChanged || criteriaChanged) && (
+            <div className="bottom-4 right-4">
+              <button
+                onClick={handleSaveAll}
+                disabled={loading}
+                className="bg-teal-700 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
+              >
+                {loading ? 'Saving...' : 'Save All Changes'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

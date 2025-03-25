@@ -1,20 +1,21 @@
 import { useState } from "react";
-import Navbar from "./Navbar";
+import { isAuthenticated } from "../../utils/jwt";
 
+import Navbar from "./Navbar";
+import JobOpportunities from "./Competence/mode online/JobOpportunities";
+import _JobOpportunities2 from "./Competence/mode guest/JobOpportunities2";
 import Profile from "./ProfileAfterLogin/ProfilePage";
-import KProfile from "./Competence/KProfile";
 import Oportunite from "./Competence/Oportunite";
-import Cv from "./cv/Cv";
+import KProfile from "./Competence/KProfile";
+import MissionsTable from "./MissionsTable";
 import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
-import JobOpportunities from "./Competence/mode online/JobOpportunities";
 import Dashboard from "./Dashboard";
-import MissionsTable from "./MissionsTable";
 import Login from "./LoginPupap";
-import { isAuthenticated } from "../../utils/jwt";
 import Sidebar from "./Sidebar";
+import Cv from "./cv/Cv";
 
-type IconId =
+type ActiveComponent =
   | "dashboard"
   | "fileText1"
   | "bookmark"
@@ -26,19 +27,19 @@ type IconId =
   | null;
 
 const Layout = () => {
-  const [isOnline] = useState(isAuthenticated); // Connection state
+  // Authentication state
+  const [isOnline] = useState(isAuthenticated);
+  const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated);
 
-  const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated); // Login popup state
+  // UI state
   const [showProfile, setShowProfile] = useState(false);
   const [showKProfile, setShowKProfile] = useState(true);
-
-  const [activeComponent, setActiveComponent] = useState<IconId>(
+  const [activeComponent, setActiveComponent] = useState<ActiveComponent>(
     isOnline ? "dashboard" : "competence"
   );
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 
-  const handleIconClick = (componentId: IconId) => {
-    // Prevent navigation if not logged in (except for "competence")
+  const handleIconClick = (componentId: ActiveComponent) => {
     if (!isOnline && componentId !== "competence") {
       setShowLoginPopup(true);
       return;
@@ -46,7 +47,6 @@ const Layout = () => {
 
     setActiveComponent(componentId);
     setIsSidebarHorizontal(false);
-
     setShowProfile(componentId === "user");
     setShowKProfile(componentId === "competence");
   };
@@ -56,19 +56,48 @@ const Layout = () => {
     setIsSidebarHorizontal(true);
   };
 
+  const renderActiveComponent = () => {
+    switch (activeComponent) {
+      case "dashboard":
+        return <Dashboard />;
+
+      case "competence":
+        if (showKProfile) {
+          return <KProfile onClose={handleCloseKProfile} />;
+        }
+        return <Oportunite />;
+
+      case "fileText1":
+        return <Cv />;
+
+      // case "bookmark":
+      //   return <SavedOpportunities />;
+
+      case "target":
+        return <MissionsTable />;
+
+      case "contact":
+        return <Contacts />;
+
+      case "user":
+        return showProfile && <Profile />;
+
+      case "settings":
+        return <Reglage />;
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-100 p-2">
-      {/* Navbar */}
-      <div className="w-full h-12">
-        <Navbar />
-      </div>
+      <Navbar />
 
-      {/* Sidebar & Main Content */}
       <div
         className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-[calc(100%-64px)]`}
         style={{ marginTop: "20px" }}
       >
-        {/* Sidebar */}
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
             onIconClick={handleIconClick}
@@ -78,52 +107,15 @@ const Layout = () => {
           />
         </div>
 
-        {/* Main Content */}
         <div className="flex flex-col w-full gap-4 m-10">
-          {/* Show Dashboard */}
-          {activeComponent === "dashboard" && <Dashboard />}
-
-          {/* Show KProfile */}
-          {activeComponent === "competence" && showKProfile && (
-            <KProfile onClose={handleCloseKProfile} />
-          )}
-
-          {/* If isOnline is false, always show Oportunite */}
-          {activeComponent === "competence" && !isOnline && <Oportunite />}
-
-          {/* If isOnline is true, switch between JobOpportunities and JobOpportunities2 */}
-          {activeComponent === "competence" && isOnline && (
-            <JobOpportunities />
-            // showKProfile ? <JobOpportunities /> : <JobOpportunities2 />
-          )}
-
-          {/* Show Contacts & JobOpportunities2 when "contact" is selected */}
-          {activeComponent === "contact" && (
-            <div className="flex flex-col gap-4">
-              {/* <Contacts onClose={() => setActiveComponent(null)} /> */}
-              <Contacts />
-              {/* <JobOpportunities2 /> */}
-            </div>
-          )}
-
-          {/* Show Profile */}
-          {activeComponent === "user" && showProfile && <Profile />}
-
-          {/* Show CV */}
-          {activeComponent === "fileText1" && <Cv />}
-
-          {/* Show Reglage when "settings" is clicked */}
-          {activeComponent === "settings" && <Reglage />}
-
-          {/* Show MissionsTable when "target" is clicked */}
-          {activeComponent === "target" && <MissionsTable />}
+          {renderActiveComponent()}
         </div>
       </div>
 
-      {/* Login Popup */}
       {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
     </div>
   );
 };
+
 
 export default Layout;

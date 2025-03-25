@@ -54,7 +54,9 @@ const JobOpportunities = () => {
         created_at: opp.created_at,
         crit_location: opp.crit_location,
         crit_remote: opp.crit_remote,
-        matching: opp.matching
+        matching: opp.matching,
+        is_saved: opp.is_saved,
+        is_applied: opp.is_applied
       }));
 
       setOpportunityItems(listItems);
@@ -185,6 +187,8 @@ const JobOpportunities = () => {
           opportunityId={selectedOpportunity.opportunity_id}
           opportunityMatch={selectedOpportunity.matching?.total_match_percentage ?? 0}
           onClose={handleCloseModal}
+          is_saved={selectedOpportunity.is_saved}
+          is_applied={selectedOpportunity.is_applied}
         />
       )}
     </div>

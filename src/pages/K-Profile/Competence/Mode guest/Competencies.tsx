@@ -111,6 +111,7 @@ function Competencies() {
     setIsSaving(true);
     try {
       const response = await axios.put(
+        // TODO: update to v3
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill/v2`,
         { skills: selectedSkills },
         {

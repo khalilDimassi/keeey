@@ -9,6 +9,8 @@ import CompetencesCriteres from "./mode online/competences & criteres/Competence
 import CvCompetences from "./mode online/CvCompetences";
 import SearchCriteria from "./mode guest/SearchCriteria";
 import Competencies from "./mode guest/Competencies";
+import JobOpportunities from "./mode online/JobOpportunities";
+import JobOpportunities2 from "./mode guest/JobOpportunities2";
 
 
 const KProfile = ({ onClose }: { onClose: () => void }) => {
@@ -74,8 +76,6 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
             >
               CV / Dossier de compéténces
             </button>
-
-
           </div>
 
           <div className="relative bg-white " >
@@ -113,6 +113,8 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               </button>
             </div>
           </div>
+
+          <JobOpportunities />;
         </>
       ) : (
         <>
@@ -185,10 +187,9 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
             </div>
           </div>
 
+          <JobOpportunities2 />;
         </>
       )}
-
-
     </div>
   );
 };

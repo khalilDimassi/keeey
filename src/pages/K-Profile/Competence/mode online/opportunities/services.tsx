@@ -1,13 +1,25 @@
 import { MatchPercentages, OpportunityListItem } from "./types";
-import { getAuthHeader } from "../../../../../utils/jwt";
-import axios from "axios";
+import { getAuthHeader, isAuthenticated } from "../../../../../utils/jwt";
+import axios, { AxiosResponse } from "axios";
 
 
 export const fetchOpportunitiesList = async (candidateID?: string): Promise<OpportunityListItem[]> => {
     try {
-        const response = await axios.get<OpportunityListItem[]>(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/list`
-        );
+        var response: AxiosResponse<OpportunityListItem[], any>
+        if (isAuthenticated()) {
+            response = await axios.get<OpportunityListItem[]>(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/list`,
+                {
+                    headers: {
+                        ...getAuthHeader()
+                    }
+                }
+            );
+        } else {
+            response = await axios.get<OpportunityListItem[]>(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/list`
+            );
+        }
 
         for (const opportunity of response.data) {
             try {

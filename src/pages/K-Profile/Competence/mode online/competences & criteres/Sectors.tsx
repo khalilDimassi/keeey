@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface Job {
   id: number;
@@ -32,6 +32,7 @@ const Sectors: React.FC<SectorsProps> = ({
   const [activeSector, setActiveSector] = useState<number | null>(null);
   const [seniority, setSeniority] = useState<{ [key: number]: number }>({});
   const [selectedJobs, setSelectedJobs] = useState<{ [key: number]: number[] }>({});
+  const initialLoad = useRef(true);
 
   useEffect(() => {
     if (initialSelections.length > 0) {
@@ -53,10 +54,30 @@ const Sectors: React.FC<SectorsProps> = ({
     }
   }, [initialSelections]);
 
+  // Collect and return user selections
+  const collectSelections = useCallback(() => {
+    const selections = selectedSectors.map(sectorId => ({
+      id: sectorId,
+      seniority: seniority[sectorId],
+      jobs: selectedJobs[sectorId] || [],
+    }));
+    onSelectionChange(selections);
+  }, [selectedSectors, seniority, selectedJobs, onSelectionChange]);
+
+  useEffect(() => {
+    if (selectedSectors.length > 0) {
+      collectSelections();
+    }
+  }, [selectedSectors, seniority, selectedJobs, collectSelections]);
+
+
   // Handle sector selection
   const toggleSector = (sectorId: number) => {
     if (selectedSectors.includes(sectorId)) {
-      setSelectedSectors(selectedSectors.filter(id => id !== sectorId));
+      setSelectedSectors(prev => {
+        const newSelectedSectors = prev.filter(id => id !== sectorId);
+        return newSelectedSectors;
+      });
       setSeniority(prev => {
         const updated = { ...prev };
         delete updated[sectorId];
@@ -68,43 +89,39 @@ const Sectors: React.FC<SectorsProps> = ({
         return updated;
       });
       if (activeSector === sectorId) {
-        // Set the next available sector as active or null if none left
         const remainingSectors = selectedSectors.filter(id => id !== sectorId);
         setActiveSector(remainingSectors.length > 0 ? remainingSectors[0] : null);
       }
+      collectSelections();
     } else if (selectedSectors.length < 3) {
-      setSelectedSectors([...selectedSectors, sectorId]);
+      setSelectedSectors(prev => [...prev, sectorId]);
       setSeniority(prev => ({ ...prev, [sectorId]: 1 }));
       setSelectedJobs(prev => ({ ...prev, [sectorId]: [] }));
       setActiveSector(sectorId);
+      collectSelections();
     }
   };
 
+
   // Handle seniority change
   const handleSeniorityChange = (sectorId: number, value: number) => {
-    setSeniority(prev => ({ ...prev, [sectorId]: value }));
+    setSeniority(prev => {
+      const newSeniority = { ...prev, [sectorId]: value };
+      return newSeniority;
+    });
+    collectSelections();
   };
 
   // Handle job selection
   const toggleJob = (sectorId: number, jobId: number) => {
     setSelectedJobs(prev => {
       const jobs = prev[sectorId] || [];
-      if (jobs.includes(jobId)) {
-        return { ...prev, [sectorId]: jobs.filter(id => id !== jobId) };
-      } else {
-        return { ...prev, [sectorId]: [...jobs, jobId] };
-      }
+      const newSelectedJobs = jobs.includes(jobId)
+        ? { ...prev, [sectorId]: jobs.filter(id => id !== jobId) }
+        : { ...prev, [sectorId]: [...jobs, jobId] };
+      return newSelectedJobs;
     });
-  };
-
-  // Collect and return user selections
-  const collectSelections = () => {
-    const selections = selectedSectors.map(sectorId => ({
-      id: sectorId,
-      seniority: seniority[sectorId],
-      jobs: selectedJobs[sectorId] || [],
-    }));
-    onSelectionChange(selections);
+    collectSelections();
   };
 
   // Render seniority slider
@@ -148,7 +165,9 @@ const Sectors: React.FC<SectorsProps> = ({
             key={job.id}
             className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-teal-700 text-white' : 'bg-white border border-gray-300'
               }`}
-            onClick={() => toggleJob(sectorId, job.id)}
+            onClick={() => {
+              toggleJob(sectorId, job.id)
+            }}
           >
             {job.job} <span className="ml-1">+</span>
           </button>
@@ -210,13 +229,6 @@ const Sectors: React.FC<SectorsProps> = ({
           {renderJobs(activeSector)}
         </div>
       )}
-
-      <button
-        className="mt-6 px-4 py-2 bg-teal-700 text-white rounded-full"
-        onClick={collectSelections}
-      >
-        Save Selections
-      </button>
     </>
   );
 };

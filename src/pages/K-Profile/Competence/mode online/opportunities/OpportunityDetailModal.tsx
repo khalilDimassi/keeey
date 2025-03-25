@@ -8,9 +8,11 @@ interface OpportunityDetailModalProps {
     opportunityId: number;
     opportunityMatch: number;
     onClose: () => void;
+    is_saved: boolean;
+    is_applied: boolean;
 }
 
-const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose }: OpportunityDetailModalProps) => {
+const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_saved, is_applied }: OpportunityDetailModalProps) => {
     const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);

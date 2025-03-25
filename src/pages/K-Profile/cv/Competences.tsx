@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import { useState, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 import { Key } from "readline";
 
+// TODO: api change: seniority for sectors, no delete request.
 
 interface Skill {
   id: number;
@@ -34,55 +35,24 @@ const seniorityLevels = [
   { level: 5, name: "Principal", description: "20+ ans" },
 ];
 
-const getSkillLevel = (seniority: number) => {
-  const level = seniorityLevels.find((s) => s.level === seniority);
-  return level ? level.name : "Unknown";
-};
+// const getSkillLevel = (seniority: number) => {
+//   const level = seniorityLevels.find((s) => s.level === seniority);
+//   return level ? level.name : "Unknown";
+// };
 
-const getSkillLevelColor = (level: string) => {
-  switch (level) {
-    case "Junior": return "text-blue-600";
-    case "Mid-Level": return "text-green-600";
-    case "Senior": return "text-yellow-600";
-    case "Lead": return "text-orange-600";
-    case "Principal": return "text-red-600";
-    default: return "text-gray-600";
-  }
-};
+// const getSkillLevelColor = (level: string) => {
+//   switch (level) {
+//     case "Junior": return "text-blue-600";
+//     case "Mid-Level": return "text-green-600";
+//     case "Senior": return "text-yellow-600";
+//     case "Lead": return "text-orange-600";
+//     case "Principal": return "text-red-600";
+//     default: return "text-gray-600";
+//   }
+// };
 
-const Competences = ({ data, onDataDeleted }: { data: Sector[], onDataDeleted: () => void }) => {
-  const [sectors, setSectors] = useState(data ?? []);
-
-  const handleDeleteSkill = async (skillName: any) => {
-    try {
-      const remainingSkills = sectors.flatMap(sector =>
-        (sector.jobs ?? []).flatMap((job: { skills: any; }) =>
-          (job.skills ?? [])
-            .filter((skill: { name: any; }) => skill.name !== skillName)
-            .map((skill: { name: any; }) => skill.name)
-        )
-      );
-
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/skill/v2`,
-        { skills: remainingSkills },
-        { headers: getAuthHeader() }
-      );
-
-      const updatedSectors: Sector[] = sectors.map(sector => ({
-        ...sector,
-        jobs: (sector.jobs ?? []).map(job => ({
-          ...job,
-          skills: (job.skills ?? []).filter(skill => skill.name !== skillName)
-        }))
-      }));
-
-      setSectors(updatedSectors);
-      onDataDeleted();
-    } catch (error) {
-      console.error("Error deleting skill:", error);
-    }
-  };
+const Competences = ({ data }: { data: Sector[] }) => {
+  const [sectors, _setSectors] = useState(data ?? []);
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -95,38 +65,30 @@ const Competences = ({ data, onDataDeleted }: { data: Sector[], onDataDeleted: (
             <AccordionItem key={sector.id} value={`sector-${sector.id}`} className="border border-gray-200 rounded-md">
               <AccordionTrigger className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors">
                 <span className="text-lg font-semibold text-gray-700">{sector.name}</span>
+                {/* const seniorityInfo = seniorityLevels.find((s) => s.level === skill.seniority) || { name: "Unknown", description: "" }; */}
+                {/* <span className={`text-sm text-gray-600`}>
+                  ({seniorityInfo.name} - {seniorityInfo.description})
+                </span> */}
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 {sector.jobs?.map((job) => (
                   job && (
                     <div
-                      key={job.id.toString()} // Ensure key is a string
+                      key={job.id.toString()}
                       className="bg-white shadow-sm rounded-md mb-2 p-3"
                     >
                       <div className="font-medium text-gray-600 mb-2">{job.name}</div>
                       <div className="space-y-1">
                         {job.skills?.map((skill) => {
-                          if (!skill) return null; // Prevent mapping over null skills
-                          const seniorityInfo = seniorityLevels.find((s) => s.level === skill.seniority) || { name: "Unknown", description: "" };
+                          if (!skill) return null;
                           return (
                             <div
-                              key={skill.id.toString()} // Ensure key is a string
+                              key={skill.id.toString()}
                               className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-sm"
                             >
                               <div className="flex items-center">
                                 <span className="mr-2">{skill.name}</span>
-                                <span className={`text-sm text-gray-600`}>
-                                  ({seniorityInfo.name} - {seniorityInfo.description})
-                                </span>
                               </div>
-                              <Button
-                                variant="destructive"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => handleDeleteSkill(skill.name)}
-                              >
-                                <Trash className="h-4 w-4" />
-                              </Button>
                             </div>
                           );
                         })}

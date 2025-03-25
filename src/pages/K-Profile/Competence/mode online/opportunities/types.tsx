@@ -7,6 +7,8 @@ export interface OpportunityListItem {
     crit_location: string,
     crit_remote: boolean,
     matching: MatchPercentages | null,
+    is_saved: boolean,
+    is_applied: boolean
 }
 
 export interface MatchPercentages {
