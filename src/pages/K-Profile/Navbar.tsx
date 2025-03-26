@@ -78,7 +78,7 @@ const Navbar = () => {
             onClick={CreateAccountClick}
             className={`hidden md:flex ${authenticated
               ? "bg-gray-600 hover:bg-gray-800"
-              : "bg-teal-700 hover:bg-teal-900"
+              : "bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-teal-900"
               } text-white px-4 py-2 rounded-xl items-center gap-2 shadow-md transition-all duration-200 ease-in-out transform hover:scale-105`}
           >
             {authenticated ? <LogOut size={18} /> : <UserPlus size={18} />}

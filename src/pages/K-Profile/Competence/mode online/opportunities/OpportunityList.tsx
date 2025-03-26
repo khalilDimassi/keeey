@@ -244,11 +244,7 @@ const OpportunityList = ({
                             >
                                 <Bookmark
                                     size={24}
-<<<<<<< HEAD
-                                    fill={item.is_saved ? " white" : "white"}
-=======
                                     fill={item.is_saved ? "currentColor" : "none"}
->>>>>>> 8ab8032a8dc2e795d71b186063419de999c87b16
                                     className={item.is_saved ? "text-yellow-500" : "text-current"}
                                 />
                             </button>

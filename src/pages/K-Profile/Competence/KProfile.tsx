@@ -13,6 +13,7 @@ import SearchCriteria from "./Mode guest/SearchCriteria";
 import Competencies from "./Mode guest/Competencies";
 import JobOpportunities2 from "./Mode guest/JobOpportunities2";
 import Cv from "../cv/Cv";
+import Oportunite from "./Oportunite";
 
 
 
@@ -139,21 +140,20 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                 boxShadow: activeTab === "competencies"
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
                   : "none",
-                fontFamily: 'Roboto',
-                fontWeight: 500,
-                fontSize: '24px',
-                lineHeight: 'Body Large/Line Height',
-                letterSpacing: 'Body Large/Tracking',
-                textAlign: 'center',
-                verticalAlign: 'middle'
+                  fontWeight: 500,
+                  fontSize: '20px',
+                  lineHeight: 'Body Large/Line Height',
+                  letterSpacing: 'Body Large/Tracking',
+                  textAlign: 'center',
+                  verticalAlign: 'middle'
               }}
-              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "competencies"
+              className={`px-8 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "competencies"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
                 : "text-gray-400 bg-gray-100/50"
                 }`}
               onClick={() => setActiveTab("competencies")}
             >
-              <Award className={`w-5 h-5 ${activeTab === "competencies" ? "text-teal-600" : "text-gray-400"}`} />
+             
               Mes Compétences
             </button>
             <button
@@ -161,21 +161,21 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
                 boxShadow: activeTab === "criteria"
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
                   : "none",
-                fontFamily: 'Roboto',
-                fontWeight: 500,
-                fontSize: '24px',
-                lineHeight: 'Body Large/Line Height',
-                letterSpacing: 'Body Large/Tracking',
-                textAlign: 'center',
-                verticalAlign: 'middle'
+                
+                  fontWeight: 500,
+                  fontSize: '20px',
+                  lineHeight: 'Body Large/Line Height',
+                  letterSpacing: 'Body Large/Tracking',
+                  textAlign: 'center',
+                  verticalAlign: 'middle'
               }}
-              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "criteria"
+              className={`px-8 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "criteria"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
                 : "text-gray-400 bg-gray-100/50"
                 }`}
               onClick={() => setActiveTab("criteria")}
             >
-              <FileText className={`w-5 h-5 ${activeTab === "criteria" ? "text-teal-600" : "text-gray-400"}`} />
+              
               Mes critères de recherche
             </button>
           </div>
@@ -215,7 +215,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
             </div>
           </div>
 
-          <JobOpportunities2 />;
+          <Oportunite />;
         </>
       )}
     </div>

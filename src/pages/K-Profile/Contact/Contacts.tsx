@@ -133,7 +133,7 @@ const Contacts = () => {
 
   return (
     <div className="w-full">
-      <div className="relative  shadow-sm rounded-lg">
+      <div className="relative  shadow-sm rounded-xl">
         <div className="flex items-center space-x-3 ">
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M30.875 2.375H7.125C5.81281 2.375 4.75 3.43781 4.75 4.75V7.125H3.5625C2.907 7.125 2.375 7.657 2.375 8.3125C2.375 8.968 2.907 9.5 3.5625 9.5C5.69406 9.5 2.20281 9.5 7.125 9.5C7.7805 9.5 8.3125 10.032 8.3125 10.6875C8.3125 11.343 7.7805 11.875 7.125 11.875H4.75V26.125H3.5625C2.907 26.125 2.375 26.657 2.375 27.3125C2.375 27.968 2.907 28.5 3.5625 28.5C5.69406 28.5 2.20281 28.5 7.125 28.5C7.7805 28.5 8.3125 29.032 8.3125 29.6875C8.3125 30.343 7.7805 30.875 7.125 30.875H4.75V33.25C4.75 34.5622 5.81281 35.625 7.125 35.625H30.875C32.1872 35.625 33.25 34.5622 33.25 33.25V4.75C33.25 3.43781 32.1872 2.375 30.875 2.375ZM19 8.3125C21.6232 8.3125 23.75 10.4393 23.75 13.0625C23.75 15.6857 21.6232 17.8125 19 17.8125C16.3768 17.8125 14.25 15.6857 14.25 13.0625C14.25 10.4393 16.3768 8.3125 19 8.3125ZM26.125 28.5H11.875V26.125C11.875 22.1896 15.0646 19 19 19C22.9354 19 26.125 22.1896 26.125 26.125V28.5Z" fill="url(#paint0_linear_542_3675)" />
@@ -204,37 +204,10 @@ const Contacts = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           {/* Action Buttons */}
           <div className="flex items-center gap-2 px-4">
             <button
-              className="px-4 py-2 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white font-medium rounded hover:bg-teal-700"
+              className="px-4 py-2 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white font-medium rounded-xl hover:bg-teal-700"
               onClick={() => setIsModalOpen(true)}
             >
               {activeTab === "contacts" ? "Ajouter un contact" : "Ajouter une cooptation"}
@@ -262,7 +235,7 @@ const Contacts = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center ">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-96 relative">
             <button
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
@@ -298,7 +271,7 @@ const Contacts = () => {
                     name="last_name"
                     value={formData.last_name}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded-xl"
                     required
                   />
                 </div>
@@ -308,7 +281,7 @@ const Contacts = () => {
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded-xl"
                     required
                   />
                 </div>
@@ -320,30 +293,40 @@ const Contacts = () => {
                     name={activeTab === "contacts" ? "company" : "occupation"}
                     value={activeTab === "contacts" ? formData.company : formData.occupation}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded-xl"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Téléphone</label>
+                  <label className="block text-sm font-medium text-gray-700">Fonction</label>
                   <input
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
+                    name="Fonction"
+                  
+                   
+                    className="w-full p-2 border rounded-xl"
+                   
                   />
                 </div>
               </div>
 
               <div>
+              <div>
+                  <label className="block text-sm font-medium text-gray-700">Téléphone</label>
+                  <input
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-xl"
+                    required
+                  />
+                </div>
                 <label className="block text-sm font-medium text-gray-700">Email</label>
                 <input
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full p-2 border rounded mt-2"
+                  className="w-full p-2 border rounded-xl mt-2"
                   required
                 />
               </div>
@@ -358,7 +341,7 @@ const Contacts = () => {
                     type="number"
                     value={formData.nb_curr_opportunity || ""}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded mt-2"
+                    className="w-full p-2 border rounded-xl mt-2"
                   />
                 </div>
               ) : (
@@ -372,7 +355,7 @@ const Contacts = () => {
                       type="number"
                       value={formData.nb_done_opportunity || ""}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded mt-2"
+                      className="w-full p-2 border rounded-xl mt-2"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -383,7 +366,7 @@ const Contacts = () => {
                         type="number"
                         value={formData.nb_days || ""}
                         onChange={handleInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-xl"
                       />
                     </div>
                     <div>
@@ -392,7 +375,7 @@ const Contacts = () => {
                         name="note"
                         value={formData.note || ""}
                         onChange={handleInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-xl"
                       />
                     </div>
                   </div>
