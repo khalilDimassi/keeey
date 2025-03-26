@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { 
-  LayoutGrid, 
-  Settings, 
-  FileText, 
-  Bookmark, 
-  Target, 
-  Contact,   // ✅ Contact exists in Lucide
-  User, 
-  BrainCircuit, // ✅ Alternative for Competence
-  LucideIcon
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Settings, Bookmark, Contact, User, LucideIcon } from "lucide-react";
 import Dashbord from "./SidebarIcons/Dashbord";
 import CompetenceSVG from "./SidebarIcons/CompetenceSVG";
 import CvSvG from "./SidebarIcons/CvSVG";
 import TargetSVG from "./SidebarIcons/TargetSVG";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact"| null;
+export type ActiveComponent =
+  | "dashboard"
+  | "fileText1"
+  | "bookmark"
+  | "target"
+  | "competence"
+  | "user"
+  | "settings"
+  | "contact"
+  | null;
 
 interface SidebarProps {
-  onIconClick: (id: IconId) => void;
-  defaultSelected: IconId;
+  onIconClick: (id: ActiveComponent) => void;
+  defaultSelected: ActiveComponent;
   horizontal: boolean;
-  setHorizontal: (value: boolean) => void; // Function to switch back to vertical
+  setHorizontal: (value: boolean) => void;
 }
 
 const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: SidebarProps) => {
-  const [activeIcon, setActiveIcon] = useState<IconId>(horizontal ? null : defaultSelected);
+  const [activeIcon, setActiveIcon] = useState<ActiveComponent>(horizontal ? null : defaultSelected);
 
   useEffect(() => {
     if (horizontal) {
       setActiveIcon(null);
     }
   }, [horizontal]);
-  const icons: { id: IconId; Icon: LucideIcon }[] = [
-    { id: "dashboard", Icon: Dashbord },  // ✅ Now correctly typed
+
+  const icons: { id: ActiveComponent; Icon: LucideIcon }[] = [
+    { id: "dashboard", Icon: Dashbord },
     { id: "competence", Icon: CompetenceSVG },
     { id: "fileText1", Icon: CvSvG },
     { id: "bookmark", Icon: Bookmark },
@@ -42,18 +42,18 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     { id: "user", Icon: User },
     { id: "settings", Icon: Settings },
   ];
-  
-  const handleIconClick = (id: IconId) => {
+
+  const handleIconClick = (id: ActiveComponent) => {
     setActiveIcon(id);
-    setHorizontal(false); // Switch back to vertical mode
+    setHorizontal(false);
     onIconClick(id);
   };
 
   return (
     <div
       className={`absolute bg-teal-800 rounded-2xl transition-all duration-500 mt-8 
-        ${horizontal 
-          ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
+        ${horizontal
+          ? "w-[98%] h-16 grid place-items-center mt-[]"
           : "w-[60px] h-[600px] left-[23px] flex flex-col items-center"
         }`}
     >
@@ -63,9 +63,8 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
         {icons.map(({ id, Icon }) => (
           <div
             key={id}
-            className={`relative cursor-pointer flex items-center transition-all duration-500 ${
-              horizontal ? "p-2" : "mt-12"
-            }`}
+            className={`relative cursor-pointer flex items-center transition-all duration-500 ${horizontal ? "p-2" : "mt-12"
+              }`}
             onClick={() => handleIconClick(id)}
           >
             {/* Selection Indicator (Only for Vertical Mode) */}
@@ -85,17 +84,15 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
               className="relative z-10 transition-transform duration-500"
               style={{
                 transform: horizontal
-                  ? "translateY(0px)" // Ensures icons stay centered
+                  ? "translateY(0px)"
                   : activeIcon === id
-                  ? "translateX(50px)" // Slide animation when selected in vertical mode
-                  : "translateX(0px)",
+                    ? "translateX(50px)"
+                    : "translateX(0px)",
               }}
             >
               <Icon
-  className={`w-6 h-6 transition-all duration-500 ${
-    activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"
-  }`}
-/>
+                className={`w-6 h-6 transition-all duration-500 ${activeIcon === id ? "text-teal-700" : "text-white hover:text-gray-200"}`}
+              />
 
             </div>
           </div>

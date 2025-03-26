@@ -2,8 +2,6 @@ import { useState } from "react";
 import { isAuthenticated } from "../../utils/jwt";
 
 import Navbar from "./Navbar";
-import JobOpportunities from "./Competence/mode online/JobOpportunities";
-import _JobOpportunities2 from "./Competence/mode guest/JobOpportunities2";
 import Profile from "./ProfileAfterLogin/ProfilePage";
 import Oportunite from "./Competence/Oportunite";
 import KProfile from "./Competence/KProfile";
@@ -12,19 +10,8 @@ import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
 import Dashboard from "./Dashboard";
 import Login from "./LoginPupap";
-import Sidebar from "./Sidebar";
+import Sidebar, { ActiveComponent } from "./Sidebar";
 import Cv from "./cv/Cv";
-
-type ActiveComponent =
-  | "dashboard"
-  | "fileText1"
-  | "bookmark"
-  | "target"
-  | "competence"
-  | "user"
-  | "settings"
-  | "contact"
-  | null;
 
 const Layout = () => {
   // Authentication state
