@@ -125,7 +125,7 @@ const JobOpportunities = () => {
                 }`}
               onClick={() => handleTabChange("Opportunités")}
             >
-              Opportunités
+              Toutes les opportunités correspondantes
             </button>
             <button
               style={{
@@ -139,7 +139,7 @@ const JobOpportunities = () => {
                 }`}
               onClick={() => handleTabChange("Opportunités sauvegardées")}
             >
-              Opportunités sauvegardées
+              Opportunités de mes contacts
             </button>
             <button
               style={{
@@ -153,7 +153,7 @@ const JobOpportunities = () => {
                 }`}
               onClick={() => handleTabChange("Opportunités selon mes contacts")}
             >
-              Opportunités selon mes contacts
+              Clients étant intéressés
             </button>
           </div>
 

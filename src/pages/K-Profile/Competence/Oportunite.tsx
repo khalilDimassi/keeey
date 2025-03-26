@@ -18,7 +18,7 @@ function Oportunite() {
     <div className="w-full p-6">
       <div className="max-w-8xl mx-auto">
         <h1 className="text-xl font-semibold mb-4 text-gray-800">Opportunités <span className="text-gray-400 text-sm font-normal">(4 offres)</span></h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1  gap-4">
           {jobs.map((job) => (
             <div key={job.id} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
               <div className="flex justify-between items-start">
@@ -33,7 +33,7 @@ function Oportunite() {
 
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
-                      <div className="mr-2 px-2 py-0.5 rounded-md bg-teal-600 text-white">98%</div>
+                      <div className="mr-2 px-2 py-0.5 rounded-md bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white">98%</div>
 
                       {job.type}
                     </span>

@@ -227,7 +227,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                     <div
                         key={item.opportunity_id}
                         ref={isLastItem ? setLastItemRef : null}
-                        className="bg-white p-4 hover:shadow-lg transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
+                        className="bg-white p-4 hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
                         onClick={() => onItemClick(item)}
                     >
                         {/* Avatar - using placeholder */}
@@ -247,7 +247,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
 
                                 {/* Match Percentage and Contract Type */}
                                 <div className="mt-2 flex items-center gap-2">
-                                    <div className="px-3 py-1 rounded-md bg-teal-600 text-white text-sm">
+                                    <div className="px-3  rounded-md bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white text-sm">
                                         {calculateMatchPercentage(item)}
                                     </div>
                                     <span className="text-sm text-gray-700">Correspondent à votre profil</span>
@@ -268,7 +268,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                             {/* Apply Button */}
                             <button
                                 className={`p-1 rounded-md transition-all duration-200 ${item.is_applied
-                                    ? "text-green-500 bg-green-50 hover:bg-green-100"
+                                    ? "text-green-800  hover:text-gradient-to-b from-[#30797F] to-[#039DAA]"
                                     : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                                     }`}
                                 onClick={(e) => handleSubmitClick(e, item.opportunity_id)}
@@ -300,8 +300,8 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                             {/* Save Button */}
                             <button
                                 className={`p-1 rounded-md transition-all duration-200 ${item.is_saved
-                                    ? "text-yellow-500 bg-yellow-50 hover:bg-yellow-100"
-                                    : "text-gray-500 hover:text-yellow-400 hover:bg-gray-100"
+                                    ? "text-yellow-900  "
+                                    : "text-gray-500 hover:text-yellow-400 "
                                     }`}
                                 onClick={(e) => handleSaveClick(e, item.opportunity_id)}
                                 aria-label={item.is_saved ? "Saved" : "Save"}
@@ -309,7 +309,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
 
                                 <Bookmark
                                     size={24}
-                                    fill={item.is_saved ? "yellow" : "white"}
+                                    fill={item.is_saved ? " white" : "white"}
                                     className={item.is_saved ? "text-yellow-500" : "text-current"}
                                 />
                             </button>

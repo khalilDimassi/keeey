@@ -80,7 +80,7 @@ export default function Dashboard() {
 
           <h1 className="text-xl font-semibold ">Keeey-board </h1>
         </div>
-        <button className="flex items-center bg-teal-800 text-white px-4 py-2 rounded-2xl shadow hover:bg-teal-900">
+        <button className="flex items-center bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-2xl shadow hover:bg-teal-900">
           <Plus className="w-5 h-5 mr-2" /> Ajouter widget
         </button>
       </div>
@@ -135,7 +135,7 @@ export default function Dashboard() {
 
                   <div className="w-full bg-gray-200 rounded-full h-3.5"> {/* Barre plus grande */}
                     <div
-                      className="bg-teal-800 h-3.5 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-b from-[#30797F] to-[#039DAA] h-3.5 rounded-full transition-all duration-300"
                       style={{ width: `${mission.progress}%` }}
                     ></div>
                   </div>
@@ -157,7 +157,7 @@ export default function Dashboard() {
                 {criteres.map((critere, index) => (
                   <span
                     key={index}
-                    className="bg-teal-800 text-white px-8 py-7 rounded text-sm flex items-center justify-center"
+                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-7 rounded text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {critere}
@@ -174,7 +174,7 @@ export default function Dashboard() {
                 {competences.map((comp, index) => (
                   <span
                     key={index}
-                    className="bg-teal-800 text-white px-8 py-1 rounded text-sm flex items-center justify-center"
+                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-1 rounded text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {comp}
@@ -191,7 +191,7 @@ export default function Dashboard() {
                 {contacts.map((contact, index) => (
                   <span
                     key={index}
-                    className="bg-teal-800 text-white px-8 py-1 rounded-lg text-sm flex items-center justify-center"
+                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-1 rounded-lg text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {contact}

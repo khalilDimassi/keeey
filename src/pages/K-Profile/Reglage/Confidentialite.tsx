@@ -26,7 +26,7 @@ function Confidentialite() {
             <label key={key} className="flex items-center gap-3 cursor-pointer">
               <div
                 className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
-                  value ? "bg-teal-800" : "bg-gray-300"
+                  value ? "bg-gradient-to-b from-[#30797F] to-[#039DAA]" : "bg-gray-300"
                 }`}
                 onClick={() => toggleProfileVisibility(key as keyof typeof profileVisibility)}
               >
@@ -52,7 +52,7 @@ function Confidentialite() {
 
       {/* BOUTON TERMINER */}
       <div className="flex justify-end">
-        <button className="bg-teal-800 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-teal-700 transition-all">
+        <button className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-gradient-to-b from-[#30797F] to-[#039DAA] transition-all">
           Terminer
         </button>
       </div>

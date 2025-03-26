@@ -77,16 +77,16 @@ export default function Cooptation({ contacts, onContactDeleted, onContactUpdate
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
-        <thead>
+      <thead className=" text-gray-700 border-b-2">
           <tr className="text-left text-gray-700">
-            <th className="p-2">Nom et prénom</th>
-            <th className="p-2">Fonction</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Téléphone</th>
-            <th className="p-2">N° missions réalisées</th>
-            <th className="p-2">N° jours</th>
-            <th className="p-2">Note</th>
-            <th className="p-2 text-right">Actions</th>
+            <th className="py-3 px-4 text-left">Nom et prénom</th>
+            <th className="py-3 px-4 text-left">Fonction</th>
+            <th className="py-3 px-4 text-left">Email</th>
+            <th className="py-3 px-4 text-left">Téléphone</th>
+            <th className="py-3 px-4 text-left">N° missions réalisées</th>
+            <th className="py-3 px-4 text-left">N° jours</th>
+            <th className="py-3 px-4 text-left">Note</th>
+            <th className="py-3 px-4 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>

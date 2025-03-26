@@ -302,7 +302,7 @@ const CompetencesCriteres: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="w-full mx-auto p-6">
       <div className="flex flex-wrap -mx-4">
         <div className="w-full md:w-1/2 px-4 mb-8">
           {loading ? (
@@ -340,7 +340,7 @@ const CompetencesCriteres: React.FC = () => {
               <button
                 onClick={handleSaveAll}
                 disabled={loading}
-                className="bg-teal-700 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
+                className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-6 py-3 rounded-lg shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Save All Changes'}
               </button>

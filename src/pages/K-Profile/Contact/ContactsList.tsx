@@ -72,7 +72,7 @@ export default function ContactsList({ contacts, onContactDeleted, onContactUpda
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white rounded-lg overflow-hidden">
-        <thead className="bg-gray-100 text-gray-700">
+        <thead className=" text-gray-700 border-b-2">
           <tr>
             <th className="py-3 px-4 text-left">Nom et prénom</th>
             <th className="py-3 px-4 text-left">Société</th>

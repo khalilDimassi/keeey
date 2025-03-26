@@ -113,7 +113,7 @@ interface DocumentUploadModalProps {
             <div className="flex justify-end mt-6">
               <button
                 type="submit"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+                className="bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-xl flex items-center space-x-2"
               >
                 <FaPlus size={16} />
                 <span>Ajouter</span>
@@ -131,7 +131,7 @@ const DocumentsSection: React.FC = () => {
         <div className="p-4 bg-white shadow-md rounded-xl "  style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)"}}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Documents</h2>
-            <button className="text-green-700 hover:text-blue-700"  onClick={() => setIsModalOpen(true)}>
+            <button className="text-[#30797F] hover:text-blue-700"  onClick={() => setIsModalOpen(true)}>
               <PlusCircle size={40} />
             </button>
           </div>
