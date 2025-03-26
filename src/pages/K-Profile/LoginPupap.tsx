@@ -20,7 +20,7 @@ const Login = ({ onClose }: { onClose: () => void }) => {
       </div>
           <button className="text-gray-600 hover:underline text-sm">
        
-            <a href="/LoginPage" className="text-gray-700 ml-1 hover:underline"> J'ai déjà un compte</a>
+            <a href="/Login" className="text-gray-700 ml-1 hover:underline"> J'ai déjà un compte</a>
           </button>
         </div>
 
@@ -31,9 +31,9 @@ const Login = ({ onClose }: { onClose: () => void }) => {
         </p>
 
         {/* Create Account Button */}
-        <button className="w-full bg-teal-800 text-white font-medium py-2 rounded-lg flex items-center mt-5 justify-center">
+        <button className="w-full bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white font-medium py-2 rounded-lg flex items-center mt-5 justify-center">
           
-          <a href="/LoginOptions" className="text-white ml-1 hover:underline"> 🔒 Créer un compte</a>
+          <a href="/Login" className="text-white ml-1 hover:underline"> 🔒 Créer un compte</a>
         </button>
       </div>
     </div>

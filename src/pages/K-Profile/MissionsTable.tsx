@@ -65,7 +65,7 @@ export default function MissionsTable() {
         </div>
 
         {/* Right: Button (Aligned Right) */}
-        <button className="ml-auto flex items-center bg-teal-800 text-white px-4 py-2 rounded-lg shadow hover:bg-teal-900">
+        <button className="ml-auto flex items-center bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-xl shadow hover:bg-teal-900">
           <Plus className="w-5 h-5 mr-2" /> Ajouter une mission
         </button>
       </div>
@@ -93,7 +93,7 @@ export default function MissionsTable() {
               {missions.map((mission) => (
                 <tr key={mission.id} className="border-b hover:bg-gray-50">
                   <td className="p-3">
-                    <span className="bg-green-200 text-green-600 px-3 py-1 rounded-full text-sm">
+                    <span className="bg-green-200 text-green-600 px-4 py-1 rounded-xl  text-sm">
                       {mission.status}
                     </span>
                   </td>
@@ -111,11 +111,20 @@ export default function MissionsTable() {
                       ))}
                   </td>
                   <td className="p-3 ">
-                    <button className="text-gray-600 hover:text-gray-900">
-                      <ArrowRight className="h-5 w-5" />
+                    <button className="mr-10">
+
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="14" cy="14" r="14" fill="#30797F" />
+                        <path d="M10.3926 16.6671L16.6671 10.3926M16.6671 10.3926H10.3926M16.6671 10.3926V16.6671" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+
                     </button>
                     <button className="text-red-500 hover:text-red-700">
-                      <Trash2 className="h-5 w-5" />
+
+                      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.75 26.25C8.0625 26.25 7.47396 26.0052 6.98438 25.5156C6.49479 25.026 6.25 24.4375 6.25 23.75V7.5H5V5H11.25V3.75H18.75V5H25V7.5H23.75V23.75C23.75 24.4375 23.5052 25.026 23.0156 25.5156C22.526 26.0052 21.9375 26.25 21.25 26.25H8.75ZM21.25 7.5H8.75V23.75H21.25V7.5ZM11.25 21.25H13.75V10H11.25V21.25ZM16.25 21.25H18.75V10H16.25V21.25Z" fill="#30797F" />
+                      </svg>
+
                     </button>
                   </td>
                 </tr>

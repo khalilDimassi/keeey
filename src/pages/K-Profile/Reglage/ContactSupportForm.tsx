@@ -21,7 +21,7 @@ function ContactSupportForm() {
   </h2>
   <button
     type="submit"
-    className="bg-teal-800 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-teal-700 transition-all"
+    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-gradient-to-b from-[#30797F] to-[#039DAA] transition-all"
   >
     Envoyer
   </button>
@@ -33,7 +33,7 @@ function ContactSupportForm() {
             <label className="block text-sm font-medium text-gray-600 mb-1">Sujet</label>
             <input
               type="text"
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-800"
+              className="w-full p-3 border border-gray-300 rounded-xl "
               placeholder="Entrez le sujet de votre message"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -45,7 +45,7 @@ function ContactSupportForm() {
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Message</label>
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-800"
+              className="w-full p-3 border border-gray-300 rounded-xl "
               placeholder="Écrivez votre message ici"
               value={message}
               onChange={(e) => setMessage(e.target.value)}

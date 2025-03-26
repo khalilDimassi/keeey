@@ -151,7 +151,7 @@ const ChangePasswordForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
+        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-lg font-medium text-white bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
       >
         {isLoading ? "Chargement..." : "Modifier le mot de passe"}
       </button>

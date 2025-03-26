@@ -35,8 +35,8 @@ const LoginContainer = () => {
         <div className="flex gap-10 px-20 flex-col md:flex-row w-full rounded-lg">
           {/* First 1/3 - Features/Benefits Section */}
           <motion.div
-            className="w-full mt-6 md:w-1/3 my-6 rounded-lg relative max-w-sm sm:max-w-md md:max-w-lg py-16 bg-white sm:p-2 shadow-lg"
-            style={{ boxShadow: "0 1px 6px 2px rgba(34, 146, 34, 0.3)", borderRadius: "16px" }}
+            className="w-full mt-6 md:w-1/3 my-6  relative max-w-sm sm:max-w-md md:max-w-lg py-16 bg-white sm:p-2 "
+
             initial={{ x: -80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 1 }}
@@ -91,7 +91,7 @@ const LoginContainer = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate("/Layout")}
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-6 py-3 text-white rounded-xl flex items-center justify-center gap-2 shadow-md hover:bg-teal-800 transition duration-300"
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-6 py-3 text-white rounded-xl flex items-center justify-center gap-2 shadow-md hover:bg-gradient-to-b from-[#30797F] to-[#039DAA] transition duration-300"
             style={{ background: "#307A7D" }}
           >
             Essayer la plateforme en Mode Invité

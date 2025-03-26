@@ -236,32 +236,26 @@ function Cv() {
         <div className=" mx-auto  py-1">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center justify-between w-full sm:w-auto">
-              <div className="flex items-center space-x-3 mt-1 mb-4">
-                <FileText className="text-teal-800" size={40} />
-                <h1 className="text-xl font-semibold ">CV</h1>
-              </div>
+           
               <button className="sm:hidden text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 <Menu size={24} />
               </button>
             </div>
 
-            <button className="text-teal-800  px-4 py-2  hover:bg-teal-50 flex items-center gap-2">
-              <Download size={18} />
-              <span>Télécharger mon CV</span>
-            </button>
+           
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}  >
+      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8"   >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column - Dynamic Content */}
           <div className="lg:col-span-8 order-1 lg:order-2">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">{activeSection}</h2>
-                {/* <button className="bg-teal-800 text-white px-4 py-2 rounded-3xl hover:bg-teal-700">Enregistrer</button> */}
+                {/* <button className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-3xl hover:bg-gradient-to-b from-[#30797F] to-[#039DAA]">Enregistrer</button> */}
               </div>
               {renderSection()}
             </div>
@@ -281,7 +275,7 @@ function Cv() {
               {sections.map((section, index) => (
                 <button
                   key={index}
-                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-teal-800 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                   onClick={() => {
                     setActiveSection(section);

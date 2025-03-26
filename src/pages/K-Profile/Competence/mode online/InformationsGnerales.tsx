@@ -90,7 +90,7 @@ function InformationsGnerales() {
 
   return (
     <div className=" ">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Column - Personal Information Form */}
           <div className="bg-white p-6  w-full md:w-[30%]">
@@ -101,7 +101,9 @@ function InformationsGnerales() {
                   className="text-green-600 hover:text-green-700"
                   onClick={() => setIsEditing(true)}
                 >
-                  <FaPencilAlt />
+                    <button className="text-teal-600 hover:text-teal-700">
+                  <PencilLine className="h-5 w-5" />
+                </button>
                 </button>
               )}
             </div>
@@ -167,7 +169,7 @@ function InformationsGnerales() {
                   </button>
                   <button
                     onClick={handleSubmit}
-                    className="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
+                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-green-600 text-white font-bold py-2 px-7 rounded transition duration-200 ease-in-out"
                   >
                     Save
                   </button>
@@ -228,7 +230,7 @@ function InformationsGnerales() {
           </div>
 
           {/* Right Column - Company Info and Documents */}
-          <div className="bg-white p-6  w-full md:w-[70%]">
+          <div className="bg-white   w-full md:w-[70%]">
             {/* Company Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
@@ -237,7 +239,7 @@ function InformationsGnerales() {
                   Entreprise
                   <span className="text-sm font-normal text-gray-500">(si concerné)</span>
                 </h2>
-                <button className="text-blue-600 hover:text-blue-700">
+                <button className="text-teal-600 hover:text-teal-700">
                   <PencilLine className="h-5 w-5" />
                 </button>
               </div>

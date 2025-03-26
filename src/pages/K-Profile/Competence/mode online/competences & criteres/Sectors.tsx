@@ -163,7 +163,7 @@ const Sectors: React.FC<SectorsProps> = ({
         {sector.jobs.map(job => (
           <button
             key={job.id}
-            className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-teal-700 text-white' : 'bg-white border border-gray-300'
+            className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'
               }`}
             onClick={() => {
               toggleJob(sectorId, job.id)
@@ -185,7 +185,7 @@ const Sectors: React.FC<SectorsProps> = ({
             key={sector.id}
             className={`
               px-4 py-2 rounded-full text-sm flex items-center 
-              ${selectedSectors.includes(sector.id) ? 'bg-teal-700 text-white' : 'bg-white border border-gray-300'}
+              ${selectedSectors.includes(sector.id) ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'}
             `}
             onClick={() => toggleSector(sector.id)}
             disabled={!selectedSectors.includes(sector.id) && selectedSectors.length >= 3}
@@ -206,13 +206,13 @@ const Sectors: React.FC<SectorsProps> = ({
               <button
                 key={sectorId}
                 className={`px-4 py-2 ${activeSector === sectorId
-                  ? "bg-teal-700 text-white"
+                  ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white"
                   : "bg-white border-r border-gray-300"
                   }`}
                 onClick={() => setActiveSector(sectorId)}
               >
                 {activeSector === sectorId && (
-                  <span className="inline-flex items-center justify-center w-4 h-4 bg-teal-700 text-white rounded-full mr-1 text-xs">
+                  <span className="inline-flex items-center justify-center w-4 h-4 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white rounded-full mr-1 text-xs">
                     ✓
                   </span>
                 )}

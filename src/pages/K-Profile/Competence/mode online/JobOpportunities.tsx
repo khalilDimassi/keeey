@@ -165,7 +165,7 @@ const JobOpportunities = () => {
                 }`}
               onClick={() => handleTabChange("Opportunités")}
             >
-              Opportunités
+              Toutes les opportunités correspondantes
             </button>
             <button
               style={{
@@ -173,13 +173,27 @@ const JobOpportunities = () => {
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
                   : "none"
               }}
-              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "Opportunités selon mes contacts"
+              className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "Opportunités sauvegardées"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
+              onClick={() => handleTabChange("Opportunités sauvegardées")}
+            >
+              Opportunités de mes contacts
+            </button>
+            <button
+              style={{
+                boxShadow: activeTab === "Opportunités selon mes contacts"
+                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  : "none"
+              }}
+              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Opportunités selon mes contacts"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
                 : "text-gray-400 bg-gray-100/50"
                 }`}
               onClick={() => handleTabChange("Opportunités selon mes contacts")}
             >
-              Opportunités selon mes contacts
+              Clients étant intéressés
             </button>
             <button
               style={{
