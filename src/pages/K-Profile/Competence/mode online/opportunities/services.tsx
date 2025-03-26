@@ -64,7 +64,6 @@ export const fetchSavedOpportunityIds = async (): Promise<number[]> => {
     }
 }
 
-
 export const submitToOpportunity = async (opportunityId: number) => {
     try {
         const response = await axios.post(

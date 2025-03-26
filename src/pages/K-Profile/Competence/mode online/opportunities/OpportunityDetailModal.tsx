@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Bookmark } from 'lucide-react';
+import { Bookmark, Minus, Plus } from 'lucide-react';
 import axios from "axios";
 import { Opportunity } from "./types";
-import { submitToOpportunity, saveOpportunity } from "./services";
 
 interface OpportunityDetailModalProps {
     opportunityId: number;
@@ -10,9 +9,11 @@ interface OpportunityDetailModalProps {
     onClose: () => void;
     is_saved: boolean;
     is_applied: boolean;
+    onSaveOpportunity: (opportunityId: number, is_saved: boolean) => void;
+    onSubmitOpportunity: (opportunityId: number, is_applied: boolean) => void;
 }
 
-const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_saved, is_applied }: OpportunityDetailModalProps) => {
+const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_saved, is_applied, onSaveOpportunity, onSubmitOpportunity }: OpportunityDetailModalProps) => {
     const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -37,32 +38,17 @@ const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_s
         }
     };
 
-    const handleSubmit = async () => {
-        if (!opportunity) return;
 
-        try {
-            await submitToOpportunity(opportunity.opportunity_id);
-            // Could show success message or close modal
-        } catch (err) {
-            console.error("Failed to submit to opportunity:", err);
-            // Could show error message
-        }
+    const handleSave = (e: React.MouseEvent, id: number, is_saved: boolean) => {
+        e.stopPropagation();
+        onSaveOpportunity(id, !is_saved);
     };
 
-    const handleSave = async () => {
-        if (!opportunity) return;
-
-        try {
-            await saveOpportunity(opportunity.opportunity_id);
-            // Could show success message
-        } catch (err) {
-            console.error("Failed to save opportunity:", err);
-            // Could show error message
-        }
+    const handleSubmit = (e: React.MouseEvent, id: number, is_applied: boolean) => {
+        e.stopPropagation();
+        onSubmitOpportunity(id, !is_applied);
     };
 
-
-    // Utils 
     const formatTimeAgo = (dateString: string): string => {
         if (!dateString) return "";
 
@@ -253,20 +239,27 @@ const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_s
                         <div className="flex flex-col w-full gap-4">
                             <button
                                 className="bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 text-base font-medium rounded-xl transition duration-200 w-full flex items-center justify-center gap-2"
-                                onClick={handleSubmit}
+                                onClick={(e) => handleSubmit(e, opportunityId, is_applied)}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                                </svg>
-                                Postuler
+                                {is_applied ? (
+                                    <>
+                                        <Minus className="h-5 w-5" size={18} />
+                                        Retirer la Postulation
+                                    </>
+                                ) : (
+                                    <>
+                                        <Plus className="h-5 w-5" size={18} fill={is_saved ? "yellow" : "none"} />
+                                        Postuler
+                                    </>
+                                )}
                             </button>
 
                             <button
                                 className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 py-3 px-6 text-base font-medium rounded-xl transition duration-200 w-full flex items-center justify-center gap-2"
-                                onClick={handleSave}
+                                onClick={(e) => handleSave(e, opportunityId, is_saved)}
                             >
-                                <Bookmark size={18} />
-                                Sauvegarder
+                                <Bookmark size={18} fill={is_saved ? "yellow" : "none"} />
+                                {is_saved ? "Annuler la Sauvegarde" : "Sauvegarder"}
                             </button>
                         </div>
 

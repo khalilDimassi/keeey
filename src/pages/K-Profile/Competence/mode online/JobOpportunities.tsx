@@ -1,7 +1,7 @@
 // JobOpportunities.tsx - Main container component
 import { useEffect, useState } from "react";
 import { OpportunityListItem } from "./opportunities/types";
-import { fetchOpportunitiesList, fetchSavedOpportunityIds } from "./opportunities/services";
+import { fetchOpportunitiesList, fetchSavedOpportunityIds, saveOpportunity, submitToOpportunity } from "./opportunities/services";
 
 import OpportunityList from "./opportunities/OpportunityList";
 import OpportunityDetailModal from "./opportunities/OpportunityDetailModal";
@@ -10,10 +10,10 @@ import { getUserId } from "../../../../utils/jwt";
 const JobOpportunities = () => {
   const [activeTab, setActiveTab] = useState("Opportunités");
   const [contractType, setContractType] = useState("all");
-  const [opportunityItems, setOpportunityItems] = useState<OpportunityListItem[]>([]);
-  const [savedOpportunityItems, setSavedOpportunityItems] = useState<OpportunityListItem[]>([]);
-  const [contactOpportunityItems, _setContactOpportunityItems] = useState<OpportunityListItem[]>([]);
-  const [currentItems, setCurrentItems] = useState<OpportunityListItem[]>([]);
+  const [allOpportunities, setAllOpportunities] = useState<OpportunityListItem[]>([]);
+  const [savedOpportunities, setSavedOpportunities] = useState<OpportunityListItem[]>([]);
+  const [contactOpportunities, setContactOpportunities] = useState<OpportunityListItem[]>([]);
+  const [filteredItems, setFilteredItems] = useState<OpportunityListItem[]>([]);
   const [selectedOpportunity, setSelectedOpportunityId] = useState<OpportunityListItem | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,8 +23,8 @@ const JobOpportunities = () => {
   }, []);
 
   useEffect(() => {
-    updateCurrentItems();
-  }, [activeTab, opportunityItems, savedOpportunityItems, contactOpportunityItems]);
+    filterAndSortItems();
+  }, [activeTab, contractType, allOpportunities, savedOpportunities, contactOpportunities]);
 
   const loadInitialData = async () => {
     setLoading(true);
@@ -32,66 +32,64 @@ const JobOpportunities = () => {
       const opportunitiesData = await fetchOpportunitiesList(getUserId() ?? '');
       const savedOpportunityIds = await fetchSavedOpportunityIds();
 
-
       if (opportunitiesData.length === 0) {
-        setOpportunityItems([]);
-        setSavedOpportunityItems([]);
         setError(`Failed to fetch opportunities. No record found!`);
         setLoading(false);
         return;
       }
 
-      if (savedOpportunityIds.length === 0) {
-        setSavedOpportunityItems([]);
-      }
-
-      // Process opportunitiesData if valid
-      const listItems = opportunitiesData.map(opp => ({
-        opportunity_id: opp.opportunity_id,
-        title: opp.title,
-        description: opp.description,
-        contract_role: opp.contract_role,
-        created_at: opp.created_at,
-        crit_location: opp.crit_location,
-        crit_remote: opp.crit_remote,
-        matching: opp.matching,
-        is_saved: opp.is_saved,
-        is_applied: opp.is_applied
+      // Process opportunitiesData
+      const processedItems = opportunitiesData.map(opp => ({
+        ...opp,
+        is_saved: savedOpportunityIds.includes(opp.opportunity_id)
       }));
 
-      setOpportunityItems(listItems);
+      // Sort by matching percentage (highest to lowest)
+      processedItems.sort((a, b) =>
+        (b.matching?.total_match_percentage || 0) - (a.matching?.total_match_percentage || 0)
+      );
 
-      // Filter saved items only if savedOpportunityIds is valid
-      if (savedOpportunityIds && savedOpportunityIds.length > 0) {
-        const savedItems = listItems.filter(item =>
-          savedOpportunityIds.includes(item.opportunity_id)
-        );
-        setSavedOpportunityItems(savedItems);
-      }
+      // Separate into different lists
+      const allItems = processedItems.filter(item => !item.is_saved);
+      const savedItems = processedItems.filter(item => item.is_saved);
+
+      setAllOpportunities(allItems);
+      setSavedOpportunities(savedItems);
+      setContactOpportunities([]);
 
       setLoading(false);
     } catch (err) {
       console.error(err);
       setError(`Failed to fetch opportunities. Please try again later: ${err}`);
-    } finally {
       setLoading(false);
     }
   };
 
-  const updateCurrentItems = () => {
+  const filterAndSortItems = () => {
+    let itemsToFilter: OpportunityListItem[] = [];
+
     switch (activeTab) {
       case "Opportunités":
-        setCurrentItems(opportunityItems);
+        itemsToFilter = [...allOpportunities];
         break;
       case "Opportunités sauvegardées":
-        setCurrentItems(savedOpportunityItems);
+        itemsToFilter = [...savedOpportunities];
         break;
       case "Opportunités selon mes contacts":
-        setCurrentItems(contactOpportunityItems);
+        itemsToFilter = [...contactOpportunities];
         break;
       default:
-        setCurrentItems(opportunityItems);
+        itemsToFilter = [...allOpportunities];
     }
+
+    // Apply contract type filter
+    if (contractType !== "all") {
+      itemsToFilter = itemsToFilter.filter(item =>
+        item.contract_role === contractType
+      );
+    }
+
+    setFilteredItems(itemsToFilter);
   };
 
   const handleTabChange = (tab: string) => {
@@ -104,6 +102,47 @@ const JobOpportunities = () => {
 
   const handleCloseModal = () => {
     setSelectedOpportunityId(null);
+  };
+
+  const handleSaveOpportunity = (opportunityId: number, is_saved: boolean) => {
+    if (is_saved) {
+      // Moving from all to saved
+      const opportunity = allOpportunities.find(item => item.opportunity_id === opportunityId);
+      if (opportunity) {
+        setAllOpportunities(allOpportunities.filter(item => item.opportunity_id !== opportunityId));
+        setSavedOpportunities([...savedOpportunities, { ...opportunity, is_saved: true }]);
+      }
+    } else {
+      // Moving from saved to all
+      const opportunity = savedOpportunities.find(item => item.opportunity_id === opportunityId);
+      if (opportunity) {
+        setSavedOpportunities(savedOpportunities.filter(item => item.opportunity_id !== opportunityId));
+        setAllOpportunities([...allOpportunities, { ...opportunity, is_saved: false }]);
+      }
+    }
+
+    saveOpportunity(opportunityId);
+  };
+
+  const handleSubmitOpportunity = (opportunityId: number, is_applied: boolean) => {
+    if (!is_applied) {
+      // Update the is_applied status in both lists if needed
+      setAllOpportunities(allOpportunities.map(item =>
+        item.opportunity_id === opportunityId ? { ...item, is_applied: true } : item
+      ));
+      setSavedOpportunities(savedOpportunities.map(item =>
+        item.opportunity_id === opportunityId ? { ...item, is_applied: true } : item
+      ));
+    } else {
+      setAllOpportunities(allOpportunities.map(item =>
+        item.opportunity_id === opportunityId ? { ...item, is_applied: false } : item
+      ));
+      setSavedOpportunities(savedOpportunities.map(item =>
+        item.opportunity_id === opportunityId ? { ...item, is_applied: false } : item
+      ));
+    }
+
+    submitToOpportunity(opportunityId);
   };
 
   return (
@@ -173,15 +212,17 @@ const JobOpportunities = () => {
         {/* Opportunity List Component */}
         <div className="bg-white" style={{ borderRadius: "0px 0px 20px 20px", boxShadow: "1px 10px 10px rgba(96, 105, 110, 0.29)" }}>
           <OpportunityList
-            items={currentItems}
+            items={filteredItems}
             loading={loading}
             error={error}
             onItemClick={handleOpportunityClick}
+            onSaveOpportunity={handleSaveOpportunity}
+            onSubmitOpportunity={handleSubmitOpportunity}
           />
         </div>
       </div>
 
-      {/* Detail Modal - Only rendered when an opportunity is selected */}
+      {/* Detail Modal */}
       {selectedOpportunity && (
         <OpportunityDetailModal
           opportunityId={selectedOpportunity.opportunity_id}
@@ -189,6 +230,8 @@ const JobOpportunities = () => {
           onClose={handleCloseModal}
           is_saved={selectedOpportunity.is_saved}
           is_applied={selectedOpportunity.is_applied}
+          onSaveOpportunity={handleSaveOpportunity}
+          onSubmitOpportunity={handleSubmitOpportunity}
         />
       )}
     </div>

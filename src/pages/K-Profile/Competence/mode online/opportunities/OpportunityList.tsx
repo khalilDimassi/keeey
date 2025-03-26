@@ -1,20 +1,26 @@
 import { useEffect, useState, useRef } from "react";
 import { Bookmark } from 'lucide-react';
-import { getAuthHeader } from "../../../../../utils/jwt";
 import { OpportunityListItem } from "./types";
-import axios from "axios";
-
 
 interface OpportunityListProps {
     items: OpportunityListItem[];
     loading: boolean;
     error: string | null;
     onItemClick: (selectedOpportunity: OpportunityListItem) => void;
+    onSaveOpportunity: (opportunityId: number, is_saved: boolean) => void;
+    onSubmitOpportunity: (opportunityId: number, is_applied: boolean) => void;
 }
 
 const ITEMS_PER_PAGE = 5;
 
-const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityListProps) => {
+const OpportunityList = ({
+    items,
+    loading,
+    error,
+    onItemClick,
+    onSaveOpportunity,
+    onSubmitOpportunity
+}: OpportunityListProps) => {
     const [displayedItems, setDisplayedItems] = useState<OpportunityListItem[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -22,21 +28,14 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
     const observerRef = useRef<IntersectionObserver | null>(null);
     const lastItemRef = useRef<HTMLDivElement | null>(null);
 
-    // Load initial items
     useEffect(() => {
         if (items.length > 0) {
             loadItems(1);
+        } else {
+            setDisplayedItems([]);
         }
     }, [items]);
 
-    // Reset pagination when items change
-    useEffect(() => {
-        setPage(1);
-        setHasMore(true);
-        loadItems(1);
-    }, [items]);
-
-    // Set up intersection observer for infinite scroll
     useEffect(() => {
         if (observerRef.current) {
             observerRef.current.disconnect();
@@ -64,7 +63,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                 observerRef.current.disconnect();
             }
         };
-    }, [hasMore, loadingMore, displayedItems]);
+    }, [hasMore, loadingMore, displayedItems])
 
     const loadItems = (pageNum: number) => {
         const startIdx = 0;
@@ -81,7 +80,6 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
         setLoadingMore(true);
         const nextPage = page + 1;
 
-        // Simulate loading delay for UX
         setTimeout(() => {
             loadItems(nextPage);
             setPage(nextPage);
@@ -89,57 +87,20 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
         }, 300);
     };
 
-    const handleSaveClick = async (e: React.MouseEvent, id: number) => {
+    const handleSaveClick = (e: React.MouseEvent, id: number, is_saved: boolean) => {
         e.stopPropagation();
-        try {
-            await saveOpportunity(id);
-            // You could update UI state here if needed
-        } catch (err) {
-            console.error("Failed to save opportunity:", err);
-        }
+        onSaveOpportunity(id, !is_saved);
     };
 
-    const handleSubmitClick = async (e: React.MouseEvent, id: number) => {
+    const handleSubmitClick = (e: React.MouseEvent, id: number, is_applied: boolean) => {
         e.stopPropagation();
-        try {
-            await submitToOpportunity(id);
-            // You could update UI state here if needed
-        } catch (err) {
-            console.error("Failed to submit to opportunity:", err);
-        }
+        onSubmitOpportunity(id, !is_applied);
     };
 
     const setLastItemRef = (el: HTMLDivElement | null) => {
         lastItemRef.current = el;
     };
 
-    if (loading && displayedItems.length === 0) {
-        return (
-            <div className="text-center py-10">
-                <p>Chargement des opportunités...</p>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="text-center py-10 text-red-500">
-                <p>{error}</p>
-            </div>
-        );
-    }
-
-    if (displayedItems.length === 0) {
-        return (
-            <div className="text-center py-10 text-gray-500">
-                <p>Aucune opportunité disponible.</p>
-            </div>
-        );
-    }
-
-
-    // Utils
-    // Helper function to format date
     const formatTimeAgo = (dateString: string): string => {
         if (!dateString) return "";
 
@@ -165,59 +126,34 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
         return timeAgo.trim();
     };
 
-
-    // Helper function to calculate match percentage
     const calculateMatchPercentage = (opportunity: OpportunityListItem): string => {
         const result = Math.round(opportunity.matching?.total_match_percentage ?? 0)
         return `${result}%`;
     };
 
+    if (loading && displayedItems.length === 0) {
+        return (
+            <div className="text-center py-10">
+                <p>Chargement des opportunités...</p>
+            </div>
+        );
+    }
 
-    // Services 
-    const submitToOpportunity = async (opportunityId: number) => {
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/submit?state=apply`,
-                {},
-                {
-                    headers: {
-                        ...getAuthHeader(),
-                    },
-                }
-            );
+    if (error) {
+        return (
+            <div className="text-center py-10 text-red-500">
+                <p>{error}</p>
+            </div>
+        );
+    }
 
-            if (response.status === 200) {
-                console.log("Successfully submitted to opportunity:", opportunityId);
-                // Optionally, update the UI or show a success message
-            }
-        } catch (error) {
-            console.error("Failed to submit to opportunity:", error);
-            // Optionally, show an error message to the user
-        }
-    };
-
-    const saveOpportunity = async (opportunityId: number) => {
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/submit?state=save`,
-                {},
-                {
-                    headers: {
-                        ...getAuthHeader(),
-                    },
-                }
-            );
-
-            if (response.status === 200) {
-                console.log("Successfully saved opportunity:", opportunityId);
-                // Optionally, update the UI or show a success message
-            }
-        } catch (error) {
-            console.error("Failed to save opportunity:", error);
-            // Optionally, show an error message to the user
-        }
-    };
-
+    if (displayedItems.length === 0) {
+        return (
+            <div className="text-center py-10 text-gray-500">
+                <p>Aucune opportunité disponible.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6 p-6 max-h-[70vh] overflow-y-auto">
@@ -271,7 +207,7 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                                     ? "text-green-800  hover:text-gradient-to-b from-[#30797F] to-[#039DAA]"
                                     : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                                     }`}
-                                onClick={(e) => handleSubmitClick(e, item.opportunity_id)}
+                                onClick={(e) => handleSubmitClick(e, item.opportunity_id, item.is_applied)}
                                 aria-label={item.is_applied ? "Applied" : "Apply"}
                             >
                                 <svg
@@ -303,13 +239,16 @@ const OpportunityList = ({ items, loading, error, onItemClick }: OpportunityList
                                     ? "text-yellow-900  "
                                     : "text-gray-500 hover:text-yellow-400 "
                                     }`}
-                                onClick={(e) => handleSaveClick(e, item.opportunity_id)}
+                                onClick={(e) => handleSaveClick(e, item.opportunity_id, item.is_saved)}
                                 aria-label={item.is_saved ? "Saved" : "Save"}
                             >
-
                                 <Bookmark
                                     size={24}
+<<<<<<< HEAD
                                     fill={item.is_saved ? " white" : "white"}
+=======
+                                    fill={item.is_saved ? "currentColor" : "none"}
+>>>>>>> 8ab8032a8dc2e795d71b186063419de999c87b16
                                     className={item.is_saved ? "text-yellow-500" : "text-current"}
                                 />
                             </button>
