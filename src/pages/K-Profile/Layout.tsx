@@ -9,12 +9,14 @@ import Contacts from "./Contact/Contacts";
 import Reglage from "./Reglage/Reglage";
 import Dashboard from "./Dashboard";
 import Login from "./LoginPupap";
-<<<<<<< HEAD
-import Sidebar from "./Sidebar";
-import Cv from "./cv/Cv";
+
+
 import OpportunitiesTable from "./Savinig/OpportunitiesTable";
 import OpportunisteSaving from "./Savinig/OpportunisteSaving";
 
+
+import Sidebar from "./Sidebar";
+import JobOpportunities from "./Competence/mode online/JobOpportunities";
 type ActiveComponent =
   | "dashboard"
   | "fileText1"
@@ -25,10 +27,6 @@ type ActiveComponent =
   | "settings"
   | "contact"
   | null;
-=======
-import Sidebar, { ActiveComponent } from "./Sidebar";
-import JobOpportunities from "./Competence/mode online/JobOpportunities";
->>>>>>> 59158885dcae7b705567486cc2d8e399ca34d382
 
 const Layout = () => {
   // Authentication state
