@@ -1,62 +1,61 @@
-import React, { useState, useEffect } from "react";
-import {
-  LayoutGrid,
-  Settings,
-  FileText,
-  Bookmark,
-  Target,
-  Contact,   // ✅ Contact exists in Lucide
-  User,
-  BrainCircuit, // ✅ Alternative for Competence
-  LucideIcon
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Settings, Bookmark, Contact, LucideIcon } from "lucide-react";
 import Dashbord from "./SidebarIcons/Dashbord";
 import CompetenceSVG from "./SidebarIcons/CompetenceSVG";
-import CvSvG from "./SidebarIcons/CvSVG";
 import TargetSVG from "./SidebarIcons/TargetSVG";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact" | null;
+export type ActiveComponent =
+  "dashboard"
+  | "fileText1"
+  | "bookmark"
+  | "target"
+  | "competence"
+  | "user"
+  | "settings"
+  | "contact"
+  | null;
 
 interface SidebarProps {
-  onIconClick: (id: IconId) => void;
-  defaultSelected: IconId;
+  onIconClick: (id: ActiveComponent) => void;
+  defaultSelected: ActiveComponent;
   horizontal: boolean;
-  setHorizontal: (value: boolean) => void; // Function to switch back to vertical
+  setHorizontal: (value: boolean) => void;
 }
 
 const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: SidebarProps) => {
-  const [activeIcon, setActiveIcon] = useState<IconId>(horizontal ? null : defaultSelected);
+  const [activeIcon, setActiveIcon] = useState<ActiveComponent>(horizontal ? null : defaultSelected);
 
   useEffect(() => {
     if (horizontal) {
       setActiveIcon(null);
     }
   }, [horizontal]);
-  const icons: { id: IconId; Icon: LucideIcon }[] = [
-    { id: "dashboard", Icon: Dashbord },  // ✅ Now correctly typed
+
+  const icons: { id: ActiveComponent; Icon: LucideIcon }[] = [
+    { id: "dashboard", Icon: Dashbord },
     { id: "competence", Icon: CompetenceSVG },
     { id: "contact", Icon: Contact },
     { id: "bookmark", Icon: Bookmark },
     { id: "target", Icon: TargetSVG },
-    
+
 
     { id: "settings", Icon: Settings },
   ];
 
-  const handleIconClick = (id: IconId) => {
+  const handleIconClick = (id: ActiveComponent) => {
     setActiveIcon(id);
-    setHorizontal(false); // Switch back to vertical mode
+    setHorizontal(false);
     onIconClick(id);
   };
 
   return (
     <div
-    className={`absolute rounded-2xl transition-all duration-500 bg-gradient-to-b from-[#30797F] to-[#039DAA] 
+      className={`absolute rounded-2xl transition-all duration-500 bg-gradient-to-b from-[#30797F] to-[#039DAA] 
       ${horizontal
-        ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
-        : "w-[80px] h-[700px] left-[10px] flex flex-col items-center"
-      }`}
-  >
+          ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
+          : "w-[80px] h-[700px] left-[10px] flex flex-col items-center"
+        }`}
+    >
       {/* Sidebar Icons */}
       <div className={`grid ${horizontal ? " grid-cols-6 gap-x-40 justify-center items-center" : "flex flex-col gap-8 items-center"}`}>
 
@@ -84,7 +83,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
               className="relative z-10 transition-transform duration-500"
               style={{
                 transform: horizontal
-                  ? "translateY(0px)" // Ensures icons stay centered
+                  ? "translateY(0px)"
                   : activeIcon === id
                     ? "translateX(4px)" // Slide animation when selected in vertical mode
                     : "translateX(0px)",

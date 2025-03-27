@@ -1,51 +1,41 @@
-import React, { useState } from "react";
-import {
-  LayoutGrid,
-  Building2,
-  Search,
-  UserCheck,
-  FileCog,
-  Contact,
-  LucideIcon,
-  Target,
-  Settings,
-} from "lucide-react";
+import { useState } from "react";
+import { LayoutGrid, Building2, Search, UserCheck, Contact, LucideIcon, Target, Settings } from "lucide-react";
 
-type IconId =
-  | "dashboard"
-  | "company"
-  | "userSearch"
-  | "userStar"
-  | "target"
-  | "settings"
-  | "profile"
+export type ActiveComponent =
+  | "dashboardPage"
+  | "companyPage"
+  | "searchPage"
+  | "profilePage"
+  | "missionsPage"
+  | "contactsPage"
+  | "settingsPage"
   | null;
 
 interface IconItem {
-  id: IconId;
+  id: ActiveComponent;
   Icon: LucideIcon;
 }
 
 interface SidebarProps {
-  onIconClick: (id: IconId) => void;
-  defaultSelected: IconId;
+  onIconClick: (id: ActiveComponent) => void;
+  defaultSelected: ActiveComponent;
 }
 
 const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
-  const [activeIcon, setActiveIcon] = useState<IconId>(defaultSelected);
+  const [activeIcon, setActiveIcon] = useState<ActiveComponent>(defaultSelected);
 
   const icons: IconItem[] = [
-    { id: "dashboard", Icon: LayoutGrid },
-    { id: "company", Icon: Building2 },
-    { id: "userSearch", Icon: Search },
-    { id: "userStar", Icon: UserCheck },
-    { id: "target", Icon: Target },
-    { id: "profile", Icon: Contact },
-    { id: "settings", Icon: Settings },
-  
+    { id: "dashboardPage", Icon: LayoutGrid },
+    { id: "companyPage", Icon: Building2 },
+    { id: "searchPage", Icon: Search },
+    { id: "profilePage", Icon: UserCheck },
+    { id: "missionsPage", Icon: Target },
+    { id: "contactsPage", Icon: Contact },
+    { id: "settingsPage", Icon: Settings },
+
   ];
 
-  const handleIconClick = (id: IconId) => {
+  const handleIconClick = (id: ActiveComponent) => {
     setActiveIcon(id);
     onIconClick(id);
   };
@@ -81,9 +71,8 @@ const SidebarKPlayer = ({ onIconClick, defaultSelected }: SidebarProps) => {
               }}
             >
               <Icon
-                className={`w-7 h-7 transition-all duration-300 ${
-                  activeIcon === id ? "text-blue-700" : "text-white hover:text-gray-200"
-                }`}
+                className={`w-7 h-7 transition-all duration-300 ${activeIcon === id ? "text-blue-700" : "text-white hover:text-gray-200"
+                  }`}
               />
             </div>
           </div>

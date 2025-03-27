@@ -23,7 +23,7 @@ const Criteres: React.FC<CriteresProps> = ({
             {/* Type de contrat */}
             <p className="text-gray-600 mb-2">Type de contrat proposé</p>
             <div className="flex gap-4 mb-4">
-                {["CDI", "Freelance", "Consultant"].map((contract) => (
+                {["FREELANCE", "CDI", "CDD", "CDI-C", "PORTAGE", "CONSULTANT"].map((contract) => (
                     <label key={contract} className="flex items-center gap-2">
                         <input
                             type="checkbox"

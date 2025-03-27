@@ -72,11 +72,11 @@ const JobOpportunities = () => {
       case "Opportunités":
         itemsToFilter = [...allOpportunities];
         break;
-      case "Opportunités sauvegardées":
-        itemsToFilter = [...savedOpportunities];
-        break;
       case "Opportunités selon mes contacts":
         itemsToFilter = [...contactOpportunities];
+        break;
+      case "Clients étant intéressés":
+        itemsToFilter = [...savedOpportunities];
         break;
       default:
         itemsToFilter = [...allOpportunities];
@@ -104,6 +104,7 @@ const JobOpportunities = () => {
     setSelectedOpportunityId(null);
   };
 
+  // TODO: tabs >> contact / interest
   const handleSaveOpportunity = (opportunityId: number, is_saved: boolean) => {
     if (is_saved) {
       // Moving from all to saved
@@ -168,7 +169,7 @@ const JobOpportunities = () => {
             </button>
             <button
               style={{
-                boxShadow: activeTab === "Opportunités sauvegardées"
+                boxShadow: activeTab === "Opportunités selon mes contacts"
                   ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
                   : "none"
               }}
@@ -191,6 +192,20 @@ const JobOpportunities = () => {
                 : "text-gray-400"
                 }`}
               onClick={() => handleTabChange("Opportunités selon mes contacts")}
+            >
+              Clients étant intéressés
+            </button>
+            <button
+              style={{
+                boxShadow: activeTab === "Clients étant intéressés"
+                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  : "none"
+              }}
+              className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Clients étant intéressés"
+                ? "text-gray-900 bg-white rounded-t-xl z-10"
+                : "text-gray-400 bg-gray-100/50"
+                }`}
+              onClick={() => handleTabChange("Clients étant intéressés")}
             >
               Clients étant intéressés
             </button>
