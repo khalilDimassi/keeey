@@ -160,7 +160,7 @@ const JobOpportunities = () => {
               }}
               className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Opportunités"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+                : "text-gray-400 "
                 }`}
               onClick={() => handleTabChange("Opportunités")}
             >
@@ -174,7 +174,7 @@ const JobOpportunities = () => {
               }}
               className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "Opportunités sauvegardées"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+                : "text-gray-400 "
                 }`}
               onClick={() => handleTabChange("Opportunités sauvegardées")}
             >
@@ -188,7 +188,7 @@ const JobOpportunities = () => {
               }}
               className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Opportunités selon mes contacts"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : "text-gray-400 bg-gray-100/50"
+                : "text-gray-400"
                 }`}
               onClick={() => handleTabChange("Opportunités selon mes contacts")}
             >
