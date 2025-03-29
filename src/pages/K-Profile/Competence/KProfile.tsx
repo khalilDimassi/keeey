@@ -46,7 +46,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               }}
               className={`px-4 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Informations"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : " bg-gray-100/50"
+                : ""
                 }`}
               onClick={() => setActiveTab("Informations")}
             >
@@ -66,7 +66,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               }}
               className={`px-8 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "Compétences_Critères"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : " bg-gray-100/50"
+                : " "
                 }`}
               onClick={() => setActiveTab("Compétences_Critères")}
             >
@@ -86,7 +86,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
               }}
               className={`px-8 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "CV_compéténces"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : " bg-gray-100/50"
+                : " "
                 }`}
               onClick={() => setActiveTab("CV_compéténces")}
             >

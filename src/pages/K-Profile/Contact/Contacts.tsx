@@ -173,7 +173,7 @@ const Contacts = () => {
               }}
               className={`px-4 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "contacts"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : " bg-gray-100/50"
+                : ""
                 }`}
               onClick={() => setActiveTab("contacts")}
             >
@@ -193,7 +193,7 @@ const Contacts = () => {
               }}
               className={`px-8 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "cooptation"
                 ? "text-gray-900 bg-white rounded-t-xl z-10"
-                : " bg-gray-100/50"
+                : ""
                 }`}
               onClick={() => setActiveTab("cooptation")}
             >
