@@ -47,7 +47,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
   const [qualityInput, setQualityInput] = useState<string>("");
 
   // critaires
-  const [selectedContract, setSelectedContract] = useState<string>("CDI");
+  const [contract_role, setcontract_role] = useState<string>("CDI");
   const [critStartDate, setCritStartDate] = useState<string>("");
   const [critStartDateLatest, setCritStartDateLatest] = useState<string>("");
   const [critDuration, setCritDuration] = useState<string>("");
@@ -147,7 +147,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
       duration: parseInt(duration) || 0,
       rate: parseFloat(targetRate) || 0,
       opportunity_role: "REQUIREMENT",
-      contract_role: selectedContract,
+      contract_role: contract_role,
 
       crit_start_date: critStartDate,
       crit_start_date_lastest: critStartDateLatest,
@@ -545,8 +545,8 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
                   <label key={contract} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedContract === contract}
-                      onChange={() => setSelectedContract(contract)}
+                      checked={contract_role === contract}
+                      onChange={() => setcontract_role(contract)}
                       className="w-4 h-4 text-blue-600"
                     />
                     {contract}

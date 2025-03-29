@@ -340,7 +340,7 @@ const CompetencesCriteres: React.FC = () => {
               <button
                 onClick={handleSaveAll}
                 disabled={loading}
-                className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-6 py-3 rounded-lg shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
+                className="bg-[#30797F] text-white px-6 py-3 rounded-xl shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Save All Changes'}
               </button>

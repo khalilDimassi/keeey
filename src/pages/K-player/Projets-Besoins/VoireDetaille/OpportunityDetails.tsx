@@ -26,7 +26,7 @@ export interface OpportunityDetails {
   crit_start_date: string;
   crit_start_date_lastest: string;
   crit_duration: number;
-  crit_duration_latest: number;
+  crit_duration_lastest: number;
   crit_target_rate: number;
   crit_max_rate: number;
   crit_location: string;

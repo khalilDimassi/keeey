@@ -45,7 +45,7 @@ const DefineBesoinForm: React.FC<DefineBesoinFormProps> = ({ sectors, loading, e
         qualities: [] as string[],
 
         // Criteria
-        selectedContract: "CDI",
+        contract_role: "CDI",
         critStartDate: "",
         critStartDateLatest: "",
         critDuration: "",
@@ -166,7 +166,7 @@ const DefineBesoinForm: React.FC<DefineBesoinFormProps> = ({ sectors, loading, e
             duration: parseInt(formData.duration) || 0,
             rate: parseFloat(formData.targetRate) || 0,
             opportunity_role: "REQUIREMENT",
-            contract_role: formData.selectedContract,
+            contract_role: formData.contract_role,
 
             crit_start_date: formData.critStartDate,
             crit_start_date_lastest: formData.critStartDateLatest,
@@ -230,7 +230,7 @@ const DefineBesoinForm: React.FC<DefineBesoinFormProps> = ({ sectors, loading, e
                         updateFormData={updateFormData}
                     />
 
-                    <BesoinDoc />
+                    {/* <BesoinDoc /> */}
                 </div>
             </div>
 

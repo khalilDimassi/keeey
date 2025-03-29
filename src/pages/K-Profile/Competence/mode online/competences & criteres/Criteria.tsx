@@ -56,7 +56,10 @@ const Criteria: React.FC<CriteriaProps> = ({
         {Object.entries(contractTags).map(([tag, active]) => (
           <button
             key={tag}
-            className={`px-4 py-2 rounded-full text-sm flex items-center ${active ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'}`}
+            className={`px-4 py-2 rounded-xl text-sm flex items-center ${active ?
+              'bg-[#30797F] border-gray-300 text-white' :
+              'bg-white border border-gray-300'
+              }`}
             onClick={() => toggleTag('contract', tag)}
           >
             {tag} <span className="ml-1">+</span>
@@ -69,7 +72,10 @@ const Criteria: React.FC<CriteriaProps> = ({
         {Object.entries(companyTags).map(([tag, active]) => (
           <button
             key={tag}
-            className={`px-4 py-2 rounded-full text-sm flex items-center ${active ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'}`}
+            className={`px-4 py-2 rounded-xl text-sm flex items-center ${active ?
+              'bg-[#30797F] border-gray-300 text-white' :
+              'bg-white border border-gray-300'
+              }`}
             onClick={() => toggleTag('company', tag)}
           >
             {tag} <span className="ml-1">+</span>

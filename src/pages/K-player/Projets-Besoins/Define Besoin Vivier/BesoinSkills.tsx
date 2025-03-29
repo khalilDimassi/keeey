@@ -36,12 +36,6 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
     removeItem,
     setActiveSector,
 }) => {
-    // Local state for input fields
-    const [toolInput, setToolInput] = useState("");
-    const [authorizationInput, setAuthorizationInput] = useState("");
-    const [languageInput, setLanguageInput] = useState("");
-    const [qualityInput, setQualityInput] = useState("");
-
     const renderSenioritySlider = (sectorId: number) => {
         const seniorityLevels = [
             { level: 1, name: "Junior", description: "1 - 4 ans" },
@@ -93,6 +87,12 @@ const BesoinSkills: React.FC<BesoinSkillsProps> = ({
             </div>
         );
     };
+
+    // Local state for input fields
+    const [toolInput, setToolInput] = useState("");
+    const [authorizationInput, setAuthorizationInput] = useState("");
+    const [languageInput, setLanguageInput] = useState("");
+    const [qualityInput, setQualityInput] = useState("");
 
     const handleAddItemClick = (
         listName: "tools" | "authorizations" | "languages" | "qualities",

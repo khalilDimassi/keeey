@@ -35,7 +35,7 @@ const DefineVivierForm: React.FC<DefineVivierFormProps> = ({ sectors, loading, e
         qualities: [] as string[],
 
         // Criteria
-        selectedContract: "CDI",
+        contract_role: "CDI",
         critStartDate: "",
         critStartDateLatest: "",
         critDuration: "",
@@ -150,7 +150,7 @@ const DefineVivierForm: React.FC<DefineVivierFormProps> = ({ sectors, loading, e
 
         return {
             opportunity_role: "LIVEWELL",
-            contract_role: formData.selectedContract,
+            contract_role: formData.contract_role,
 
             crit_start_date: formData.critStartDate,
             crit_start_date_lastest: formData.critStartDateLatest,

@@ -2,7 +2,7 @@ import React from "react";
 
 interface BesoinCritProps {
     formData: {
-        selectedContract: string;
+        contract_role: string;
         critStartDate: string;
         critStartDateLatest: string;
         critDuration: string;
@@ -31,8 +31,8 @@ const BesoinCrit: React.FC<BesoinCritProps> = ({ formData, updateFormData }) => 
                     <label key={contract} className="flex items-center gap-2">
                         <input
                             type="checkbox"
-                            checked={formData.selectedContract === contract}
-                            onChange={() => handleChange("selectedContract", contract)}
+                            checked={formData.contract_role === contract}
+                            onChange={() => handleChange("contract_role", contract)}
                             className="w-4 h-4 text-blue-600"
                         />
                         {contract}

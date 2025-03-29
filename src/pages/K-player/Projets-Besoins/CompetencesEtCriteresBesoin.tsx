@@ -16,7 +16,7 @@ const secteursOptions = [
 
 const CompetencesEtCriteresBesoin: React.FC = () => {
   const [selectedSecteurs, setSelectedSecteurs] = useState<string[]>([]);
-  const [selectedContract, setSelectedContract] = useState<string>("CDI");
+  const [contract_role, setcontract_role] = useState<string>("CDI");
   const [remoteWork, setRemoteWork] = useState<string>("Non");
   const [languageInput, setLanguageInput] = useState<string>("");
   const [languages, setLanguages] = useState<string[]>([]);
@@ -73,11 +73,10 @@ const CompetencesEtCriteresBesoin: React.FC = () => {
           {secteursOptions.map((secteur, index) => (
             <button
               key={index}
-              className={`px-3 py-2 rounded-md border ${
-                selectedSecteurs.includes(secteur)
+              className={`px-3 py-2 rounded-md border ${selectedSecteurs.includes(secteur)
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700"
-              }`}
+                }`}
               onClick={() => toggleSecteur(secteur)}
             >
               {secteur} +
@@ -150,8 +149,8 @@ const CompetencesEtCriteresBesoin: React.FC = () => {
               <label key={contract} className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={selectedContract === contract}
-                  onChange={() => setSelectedContract(contract)}
+                  checked={contract_role === contract}
+                  onChange={() => setcontract_role(contract)}
                   className="w-4 h-4 text-blue-600"
                 />
                 {contract}

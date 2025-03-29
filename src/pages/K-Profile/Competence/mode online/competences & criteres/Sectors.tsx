@@ -138,18 +138,42 @@ const Sectors: React.FC<SectorsProps> = ({
 
     return (
       <div className="my-4">
-        <div className="flex justify-between text-sm text-gray-600">
-          <span>{currentSeniority?.name}</span>
+        <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <span className="font-medium">{currentSeniority?.name}</span>
           <span>{currentSeniority?.description}</span>
         </div>
-        <input
-          type="range"
-          min="1"
-          max="5"
-          value={currentLevel}
-          onChange={(e) => handleSeniorityChange(sectorId, parseInt(e.target.value))}
-          className="w-full"
-        />
+
+        {/* Slider with markers */}
+        <div className="relative w-full mb-2">
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value={currentLevel}
+            onChange={(e) => handleSeniorityChange(sectorId, parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `linear-gradient(to right, #30797F 0%, #30797F ${(currentLevel - 1) * 25}%, #e5e7eb ${(currentLevel - 1) * 25}%, #e5e7eb 100%)`
+            }}
+          />
+
+          {/* Position markers */}
+          <div className="flex justify-between w-full px-1 absolute top-3 left-0 right-0">
+            {seniorityLevels.map((level) => (
+              <div
+                key={level.level}
+                className={`${currentLevel >= level.level ? 'bg-[#30797F]' : 'bg-gray-300'}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Level labels */}
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          {seniorityLevels.map((level) => (
+            <span key={level.level}>{level.level}</span>
+          ))}
+        </div>
       </div>
     );
   };
@@ -163,7 +187,10 @@ const Sectors: React.FC<SectorsProps> = ({
         {sector.jobs.map(job => (
           <button
             key={job.id}
-            className={`px-4 py-2 rounded-full text-sm flex items-center ${selectedJobs[sectorId]?.includes(job.id) ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'
+            className={`px-4 py-2 rounded-xl text-sm flex items-center 
+              ${selectedJobs[sectorId]?.includes(job.id) ?
+                'bg-[#30797F] border-gray-300 text-white' :
+                'bg-white border border-gray-300'
               }`}
             onClick={() => {
               toggleJob(sectorId, job.id)
@@ -184,9 +211,11 @@ const Sectors: React.FC<SectorsProps> = ({
           <button
             key={sector.id}
             className={`
-              px-4 py-2 rounded-full text-sm flex items-center 
-              ${selectedSectors.includes(sector.id) ? 'bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white' : 'bg-white border border-gray-300'}
-            `}
+              px-4 py-2 rounded-xl text-sm flex items-center 
+              ${selectedSectors.includes(sector.id) ?
+                'bg-[#30797F] border-gray-300 text-white' :
+                'bg-white border border-gray-300'
+              }`}
             onClick={() => toggleSector(sector.id)}
             disabled={!selectedSectors.includes(sector.id) && selectedSectors.length >= 3}
           >
@@ -205,17 +234,12 @@ const Sectors: React.FC<SectorsProps> = ({
             {selectedSectors.map(sectorId => (
               <button
                 key={sectorId}
-                className={`px-4 py-2 ${activeSector === sectorId
-                  ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white"
-                  : "bg-white border-r border-gray-300"
+                className={`px-4 py-2 ${activeSector === sectorId ?
+                  'bg-[#30797F] border-gray-300 text-white' :
+                  'bg-white border border-gray-300'
                   }`}
                 onClick={() => setActiveSector(sectorId)}
               >
-                {activeSector === sectorId && (
-                  <span className="inline-flex items-center justify-center w-4 h-4 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white rounded-full mr-1 text-xs">
-                    ✓
-                  </span>
-                )}
                 {sectors.find(s => s.id === sectorId)?.sector}
               </button>
             ))}

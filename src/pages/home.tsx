@@ -16,14 +16,14 @@ const Home = () => {
           src={logo}
           alt="Keeey Logo"
           className="w-40"
-          initial={{ opacity: 0, x: 50 }} 
-          animate={{ opacity: 1, x: 0 }} 
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         />
       </div>
 
       {/* Titre et sous-titre */}
-      <motion.div 
+      <motion.div
         className="text-center mb-1"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ const Home = () => {
       {/* Sections avec images */}
       <div className="relative w-full max-w-4xl grid grid-cols-1 md:grid-cols-2  px-6">
         {/* K-Profile */}
-        <motion.div 
+        <motion.div
           onClick={() => navigate("/Login")}
           className="cursor-pointer flex justify-center"
           whileHover={{ scale: 1.05 }}
@@ -51,10 +51,10 @@ const Home = () => {
         </motion.div>
 
         {/* K-Player */}
-        <motion.div 
+        <motion.div
           onClick={() => navigate("/LoginKplayer")}
           className="cursor-pointer flex justify-center"
-          whileHover={{ scale: 1.05 }} 
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.3 }}
         >
@@ -62,8 +62,8 @@ const Home = () => {
         </motion.div>
 
         {/* K-Partner */}
-        <motion.div 
-          onClick={() => navigate("/LoginKPartner")} 
+        <motion.div
+          onClick={() => navigate("/LoginKPartner")}
           className="cursor-pointer flex justify-center md:col-span-2"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

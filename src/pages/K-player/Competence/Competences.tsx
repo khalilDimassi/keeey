@@ -1,100 +1,222 @@
-import React, { useState } from "react";
-import { PlusCircle, Trash2 } from "lucide-react";
-
-export interface Job {
-  id: number;
-  job: string;
-}
-
-export interface Sector {
-  id: number;
-  sector: string;
-  jobs: Job[];
-}
+import { FC, useEffect, useState } from "react";
+import { OpportunityFormData, Sector } from "./CompetencesEtCriteres";
 
 interface CompetencesProps {
   sectors: Sector[];
+  loading: boolean;
+  error: string | null;
+  formData: OpportunityFormData;
+  onFormDataChange: (newData: Partial<OpportunityFormData>) => void;
 }
 
-const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
-  const [selectedSectors, setSelectedSectors] = useState<number[]>([]);
+const Competences: FC<CompetencesProps> = ({
+  sectors = [],
+  loading,
+  error,
+  formData,
+  onFormDataChange,
+}) => {
   const [activeSector, setActiveSector] = useState<number | null>(null);
-  const [seniority, setSeniority] = useState<{ [key: number]: number }>({});
-  const [selectedJobs, setSelectedJobs] = useState<{ [key: number]: number[] }>({});
+
+  // Initialize active sector when formData changes
+  useEffect(() => {
+    if (formData.selected_sectors && formData.selected_sectors.length > 0 && !activeSector) {
+      setActiveSector(formData.selected_sectors[0].id);
+    } else if (!formData.selected_sectors || formData.selected_sectors.length === 0) {
+      setActiveSector(null);
+    }
+  }, [formData.selected_sectors]);
 
   const toggleSector = (sectorId: number) => {
-    if (selectedSectors.includes(sectorId)) {
-      setSelectedSectors(selectedSectors.filter(id => id !== sectorId));
-      setSeniority(prev => {
-        const updated = { ...prev };
-        delete updated[sectorId];
-        return updated;
-      });
-      setSelectedJobs(prev => {
-        const updated = { ...prev };
-        delete updated[sectorId];
-        return updated;
-      });
+    const isSelected = formData.selected_sectors.some(s => s.id === sectorId);
+
+    if (isSelected) {
+      // Remove sector
+      const updatedSectors = formData.selected_sectors.filter(s => s.id !== sectorId);
+      onFormDataChange({ selected_sectors: updatedSectors });
+
+      // Update active sector if needed
       if (activeSector === sectorId) {
-        // Set the next available sector as active or null if none left
-        const remainingSectors = selectedSectors.filter(id => id !== sectorId);
-        setActiveSector(remainingSectors.length > 0 ? remainingSectors[0] : null);
+        setActiveSector(updatedSectors.length > 0 ? updatedSectors[0].id : null);
       }
-    } else if (selectedSectors.length < 3) {
-      setSelectedSectors([...selectedSectors, sectorId]);
-      setSeniority(prev => ({ ...prev, [sectorId]: 1 }));
-      setSelectedJobs(prev => ({ ...prev, [sectorId]: [] }));
+    } else if (formData.selected_sectors.length < 3) {
+      // Add new sector
+      const newSector = {
+        id: sectorId,
+        seniority: 1,
+        jobs: [],
+      };
+      onFormDataChange({
+        selected_sectors: [...formData.selected_sectors, newSector],
+      });
       setActiveSector(sectorId);
     }
   };
 
   const handleSeniorityChange = (sectorId: number, value: number) => {
-    setSeniority(prev => ({ ...prev, [sectorId]: value }));
+    const updatedSectors = formData.selected_sectors.map(sector =>
+      sector.id === sectorId ? { ...sector, seniority: value } : sector
+    );
+    onFormDataChange({ selected_sectors: updatedSectors });
   };
 
   const toggleJob = (sectorId: number, jobId: number) => {
-    setSelectedJobs(prev => {
-      const jobs = prev[sectorId] || [];
-      if (jobs.includes(jobId)) {
-        return { ...prev, [sectorId]: jobs.filter(id => id !== jobId) };
+    const updatedSectors = formData.selected_sectors.map(sector => {
+      if (sector.id !== sectorId) return sector;
+
+      const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
+
+      if (jobIndex >= 0) {
+        // Remove job
+        return {
+          ...sector,
+          jobs: sector.jobs.filter(j => j.id !== jobId),
+        };
       } else {
-        return { ...prev, [sectorId]: [...jobs, jobId] };
+        // Add new job
+        return {
+          ...sector,
+          jobs: [...sector.jobs, { id: jobId, skills: [] }],
+        };
       }
     });
+
+    onFormDataChange({ selected_sectors: updatedSectors });
   };
 
-  const [tools, setTools] = useState<string[]>([]);
-  const [certifications, setCertifications] = useState<string[]>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
-  const [qualities, setQualities] = useState<string[]>([]);
+  const toggleSkill = (sectorId: number, jobId: number, skillId: number) => {
+    const updatedSectors = formData.selected_sectors.map(sector => {
+      if (sector.id !== sectorId) return sector;
 
-  const [toolInput, setToolInput] = useState<string>("");
-  const [certificationInput, setCertificationInput] = useState<string>("");
-  const [languageInput, setLanguageInput] = useState<string>("");
-  const [qualityInput, setQualityInput] = useState<string>("");
+      const updatedJobs = sector.jobs.map(job => {
+        if (job.id !== jobId) return job;
 
-  // Add item to a list
-  const addItem = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
-    if (item.trim() !== "" && !list.includes(item)) {
-      setList([...list, item]);
-      setInput("");
-    }
+        const skillIndex = job.skills.indexOf(skillId);
+
+        return {
+          ...job,
+          skills: skillIndex >= 0
+            ? job.skills.filter(id => id !== skillId)
+            : [...job.skills, skillId],
+        };
+      });
+
+      return { ...sector, jobs: updatedJobs };
+    });
+
+    onFormDataChange({ selected_sectors: updatedSectors });
   };
 
-  // Remove item from a list
-  const removeItem = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
-    setList(list.filter((i) => i !== item));
+  // Count selected skills for a job
+  const countSelectedSkillsForJob = (sectorId: number, jobId: number) => {
+    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    if (!sector) return 0;
+
+    const job = sector.jobs.find(j => j.id === jobId);
+    return job ? job.skills.length : 0;
   };
 
-  // Collect and return user selections
-  // const collectSelections = () => {
-  //   const selections = selectedSectors.map(sectorId => ({
-  //     id: sectorId,
-  //     seniority: seniority[sectorId],
-  //     jobs: selectedJobs[sectorId] || [],
-  //   }));
-  // //  onSelectionChange(selections);
-  // };
+  // Check if a job is selected
+  const isJobSelected = (sectorId: number, jobId: number) => {
+    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    return sector ? sector.jobs.some(j => j.id === jobId) : false;
+  };
+
+  // Check if a skill is selected
+  const isSkillSelected = (sectorId: number, jobId: number, skillId: number) => {
+    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    if (!sector) return false;
+
+    const job = sector.jobs.find(j => j.id === jobId);
+    return job ? job.skills.includes(skillId) : false;
+  };
+
+  // Get seniority level for a sector
+  const getSeniority = (sectorId: number) => {
+    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    return sector ? sector.seniority : 1;
+  };
+
+  // Render skills for a job
+  const renderSkills = (sectorId: number, jobId: number) => {
+    const sector = sectors.find(s => s.id === sectorId);
+    if (!sector) return null;
+
+    const job = sector.jobs?.find(j => j.id === jobId);
+    if (!job || !job.skills?.length) return null;
+
+    return (
+      <div className="ml-6 mt-2 mb-4">
+        <div className="flex flex-wrap gap-2">
+          {job.skills.map(skill => (
+            <button
+              key={skill.id}
+              type="button"
+              className={`px-3 py-1 text-sm border rounded-lg ${isSkillSelected(sectorId, jobId, skill.id)
+                ? 'bg-[#215A96] text-white'
+                : 'border-gray-300 bg-white text-gray-700'
+                }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleSkill(sectorId, jobId, skill.id);
+              }}
+            >
+              {skill.skill}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Render jobs list with skills
+  const renderJobs = (sectorId: number) => {
+    const sector = sectors.find(s => s.id === sectorId);
+    if (!sector?.jobs) return null;
+
+    return (
+      <div className="my-4 space-y-2">
+        {sector.jobs.map(job => {
+          const selectedSkillCount = countSelectedSkillsForJob(sectorId, job.id);
+          const isSelected = isJobSelected(sectorId, job.id);
+          const hasSkills = !!(job.skills?.length);
+
+          return (
+            <div
+              key={job.id}
+              className="border rounded-lg overflow-hidden cursor-pointer"
+              onClick={() => toggleJob(sectorId, job.id)}
+            >
+              <div className={`flex items-center justify-between p-3 ${isSelected ? 'bg-blue-50' : 'bg-white'
+                }`}>
+                <div className="flex items-center">
+                  <span className={`px-3 py-2 rounded-lg ${isSelected
+                    ? 'bg-[#215A96] text-white'
+                    : 'border border-gray-300 bg-white text-gray-700'
+                    }`}>
+                    {job.job}
+                  </span>
+
+                  {hasSkills && isSelected && (
+                    <div className="ml-3 flex space-x-1">
+                      {[...Array(Math.min(3, selectedSkillCount))].map((_, i) => (
+                        <div key={i} className="w-2 h-2 rounded-full bg-[#215A96]"></div>
+                      ))}
+                      {selectedSkillCount > 3 && (
+                        <span className="text-xs text-[#215A96] ml-1">+{selectedSkillCount - 3}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {hasSkills && isSelected && renderSkills(sectorId, job.id)}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Render seniority slider
   const renderSenioritySlider = (sectorId: number) => {
@@ -105,247 +227,129 @@ const Competences: React.FC<CompetencesProps> = ({ sectors }) => {
       { level: 4, name: "Lead", description: "15 - 19 ans" },
       { level: 5, name: "Principal", description: "20+ ans" },
     ];
-    const currentLevel = seniority[sectorId] || 1;
+    const currentLevel = getSeniority(sectorId);
     const currentSeniority = seniorityLevels.find(level => level.level === currentLevel);
 
     return (
       <div className="my-4">
-        <div className="flex justify-between text-sm text-gray-600">
-          <span>{currentSeniority?.name}</span>
+        <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <span className="font-medium">{currentSeniority?.name}</span>
           <span>{currentSeniority?.description}</span>
         </div>
-        <input
-          type="range"
-          min="1"
-          max="5"
-          value={currentLevel}
-          onChange={(e) => handleSeniorityChange(sectorId, parseInt(e.target.value))}
-          className="w-full"
-        />
-      </div>
-    );
-  };
 
-  // Render jobs list
-  const renderJobs = (sectorId: number) => {
-    const sector = sectors.find(s => s.id === sectorId);
-    if (!sector) return null;
-    return (
-      <div className="flex flex-wrap gap-2 my-4">
-        {sector.jobs.map(job => (
-          <button
-            key={job.id}
-            className={`flex items-center px-3 py-2 border  shadow rounded-xl ${selectedJobs[sectorId]?.includes(job.id) ?
-              'bg-[#215A96] text-white' :
-              'border-black bg-gray-50 text-gray-700'
-              }`}
-            onClick={() => toggleJob(sectorId, job.id)}
-          >
-            {job.job} <span className="ml-1">+</span>
-          </button>
-        ))}
+        <div className="relative w-full mb-2">
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value={currentLevel}
+            onChange={(e) => handleSeniorityChange(sectorId, parseInt(e.target.value))}
+            className="w-full h-3 bg-gray-200 rounded-xl appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `linear-gradient(to right, #215A96 0%, #215A96 ${(currentLevel - 1) * 25
+                }%, #e5e7eb ${(currentLevel - 1) * 25}%, #e5e7eb 100%)`,
+            }}
+          />
+
+          <div className="flex justify-between w-full px-1 absolute top-3 left-0 right-0">
+            {seniorityLevels.map((level) => (
+              <div
+                key={level.level}
+                className={`w-2 h-2 rounded-full ${currentLevel >= level.level ? 'bg-[#215A96]' : 'bg-gray-300'
+                  }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          {seniorityLevels.map((level) => (
+            <span key={level.level}>{level.level}</span>
+          ))}
+        </div>
       </div>
     );
   };
 
   return (
-    <>
-      <div
-        className="bg-white p-6 rounded-lg shadow-md w-1/2"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
-      >
-        <h2 className="text-lg font-semibold mb-4">Compétences</h2>
-        {/* Secteur */}
-        <p className="text-black font-semibold mb-2">Secteur</p>
-        <div className="grid grid-cols-3 gap-2 mb-4" style={{ width: "auto" }}>
-          {sectors.map(sector => (
+    <div
+      className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl"
+      style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+    >
+      <h2 className="text-lg font-semibold mb-4">Compétences</h2>
+      {/* Secteur */}
+      <p className="text-black font-semibold mb-2">Secteur</p>
+      <div className="flex flex-wrap gap-2 mb-5">
+        {loading ? (
+          <div className="text-center py-4">Loading...</div>
+        ) : error ? (
+          <div className="text-center py-4 text-red-500">Couldn't load sectors: {error}</div>
+        ) : (
+          <>
+            {sectors.map((sector) => (
+              <button
+                key={sector.id}
+                type="button"
+                className={`
+                  flex items-center px-3 py-2 border shadow rounded-xl space-x-2
+                  ${formData.selected_sectors?.some(s => s.id === sector.id)
+                    ? 'bg-[#215A96] text-white'
+                    : 'border-black bg-gray-50 text-gray-700'
+                  }
+                  ${!formData.selected_sectors?.some(s => s.id === sector.id) &&
+                    formData.selected_sectors?.length >= 3
+                    ? 'opacity-50'
+                    : ''
+                  }
+                `}
+                onClick={() => toggleSector(sector.id)}
+                disabled={
+                  !formData.selected_sectors?.some(s => s.id === sector.id) &&
+                  formData.selected_sectors?.length >= 3
+                }
+              >
+                {sector.sector}{" "}
+                <span className="ml-2">
+                  {formData.selected_sectors?.some(s => s.id === sector.id) ? "-" : "+"}
+                </span>
+              </button>
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Selected sectors display */}
+      {formData.selected_sectors?.length > 0 && (
+        <div
+          className="justify-center items-center inline-flex border border-gray-300 rounded-md overflow-hidden mb-6"
+          style={{ borderRadius: "20px" }}
+        >
+          {formData.selected_sectors.map((sector) => (
             <button
               key={sector.id}
-              className={`
-              flex items-center px-3 py-2 border shadow rounded-xl 
-              ${selectedSectors.includes(sector.id) ? 'bg-[#215A96] text-white' : 'border-black bg-gray-50 text-gray-700'}
-            `}
-              onClick={() => toggleSector(sector.id)}
-              disabled={!selectedSectors.includes(sector.id) && selectedSectors.length >= 3}
+              type="button"
+              className={`px-4 py-2 ${activeSector === sector.id
+                ? "bg-[#215A96] text-white"
+                : "border-black bg-gray-50 text-gray-700"
+                }`}
+              onClick={() => setActiveSector(sector.id)}
             >
-              {sector.sector} <span className="ml-1">{selectedSectors.includes(sector.id) ? '-' : '+'}</span>
+              {sectors.find((s) => s.id === sector.id)?.sector}
             </button>
           ))}
         </div>
+      )}
 
-        {/* Selected sectors display */}
-        {selectedSectors.length > 0 && (
-          <div className="flex justify-center items-center">
-            <div
-              className="inline-flex border border-gray-300 rounded-md overflow-hidden mb-6"
-              style={{ borderRadius: "20px" }}
-            >
-              {selectedSectors.map(sectorId => (
-                <button
-                  key={sectorId}
-                  className={`px-4 py-2 ${activeSector === sectorId
-                    ? 'bg-[#215A96] text-white'
-                    : 'border-black bg-gray-50 text-gray-700'
-                    }`}
-                  onClick={() => setActiveSector(sectorId)}
-                >
-                  {activeSector === sectorId && (
-                    <span className="inline-flex items-center justify-center w-4 h-4 bg-[#215A96] text-white rounded-full mr-1 text-xs"></span>
-                  )}
-                  {sectors.find(s => s.id === sectorId)?.sector}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Jobs */}
-        {activeSector !== null && (
-          <div className="my-6">
-            {renderSenioritySlider(activeSector)}
-            <br></br>
-            <p className="text-gray-600 mb-2">Metier</p>
-            {renderJobs(activeSector)}
-          </div>
-        )}
-
-        {/* Outils */}
-        <p className="text-gray-600 mt-4">Outils</p>
-        <div className="flex items-center gap-1 mb-4">
-          <input
-            type="text"
-            value={toolInput}
-            onChange={(e) => setToolInput(e.target.value)}
-            placeholder="Ajouter un outil"
-            className="w-full border p-2 rounded-md"
-          />
-          <button
-            onClick={() => addItem(toolInput, tools, setTools, setToolInput)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            <PlusCircle size={28} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {tools.map((tool, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
-            >
-              <span>{tool}</span>
-              <button
-                onClick={() => removeItem(tool, tools, setTools)}
-                className="text-white"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Habilitations */}
-        <p className="text-gray-600 mt-4">Habilitations</p>
-        <div className="flex items-center gap-1 mb-4">
-          <input
-            type="text"
-            value={certificationInput}
-            onChange={(e) => setCertificationInput(e.target.value)}
-            placeholder="Ajouter une habilitation"
-            className="w-full border p-2 rounded-md"
-          />
-          <button
-            onClick={() => addItem(certificationInput, certifications, setCertifications, setCertificationInput)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            <PlusCircle size={28} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {certifications.map((certification, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
-            >
-              <span>{certification}</span>
-              <button
-                onClick={() => removeItem(certification, certifications, setCertifications)}
-                className="text-white"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Langues */}
-        <p className="text-gray-600 mt-4">Langues</p>
-        <div className="flex items-center gap-1 mb-4">
-          <input
-            type="text"
-            value={languageInput}
-            onChange={(e) => setLanguageInput(e.target.value)}
-            placeholder="Ajouter une langue"
-            className="w-full border p-2 rounded-md"
-          />
-          <button
-            onClick={() => addItem(languageInput, languages, setLanguages, setLanguageInput)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            <PlusCircle size={28} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {languages.map((lang, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
-            >
-              <span>{lang}</span>
-              <button
-                onClick={() => removeItem(lang, languages, setLanguages)}
-                className="text-white"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Qualités Relationnelles */}
-        <p className="text-gray-600 mt-4">Qualités Relationnelles</p>
-        <div className="flex items-center gap-1 mb-4">
-          <input
-            type="text"
-            value={qualityInput}
-            onChange={(e) => setQualityInput(e.target.value)}
-            placeholder="Ajouter une qualité"
-            className="w-full border p-2 rounded-md"
-          />
-          <button
-            onClick={() => addItem(qualityInput, qualities, setQualities, setQualityInput)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            <PlusCircle size={28} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {qualities.map((quality, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
-            >
-              <span>{quality}</span>
-              <button
-                onClick={() => removeItem(quality, qualities, setQualities)}
-                className="text-white"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </>
+      {/* Seniority & Jobs */}
+      {activeSector !== null && (
+        <>
+          {renderSenioritySlider(activeSector)}
+          <br />
+          <p className="text-gray-600 mb-2">Metier</p>
+          {renderJobs(activeSector)}
+        </>
+      )}
+    </div>
   );
 };
 

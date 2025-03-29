@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import logo from "../../assets/logoKeeePlayer.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { saveToken } from "../../../utils/jwt";
+import { saveToken, saveUserId } from "../../../utils/jwt";
 import axios from "axios";
 
 const AddKPlayer = () => {
@@ -42,11 +42,12 @@ const AddKPlayer = () => {
       );
 
       const token = response?.data?.token;
-      if (!token) {
-        throw new Error("Token is missing in the response.");
-      }
-
+      const user_id = response?.data?.user.id;
+      if (!token) throw new Error("Token is missing in the response.");
+      if (!user_id) throw new Error("User ID is missing in the response.");
       saveToken(token);
+      saveUserId(user_id);
+
       navigate("/LayoutKPlayer");
     } catch (err: any) {
       setError(

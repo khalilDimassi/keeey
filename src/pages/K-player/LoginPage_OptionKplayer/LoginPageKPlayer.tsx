@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { FaGoogle, FaApple, FaGithub } from "react-icons/fa";
-import { saveToken } from "../../../utils/jwt";
+import { saveToken, saveUserId } from "../../../utils/jwt";
 import { motion } from "framer-motion";
 
 const LoginPageKPlayer = () => {
@@ -21,12 +21,17 @@ const LoginPageKPlayer = () => {
         import.meta.env.VITE_API_BASE_URL + "/api/v1/public/login",
         formData
       );
+
       const token = response?.data?.token;
+      const user_id = response?.data?.user.ID;
       if (!token) throw new Error("Token is missing in the response.");
+      if (!user_id) throw new Error("User ID is missing in the response.");
       saveToken(token);
+      saveUserId(user_id);
+
       navigate("/LayoutKPlayer");
-    } catch {
-      setError("Login failed. Check your credentials.");
+    } catch (error) {
+      setError("Login failed. " + error);
     }
   };
 

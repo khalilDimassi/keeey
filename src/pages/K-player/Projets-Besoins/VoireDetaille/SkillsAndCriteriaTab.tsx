@@ -56,7 +56,7 @@ export interface OpportunityDetails {
   crit_start_date: string;
   crit_start_date_lastest: string;
   crit_duration: number;
-  crit_duration_latest: number;
+  crit_duration_lastest: number;
   crit_target_rate: number;
   crit_max_rate: number;
   crit_location: string;
@@ -135,7 +135,7 @@ const SkillsAndCriterias = ({ opportunityData, onSave, isSaving }: SkillsAndCrit
         critStartDate: opportunityData.crit_start_date || '',
         critStartDateLatest: opportunityData.crit_start_date_lastest || '',
         critDuration: opportunityData.crit_duration || 0,
-        critDurationLatest: opportunityData.crit_duration_latest || 0,
+        critDurationLatest: opportunityData.crit_duration_lastest || 0,
         critTargetRate: opportunityData.crit_target_rate || 0,
         critMaxRate: opportunityData.crit_max_rate || 0,
         critLocation: opportunityData.crit_location || '',
@@ -285,7 +285,7 @@ const SkillsAndCriterias = ({ opportunityData, onSave, isSaving }: SkillsAndCrit
       crit_start_date: criteriaFormData.critStartDate,
       crit_start_date_lastest: criteriaFormData.critStartDateLatest,
       crit_duration: criteriaFormData.critDuration,
-      crit_duration_latest: criteriaFormData.critDurationLatest,
+      crit_duration_lastest: criteriaFormData.critDurationLatest,
       crit_target_rate: criteriaFormData.critTargetRate,
       crit_max_rate: criteriaFormData.critMaxRate,
       crit_location: criteriaFormData.critLocation,

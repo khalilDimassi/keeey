@@ -155,6 +155,27 @@ const OpportunityList = ({
         );
     }
 
+    const getInitials = (title: string) => {
+        const words = title.split(/\s+/).filter(word => word.length > 0);
+        const firstWords = words.slice(0, 3);
+        const initials = firstWords.map(word => word[0].toUpperCase()).join('');
+
+        return initials;
+    };
+
+    // Get consistent random color based on string input (same string = same color)
+    const getRandomColor = (str: string) => {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const h = Math.abs(hash) % 360; // Hue (0-360)
+        const s = 10 + Math.abs(hash) % 15; // Saturation (70-85%)
+        const l = 40 + Math.abs(hash) % 10; // Lightness (40-50%) - keeps it medium-dark
+
+        return `hsl(${h}, ${s}%, ${l}%)`;
+    };
+
     return (
         <div className="space-y-6 p-6 max-h-[70vh] overflow-y-auto">
             {displayedItems.map((item, index) => {
@@ -166,12 +187,13 @@ const OpportunityList = ({
                         className="bg-white p-4 hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
                         onClick={() => onItemClick(item)}
                     >
-                        {/* Avatar - using placeholder */}
-                        <img
-                            src="https://mtek3d.com/wp-content/uploads/2018/01/image-placeholder-500x500-300x300.jpg"
-                            alt="avatar"
-                            className="w-16 h-16 rounded-full flex-shrink-0 object-cover mx-auto"
-                        />
+                        {/* Avatar with initials as placeholder */}
+                        <div
+                            className="w-16 h-16 rounded-full flex-shrink-0 object-cover mx-auto flex items-center justify-center text-sm text-black font-bold"
+                            style={{ backgroundColor: getRandomColor(item.title) }}
+                        >
+                            {getInitials(item.title)}
+                        </div>
 
                         {/* Job details */}
                         <div className="flex-1 min-w-0">
@@ -183,19 +205,22 @@ const OpportunityList = ({
 
                                 {/* Match Percentage and Contract Type */}
                                 <div className="mt-2 flex items-center gap-2">
-                                    <div className="px-3  rounded-md bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white text-sm">
+                                    <div className="px-3 rounded-xl bg-[#9FC5C8] text-[#30797F] text-sm font-bold">
                                         {calculateMatchPercentage(item)}
                                     </div>
                                     <span className="text-sm text-gray-700">Correspondent à votre profil</span>
-                                    <div className="ml-2 px-3 py-1 rounded-md bg-blue-100 text-blue-800 text-sm">
-                                        {item.contract_role}
-                                    </div>
                                 </div>
                             </div>
 
                             {/* Description - truncated for list view */}
                             <p className="text-gray-700 text-sm leading-relaxed mt-3 line-clamp-2">
-                                {item.description || `${item.contract_role} - ${item.crit_location} ${item.crit_remote ? '(Remote)' : ''}`}
+                                {item.description ||
+                                    `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`
+                                }
                             </p>
                         </div>
 
