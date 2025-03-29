@@ -152,7 +152,7 @@ const Competences: FC<CompetencesProps> = ({
             <button
               key={skill.id}
               type="button"
-              className={`px-3 py-1 text-sm border rounded-lg ${isSkillSelected(sectorId, jobId, skill.id)
+              className={`px-3 py-1 text-sm border rounded-xl ${isSkillSelected(sectorId, jobId, skill.id)
                 ? 'bg-[#215A96] text-white'
                 : 'border-gray-300 bg-white text-gray-700'
                 }`}
@@ -184,13 +184,13 @@ const Competences: FC<CompetencesProps> = ({
           return (
             <div
               key={job.id}
-              className="border rounded-lg overflow-hidden cursor-pointer"
+              className="border rounded-xl overflow-hidden cursor-pointer"
               onClick={() => toggleJob(sectorId, job.id)}
             >
-              <div className={`flex items-center justify-between p-3 ${isSelected ? 'bg-blue-50' : 'bg-white'
+              <div className={`flex items-center justify-between p-3 ${isSelected ? 'bg-blue-200' : 'bg-blue-50'
                 }`}>
                 <div className="flex items-center">
-                  <span className={`px-3 py-2 rounded-lg ${isSelected
+                  <span className={`px-3 py-2 rounded-xl ${isSelected
                     ? 'bg-[#215A96] text-white'
                     : 'border border-gray-300 bg-white text-gray-700'
                     }`}>
@@ -198,7 +198,7 @@ const Competences: FC<CompetencesProps> = ({
                   </span>
 
                   {hasSkills && isSelected && (
-                    <div className="ml-3 flex space-x-1">
+                    <div className="ml-3 flex flex-wrap space-x-1">
                       {[...Array(Math.min(3, selectedSkillCount))].map((_, i) => (
                         <div key={i} className="w-2 h-2 rounded-full bg-[#215A96]"></div>
                       ))}

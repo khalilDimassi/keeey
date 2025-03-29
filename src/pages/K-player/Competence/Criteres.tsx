@@ -86,7 +86,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <div className="flex gap-2">
           <input
             type="date"
-            className="w-full border p-2 rounded-md"
+            className="w-full border p-2 rounded-xl"
             value={formData.crit_start_date}
             onChange={(e) => handleFieldChange("crit_start_date", e.target.value)}
           />
@@ -94,7 +94,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <div className="flex gap-2">
           <input
             type="date"
-            className="w-full border p-2 rounded-md"
+            className="w-full border p-2 rounded-xl"
             value={formData.crit_start_date_lastest}
             onChange={(e) => handleFieldChange("crit_start_date_lastest", e.target.value)}
             placeholder="Au plus tard"
@@ -108,7 +108,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <div className="flex gap-2">
           <input
             type="number"
-            className="w-full border p-2 rounded-md"
+            className="w-full border p-2 rounded-xl"
             placeholder="jours"
             value={formData.crit_duration}
             onChange={(e) => {
@@ -120,7 +120,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <div className="flex gap-2">
           <input
             type="number"
-            className="w-full border p-2 rounded-md"
+            className="w-full border p-2 rounded-xl"
             placeholder="Au plus tard"
             value={formData.crit_duration_lastest}
             onChange={(e) => {
@@ -137,7 +137,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <input
           type="text"
           placeholder="TJM ou salaire cible"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
           value={formData.crit_target_rate}
           onChange={(e) => {
             const value = e.target.value;
@@ -147,7 +147,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         <input
           type="text"
           placeholder="TJM ou salaire max"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
           value={formData.crit_max_rate}
           onChange={(e) => {
             const value = e.target.value;
@@ -159,7 +159,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
       {/* Localisation */}
       <p className="text-gray-600 mb-2">Localisation</p>
       <input
-        className="w-full border p-2 rounded-md mb-4"
+        className="w-full border p-2 rounded-xl mb-4"
         type="text"
         placeholder="Localisation"
         value={formData.crit_location}
@@ -199,7 +199,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
             }
           }}
           placeholder="Ajouter un outil"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
         />
         <button
           onClick={() => addItem("tool", "tools")}
@@ -216,7 +216,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         {formData.tools?.map((tool, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
+            className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
           >
             <span>{tool}</span>
             <button
@@ -242,7 +242,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
             }
           }}
           placeholder="Ajouter une habilitation"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
         />
         <button
           onClick={() => addItem("authorization", "authorizations")}
@@ -259,7 +259,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         {formData.authorizations?.map((auth, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
+            className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
           >
             <span>{auth}</span>
             <button
@@ -285,7 +285,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
             }
           }}
           placeholder="Ajouter une langue"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
         />
         <button
           onClick={() => addItem("language", "languages")}
@@ -302,7 +302,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         {formData.languages?.map((lang, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
+            className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
           >
             <span>{lang}</span>
             <button
@@ -328,7 +328,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
             }
           }}
           placeholder="Ajouter une qualité"
-          className="w-full border p-2 rounded-md"
+          className="w-full border p-2 rounded-xl"
         />
         <button
           onClick={() => addItem("quality", "qualities")}
@@ -345,7 +345,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         {formData.qualities?.map((quality, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-[#215A96] text-white rounded-md p-2"
+            className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
           >
             <span>{quality}</span>
             <button
