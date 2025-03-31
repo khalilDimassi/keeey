@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { motion } from "framer-motion";
-import { saveToken } from "../../../utils/jwt";
+import { saveToken, saveUserId } from "../../../utils/jwt";
 
 const AddProfile = () => {
   const navigate = useNavigate();
@@ -49,6 +49,7 @@ const AddProfile = () => {
       }
 
       saveToken(token);
+      saveUserId(response?.data?.user.id);
       navigate("/Layout");
     } catch (err: any) {
       setError(
@@ -177,7 +178,7 @@ const AddProfile = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="w-full text-white py-2 rounded-md hover:bg-green-700 transition"
-              style={{ borderRadius: "12px",background: "#307A7D" }}
+              style={{ borderRadius: "12px", background: "#307A7D" }}
             >
               Inscrivez-vous
             </motion.button>

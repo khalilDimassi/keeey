@@ -1,5 +1,5 @@
+import { Plus, X } from "lucide-react";
 import React, { useState } from "react";
-import { FaPlus, FaTimes } from "react-icons/fa";
 
 interface AjouterUtilisateurProps {
   isOpen: boolean;
@@ -41,9 +41,9 @@ const AjouterUtilisateur: React.FC<AjouterUtilisateurProps> = ({ isOpen, onClose
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-md p-6 relative">
+      <div className="bg-white rounded-xl w-full max-w-md p-6 relative">
         <button onClick={onClose} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700">
-          <FaTimes size={20} />
+          <X size={26} />
         </button>
 
         <h2 className="text-xl font-semibold mb-6">Ajouter un Utilisateur</h2>
@@ -112,9 +112,9 @@ const AjouterUtilisateur: React.FC<AjouterUtilisateurProps> = ({ isOpen, onClose
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              className="flex items-center gap-2 text-white px-4 py-2 rounded-xl bg-[#215A96]"
             >
-              <FaPlus size={16} />
+              <Plus size={16} />
               <span>Ajouter</span>
             </button>
           </div>

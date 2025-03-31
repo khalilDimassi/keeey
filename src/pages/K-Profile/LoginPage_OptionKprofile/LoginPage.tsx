@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaGoogle, FaApple, FaGithub } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { saveToken } from "../../../utils/jwt";
+import { saveToken, saveUserId } from "../../../utils/jwt";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const LoginPage = () => {
       const token = response?.data?.token;
       if (!token) throw new Error("Token is missing in the response.");
       saveToken(token);
+      saveUserId(response?.data?.user.id);
       navigate("/Layout");
     } catch {
       setError("Login failed. Check your credentials.");
