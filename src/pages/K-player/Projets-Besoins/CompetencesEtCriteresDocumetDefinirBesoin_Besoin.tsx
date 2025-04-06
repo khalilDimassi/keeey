@@ -27,7 +27,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
   // TODO: const [description, setDescription] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [responseDate, setResponseDate] = useState<string>("");
-  const [announcetDate, setAnnouncetDate] = useState<string>("");
+  const [announceDate, setannounceDate] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [targetRate, setTargetRate] = useState<string>("");
 
@@ -141,7 +141,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
     return {
       title: title,
       // description: description,
-      announce_at: announcetDate,
+      announce_at: announceDate,
       responded_at: responseDate,
       start_at: startDate,
       duration: parseInt(duration) || 0,
@@ -266,8 +266,8 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
                   type="date"
                   className="w-full border rounded-lg p-2"
                   placeholder="Date appelle d'offre"
-                  value={announcetDate}
-                  onChange={(e) => setAnnouncetDate(e.target.value)}
+                  value={announceDate}
+                  onChange={(e) => setannounceDate(e.target.value)}
                 />
               </div>
               <div>

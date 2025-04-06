@@ -24,7 +24,7 @@
   },
   "include": [
     "src",
-    "src/pages/K-player/Projets-Besoins/MesBesoin.tsx"
+    "src/pages/K-player/Projets-Besoins/CreateProjectContent/projectsList.tsx"
   ],
   "baseUrl": ".",
   "paths": {

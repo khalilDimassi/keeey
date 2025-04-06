@@ -37,8 +37,6 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     { id: "contact", Icon: Contact },
     { id: "bookmark", Icon: Bookmark },
     { id: "target", Icon: TargetSVG },
-
-
     { id: "settings", Icon: Settings },
   ];
 
