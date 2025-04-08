@@ -6,13 +6,11 @@ import TargetSVG from "./SidebarIcons/TargetSVG";
 
 export type ActiveComponent =
   "dashboard"
-  | "fileText1"
-  | "bookmark"
-  | "target"
   | "competence"
-  | "user"
-  | "settings"
   | "contact"
+  | "bookmark"
+  | "missions"
+  | "settings"
   | null;
 
 interface SidebarProps {
@@ -36,7 +34,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     { id: "competence", Icon: CompetenceSVG },
     { id: "contact", Icon: Contact },
     { id: "bookmark", Icon: Bookmark },
-    { id: "target", Icon: TargetSVG },
+    { id: "missions", Icon: TargetSVG },
     { id: "settings", Icon: Settings },
   ];
 

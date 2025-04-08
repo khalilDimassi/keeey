@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { isAuthenticated } from "../../utils/jwt";
-import Login from "./Login";
+import Login from "./LoginPopup";
 import NavbarKPlayer from "./NavbarKPlayer";
 import SidebarKPlayer, { ActiveComponent } from "./SidebarKPlayer";
 import ProfilePage from "./Profile/ProfilePage";
-import Mission from "./Mission/Mission";
-import ContactPage from "./Contact/ContactPage";
-import Reglage from "./Reglage/Reglage";
+import Mission from "./content/Mission/Mission";
+import ContactPage from "./content/Contact/ContactPage";
+import Reglage from "./content/Reglage/Reglage";
 import CompetancePage from "./Competence/CompetancePage";
 import ProjetsBesoinsPage from "./Projets-Besoins/ProjetsBesoinsPage";
 
 const LayoutKPlayer = () => {
   const [isOnline] = useState(isAuthenticated);
-  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>(
-    isOnline ? "dashboardPage" : "companyPage"
-  );
+  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>("companyPage");
   const [showLoginPopup, setShowLoginPopup] = useState(!isOnline);
 
   const handleIconClick = (componentId: ActiveComponent) => {

@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SidebarKPlayer from "./SidebarKPartner";
 import { isAuthenticated } from "../../utils/jwt";
-import Competances_Creteres from "./Mode_Guest_Opportunites/Competances_Creteres";
 import NavbarKPartner from "./NavbarKPartner";
 import CandidatesList from "./Mode_Guest_Opportunites/CandidatesList";
 import Profile_besoin_specifique from "./Mode_Guest_Opportunites/Profile_besoin_specifique";
 import Opportunite from "./Mode_Guest_Opportunites/Opportunite";
 import Opportunite_pour_consultant from "./Mode_Guest_Opportunites/Opportunite_pour_consultant";
 import { Search } from "lucide-react";
-import Login from "./Login";
+import Login from "./LoginPopup";
 
 type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact" | null;
 
 const LayoutKPartner = () => {
-  const [showProfile, setShowProfile] = useState(false);
+  const [_showProfile, setShowProfile] = useState(false);
   const [isOnline] = useState(isAuthenticated); // Connection state
   const [activeComponent, setActiveComponent] = useState<IconId>(
     isOnline ? "dashboard" : "competence"
   );
   const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated); // Login popup state
-  
+
   // New state for controlling visibility of different components
   const [showProfileSearch, setShowProfileSearch] = useState(true);
   const [showOpportunitySearch, setShowOpportunitySearch] = useState(false);
   const [showCandidatesList, setShowCandidatesList] = useState(true);
   const [showOpportuniteList, setShowOpportuniteList] = useState(false);
   const [activeView, setActiveView] = useState<'profile' | 'opportunite'>('profile');
-  
+
   // Added from older code
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
   useEffect(() => {
@@ -34,20 +33,20 @@ const LayoutKPartner = () => {
       setActiveComponent("competence");
     }
   }, []);
-  
+
   const handleIconClick = (componentId: IconId) => {
     if (!isOnline && componentId !== "competence") {
       setShowLoginPopup(true);
       return;
     }
-  
+
     setActiveComponent(componentId);
-    
+
     // When clicking competence icon, show the appropriate components
     if (componentId === "competence") {
       // Reset sidebar to vertical when accessing competence
       setIsSidebarHorizontal(false);
-      
+
       if (activeView === 'profile') {
         setShowProfileSearch(true);
         setShowCandidatesList(true);
@@ -63,15 +62,15 @@ const LayoutKPartner = () => {
       setShowProfile(componentId === "user");
     }
   };
-  
+
   const handleCloseProfile = () => {
     setShowProfileSearch(false);
     setShowOpportunitySearch(false);
-    
+
     // Added from older code - set sidebar to horizontal when closing
     setIsSidebarHorizontal(true);
   };
-  
+
   const handleProfileButtonClick = () => {
     setActiveView('profile');
     setShowProfileSearch(true);
@@ -79,7 +78,7 @@ const LayoutKPartner = () => {
     setShowOpportunitySearch(false);
     setShowOpportuniteList(false);
   };
-  
+
   const handleOpportunityButtonClick = () => {
     setActiveView('opportunite');
     setShowProfileSearch(false);
@@ -87,7 +86,7 @@ const LayoutKPartner = () => {
     setShowOpportunitySearch(true);
     setShowOpportuniteList(true);
   };
-  
+
   // Close button component
   const CloseButton = () => (
     <div className="flex justify-center mt-4 mb-6">
@@ -120,13 +119,13 @@ const LayoutKPartner = () => {
       </button>
     </div>
   );
- 
+
   return (
     <div className="w-full min-h-screen bg-gray-100">
       <div className="w-full h-12 px-10">
         <NavbarKPartner />
       </div>
-      
+
       {isSidebarHorizontal ? (
         // Horizontal sidebar layout when closed
         <div className="w-full flex flex-col px-10">
@@ -155,42 +154,40 @@ const LayoutKPartner = () => {
               setHorizontal={setIsSidebarHorizontal}
             />
           </div>
-          
+
           <div className="flex flex-col w-full" style={{ marginTop: "3rem" }}>
             {activeComponent === "competence" && !isOnline && (
               <>
-              {(showProfileSearch || showOpportunitySearch) && (
-  <>
-    {/* Search Buttons - centered */}
-    <div className="flex justify-center w-full mb-8">
-      <div className="flex flex-col sm:flex-row gap-4 max-w-5xl w-full">
-        <button
-           className={`flex-1 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors ${
-            activeView === 'profile'
-              ? 'bg-[#B5A48B] text-white hover:bg-[#a39379]'
-              : 'bg-white  border-[#B5A48B] text-[#B5A48B] hover:bg-gray-50'
-          }`}
-          onClick={handleProfileButtonClick}
-        >
-          <Search className="w-5 h-5" />
-          <span>Vous recherchez un Profile pour un besoin spécifique</span>
-        </button>
-        <button
-          className={`flex-1 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors ${
-            activeView === 'opportunite'
-              ? 'bg-[#B5A48B] text-white hover:bg-[#a39379]'
-              : 'bg-white  border-[#B5A48B] text-[#B5A48B] hover:bg-gray-50'
-          }`}
-          onClick={handleOpportunityButtonClick}
-        >
-          <Search className="w-5 h-5" />
-          <span>Vous recherchez une opportunité pour votre consultant</span>
-        </button>
-      </div>
-    </div>
-  </>
-)}
-                
+                {(showProfileSearch || showOpportunitySearch) && (
+                  <>
+                    {/* Search Buttons - centered */}
+                    <div className="flex justify-center w-full mb-8">
+                      <div className="flex flex-col sm:flex-row gap-4 max-w-5xl w-full">
+                        <button
+                          className={`flex-1 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors ${activeView === 'profile'
+                            ? 'bg-[#B5A48B] text-white hover:bg-[#a39379]'
+                            : 'bg-white  border-[#B5A48B] text-[#B5A48B] hover:bg-gray-50'
+                            }`}
+                          onClick={handleProfileButtonClick}
+                        >
+                          <Search className="w-5 h-5" />
+                          <span>Vous recherchez un Profile pour un besoin spécifique</span>
+                        </button>
+                        <button
+                          className={`flex-1 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors ${activeView === 'opportunite'
+                            ? 'bg-[#B5A48B] text-white hover:bg-[#a39379]'
+                            : 'bg-white  border-[#B5A48B] text-[#B5A48B] hover:bg-gray-50'
+                            }`}
+                          onClick={handleOpportunityButtonClick}
+                        >
+                          <Search className="w-5 h-5" />
+                          <span>Vous recherchez une opportunité pour votre consultant</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {/* Profile Components with Close Button directly underneath */}
                 {showProfileSearch && (
                   <>
@@ -198,14 +195,14 @@ const LayoutKPartner = () => {
                     <CloseButton />
                   </>
                 )}
-                
+
                 {showOpportunitySearch && (
                   <>
                     <Opportunite_pour_consultant />
                     <CloseButton />
                   </>
                 )}
-                
+
                 {/* List Components */}
                 <div className="w-full mt-5">
                   {showCandidatesList && <CandidatesList />}
@@ -216,7 +213,7 @@ const LayoutKPartner = () => {
           </div>
         </div>
       )}
-          {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} /> }
+      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
     </div>
   );
 };
