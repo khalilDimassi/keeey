@@ -98,7 +98,7 @@ const LoginContainer = () => {
                 "<span class='text-[#A89B7B] font-semibold'>Garder le contact</span> avec vos partenaires et votre réseau",
                 "<span class='text-[#A89B7B] font-semibold'>Garder le contrôle</span> sur la visibilité de vos profils"
             ],
-            guestPath: "/LayoutKPartner",
+            guestPath: "/Layout/KPartner",
             loginPage: <LoginPage userType={userType} onLogin={handleLogin} error={error || ""} isLoading={isLoading} />,
             loginOptions: <LoginOptions userType={userType} />
         }
