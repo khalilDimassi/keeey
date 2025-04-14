@@ -97,11 +97,11 @@ export interface SectorSelection {
 
 export interface OpportunityBasicInfo {
     title: string;
-    announceDate: string;
-    responseDate: string;
+    announce_date: string;
+    response_date: string;
     startDate: string;
-    duration: string;
-    targetRate: string;
+    duration: number;
+    rate: number;
     description?: string;
     context?: string,
     certainty?: string,

@@ -44,10 +44,10 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
       if (localFormData.status !== formData.status) updatePayload.status = localFormData.status;
       if (localFormData.certainty !== formData.certainty) updatePayload.certainty = localFormData.certainty;
       if (localFormData.operational_manager !== formData.operational_manager) updatePayload.operational_manager = localFormData.operational_manager;
-      if (localFormData.targetRate !== formData.targetRate) updatePayload.targetRate = localFormData.targetRate;
+      if (localFormData.rate !== formData.rate) updatePayload.rate = localFormData.rate;
       if (localFormData.startDate !== formData.startDate) updatePayload.startDate = localFormData.startDate;
-      if (localFormData.announceDate !== formData.announceDate) updatePayload.announceDate = localFormData.announceDate;
-      if (localFormData.responseDate !== formData.responseDate) updatePayload.responseDate = localFormData.responseDate;
+      if (localFormData.announce_date !== formData.announce_date) updatePayload.announce_date = localFormData.announce_date;
+      if (localFormData.response_date !== formData.response_date) updatePayload.response_date = localFormData.response_date;
       if (localFormData.context !== formData.context) updatePayload.context = localFormData.context;
       if (localFormData.description !== formData.description) updatePayload.description = localFormData.description;
 
@@ -260,19 +260,19 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
           <div className="p-2 bg-gray-50 rounded-xl">{localFormData.reference || '-'}</div>
         </div>
         <div className="col-span-1">
-          <label htmlFor="targetRate" className="block text-sm font-medium text-gray-700 mb-1">TJM cible</label>
+          <label htmlFor="rate" className="block text-sm font-medium text-gray-700 mb-1">TJM cible</label>
           {isEditing ? (
             <input
               type="number"
-              id="targetRate"
-              name="targetRate"
-              value={localFormData.targetRate}
+              id="rate"
+              name="rate"
+              value={localFormData.rate}
               onChange={handleChange}
               placeholder="Responsable opérationnel"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.targetRate || '-'}</div>
+            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.rate || '-'}</div>
           )}
         </div>
       </div>
@@ -292,41 +292,41 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announceDate) || '-'}</div>
+            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announce_date) || '-'}</div>
           )}
         </div>
         <div className="col-span-1">
-          <label htmlFor="announceDate" className="block text-sm font-medium text-gray-700 mb-1">Date de l'appel d'offre</label>
+          <label htmlFor="announce_date" className="block text-sm font-medium text-gray-700 mb-1">Date de l'appel d'offre</label>
           {isEditing ? (
             <div className="relative">
               <input
                 type="date"
-                id="announceDate"
-                name="announceDate"
-                value={localFormData.announceDate ? localFormData.announceDate : ''}
+                id="announce_date"
+                name="announce_date"
+                value={localFormData.announce_date ? localFormData.announce_date : ''}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announceDate) || '-'}</div>
+            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announce_date) || '-'}</div>
           )}
         </div>
         <div className="col-span-1">
-          <label htmlFor="responseDate" className="block text-sm font-medium text-gray-700 mb-1">Date de réponse</label>
+          <label htmlFor="response_date" className="block text-sm font-medium text-gray-700 mb-1">Date de réponse</label>
           {isEditing ? (
             <div className="relative">
               <input
                 type="date"
-                id="responseDate"
-                name="responseDate"
-                value={localFormData.responseDate ? localFormData.responseDate : ''}
+                id="response_date"
+                name="response_date"
+                value={localFormData.response_date ? localFormData.response_date : ''}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.responseDate) || '-'}</div>
+            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.response_date) || '-'}</div>
           )}
         </div>
       </div>
