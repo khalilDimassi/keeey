@@ -31,29 +31,7 @@ export const FetchOrg = async (): Promise<Organization> => {
             }
         );
 
-        const data = response.data;
-        const requiredFields = ['name', 'sector', 'address', 'effective', 'siret'];
-        const missingFields = requiredFields.filter(field => !(field in data));
-
-        if (missingFields.length > 0) {
-            throw new Error(`1: Missing required organization fields: ${missingFields.join(', ')}`);
-        }
-        const fieldTypes = {
-            name: 'string',
-            sector: 'string',
-            address: 'string',
-            effective: 'string',
-            siret: 'string'
-        };
-        const typeMismatchFields = Object.entries(fieldTypes)
-            .filter(([field, type]) => typeof data[field] !== type)
-            .map(([field]) => field);
-
-        if (typeMismatchFields.length > 0) {
-            throw new Error(`2: Type mismatch for fields: ${typeMismatchFields.join(', ')}`);
-        }
-
-        return data;
+        return response.data;
     } catch (error) {
         if (error instanceof Error && /^[12]:/.test(error.message)) {
             throw error;

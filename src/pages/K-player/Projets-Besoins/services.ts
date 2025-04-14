@@ -31,11 +31,11 @@ export const submitOpportunity = async (formData: OpportunityFormData) => {
         const payload = {
 
             title: formData.title,
-            announce_at: formData.announceDate,
-            responded_at: formData.responseDate,
+            announce_at: formData.announce_date,
+            responded_at: formData.response_date,
             start_at: formData.startDate,
-            duration: parseInt(formData.duration) || 0,
-            rate: parseFloat(formData.targetRate) || 0,
+            duration: formData.duration || 0,
+            rate: formData.rate || 0,
             opportunity_role: "REQUIREMENT",
             contract_role: formData.contract_role,
             crit_start_date: formData.crit_start_date,
