@@ -97,9 +97,9 @@ export interface SectorSelection {
 
 export interface OpportunityBasicInfo {
     title: string;
-    announce_date: string;
-    response_date: string;
-    startDate: string;
+    announce_at: string;
+    responded_at: string;
+    start_at: string;
     duration: number;
     rate: number;
     description?: string;

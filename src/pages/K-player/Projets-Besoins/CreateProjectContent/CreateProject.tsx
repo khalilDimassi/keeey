@@ -20,11 +20,11 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<OpportunityFormData>({
     title: "",
-    announceDate: "",
-    responseDate: "",
+    announce_date: "",
+    response_date: "",
     startDate: "",
-    duration: "",
-    targetRate: "",
+    duration: 0,
+    rate: 0,
     selected_sectors: [],
     contract_role: "",
     crit_start_date: "",
@@ -65,6 +65,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
     field: T,
     value: OpportunityFormData[T]
   ) => {
+    console.log(">>> updateFormData", field, value);
     setFormData(prev => ({
       ...prev,
       [field]: value

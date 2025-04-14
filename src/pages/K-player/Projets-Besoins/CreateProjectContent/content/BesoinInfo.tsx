@@ -38,8 +38,8 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
                             type="date"
                             className="w-full border rounded-lg p-2"
                             placeholder="Date appel d'offre"
-                            value={formData.announceDate}
-                            onChange={(e) => onFormDataChange("announceDate", e.target.value)}
+                            value={formData.announce_at}
+                            onChange={(e) => onFormDataChange("announce_at", e.target.value)}
                         />
                     </div>
                     <div>
@@ -48,8 +48,8 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
                             type="date"
                             className="w-full border rounded-lg p-2"
                             placeholder="Date démarrage"
-                            value={formData.startDate}
-                            onChange={(e) => onFormDataChange("startDate", e.target.value)}
+                            value={formData.start_at}
+                            onChange={(e) => onFormDataChange("start_at", e.target.value)}
                         />
                     </div>
                     <div>
@@ -58,8 +58,8 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
                             type="date"
                             className="w-full border rounded-lg p-2"
                             placeholder="Date réponse"
-                            value={formData.responseDate}
-                            onChange={(e) => onFormDataChange("responseDate", e.target.value)}
+                            value={formData.responded_at}
+                            onChange={(e) => onFormDataChange("responded_at", e.target.value)}
                         />
                     </div>
                     <div>
@@ -69,7 +69,10 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
                             className="w-full border rounded-lg p-2"
                             placeholder="Durée prévisionnelle"
                             value={formData.duration}
-                            onChange={(e) => onFormDataChange("duration", e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                onFormDataChange("duration", value === "" ? null : parseInt(value, 10));
+                            }}
                         />
                     </div>
                     <div>
@@ -78,8 +81,11 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
                             type="number"
                             className="w-full border rounded-lg p-2"
                             placeholder="TJM cible"
-                            value={formData.targetRate}
-                            onChange={(e) => onFormDataChange("targetRate", e.target.value)}
+                            value={formData.rate}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                onFormDataChange("rate", value === "" ? null : parseInt(value, 10));
+                            }}
                         />
                     </div>
                 </div>

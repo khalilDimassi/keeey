@@ -28,11 +28,11 @@ const DefineBesoinForm: FC<DefineBesoinFormProps> = ({ sectors, loading, error, 
             <BesoinInfo
                 formData={{
                     title: formData.title,
-                    announceDate: formData.announceDate,
-                    responseDate: formData.responseDate,
+                    announce_date: formData.announce_date,
+                    response_date: formData.response_date,
                     startDate: formData.startDate,
                     duration: formData.duration,
-                    targetRate: formData.targetRate
+                    rate: formData.rate
                 }}
                 onFormDataChange={onFormDataChange}
             />

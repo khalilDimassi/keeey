@@ -31,9 +31,9 @@ export const submitOpportunity = async (formData: OpportunityFormData) => {
         const payload = {
 
             title: formData.title,
-            announce_at: formData.announce_date,
-            responded_at: formData.response_date,
-            start_at: formData.startDate,
+            announce_at: formData.announce_at,
+            responded_at: formData.responded_at,
+            start_at: formData.start_at,
             duration: formData.duration || 0,
             rate: formData.rate || 0,
             opportunity_role: "REQUIREMENT",

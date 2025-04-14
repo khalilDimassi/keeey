@@ -135,7 +135,6 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
 
 
     if (!org && !isAdding) {
-        console.info(">> organization: ", org);
         return (
             <div className="bg-white shadow rounded-lg p-4 text-center"
                 style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
