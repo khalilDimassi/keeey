@@ -185,7 +185,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
                   <tr key={opp.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2">
                       <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {Math.round(opp.enhancements?.total_match_percentage ?? 0 * 10) / 10}%
+                        {Math.round(opp.enhancements?.total_match_percentage ?? 0 * 10)}%
                       </span>
                     </td>
                     <td className="px-4 py-2">{opp.company || "-"}</td>

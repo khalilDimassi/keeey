@@ -74,7 +74,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                         >
                             {/* Match percentage */}
                             <div className="w-16 h-8 bg-blue-200 rounded-xl flex items-center justify-center text-blue-800 font-bold">
-                                {Math.round(candidate.totalMatchPercentage ?? 0 * 10) / 10}%
+                                {Math.round(candidate.totalMatchPercentage ?? 0 * 10)}%
                             </div>
 
                             {/* Name and role */}
