@@ -48,18 +48,23 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     <div
       className={`absolute rounded-2xl transition-all duration-500 bg-gradient-to-b from-[#30797F] to-[#039DAA] 
       ${horizontal
-          ? "w-[98%] h-16 grid place-items-center mt-[]"  // Moves up when horizontal
+          ? "w-[98%] h-16 grid place-items-center mt-[]"
           : "w-[80px] h-[700px] left-[10px] flex flex-col items-center"
         }`}
     >
       {/* Sidebar Icons */}
-      <div className={`grid ${horizontal ? " grid-cols-6 gap-x-40 justify-center items-center" : "flex flex-col gap-8 items-center"}`}>
+      <div className={`grid 
+        ${horizontal
+          ? " grid-cols-6 gap-x-40 justify-center items-center"
+          : "flex flex-col gap-8 items-center"}`}>
 
         {icons.map(({ id, Icon }) => (
           <div
             key={id}
-            className={`relative cursor-pointer flex items-center transition-all duration-500 ${horizontal ? "p-2" : "mt-12 "
-              }`}
+            className={`relative cursor-pointer flex items-center transition-all duration-500 
+              ${horizontal
+                ? "p-2"
+                : "mt-12 "}`}
             onClick={() => handleIconClick(id)}
           >
             {/* Selection Indicator (Only for Vertical Mode) */}
@@ -85,11 +90,10 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
                     : "translateX(0px)",
               }}
             >
-              <Icon
-                className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 ${activeIcon === id ? "text-ProfilColer" : "text-white hover:text-gray-200"
-                  }`}
-              />
-
+              <Icon className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500
+                   ${activeIcon === id
+                  ? "text-ProfilColer"
+                  : "text-white hover:text-gray-200"}`} />
             </div>
           </div>
         ))}

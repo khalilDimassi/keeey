@@ -10,21 +10,11 @@ const Navbar = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAuthenticated(isAuthenticated());
   }, []);
-
-  const navigate = useNavigate();
-  const CreateAccountClick = () => {
-    if (authenticated) {
-      removeToken();
-      navigate("/");
-    } else {
-      navigate("/Login");
-    }
-    setIsMobileMenuOpen(false);
-  };
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -43,6 +33,15 @@ const Navbar = () => {
     }
   }, []);
 
+  const CreateAccountClick = () => {
+    if (authenticated) {
+      removeToken();
+      navigate("/");
+    } else {
+      navigate("/Login");
+    }
+    setIsMobileMenuOpen(false);
+  };
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };

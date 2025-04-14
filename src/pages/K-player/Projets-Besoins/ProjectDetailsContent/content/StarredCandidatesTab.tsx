@@ -23,10 +23,17 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
             (scores.authorizations_match_percentage * 0.025)
         );
     };
+
     const getTagColorClass = (score: number) => {
-        if (score >= 80) return 'bg-green-100 text-green-700';
-        if (score >= 60) return 'bg-orange-100 text-orange-700';
+        if (score >= 90) return 'bg-green-100 text-green-700';
+        if (score >= 80) return 'bg-teal-100 text-teal-700';
+        if (score >= 70) return 'bg-blue-100 text-blue-700';
+        if (score >= 60) return 'bg-indigo-100 text-indigo-700';
+        if (score >= 50) return 'bg-purple-100 text-purple-700';
         if (score >= 40) return 'bg-yellow-100 text-yellow-700';
+        if (score >= 30) return 'bg-amber-100 text-amber-700';
+        if (score >= 20) return 'bg-orange-100 text-orange-700';
+        if (score >= 10) return 'bg-red-100 text-red-700';
         return 'bg-gray-100 text-gray-700';
     };
 
@@ -67,7 +74,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                         >
                             {/* Match percentage */}
                             <div className="w-16 h-8 bg-blue-200 rounded-xl flex items-center justify-center text-blue-800 font-bold">
-                                {candidate.totalMatchPercentage ?? 0}%
+                                {Math.round(candidate.totalMatchPercentage ?? 0 * 10) / 10}%
                             </div>
 
                             {/* Name and role */}
