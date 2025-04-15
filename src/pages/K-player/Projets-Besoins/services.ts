@@ -315,6 +315,18 @@ export const validateCandidateInterest = async (
     );
 };
 
+export const removeCandidateStar = async (
+    opportunityId: string,
+    userId: string
+): Promise<void> => {
+    await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/candidates/${userId}/star`,
+        {},
+        { headers: getAuthHeader() }
+    );
+};
+
+
 export const updateCandidateStatus = (
     candidates: CandidateSuggestion[],
     userId: string,

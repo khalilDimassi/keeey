@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Star } from 'lucide-react';
-import { getAuthHeader } from '../../../../utils/jwt';
 import axios from 'axios';
-
-import SkillsAndCriterias from './content/SkillsAndCriteriaTab';
-import Diffusion from './content/DiffusionConfigTab';
-import StarredCandidatesComp from './content/StarredCandidatesTab';
-import CandidatesList from '../../Competence/content/CandidatesList';
-import GeneralInformationTab from './content/GeneralInformationTab';
 import { EnhancedCandidate, OpportunityFormData, Sector } from '../types';
 import { fetchCandidatesWithMatchData, fetchSectors } from '../services';
+import { getAuthHeader } from '../../../../utils/jwt';
+
+import CandidatesList from '../../Competence/content/CandidatesList';
+import GeneralInformationTab from './content/GeneralInformationTab';
+import SkillsAndCriterias from './content/SkillsAndCriteriaTab';
+import StarredCandidatesComp from './content/StarredCandidatesTab';
+import Diffusion from './content/DiffusionConfigTab';
 
 interface ProjectDetailsProps {
   opportunity_id: string;
@@ -24,20 +24,6 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const loadStarredCandidates = async (opportunity_id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const candidates = await fetchCandidatesWithMatchData("STARRED", opportunity_id);
-      setStarredCandidates(candidates);
-    } catch (err) {
-      console.error("Failed to load candidates:", err);
-      setError(err instanceof Error ? err.message : 'Failed to load candidates');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const mapApiResponseToFormData = (apiData: any): OpportunityFormData => {
     return {
@@ -113,12 +99,25 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
     }
   };
 
+  const loadStarredCandidates = async (opportunity_id: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const candidates = await fetchCandidatesWithMatchData("STARRED", opportunity_id);
+      setStarredCandidates(candidates);
+    } catch (err) {
+      console.error("Failed to load candidates:", err);
+      setError(err instanceof Error ? err.message : 'Failed to load candidates');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadSectors();
     loadProjectDetails(opportunity_id);
     loadStarredCandidates(opportunity_id);
   }, [opportunity_id]);
-
 
 
   return (

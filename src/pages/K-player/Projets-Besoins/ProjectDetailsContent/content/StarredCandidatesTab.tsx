@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { MatchPercentages, EnhancedCandidate } from '../../types';
 import { ArrowUpRight, MailCheck, MailX, Trash2 } from 'lucide-react';
-import { validateCandidateInterest } from '../../services';
+import { removeCandidateStar, validateCandidateInterest } from '../../services';
+import { emitter } from '../../../../../utils/eventEmitter';
 
 interface CandidatesProps {
     candidates: EnhancedCandidate[]
@@ -12,7 +13,6 @@ interface CandidatesProps {
 
 const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) => {
     const [candidatesList, setCandidatesList] = useState<EnhancedCandidate[]>(candidates);
-
     const calculateCompetenceScore = (scores: MatchPercentages | null): number => {
         if (!scores) return 0;
         return (
@@ -42,30 +42,76 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
         // In a real implementation, this would navigate to profile page
     };
 
-    const handleValidateInterest = async (candidate: EnhancedCandidate, state: boolean) => {
+    const handleValidateInterest = async (candidateId: string, state: boolean) => {
         try {
             if (!opportunity_id) return;
 
-            await validateCandidateInterest(opportunity_id, candidate.user_id);
-            candidate.isValidated = state;
+            await validateCandidateInterest(opportunity_id, candidateId);
 
+            // Update the local state
+            setCandidatesList(prevList => prevList.map(candidate => {
+                if (candidate.user_id === candidateId) {
+                    const updatedCandidate: EnhancedCandidate = {
+                        ...candidate,
+                        matching_scores: candidate.matching_scores ? {
+                            ...candidate.matching_scores,
+                            is_validated: state
+                        } : {
+                            is_validated: state,
+
+                            total_match_percentage: 0,
+                            skills_match_percentage: 0,
+                            seniority_match_percentage: 0,
+                            jobs_match_percentage: 0,
+                            languages_match_percentage: 0,
+                            tools_match_percentage: 0,
+                            qualities_match_percentage: 0,
+                            authorizations_match_percentage: 0,
+                            availability_match_percentage: 0,
+                            rate_match_percentage: 0,
+                            mobility_match_percentage: 0,
+                            sectors_match_percentage: 0
+                        }
+                    };
+                    return updatedCandidate;
+                }
+                return candidate;
+            }));
         } catch (error) {
             console.error("Error validating candidate interest:", error);
             // TODO: add error state handling here if needed
         }
     };
 
-    const handleDelete = (id: string) => {
-        console.log(`Delete candidate with id: ${id}`);
-        setCandidatesList(prevList => prevList.filter(candidate => candidate.user_id !== id));
+    const handleDelete = async (opportunity_id: string, user_id: string) => {
+        await removeCandidateStar(opportunity_id, user_id);
+        setCandidatesList(prevList => prevList.filter(candidate => candidate.user_id !== user_id));
     };
 
     return (
         <div className="">
             <div className="w-full  mx-auto space-y-2">
                 {candidatesList.map((candidate) => {
-                    // Calculate competence score
                     const competenceScore = calculateCompetenceScore(candidate.matching_scores ?? null);
+                    const handleClick = useCallback((e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        if (!candidate) {
+                            console.error('No candidate data');
+                            return;
+                        }
+
+                        const currentValidationStatus = candidate.matching_scores?.is_validated ?? false;
+                        console.log('Current validation status:', currentValidationStatus);
+
+                        try {
+                            emitter.emit('refreshSuggestions');
+                            handleValidateInterest(candidate.user_id, !currentValidationStatus);
+                        } catch (error) {
+                            console.error('Button click error:', error);
+                        }
+                    }, [candidate]);
 
                     return (
                         <div
@@ -92,6 +138,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     </span>
                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         <p>Score: {Math.round(competenceScore)}%</p>
+                                        <hr className="my-1" />
                                         <p>Emplois: {Math.round(candidate.matching_scores?.jobs_match_percentage ?? 0)}%</p>
                                         <p>Langues: {Math.round(candidate.matching_scores?.languages_match_percentage ?? 0)}%</p>
                                         <p>Outils: {Math.round(candidate.matching_scores?.tools_match_percentage ?? 0)}%</p>
@@ -149,30 +196,30 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                 <button
                                     className="p-2 text-white bg-[#215A96] rounded-full hover:bg-gray-500 transition-colors"
                                     title="Open user profile"
-                                    onClick={() => { handleViewProfile(candidate.user_id) }}
+                                    onClick={() => {
+                                        emitter.emit('refreshSuggestions');
+                                        handleViewProfile(candidate.user_id);
+                                    }}
                                 >
                                     <ArrowUpRight size={18} />
                                 </button>
-
                                 <button
-                                    className={`px-3 py-1.5 rounded-full bg-[#215A96] flex items-center gap-1 transition-colors ${candidate.isValidated
+                                    className={`px-3 py-1.5 rounded-full bg-[#215A96] flex items-center gap-1 transition-colors ${candidate.matching_scores?.is_validated
                                         ? 'text-green-500 hover:text-red-500'
                                         : 'text-white hover:text-green-500'
                                         }`}
-                                    onClick={() => handleValidateInterest(candidate, !candidate.isValidated)}
-                                    disabled={candidate.isValidated}
-                                    title={candidate.isValidated ? 'Revoke validation' : 'Validate interest'}
+                                    title={candidate.matching_scores?.is_validated ? 'Revoke validation' : 'Validate interest'}
+                                    onClick={handleClick}
                                 >
-                                    {candidate.isValidated ? (
-                                        <MailX size={24} />
-                                    ) : (
-                                        <MailCheck size={24} />
-                                    )}
+                                    {candidate.matching_scores?.is_validated ? (<MailX size={24} />) : (<MailCheck size={24} />)}
                                 </button>
                                 <button
                                     className={`p-2 bg-[#215A96] text-white rounded-full transition-colors hover:text-red-500`}
-                                    onClick={() => handleDelete(candidate.user_id)}
                                     title="Remove from favorites"
+                                    onClick={() => {
+                                        emitter.emit('refreshSuggestions');
+                                        handleDelete(opportunity_id, candidate.user_id);
+                                    }}
                                 >
                                     <Trash2 size={24} />
                                 </button>

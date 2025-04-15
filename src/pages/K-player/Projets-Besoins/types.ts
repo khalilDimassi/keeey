@@ -72,6 +72,11 @@ export interface EnhancedCandidate extends CandidateSuggestion {
 }
 
 export interface MatchPercentages {
+    status?: string;
+    is_applied?: boolean;
+    is_saved?: boolean;
+    is_starred?: boolean;
+    is_validated?: boolean;
     total_match_percentage: number;
     skills_match_percentage: number;
     seniority_match_percentage: number;

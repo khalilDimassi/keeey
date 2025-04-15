@@ -3,6 +3,7 @@ import { Star, ArrowUpRight, ChevronDown, Check, MailCheck, MailX, StarOff } fro
 import { CandidateSuggestion, CandidateSkill } from "../types";
 import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "../services";
 import { isAuthenticated } from "../../../../utils/jwt";
+import { emitter } from "../../../../utils/eventEmitter";
 
 interface CandidatesListProps {
   apiType?: string;
@@ -14,25 +15,40 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   const [showExtraSkills, setShowExtraSkills] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [version, setVersion] = useState(0);
   const extraSkillsRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
+  const loadCandidates = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const candidates = await fetchCandidatesWithMatchData(apiType, opportunityId);
+      setCandidateSuggestion(candidates);
+    } catch (err) {
+      console.error("Failed to load candidates:", err);
+      setError(err instanceof Error ? err.message : 'Failed to load candidates');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadCandidates = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const candidates = await fetchCandidatesWithMatchData(apiType, opportunityId);
-        setCandidateSuggestion(candidates);
-      } catch (err) {
-        console.error("Failed to load candidates:", err);
-        setError(err instanceof Error ? err.message : 'Failed to load candidates');
-      } finally {
-        setLoading(false);
-      }
+    loadCandidates();
+
+    const handleRefresh = () => {
+      setVersion(v => v + 1);
     };
 
-    loadCandidates();
+    emitter.on('refreshSuggestions', handleRefresh);
+
+    return () => {
+      emitter.off('refreshSuggestions', handleRefresh);
+    };
   }, [apiType, opportunityId]);
+
+  useEffect(() => {
+    loadCandidates();
+  }, [version]);
 
   const handleStarCandidate = async (userId: string) => {
     try {
