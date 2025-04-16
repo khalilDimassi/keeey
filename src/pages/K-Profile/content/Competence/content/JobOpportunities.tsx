@@ -211,7 +211,7 @@ const JobOpportunities = () => {
           <div className="bg-white px-6 py-4 border-t border-gray-100 flex items-center justify-between"  >
             <div className="flex  justify-center items-center max-w-md">
               <label htmlFor="matchThreshold" className="block text-sm font-medium text-gray-700 mb-1">
-                Filtre de compatibilité: <span className="font-semibold text-teal-600">{threshold}%</span>
+                Filtre de compatibilité: <span className="font-semibold ml-3 text-teal-600">{threshold}%</span>
               </label>
               <div className="flex items-center ">
                 <button

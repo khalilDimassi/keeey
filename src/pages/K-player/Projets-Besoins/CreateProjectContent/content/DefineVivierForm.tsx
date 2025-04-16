@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent } from "react";
+import { FC, KeyboardEvent, useEffect } from "react";
 import { OpportunityFormData, Sector } from "../../types";
 import BesoinSkills from "./BesoinSkills";
 import BesoinCrit from "./BesoinCrit";
@@ -9,9 +9,15 @@ interface DefineVivierFormProps {
     error: string | null;
     formData: OpportunityFormData;
     onFormDataChange: <T extends keyof OpportunityFormData>(field: T, value: OpportunityFormData[T]) => void;
+    setFormType: (formType: "REQUIREMENT" | "LIVEWELL") => void;
 }
 
-const DefineVivierForm: FC<DefineVivierFormProps> = ({ sectors, loading, error, formData, onFormDataChange }) => {
+const DefineVivierForm: FC<DefineVivierFormProps> = ({ sectors, loading, error, formData, onFormDataChange, setFormType }) => {
+
+    useEffect(() => {
+        setFormType("LIVEWELL");
+    }, []);
+
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Enter") {
             e.preventDefault();

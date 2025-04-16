@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent } from "react";
+import { FC, KeyboardEvent, useEffect } from "react";
 import { OpportunityFormData, Sector } from "../../types";
 import BesoinInfo from "./BesoinInfo";
 import BesoinSkills from "./BesoinSkills";
@@ -11,9 +11,14 @@ interface DefineBesoinFormProps {
     error: string | null;
     formData: OpportunityFormData;
     onFormDataChange: <T extends keyof OpportunityFormData>(field: T, value: OpportunityFormData[T]) => void;
+    setFormType: (formType: "REQUIREMENT" | "LIVEWELL") => void
 }
 
-const DefineBesoinForm: FC<DefineBesoinFormProps> = ({ sectors, loading, error, formData, onFormDataChange }) => {
+const DefineBesoinForm: FC<DefineBesoinFormProps> = ({ sectors, loading, error, formData, onFormDataChange, setFormType }) => {
+
+    useEffect(() => {
+        setFormType("REQUIREMENT");
+    }, []);
 
     // Prevent form submission on Enter key
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -28,9 +33,9 @@ const DefineBesoinForm: FC<DefineBesoinFormProps> = ({ sectors, loading, error, 
             <BesoinInfo
                 formData={{
                     title: formData.title,
-                    announce_date: formData.announce_date,
-                    response_date: formData.response_date,
-                    startDate: formData.startDate,
+                    announce_at: formData.announce_at,
+                    responded_at: formData.responded_at,
+                    start_at: formData.start_at,
                     duration: formData.duration,
                     rate: formData.rate
                 }}

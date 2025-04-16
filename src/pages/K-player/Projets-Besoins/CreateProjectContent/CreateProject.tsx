@@ -19,6 +19,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [submitStatus, setSubmitStatus] = useState<{ loading: boolean; error: string | null; }>({ loading: false, error: null, });
+  const [formType, setFormType] = useState<"REQUIREMENT" | "LIVEWELL">("REQUIREMENT");
   const [formData, setFormData] = useState<OpportunityFormData>({
     title: "",
     announce_at: "",
@@ -72,7 +73,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
   const handleSave = async () => {
     setSubmitStatus({ loading: true, error: null });
     try {
-      const result = await submitOpportunity(formData);
+      const result = await submitOpportunity(formData, formType);
       if (result.error) {
         setSubmitStatus({ loading: false, error: result.error });
       } else {
@@ -140,6 +141,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
             error={error}
             formData={formData}
             onFormDataChange={updateFormData}
+            setFormType={setFormType}
           />
         </div>
       ) : <DefineBesoinForm
@@ -148,6 +150,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
         error={error}
         formData={formData}
         onFormDataChange={updateFormData}
+        setFormType={setFormType}
       />}
 
       <div className="mt-6">

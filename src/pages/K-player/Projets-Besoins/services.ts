@@ -26,17 +26,16 @@ export const fetchOpportunities = async (filter: 'personal' | 'organization' | '
     }
 };
 
-export const submitOpportunity = async (formData: OpportunityFormData) => {
+export const submitOpportunity = async (formData: OpportunityFormData, formType: string) => {
     try {
         const payload = {
-
             title: formData.title,
             announce_at: formData.announce_at,
             responded_at: formData.responded_at,
             start_at: formData.start_at,
             duration: formData.duration || 0,
             rate: formData.rate || 0,
-            opportunity_role: "REQUIREMENT",
+            opportunity_role: formType,
             contract_role: formData.contract_role,
             crit_start_date: formData.crit_start_date,
             crit_start_date_lastest: formData.crit_start_date_lastest,

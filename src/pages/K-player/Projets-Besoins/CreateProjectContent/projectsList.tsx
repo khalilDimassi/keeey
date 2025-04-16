@@ -1,5 +1,6 @@
-import { AlertCircle, ChevronRight, FolderOpen } from 'lucide-react';
+import { AlertCircle, ChevronRight, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import { Opportunity } from '../types';
+import { CSSProperties, useEffect, useState } from 'react';
 
 interface ProjectsListProps {
   Opportunities: Opportunity[];
@@ -8,7 +9,30 @@ interface ProjectsListProps {
   error: string;
 }
 
+type SortField = 'status' | 'title' | 'reference' | 'date';
+type SortDirection = 'asc' | 'desc';
+
+const MIN_LOADING_TIME = 300;
+
 const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: ProjectsListProps) => {
+  const [sortField, setSortField] = useState<SortField>('status');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [showLoader, setShowLoader] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      setShowLoader(true);
+      setIsInitialLoad(false);
+    } else {
+      timer = setTimeout(() => {
+        setShowLoader(false);
+      }, MIN_LOADING_TIME);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   const getStatusColor = (Opportunity: { status: string; opportunity_role?: string }) => {
     if (Opportunity.opportunity_role === "LIVEWELL") {
       return 'bg-blue-100 text-blue-800';
@@ -54,13 +78,55 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
     }
   };
 
-  if (loading) {
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortOpportunities = (opportunities: Opportunity[]) => {
+    return [...opportunities].sort((a, b) => {
+      // Always keep LIVEWELL opportunities at the bottom
+      if (a.opportunity_role === "LIVEWELL" && b.opportunity_role !== "LIVEWELL") return 1;
+      if (a.opportunity_role !== "LIVEWELL" && b.opportunity_role === "LIVEWELL") return -1;
+
+      let compareValue = 0;
+
+      switch (sortField) {
+        case 'status':
+          compareValue = (a.status || '').localeCompare(b.status || '');
+          break;
+        case 'title':
+          compareValue = (a.title || '').localeCompare(b.title || '');
+          break;
+        case 'reference':
+          compareValue = (a.reference || '').localeCompare(b.reference || '');
+          break;
+        case 'date':
+          const dateA = a.date || a.start_at || '';
+          const dateB = b.date || b.start_at || '';
+          compareValue = dateA.localeCompare(dateB);
+          break;
+      }
+
+      return sortDirection === 'asc' ? compareValue : -compareValue;
+    });
+  };
+
+  const sortedOpportunities = sortOpportunities(Opportunities);
+
+  if (showLoader) {
     return (
-      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+      <div className="space-y-4 bg-white rounded-lg p-4 transition-opacity duration-300"
+        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center animate-pulse"
+            className={`bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center ${isInitialLoad ? '' : 'animate-pulse'
+              }`}
           >
             {/* Status Skeleton */}
             <div className="h-6 bg-gray-200 rounded"></div>
@@ -89,6 +155,42 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
       </div>
     );
   }
+
+  // if (loading) {
+  //   return (
+  //     <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+  //       {[...Array(3)].map((_, index) => (
+  //         <div
+  //           key={index}
+  //           className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center animate-pulse"
+  //         >
+  //           {/* Status Skeleton */}
+  //           <div className="h-6 bg-gray-200 rounded"></div>
+
+  //           {/* Title Skeleton */}
+  //           <div className="h-4 bg-gray-200 rounded"></div>
+
+  //           {/* Reference Skeleton */}
+  //           <div className="h-6 bg-gray-200 rounded"></div>
+
+  //           {/* Date Skeleton */}
+  //           <div className="h-6 bg-gray-200 rounded"></div>
+
+  //           {/* Participants Skeleton */}
+  //           <div className="flex -space-x-2 justify-self-end">
+  //             {[...Array(3)].map((_, i) => (
+  //               <div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
+  //             ))}
+  //             <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
+  //           </div>
+
+  //           {/* Button Skeleton */}
+  //           <div className="h-8 bg-gray-200 rounded-lg" style={{ borderRadius: "20px" }}></div>
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -119,68 +221,157 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
 
   return (
     <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
-      {Opportunities.map((Opportunity) => (
-        <div
-          key={Opportunity.id || Opportunity.opportunity_id}
-          className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center"
+      {/* Header with sorting options */}
+      <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center font-medium">
+        <button
+          className="flex items-center gap-1"
+          onClick={() => handleSort('status')}
         >
-          {/* Status */}
-          <span className={`px-2 py-1 rounded text-sm ${getStatusColor(Opportunity)} text-center`}>
-            {Opportunity.opportunity_role === "LIVEWELL" ? "Vivier" : getStatusNameInFrench(Opportunity.status)}
-          </span>
+          Statut
+          {sortField === 'status' ? (
+            sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+          ) : null}
+        </button>
 
-          {/* Title */}
-          <span className="font-medium truncate">{Opportunity.title}</span>
+        <button
+          className="flex items-center gap-1 text-left"
+          onClick={() => handleSort('title')}
+        >
+          Titre
+          {sortField === 'title' ? (
+            sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+          ) : null}
+        </button>
 
-          {/* Reference */}
-          <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center">
-            {Opportunity.reference}
-          </span>
+        <button
+          className="flex items-center gap-1 w-[100px]"
+          onClick={() => handleSort('reference')}
+        >
+          Référence
+          {sortField === 'reference' ? (
+            sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+          ) : null}
+        </button>
 
-          {/* Date */}
-          <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded text-center">
-            {Opportunity.date || Opportunity.start_at}
-          </span>
+        <button
+          className="flex items-center gap-1 w-[60px]"
+          onClick={() => handleSort('date')}
+        >
+          Date
+          {sortField === 'date' ? (
+            sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+          ) : null}
+        </button>
 
-          {/* Participants */}
-          <div className="flex -space-x-2 justify-self-end">
-            {Opportunity.participants ? (
-              Opportunity.participants.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`Participant ${index + 1}`}
-                  className="w-8 h-8 rounded-full border-2 border-white"
-                />
-              ))
-            ) : Opportunity.kprofiles ? (
-              Opportunity.kprofiles.map((profile, _index) => (
-                <div
-                  key={profile.user_id}
-                  className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm text-blue-700 border-2 border-white"
-                >
-                  {profile.first_name[0]}{profile.last_name[0]}
-                </div>
-              ))
-            ) : null}
-            <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm text-gray-600 border-2 border-white">
-              {Opportunity.kprofiles?.length}
-            </span>
-          </div>
+        <div className="text-right">Participants</div>
+        <div>Actions</div>
+      </div>
 
-          {/* Button */}
-          <button
-            onClick={() => onSelectOpportunity(Opportunity)}
-            className="flex items-center gap-1 bg-blue-700 text-white px-4 py-1 rounded-lg text-center"
-            style={{ borderRadius: "20px", backgroundColor: "#215A96" }}
-          >
-            <ChevronRight size={16} />
-            Voir détails
-          </button>
-        </div>
-      ))}
+      <div className="animate-stagger">
+        {/* Regular opportunities */}
+        {sortedOpportunities
+          .filter(opp => opp.opportunity_role !== "LIVEWELL")
+          .map((Opportunity, index) => (
+            <OpportunityItem
+              key={Opportunity.id || Opportunity.opportunity_id}
+              Opportunity={Opportunity}
+              onSelectOpportunity={onSelectOpportunity}
+              getStatusColor={getStatusColor}
+              getStatusNameInFrench={getStatusNameInFrench}
+              style={{ animationDelay: `${index * 0.05}s` }}
+            />
+          ))}
+
+        {/* LIVEWELL opportunities section */}
+        {sortedOpportunities
+          .some(opp => opp.opportunity_role === "LIVEWELL") && (
+            <>
+              <div className="border-t border-gray-200 my-4"></div>
+              {sortedOpportunities
+                .filter(opp => opp.opportunity_role === "LIVEWELL")
+                .map((Opportunity, index) => (
+                  <OpportunityItem
+                    key={Opportunity.id || Opportunity.opportunity_id}
+                    Opportunity={Opportunity}
+                    onSelectOpportunity={onSelectOpportunity}
+                    getStatusColor={getStatusColor}
+                    getStatusNameInFrench={getStatusNameInFrench}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  />
+                ))}
+            </>
+          )}
+      </div>
+
     </div>
   );
 }
+
+const OpportunityItem = ({ Opportunity, onSelectOpportunity, getStatusColor, getStatusNameInFrench, style }: {
+  Opportunity: Opportunity;
+  onSelectOpportunity: (Opportunity: Opportunity) => void;
+  getStatusColor: (Opportunity: { status: string; opportunity_role?: string }) => string;
+  getStatusNameInFrench: (status: string) => string;
+  style?: CSSProperties;
+}) => (
+  <div
+    className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4  my-2 items-center"
+    style={style}
+  >
+    {/* Status */}
+    <span className={`px-2 py-1 rounded text-sm ${getStatusColor(Opportunity)} text-center`}>
+      {Opportunity.opportunity_role === "LIVEWELL" ? "Vivier" : getStatusNameInFrench(Opportunity.status)}
+    </span>
+
+    {/* Title */}
+    <span className="font-medium truncate">{Opportunity.title}</span>
+
+    {/* Reference */}
+    <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center">
+      {Opportunity.reference}
+    </span>
+
+    {/* Date */}
+    <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded text-center">
+      {Opportunity.date || Opportunity.start_at || 'N/A'}
+    </span>
+
+    {/* Participants */}
+    <div className="flex -space-x-2 justify-self-end">
+      {Opportunity.participants ? (
+        Opportunity.participants.map((url, index) => (
+          <img
+            key={index}
+            src={url}
+            alt={`Participant ${index + 1}`}
+            className="w-8 h-8 rounded-full border-2 border-white"
+          />
+        ))
+      ) : Opportunity.kprofiles ? (
+        Opportunity.kprofiles.map((profile, _index) => (
+          <div
+            key={profile.user_id}
+            className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm text-blue-700 border-2 border-white"
+          >
+            {profile.first_name[0]}{profile.last_name[0]}
+          </div>
+        ))
+      ) : null}
+      <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm text-gray-600 border-2 border-white">
+        {Opportunity.kprofiles?.length}
+      </span>
+    </div>
+
+    {/* Button */}
+    <button
+      onClick={() => onSelectOpportunity(Opportunity)}
+      className="flex items-center gap-1 bg-blue-700 text-white px-4 py-1 rounded-lg text-center"
+      style={{ borderRadius: "20px", backgroundColor: "#215A96" }}
+    >
+      <ChevronRight size={16} />
+      Voir détails
+    </button>
+  </div>
+);
 
 export default ProjectsList;
