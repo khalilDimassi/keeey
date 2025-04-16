@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Star, ArrowUpRight, ChevronDown, Check, MailCheck, MailX, StarOff } from "lucide-react";
+import { Star, ArrowUpRight, Check, MailCheck, MailX, StarOff } from "lucide-react";
 import { CandidateSuggestion, CandidateSkill } from "../types";
 import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "../services";
 import { isAuthenticated } from "../../../../utils/jwt";
@@ -12,10 +12,12 @@ interface CandidatesListProps {
 
 const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps) => {
   const [candidateSuggestion, setCandidateSuggestion] = useState<CandidateSuggestion[]>([]);
+  const [filteredCandidates, setFilteredCandidates] = useState<CandidateSuggestion[]>([]);
   const [showExtraSkills, setShowExtraSkills] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
+  const [matchPercentageFilter, setMatchPercentageFilter] = useState<number>(0);
   const extraSkillsRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const loadCandidates = async () => {
@@ -24,6 +26,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       setError(null);
       const candidates = await fetchCandidatesWithMatchData(apiType, opportunityId);
       setCandidateSuggestion(candidates);
+      setFilteredCandidates(candidates);
     } catch (err) {
       console.error("Failed to load candidates:", err);
       setError(err instanceof Error ? err.message : 'Failed to load candidates');
@@ -50,14 +53,50 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
     loadCandidates();
   }, [version]);
 
+  useEffect(() => {
+    // First filter by match percentage
+    const filtered = candidateSuggestion.filter(candidate =>
+      candidate.totalMatchPercentage !== undefined &&
+      candidate.totalMatchPercentage >= matchPercentageFilter
+    );
+
+    // Then sort by starred/validated status and match percentage
+    const sorted = [...filtered].sort((a, b) => {
+      // First priority: Starred candidates
+      if (a.isStarred && !b.isStarred) return -1;
+      if (!a.isStarred && b.isStarred) return 1;
+
+      // Second priority: Validated candidates
+      if (a.isValidated && !b.isValidated) return -1;
+      if (!a.isValidated && b.isValidated) return 1;
+
+      // Third priority: Match percentage (higher first)
+      const matchA = a.totalMatchPercentage || 0;
+      const matchB = b.totalMatchPercentage || 0;
+      return matchB - matchA;
+    });
+
+    setFilteredCandidates(sorted);
+  }, [matchPercentageFilter, candidateSuggestion]);
+
   const handleStarCandidate = async (userId: string) => {
     try {
       if (!opportunityId) return;
 
       await starCandidate(opportunityId, userId);
-      setCandidateSuggestion(prev =>
-        updateCandidateStatus(prev, userId, { isStarred: true })
-      );
+      setCandidateSuggestion(prev => {
+        const updated = updateCandidateStatus(prev, userId, { isStarred: true });
+        // Re-sort after starring a candidate to move it to the top
+        return [...updated].sort((a, b) => {
+          if (a.isStarred && !b.isStarred) return -1;
+          if (!a.isStarred && b.isStarred) return 1;
+          if (a.isValidated && !b.isValidated) return -1;
+          if (!a.isValidated && b.isValidated) return 1;
+          const matchA = a.totalMatchPercentage || 0;
+          const matchB = b.totalMatchPercentage || 0;
+          return matchB - matchA;
+        });
+      });
     } catch (error) {
       console.error("Error starring candidate:", error);
       // TODO: add error state handling here if needed
@@ -69,9 +108,19 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       if (!opportunityId) return;
 
       await validateCandidateInterest(opportunityId, userId);
-      setCandidateSuggestion(prev =>
-        updateCandidateStatus(prev, userId, { isValidated: true })
-      );
+      setCandidateSuggestion(prev => {
+        const updated = updateCandidateStatus(prev, userId, { isValidated: true });
+        // Re-sort after validating a candidate to move it towards the top
+        return [...updated].sort((a, b) => {
+          if (a.isStarred && !b.isStarred) return -1;
+          if (!a.isStarred && b.isStarred) return 1;
+          if (a.isValidated && !b.isValidated) return -1;
+          if (!a.isValidated && b.isValidated) return 1;
+          const matchA = a.totalMatchPercentage || 0;
+          const matchB = b.totalMatchPercentage || 0;
+          return matchB - matchA;
+        });
+      });
     } catch (error) {
       console.error("Error validating candidate interest:", error);
       // TODO: add error state handling here if needed
@@ -133,10 +182,13 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
     return brightness > 0.5 ? "black" : "white";
   };
 
+  const handlePercentageChange = (value: number) => {
+    setMatchPercentageFilter(Math.min(100, Math.max(0, value)));
+  };
 
   const renderDefaultView = () => (
     <div className="space-y-3">
-      {candidateSuggestion.map((candidate) => {
+      {filteredCandidates.map((candidate) => {
         const skills = candidate.skills ?? [];
         const highestSenioritySkill = getHighestSenioritySkill(skills);
         const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSenioritySkill.seniority);
@@ -145,43 +197,58 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
         return (
           <div
             key={candidate.user_id}
-            className="bg-white p-3 rounded-lg shadow-md grid grid-cols-7 gap-4 items-center"
+            className={`bg-white p-3 flex items-center gap-4 shadow-md rounded-xl ${candidate.isStarred ? 'border-2 border-yellow-400' :
+              candidate.isValidated ? 'border border-green-500' : ''
+              }`}
             style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
-            <div className="col-span-1">
+            <div className="flex-shrink-0">
               <span className="bg-blue-200 text-blue-800 px-3 py-1 text-sm font-bold rounded-xl">
                 {candidate.totalMatchPercentage ? `${Math.round(candidate.totalMatchPercentage)}%` : "0%"} correspondant
               </span>
             </div>
 
             {/* Nom + Détails */}
-            <div className="col-span-1">
+            <div className="flex-shrink-0 min-w-[120px]">
               <span className="font-semibold">{`${candidate.first_name} ${candidate.last_name}`}</span>
             </div>
 
             {/* Évaluation */}
-            <div className="col-span-1 flex items-center gap-1">
+            <div className="flex-shrink-0 flex items-center gap-1 min-w-[60px]">
               <Star size={16} className="text-yellow-500" />
               <span className="text-gray-600">{candidate.rating}</span>
             </div>
 
             {/* Niveau */}
-            <div className="col-span-1">
+            <div className="flex-1 min-w-[100px] max-w-[160px]">
               <span className="text-gray-500">
                 {highestSeniorityLevel ? `${highestSeniorityLevel.name}: ${highestSeniorityLevel.description}` : "-"}
               </span>
             </div>
 
             {/* Disponibilité */}
-            <div className="col-span-1">
-              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded">
-                {candidate.availability}
+            <div className="flex-shrink-0 min-w-[100px] flex justify-center">
+              <span className="bg-gray-200 text-gray-700 px-3 py-1 text-xs rounded w-full text-center">
+                {(() => {
+                  switch (candidate.availability) {
+                    case 'ONE_MONTH':
+                      return 'Dans 1 mois';
+                    case 'THREE_MONTHS':
+                      return 'Dans 3 mois';
+                    case 'IMMEDIATE':
+                      return 'Immédiate';
+                    default:
+                      return candidate.availability || 'Non spécifiée';
+                  }
+                })()}
               </span>
             </div>
 
+            <div className="inline-block w-0.5 self-stretch bg-neutral-100 dark:bg-white/10"></div>
+
             {/* Compétences */}
-            <div className="col-span-1 flex items-center gap-4">
+            <div className="flex-1 flex justify-between items-center gap-4 overflow-hidden min-w-[200px]">
               <span className="text-gray-600 text-sm">Competances:</span>
               <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded inline-flex items-center">
                 {highestSenioritySkill.skill}
@@ -225,7 +292,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
 
             {/* Actions à droite */}
             {isAuthenticated() && (
-              < div className="col-span-1 flex justify-center items-center gap-4">
+              <div className="flex-shrink-0 flex items-center gap-4 ml-auto">
                 <button
                   className={`p-2 bg-black rounded-full transition-colors ${candidate.isStarred
                     ? 'hover:text-red-500 text-green-500'
@@ -269,12 +336,12 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           </div>
         );
       })}
-    </div >
+    </div>
   );
 
   const renderSubmittedView = () => (
     <div className="space-y-3">
-      {candidateSuggestion.map((candidate) => {
+      {filteredCandidates.map((candidate) => {
         const skills = candidate.skills ?? [];
         const highestSenioritySkill = getHighestSenioritySkill(skills);
         const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSenioritySkill.seniority);
@@ -285,14 +352,16 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
         return (
           <div
             key={candidate.user_id}
-            className="bg-white p-3 rounded-lg shadow-md flex items-center justify-between gap-4"
+            className={`bg-white p-3 rounded-lg shadow-md flex items-center justify-between gap-4 ${candidate.isStarred
+              ? 'border-2 border-yellow-400'
+              : candidate.isValidated
+                ? 'border border-green-500'
+                : ''}`}
             style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
-            <span
-              className="px-3 py-1 text-sm font-semibold rounded-md"
+            <span className="px-3 py-1 text-sm font-semibold rounded-md"
               style={{
-
                 backgroundColor,
                 color: textColor,
               }}
@@ -333,7 +402,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
                   {skill.skill}
                 </span>
               ))}
-              {extraSkillsCount && (
+              {extraSkillsCount > 0 && (
                 <span className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full">
                   +{extraSkillsCount}
                 </span>
@@ -450,20 +519,30 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
 
   return (
     <>
-      {/* Titre + Sélecteur */}
+      {/* Titre + Slider */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">
           {apiType === "SUBMITTED" ? (
-            <>Submissions <span className="text-gray-500">({candidateSuggestion.length} Candidats)</span></>
+            <>Submissions <span className="text-gray-500">({filteredCandidates.length} Candidates)</span></>
           ) : apiType === "ALL" ? (
-            <>Suggestions <span className="text-gray-500">({candidateSuggestion.length} Candidats)</span></>
+            <>Suggestions <span className="text-gray-500">({filteredCandidates.length} Candidates)</span></>
           ) : (
-            <>What ? <span className="text-gray-500">({candidateSuggestion.length} Candidats)</span></>
+            <>What ? <span className="text-gray-500">({filteredCandidates.length} Candidates)</span></>
           )}
         </h2>
-        <button className="flex items-center gap-2 bg-white px-4 py-2 rounded-md border border-gray-300 shadow-sm">
-          Matching <ChevronDown size={16} />
-        </button>
+
+        <div className="flex justify-between items-center gap-2 bg-white px-3 py-2 rounded-xl border border-gray-300 shadow-sm">
+          <span className="text-gray-500">Filter by</span>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={matchPercentageFilter}
+            onChange={(e) => handlePercentageChange(parseInt(e.target.value) || 0)}
+            className="w-full text-center outline-none border-2"
+          />
+          <span className="ml-1">%</span>
+        </div>
       </div>
 
       {/* Liste des candidats */}

@@ -4,7 +4,7 @@ import { OpportunityFormData, Sector } from "../types";
 import { fetchSectors, submitOpportunity } from "../services";
 import DefineBesoinForm from "./content/DefineBesoinForm";
 import DefineVivierForm from "./content/DefineVivierForm";
-import CandidatesList from "./CandidatesList";
+import CandidatesList from "../../Competence/content/CandidatesList";
 
 interface CreateProjectProps {
   onBack: () => void;
@@ -18,11 +18,12 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<{ loading: boolean; error: string | null; }>({ loading: false, error: null, });
   const [formData, setFormData] = useState<OpportunityFormData>({
     title: "",
-    announce_date: "",
-    response_date: "",
-    startDate: "",
+    announce_at: "",
+    responded_at: "",
+    start_at: "",
     duration: 0,
     rate: 0,
     selected_sectors: [],
@@ -39,10 +40,6 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
     authorizations: [],
     languages: [],
     qualities: [],
-  });
-  const [submitStatus, setSubmitStatus] = useState<{ loading: boolean; error: string | null; }>({
-    loading: false,
-    error: null,
   });
 
   useEffect(() => {
@@ -154,7 +151,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
       />}
 
       <div className="mt-6">
-        <CandidatesList />
+        <CandidatesList apiType={'ALL'} />
       </div>
     </div>
   );
