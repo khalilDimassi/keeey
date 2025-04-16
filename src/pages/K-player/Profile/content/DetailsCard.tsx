@@ -101,7 +101,6 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
     }
   };
 
-
   const handleCancel = () => {
     setIsEditing(false);
     setSubmitError(null);
@@ -115,16 +114,12 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
         <span className="text-sm bg-blue-100 text-[#215A96] px-8 py-1 rounded-xl font-bold">
           {profile.profile.player_role === 'ADMIN' ? 'Administrateur' : 'Employé'}
         </span>
-        <button
-          onClick={handleEditClick}
-          disabled={isSubmitting}
-          className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
-        >
+        <>
           {isEditing ? (
-            <>
+            <div className="flex gap-2">
               <button
                 onClick={handleCancel}
-                className="text-gray-600 hover:text-red-800  disabled:opacity-50"
+                className="text-gray-600 hover:text-red-800 disabled:opacity-50"
                 disabled={isSubmitting}
               >
                 <X size={16} />
@@ -136,16 +131,17 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
               >
                 <Check size={16} />
               </button>
-            </>
+            </div>
           ) : (
             <button
-              onClick={() => setIsEditing(true)}
-              className="text-[#215A96]"
+              onClick={handleEditClick}
+              disabled={isSubmitting}
+              className="text-[#215A96] hover:text-blue-800 disabled:opacity-50"
             >
               <Pencil size={16} />
             </button>
           )}
-        </button>
+        </>
       </div>
 
       {submitError && isEditing && (
