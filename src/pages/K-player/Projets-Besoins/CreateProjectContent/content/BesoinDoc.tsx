@@ -127,7 +127,7 @@ const BesoinDoc: React.FC = () => {
     // ];
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        <div className="p-4 bg-white shadow-md rounded-lg" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Documents</h2>
                 <button className="text-blue-700" onClick={() => setIsModalOpen(true)}>

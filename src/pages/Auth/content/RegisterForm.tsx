@@ -27,22 +27,22 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
     const config = {
         kprofile: {
             title: "Créer votre compte K-Profile",
-            color: "#307A7D",
-            shadow: "0 1px 6px 2px rgba(48, 121, 127, 0.4)",
+            color: "#297280",
+            shadow: "0 1px 6px 2px #30797f66",
             focusBorder: "focus:border-green-500",
             guestPath: "/Layout/kprofile"
         },
         kplayer: {
             title: "Créer votre compte K-Player",
             color: "#215A96",
-            shadow: "0 1px 8px 3px rgba(49, 85, 205, 0.4)",
+            shadow: "0 1px 8px 3px #3155cd66",
             focusBorder: "focus:border-blue-500",
             guestPath: "/Layout/kplayer"
         },
         kpartner: {
             title: "Créer votre compte K-Partner",
             color: "#A89B7B",
-            shadow: "0 1px 8px 3px rgba(168, 155, 123, 0.4)",
+            shadow: "0 1px 8px 3px #a89b7b66",
             focusBorder: "focus:border-yellow-600",
             guestPath: "/Layout/kpartner"
         }

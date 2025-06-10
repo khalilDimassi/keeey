@@ -41,7 +41,7 @@ const NavbarKPlayer = () => {
   return (
     <div
       className="flex justify-between items-center bg-white p-3 rounded-xl shadow-md"
-      style={{ boxShadow: "0 4px 15px rgba(62, 78, 203, 0.33)" }}
+      style={{ boxShadow: "0 4px 15px #3e4ecb54" }}
     >
       {/* Left Side: Logo */}
       <svg width="120" height="51" viewBox="0 0 160 61" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => navigate("/")} >

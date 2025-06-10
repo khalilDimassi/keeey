@@ -12,7 +12,7 @@ const BesoinInfo: FC<BesoinInfoProps> = ({ formData, onFormDataChange }) => {
             <div
                 className="bg-white shadow-lg rounded-lg p-6"
                 style={{
-                    boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)",
+                    boxShadow: "0 0 4px 1px #11355d69",
                     borderRadius: "10px",
                 }}
             >

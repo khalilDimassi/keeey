@@ -38,7 +38,7 @@ const Navbar = () => {
       removeToken();
       navigate("/");
     } else {
-      navigate("/Login");
+      navigate("/Login/kprofile");
     }
     setIsMobileMenuOpen(false);
   };
@@ -50,15 +50,15 @@ const Navbar = () => {
     <div className="relative">
       <div
         className="flex justify-between items-center bg-white p-3 rounded-xl shadow-md"
-        style={{ boxShadow: "0 4px 15px rgba(12, 111, 12, 0.28)" }}
+        style={{ boxShadow: "0 4px 15px #0c6f0c47" }}
       >
         {/* Left Side: Logo */}
         <div className="flex items-center cursor-pointer w-32 h-14" onClick={() => navigate("/")}>
-          <KeeeyLogo color="#30797F" />
+          <KeeeyLogo color="#297280" />
         </div>
 
         {/* Center: Profile Name - Hidden on mobile */}
-        <div className="hidden md:block text-[#30797F] font-semibold text-lg">
+        <div className="hidden md:block text-[#297280] font-semibold text-lg">
           {userName ? userName : "K-Profile"}{" "}
           <span className="text-gray-500">{userName ? "" : "(Guest)"}</span>
         </div>
@@ -78,7 +78,7 @@ const Navbar = () => {
             onClick={CreateAccountClick}
             className={`hidden md:flex ${authenticated
               ? "bg-gray-600 hover:bg-gray-800"
-              : "bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-teal-900"
+              : "bg-[#297280] hover:bg-teal-900"
               } text-white px-4 py-2 rounded-xl items-center gap-2 shadow-md transition-all duration-200 ease-in-out transform hover:scale-105`}
           >
             {authenticated ? <LogOut size={18} /> : <UserPlus size={18} />}

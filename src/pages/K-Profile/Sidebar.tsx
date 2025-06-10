@@ -46,7 +46,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
 
   return (
     <div
-      className={`absolute rounded-2xl transition-all duration-500 bg-gradient-to-b from-[#30797F] to-[#039DAA] 
+      className={`absolute rounded-2xl transition-all duration-500 bg-[#297280] 
       ${horizontal
           ? "w-[98%] h-16 grid place-items-center mt-[]"
           : "w-[80px] h-[700px] left-[10px] flex flex-col items-center"

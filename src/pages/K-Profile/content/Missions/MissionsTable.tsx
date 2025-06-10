@@ -43,20 +43,20 @@ export default function MissionsTable() {
             <path fillRule="evenodd" clipRule="evenodd" d="M33.6064 6.84752L39.9316 0.985168L40.2448 4.8003L41.0482 4.02208L41.6419 4.63492L40.8256 5.42565L44.7082 5.93006L38.381 11.8326L34.539 11.5154L23.5305 22.1792L24.9474 23.6419L20.3175 24.6977L21.52 20.1036L22.9369 21.5663L33.9398 10.9079L33.6064 6.84752ZM35.3313 10.7479L38.0522 10.9725L42.8245 6.52053L40.0653 6.16208L35.3313 10.7479ZM34.7102 10.1617L34.468 7.21227L39.2475 2.7825L39.4745 5.54656L34.7102 10.1617Z" fill="url(#paint3_linear_587_4531)" />
             <defs>
               <linearGradient id="paint0_linear_587_4531" x1="6.92516" y1="15.5746" x2="38.0748" y2="29.4249" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
               <linearGradient id="paint1_linear_587_4531" x1="11.3934" y1="16.9574" x2="33.6055" y2="28.0411" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
               <linearGradient id="paint2_linear_587_4531" x1="15.5205" y1="20.4329" x2="29.473" y2="24.5599" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
               <linearGradient id="paint3_linear_587_4531" x1="28.8147" y1="11.4892" x2="33.7306" y2="16.564" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
             </defs>
           </svg>
@@ -65,14 +65,14 @@ export default function MissionsTable() {
         </div>
 
         {/* Right: Button (Aligned Right) */}
-        <button className="ml-auto flex items-center bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-xl shadow hover:bg-teal-900">
+        <button className="ml-auto flex items-center bg-[#297280] text-white px-4 py-2 rounded-xl shadow hover:bg-teal-900">
           <Plus className="w-5 h-5 mr-2" /> Ajouter une mission
         </button>
       </div>
 
 
       {/* Table */}
-      <div className="w-full  bg-white p-4 rounded-lg shadow-md" style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)", borderRadius: "10px" }}>
+      <div className="w-full  bg-white p-4 rounded-lg shadow-md" style={{ boxShadow: "0 0 4px 1px #00800033", borderRadius: "10px" }}>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-white shadow-md rounded-lg">
             <thead>
@@ -114,7 +114,7 @@ export default function MissionsTable() {
                     <button className="mr-10">
 
                       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="14" cy="14" r="14" fill="#30797F" />
+                        <circle cx="14" cy="14" r="14" fill="#297280" />
                         <path d="M10.3926 16.6671L16.6671 10.3926M16.6671 10.3926H10.3926M16.6671 10.3926V16.6671" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
 
@@ -122,7 +122,7 @@ export default function MissionsTable() {
                     <button className="text-red-500 hover:text-red-700">
 
                       <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.75 26.25C8.0625 26.25 7.47396 26.0052 6.98438 25.5156C6.49479 25.026 6.25 24.4375 6.25 23.75V7.5H5V5H11.25V3.75H18.75V5H25V7.5H23.75V23.75C23.75 24.4375 23.5052 25.026 23.0156 25.5156C22.526 26.0052 21.9375 26.25 21.25 26.25H8.75ZM21.25 7.5H8.75V23.75H21.25V7.5ZM11.25 21.25H13.75V10H11.25V21.25ZM16.25 21.25H18.75V10H16.25V21.25Z" fill="#30797F" />
+                        <path d="M8.75 26.25C8.0625 26.25 7.47396 26.0052 6.98438 25.5156C6.49479 25.026 6.25 24.4375 6.25 23.75V7.5H5V5H11.25V3.75H18.75V5H25V7.5H23.75V23.75C23.75 24.4375 23.5052 25.026 23.0156 25.5156C22.526 26.0052 21.9375 26.25 21.25 26.25H8.75ZM21.25 7.5H8.75V23.75H21.25V7.5ZM11.25 21.25H13.75V10H11.25V21.25ZM16.25 21.25H18.75V10H16.25V21.25Z" fill="#297280" />
                       </svg>
 
                     </button>

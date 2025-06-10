@@ -9,12 +9,12 @@ const LoginOptions = ({ userType = "kprofile" }) => {
     const config = {
         kprofile: {
             title: "Créer un nouveau compte K-Profil",
-            shadow: "0 1px 6px 2px rgba(48, 121, 127, 0.4)",
-            color: "#307A7D",
+            shadow: "0 1px 6px 2px #30797f66",
+            color: "#297280",
         },
         kplayer: {
             title: "Créer un nouveau compte K-Player",
-            shadow: "0 1px 8px 3px rgba(49, 85, 205, 0.4)",
+            shadow: "0 1px 8px 3px #3155cd66",
             color: "#215A96",
         },
         kpartner: {

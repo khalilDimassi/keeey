@@ -121,7 +121,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
   if (showLoader) {
     return (
       <div className="space-y-4 bg-white rounded-lg p-4 transition-opacity duration-300"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
@@ -158,7 +158,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
 
   // if (loading) {
   //   return (
-  //     <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+  //     <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
   //       {[...Array(3)].map((_, index) => (
   //         <div
   //           key={index}
@@ -194,7 +194,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
 
   if (error) {
     return (
-      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-1 gap-4 items-center justify-center text-center">
           <div className="text-red-500 font-medium">
             <AlertCircle className="inline mr-2" size={20} />
@@ -208,7 +208,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
 
   if (Opportunities.length === 0) {
     return (
-      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-1 gap-4 items-center justify-center text-center">
           <div className="text-gray-500">
             <FolderOpen className="inline mr-2" size={20} />
@@ -220,7 +220,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
   }
 
   return (
-    <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+    <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
       {/* Header with sorting options */}
       <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center font-medium">
         <button

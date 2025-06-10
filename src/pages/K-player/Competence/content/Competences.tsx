@@ -143,7 +143,7 @@ const Competences: FC<CompetencesProps> = ({
   if (error) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <h2 className="text-lg font-semibold mb-4">Compétences</h2>
         <div className="text-center py-8 text-red-500">
           <p className="font-medium">Couldn't load component data</p>
@@ -156,7 +156,7 @@ const Competences: FC<CompetencesProps> = ({
   if (loading) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl animate-pulse"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <h2 className="text-lg font-semibold mb-4">Compétences</h2>
 
         {/* Skeleton for sectors */}

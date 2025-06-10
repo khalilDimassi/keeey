@@ -49,18 +49,18 @@ const LoginContainer = () => {
     // Configuration object for each user type
     const config = {
         kprofile: {
-            color: "#30797F",
+            color: "#297280",
             features: [
                 "Freelance", "Indépendant", "Consultant"
             ],
-            description: "Vous êtes à la <span class='text-[#30797F] font-semibold'>recherche de vos prochaines missions</span>",
+            description: "Vous êtes à la <span class='text-[#297280] font-semibold'>recherche de vos prochaines missions</span>",
             benefits: [
-                "<span class='text-[#30797F] font-semibold'>Garder le contact</span> avec vos anciens clients et votre réseau",
-                "<span class='text-[#30797F] font-semibold'>Garder le contrôle</span> sur la visibilité de votre profil",
-                "Gérer facilement votre <span class='text-[#30797F] font-semibold'>dossier de compétences</span>",
-                "Centraliser vos <span class='text-[#30797F] font-semibold'>références professionnelles</span>",
-                "<span class='text-[#30797F] font-semibold'>Suivre vos missions</span>",
-                "<span class='text-[#30797F] font-semibold'>Rester informé(e)</span> de la tendance du marché"
+                "<span class='text-[#297280] font-semibold'>Garder le contact</span> avec vos anciens clients et votre réseau",
+                "<span class='text-[#297280] font-semibold'>Garder le contrôle</span> sur la visibilité de votre profil",
+                "Gérer facilement votre <span class='text-[#297280] font-semibold'>dossier de compétences</span>",
+                "Centraliser vos <span class='text-[#297280] font-semibold'>références professionnelles</span>",
+                "<span class='text-[#297280] font-semibold'>Suivre vos missions</span>",
+                "<span class='text-[#297280] font-semibold'>Rester informé(e)</span> de la tendance du marché"
             ],
             guestPath: "/Layout/kprofile",
             loginPage: <LoginPage userType={userType} onLogin={handleLogin} error={error || ""} isLoading={isLoading} />,

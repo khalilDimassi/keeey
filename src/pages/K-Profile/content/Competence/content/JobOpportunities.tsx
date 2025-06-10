@@ -165,7 +165,7 @@ const JobOpportunities = () => {
             <button
               style={{
                 boxShadow: activeTab === "Opportunités"
-                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
                   : "none"
               }}
               className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Opportunités"
@@ -179,7 +179,7 @@ const JobOpportunities = () => {
             <button
               style={{
                 boxShadow: activeTab === "Opportunités sauvegardées"
-                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
                   : "none"
               }}
               className={`px-8 flex gap-2 py-3 font-medium transition-all relative ${activeTab === "Opportunités sauvegardées"
@@ -194,7 +194,7 @@ const JobOpportunities = () => {
             <button
               style={{
                 boxShadow: activeTab === "Clients étant intéressés"
-                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
                   : "none"
               }}
               className={`px-8 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Clients étant intéressés"

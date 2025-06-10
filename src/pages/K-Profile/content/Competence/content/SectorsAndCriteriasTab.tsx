@@ -190,7 +190,7 @@ const SectorsAndCriteriasTab: React.FC = () => {
               <button
                 onClick={handleSaveAll}
                 disabled={state.loading}
-                className="bg-[#30797F] text-white px-6 py-3 rounded-xl shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
+                className="bg-[#297280] text-white px-6 py-3 rounded-xl shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
               >
                 {state.loading ? 'Saving...' : 'Save All Changes'}
               </button>

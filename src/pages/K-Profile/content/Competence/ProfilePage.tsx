@@ -10,7 +10,7 @@ const KProfile = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="w-full">
       <div className="flex items-center space-x-3 my-4">
-        <h1 className="text-xl font-semibold bg-gradient-to-b from-[#30797F] to-[#039DAA] bg-clip-text text-transparent">
+        <h1 className="text-xl font-semibold bg-[#297280] bg-clip-text text-transparent">
           Mon Profil
         </h1>
       </div>

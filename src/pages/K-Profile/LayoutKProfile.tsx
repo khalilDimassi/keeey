@@ -70,7 +70,7 @@ const LayoutKProfile = () => {
           <>
             <div className="flex flex-col items-center justify-center">
               <button onClick={() => handleIconClick("competence")}>
-                <ArrowDownCircle size={32} color="#039DAA" />
+                <ArrowDownCircle size={32} color="#297280" />
               </button>
             </div>
             <JobOpportunities />
@@ -78,7 +78,7 @@ const LayoutKProfile = () => {
           <>
             <div className="flex flex-col items-center justify-center">
               <button onClick={() => handleIconClick("competence")}>
-                <ArrowDownCircle size={32} color="#039DAA" />
+                <ArrowDownCircle size={32} color="#297280" />
               </button>
             </div>
             <Oportunite />
@@ -94,7 +94,7 @@ const LayoutKProfile = () => {
         return <>
           <div className="flex flex-col items-center justify-center">
             <button onClick={() => handleIconClickSaving("bookmark")}>
-              <ArrowDownCircle size={32} color="#039DAA" />
+              <ArrowDownCircle size={32} color="#297280" />
             </button>
           </div>
           <OpportunisteSaving /></>

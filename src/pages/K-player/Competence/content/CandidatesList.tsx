@@ -200,7 +200,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
             className={`bg-white p-3 flex items-center gap-4 shadow-md rounded-xl ${candidate.isStarred ? 'border-2 border-yellow-400' :
               candidate.isValidated ? 'border border-green-500' : ''
               }`}
-            style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+            style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
             <div className="flex-shrink-0">
@@ -357,7 +357,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
               : candidate.isValidated
                 ? 'border border-green-500'
                 : ''}`}
-            style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+            style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
           >
             {/* Badge correspondance */}
             <span className="px-3 py-1 text-sm font-semibold rounded-md"
@@ -442,7 +442,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           key={index}
           className={`bg-white p-3 rounded-lg shadow-md grid grid-cols-7 gap-4 items-center ${error ? 'border border-red-600' : ''
             }`}
-          style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+          style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
         >
           {/* Badge correspondance */}
           <div className="col-span-1">

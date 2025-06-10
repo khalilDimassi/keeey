@@ -149,7 +149,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
     <div className="relative w-full">
       <div className="w-full overflow-x-auto rounded-lg px-4">
         <div className="flex items-center space-x-3 py-4">
-          <BookmarkIcon color='#30797F' fill='#30797F' size={40} />
+          <BookmarkIcon color='#297280' fill='#297280' size={40} />
           <h1 className="text-xl font-semibold">Opportunités sauvegardées</h1>
         </div>
 
@@ -240,7 +240,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
                     <td className="px-4 py-2">
                       <div className="flex space-x-2 gap-4">
                         <button
-                          className="p-2 text-white bg-[#30797F] rounded-full hover:bg-gray-500 transition-colors"
+                          className="p-2 text-white bg-[#297280] rounded-full hover:bg-gray-500 transition-colors"
                           title="Open user profile"
                           onClick={() => { }}
                         >
@@ -266,7 +266,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
                         </button>
                         <Trash2
                           size={32}
-                          color="#30797F"
+                          color="#297280"
                           className="cursor-pointer hover:text-[#1e5d63]"
                           onClick={() => handleDelete(opp.id)}
                         />
@@ -285,7 +285,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
           className="bg-white rounded-full p-1 shadow-sm border border-gray-200"
           onClick={onClose}
         >
-          <ArrowUpCircle size={32} color="#30797F" />
+          <ArrowUpCircle size={32} color="#297280" />
         </button>
       </div>
 

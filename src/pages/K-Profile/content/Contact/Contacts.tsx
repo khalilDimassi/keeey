@@ -139,8 +139,8 @@ const Contacts = () => {
             <path d="M30.875 2.375H7.125C5.81281 2.375 4.75 3.43781 4.75 4.75V7.125H3.5625C2.907 7.125 2.375 7.657 2.375 8.3125C2.375 8.968 2.907 9.5 3.5625 9.5C5.69406 9.5 2.20281 9.5 7.125 9.5C7.7805 9.5 8.3125 10.032 8.3125 10.6875C8.3125 11.343 7.7805 11.875 7.125 11.875H4.75V26.125H3.5625C2.907 26.125 2.375 26.657 2.375 27.3125C2.375 27.968 2.907 28.5 3.5625 28.5C5.69406 28.5 2.20281 28.5 7.125 28.5C7.7805 28.5 8.3125 29.032 8.3125 29.6875C8.3125 30.343 7.7805 30.875 7.125 30.875H4.75V33.25C4.75 34.5622 5.81281 35.625 7.125 35.625H30.875C32.1872 35.625 33.25 34.5622 33.25 33.25V4.75C33.25 3.43781 32.1872 2.375 30.875 2.375ZM19 8.3125C21.6232 8.3125 23.75 10.4393 23.75 13.0625C23.75 15.6857 21.6232 17.8125 19 17.8125C16.3768 17.8125 14.25 15.6857 14.25 13.0625C14.25 10.4393 16.3768 8.3125 19 8.3125ZM26.125 28.5H11.875V26.125C11.875 22.1896 15.0646 19 19 19C22.9354 19 26.125 22.1896 26.125 26.125V28.5Z" fill="url(#paint0_linear_542_3675)" />
             <defs>
               <linearGradient id="paint0_linear_542_3675" x1="17.8125" y1="2.375" x2="17.8125" y2="35.625" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
             </defs>
           </svg>
@@ -161,7 +161,7 @@ const Contacts = () => {
             <button
               style={{
                 boxShadow: activeTab === "contacts"
-                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+                  ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
                   : "none",
 
                 fontWeight: 500,
@@ -182,7 +182,7 @@ const Contacts = () => {
             <button
               style={{
                 boxShadow: activeTab === "cooptation"
-                  ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
+                  ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #282c2824"
                   : "none",
                 fontWeight: 500,
                 fontSize: '20px',
@@ -207,7 +207,7 @@ const Contacts = () => {
           {/* Action Buttons */}
           <div className="flex items-center gap-2 px-4">
             <button
-              className="px-4 py-2 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white font-medium rounded-xl hover:bg-teal-700"
+              className="px-4 py-2 bg-[#297280] text-white font-medium rounded-xl hover:bg-teal-700"
               onClick={() => setIsModalOpen(true)}
             >
               {activeTab === "contacts" ? "Ajouter un contact" : "Ajouter une cooptation"}
@@ -385,7 +385,7 @@ const Contacts = () => {
               <div className="flex justify-end mt-4">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white rounded-xl hover:bg-teal-700"
+                  className="px-4 py-2 bg-[#297280] text-white rounded-xl hover:bg-teal-700"
                 >
                   + Ajouter
                 </button>

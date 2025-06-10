@@ -48,7 +48,7 @@ function Oportunite() {
 
                       {/* Score + Type de job sur la même ligne */}
                       <div className="flex items-center gap-2">
-                        <div className="px-2 py-0.5 rounded-md bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white">
+                        <div className="px-2 py-0.5 rounded-md bg-[#297280] text-white">
                           98%
                         </div>
                         {job.type}

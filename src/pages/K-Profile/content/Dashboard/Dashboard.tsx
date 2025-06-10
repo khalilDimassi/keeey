@@ -64,23 +64,23 @@ export default function Dashboard() {
             <path d="M15.5 4.62127C15.5 4.07654 15.7107 3.55413 16.0858 3.16895C16.4609 2.78377 16.9696 2.56738 17.5 2.56738H27.5C28.0304 2.56738 28.5391 2.78377 28.9142 3.16895C29.2893 3.55413 29.5 4.07654 29.5 4.62127V14.8907C29.5 15.4354 29.2893 15.9578 28.9142 16.343C28.5391 16.7282 28.0304 16.9446 27.5 16.9446H17.5C16.9696 16.9446 16.4609 16.7282 16.0858 16.343C15.7107 15.9578 15.5 15.4354 15.5 14.8907V4.62127Z" fill="url(#paint2_linear_567_3764)" />
             <defs>
               <linearGradient id="paint0_linear_567_3764" x1="8.5" y1="18.998" x2="8.5" y2="29.2675" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
               <linearGradient id="paint1_linear_567_3764" x1="14.5" y1="5.64844" x2="14.5" y2="30.295" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
               <linearGradient id="paint2_linear_567_3764" x1="22.5" y1="2.56738" x2="22.5" y2="16.9446" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#30797F" />
-                <stop offset="1" stopColor="#039DAA" />
+                <stop stopColor="#297280" />
+                <stop offset="1" stopColor="#297280" />
               </linearGradient>
             </defs>
           </svg>
 
           <h1 className="text-xl font-semibold ">Keeey-board </h1>
         </div>
-        <button className="flex items-center bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-4 py-2 rounded-2xl shadow hover:bg-teal-900">
+        <button className="flex items-center bg-[#297280] text-white px-4 py-2 rounded-2xl shadow hover:bg-teal-900">
           <Plus className="w-5 h-5 mr-2" /> Ajouter widget
         </button>
       </div>
@@ -135,7 +135,7 @@ export default function Dashboard() {
 
                   <div className="w-full bg-gray-200 rounded-full h-3.5"> {/* Barre plus grande */}
                     <div
-                      className="bg-gradient-to-b from-[#30797F] to-[#039DAA] h-3.5 rounded-full transition-all duration-300"
+                      className="bg-[#297280] h-3.5 rounded-full transition-all duration-300"
                       style={{ width: `${mission.progress}%` }}
                     ></div>
                   </div>
@@ -157,7 +157,7 @@ export default function Dashboard() {
                 {criteres.map((critere, index) => (
                   <span
                     key={index}
-                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-7 rounded text-sm flex items-center justify-center"
+                    className="bg-[#297280] text-white px-8 py-7 rounded text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {critere}
@@ -174,7 +174,7 @@ export default function Dashboard() {
                 {competences.map((comp, index) => (
                   <span
                     key={index}
-                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-1 rounded text-sm flex items-center justify-center"
+                    className="bg-[#297280] text-white px-8 py-1 rounded text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {comp}
@@ -191,7 +191,7 @@ export default function Dashboard() {
                 {contacts.map((contact, index) => (
                   <span
                     key={index}
-                    className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-8 py-1 rounded-lg text-sm flex items-center justify-center"
+                    className="bg-[#297280] text-white px-8 py-1 rounded-lg text-sm flex items-center justify-center"
                     style={{ minWidth: "fit-content", height: "3rem", borderRadius: "7px" }}
                   >
                     {contact}

@@ -338,7 +338,7 @@ const Profile: React.FC = () => {
             <button
               style={{
                 boxShadow: activeForm === "cooptations"
-                  ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+                  ? "0 -4px 4px -2px #00800033, 4px 0 4px -2px #00800033, -4px 0 4px -2px #00800033"
                   : "none"
               }}
               className={`px-8 py-3  font-medium transition-all relative ${activeForm === "cooptations"
@@ -353,7 +353,7 @@ const Profile: React.FC = () => {
             <button
               style={{
                 boxShadow: activeForm === "references"
-                  ? "0 -4px 4px -2px rgba(0, 128, 0, 0.2), 4px 0 4px -2px rgba(0, 128, 0, 0.2), -4px 0 4px -2px rgba(0, 128, 0, 0.2)"
+                  ? "0 -4px 4px -2px #00800033, 4px 0 4px -2px #00800033, -4px 0 4px -2px #00800033"
                   : "none"
               }}
               className={`px-8 py-3 font-medium transition-all relative ${activeForm === "references"
@@ -373,7 +373,7 @@ const Profile: React.FC = () => {
               <div
                 className="bg-white p-6 w-full md:w-full"
                 style={{
-                  boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)",
+                  boxShadow: "0 0 4px 1px #00800033",
                   borderRadius: activeForm === "cooptations" ? "0px 20px 20px 20px" : "rounded-2xl"
                 }}
               >
@@ -565,7 +565,7 @@ const Profile: React.FC = () => {
                         <div className="space-y-4">
                           {/* Personal information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#297280" }}>
                               Informations personnelles
                             </h4>
                             <div className="grid grid-cols-2 gap-y-4 gap-x-6">
@@ -586,7 +586,7 @@ const Profile: React.FC = () => {
 
                           {/* Contact information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#297280" }}>
                               Contact
                             </h4>
                             <div className="space-y-4">
@@ -603,7 +603,7 @@ const Profile: React.FC = () => {
 
                           {/* Professional information section */}
                           <div className="mb-6">
-                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                            <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#297280" }}>
                               Informations professionnelles
                             </h4>
                             <div className="grid grid-cols-2 gap-y-4 gap-x-6">
@@ -623,7 +623,7 @@ const Profile: React.FC = () => {
                             selectedReferral.nb_done_opportunity !== null ||
                             selectedReferral.nb_days !== null) && (
                               <div className="mb-6">
-                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                                <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#297280" }}>
                                   Opportunités
                                 </h4>
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-6">
@@ -652,7 +652,7 @@ const Profile: React.FC = () => {
                           {/* Notes section - only shown if notes exist */}
                           {selectedReferral.note && (
                             <div>
-                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#30797F" }}>
+                              <h4 className="text-green-600 font-medium text-lg mb-3 border-b border-green-200 pb-1" style={{ color: "#297280" }}>
                                 Notes
                               </h4>
                               <div className="bg-green-50 p-3 rounded-lg">
@@ -667,7 +667,7 @@ const Profile: React.FC = () => {
                       <div className="bg-gray-50 p-4 flex justify-end border-t border-gray-100">
                         <button
                           onClick={() => setSelectedReferral(null)}
-                          style={{ background: "#30797F" }}
+                          style={{ background: "#297280" }}
                           className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-xl transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-md"
                         >
                           Fermer

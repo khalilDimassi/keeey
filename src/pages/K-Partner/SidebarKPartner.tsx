@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { 
-  LayoutGrid, 
-  Settings, 
-  FileText, 
-  Bookmark, 
-  Target, 
+import {
+  LayoutGrid,
+  Settings,
+  FileText,
+  Bookmark,
+  Target,
   Contact,   // ✅ Contact exists in Lucide
-  User, 
+  User,
   BrainCircuit, // ✅ Alternative for Competence
   LucideIcon
 } from "lucide-react";
@@ -19,7 +19,7 @@ import GroupContacr from "./SidebarIcons/GroupContacr";
 import Contactetoile from "./SidebarIcons/Contactetoile";
 import Staff_recruiting from "./SidebarIcons/Staff_recruiting";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact"| null;
+type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact" | null;
 
 interface SidebarProps {
   onIconClick: (id: IconId) => void;
@@ -41,13 +41,13 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
     { id: "competence", Icon: CompetenceSVG },
     { id: "fileText1", Icon: CvSvG },
     { id: "bookmark", Icon: Staff_recruiting },
-    
+
     { id: "contact", Icon: GroupContacr },
     { id: "user", Icon: Contactetoile },
     { id: "target", Icon: TargetSVG },
     { id: "settings", Icon: Settings },
   ];
-  
+
   const handleIconClick = (id: IconId) => {
     setActiveIcon(id);
     setHorizontal(false); // Switch back to vertical mode
@@ -57,11 +57,11 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
   return (
     <div
       className={`absolute rounded-2xl transition-all duration-500 mt-14 
-        ${horizontal 
+        ${horizontal
           ? " h-16 grid  place-items-center mt-[]"  // Moves up when horizontal
           : "w-[60px] h-[600px] left-[23px] flex flex-col items-center"
         }`}
-        style={{ background: "#A89B7B" }}
+      style={{ background: "#A89B7B" }}
     >
       {/* Sidebar Icons */}
       <div className={`grid ${horizontal ? "grid-cols-8 gap-x-40 justify-center items-center" : "flex flex-col items-center"}`}>
@@ -69,9 +69,8 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
         {icons.map(({ id, Icon }) => (
           <div
             key={id}
-            className={`relative cursor-pointer flex items-center transition-all duration-500 ${
-              horizontal ? "p-2" : "mt-12"
-            }`}
+            className={`relative cursor-pointer flex items-center transition-all duration-500 ${horizontal ? "p-2" : "mt-12"
+              }`}
             onClick={() => handleIconClick(id)}
           >
             {/* Selection Indicator (Only for Vertical Mode) */}
@@ -81,7 +80,7 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
                 style={{
                   width: "6rem",
                   height: "2.5rem",
-                  border: "3px solid rgba(172, 133, 8, 0.47)",
+                  border: "3px solid #ac850878",
                   boxShadow: "1px 2px 8px rgb(102, 80, 8)",
                 }}
               />
@@ -93,15 +92,14 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
                 transform: horizontal
                   ? "translateY(0px)" // Ensures icons stay centered
                   : activeIcon === id
-                  ? "translateX(50px)" // Slide animation when selected in vertical mode
-                  : "translateX(0px)",
+                    ? "translateX(50px)" // Slide animation when selected in vertical mode
+                    : "translateX(0px)",
               }}
             >
               <Icon
-className={`w-6 h-6 transition-all duration-500 ${
-  activeIcon === id ? "text-PartnerColer" : "text-white hover:text-gray-200"
-}`}
-/>
+                className={`w-6 h-6 transition-all duration-500 ${activeIcon === id ? "text-PartnerColer" : "text-white hover:text-gray-200"
+                  }`}
+              />
 
             </div>
           </div>

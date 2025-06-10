@@ -43,7 +43,7 @@ const TabButton = ({ active, onClick, children }: { active: boolean, onClick: ()
       }`}
     style={{
       boxShadow: active
-        ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+        ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
         : "none",
       fontWeight: 500,
       fontSize: '20px',

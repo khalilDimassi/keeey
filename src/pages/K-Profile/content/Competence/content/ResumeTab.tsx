@@ -149,7 +149,7 @@ function ResumeTab() {
               {sections.map((section, index) => (
                 <button
                   key={index}
-                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-[#297280] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                   onClick={() => {
                     setActiveSection(section);

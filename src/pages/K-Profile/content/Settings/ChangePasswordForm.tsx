@@ -95,8 +95,8 @@ const ChangePasswordForm = () => {
     <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
       {notification.show && (
         <div className={`p-4 rounded-md mb-4 ${notification.type === 'success'
-            ? 'bg-green-50 text-green-700 border border-green-200'
-            : 'bg-red-50 text-red-700 border border-red-200'
+          ? 'bg-green-50 text-green-700 border border-green-200'
+          : 'bg-red-50 text-red-700 border border-red-200'
           }`}
         >
           {notification.message}
@@ -122,7 +122,7 @@ const ChangePasswordForm = () => {
           <label className="block text-sm font-medium text-gray-700">
             Nouveau mot de passe
           </label>
-          
+
           <input
             type="password"
             name="new_password"
@@ -151,7 +151,7 @@ const ChangePasswordForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-lg font-medium text-white bg-gradient-to-b from-[#30797F] to-[#039DAA] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
+        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-lg font-medium text-white bg-[#297280] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
       >
         {isLoading ? "Chargement..." : "Modifier le mot de passe"}
       </button>

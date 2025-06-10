@@ -109,8 +109,8 @@ const JobOpportunities2 = () => {
     selection === "Opportunités"
       ? "Opportunités"
       : selection === "Opportunités sauvegardées"
-      ? "Saved Opportunities"
-      : "Opportunités selon mes contacts";
+        ? "Saved Opportunities"
+        : "Opportunités selon mes contacts";
 
   const handleJobClick = (job: JobPost) => {
     setSelectedJob(job); // Open modal with job details
@@ -158,7 +158,7 @@ const JobOpportunities2 = () => {
           </div>
         </div>
 
-        <div className="w-full "style={{boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" ,borderRadius:"10px"}}  >
+        <div className="w-full " style={{ boxShadow: "0 0 4px 1px #00800033", borderRadius: "10px" }}  >
           <div className=" bg-white shadow-sm rounded-lg">
             {/* Job List */}
             <div className="space-y-6 p-6">

@@ -33,15 +33,13 @@ function NotificationsSettings() {
           {Object.entries(alerts).map(([key, value]) => (
             <label key={key} className="flex items-center gap-3 cursor-pointer">
               <div
-                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
-                  value ? "bg-gradient-to-b from-[#30797F] to-[#039DAA]" : "bg-gray-300"
-                }`}
+                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${value ? "bg-[#297280]" : "bg-gray-300"
+                  }`}
                 onClick={() => toggleAlert(key as keyof typeof alerts)}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
-                    value ? "translate-x-6" : "translate-x-0"
-                  }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${value ? "translate-x-6" : "translate-x-0"
+                    }`}
                 ></div>
               </div>
               <span className="text-gray-700">
@@ -61,15 +59,13 @@ function NotificationsSettings() {
           {Object.entries(notificationTypes).map(([key, value]) => (
             <label key={key} className="flex items-center gap-3 cursor-pointer">
               <div
-                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
-                  value ? "bg-gradient-to-b from-[#30797F] to-[#039DAA]" : "bg-gray-300"
-                }`}
+                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${value ? "bg-[#297280]" : "bg-gray-300"
+                  }`}
                 onClick={() => toggleNotificationType(key as keyof typeof notificationTypes)}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
-                    value ? "translate-x-6" : "translate-x-0"
-                  }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${value ? "translate-x-6" : "translate-x-0"
+                    }`}
                 ></div>
               </div>
               <span className="text-gray-700">
@@ -82,7 +78,7 @@ function NotificationsSettings() {
 
       {/* BOUTON TERMINER */}
       <div className="flex justify-end">
-        <button className="bg-gradient-to-b from-[#30797F] to-[#039DAA] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-gradient-to-b from-[#30797F] to-[#039DAA] transition-all">
+        <button className="bg-[#297280] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-[#297280] transition-all">
           Terminer
         </button>
       </div>

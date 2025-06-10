@@ -239,7 +239,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
           <div
             className="bg-white shadow-lg rounded-lg p-6"
             style={{
-              boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)",
+              boxShadow: "0 0 4px 1px #11355d69",
               borderRadius: "10px",
             }}
           >
@@ -318,7 +318,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
       <div className="my-2 bg-gray-100 flex gap-6">
         <div
           className="bg-white p-6 rounded-lg shadow-md w-1/2"
-          style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+          style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
         >
           <h2 className="text-lg font-semibold mb-4">Compétences</h2>
           {loading ? (
@@ -535,7 +535,7 @@ const CompetencesEtCriteresDocument: React.FC<CompetencesProps> = ({ sectors, lo
           {/* Right side: Critères and DocumentUploadModal */}
           <div className="flex flex-col w-1/2 gap-6">
             {/* Section Critères */}
-            <div className="bg-white p-6 rounded-lg shadow-md w-full" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+            <div className="bg-white p-6 rounded-lg shadow-md w-full" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
               <h2 className="text-lg font-semibold mb-4">Critères</h2>
 
               {/* Type de contrat */}

@@ -72,7 +72,7 @@ export default function Reglage() {
                       className={`flex justify-between items-center gap-3 p-3 rounded-lg text-lg font-semibold cursor-pointer
                       transition-all duration-200 
                       ${selectedMenu === item.id
-                          ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-transparent bg-clip-text"
+                          ? "bg-[#297280] text-transparent bg-clip-text"
                           : "hover:bg-gray-200 text-gray-700"}`}
                       onClick={() => handleMenuItemClick(item.id)}
                     >
@@ -92,7 +92,7 @@ export default function Reglage() {
         {/* Desktop Sidebar */}
         <aside
           className="hidden md:block w-72 bg-white shadow-lg rounded-lg p-4 h-fit"
-          style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
+          style={{ boxShadow: "0 0 4px 1px #00800033" }}
         >
           <ul className="space-y-2">
             {menuItems.map((item) => (
@@ -101,7 +101,7 @@ export default function Reglage() {
                 className={`flex justify-between items-center gap-3 p-3 rounded-lg text-lg font-semibold cursor-pointer
                 transition-all duration-200 
                 ${selectedMenu === item.id
-                    ? "bg-gradient-to-b from-[#30797F] to-[#039DAA] text-transparent bg-clip-text"
+                    ? "bg-[#297280] text-transparent bg-clip-text"
                     : "hover:bg-gray-200 text-gray-700"}`}
                 onClick={() => handleMenuItemClick(item.id)}
               >
@@ -118,7 +118,7 @@ export default function Reglage() {
         {/* Main Content */}
         <main
           className="flex-1 bg-white shadow-lg rounded-lg p-4 md:p-10 md:ml-6 mt-4 md:mt-0"
-          style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}
+          style={{ boxShadow: "0 0 4px 1px #00800033" }}
         >
           {renderContent()}
         </main>

@@ -113,7 +113,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({ isOpen, onClo
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="bg-gradient-to-b bg-[#30797F] text-white px-4 py-2 rounded-xl flex items-center space-x-2"
+              className="bg-gradient-to-b bg-[#297280] text-white px-4 py-2 rounded-xl flex items-center space-x-2"
             >
               <FaPlus size={16} />
               <span>Ajouter</span>
@@ -128,10 +128,10 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({ isOpen, onClo
 const DocumentsSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
-    <div className="p-4 bg-white shadow-md rounded-xl " style={{ boxShadow: "0 0 4px 1px rgba(0, 128, 0, 0.2)" }}>
+    <div className="p-4 bg-white shadow-md rounded-xl " style={{ boxShadow: "0 0 4px 1px #00800033" }}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Documents</h2>
-        <button className="text-[#30797F] hover:text-blue-700" onClick={() => setIsModalOpen(true)}>
+        <button className="text-[#297280] hover:text-blue-700" onClick={() => setIsModalOpen(true)}>
           <PlusCircle size={40} />
         </button>
       </div>

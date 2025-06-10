@@ -18,7 +18,7 @@ const Home = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <KeeeyLogo color="#30797F" />
+          <KeeeyLogo color="#297280" />
         </motion.div>
       </div>
 

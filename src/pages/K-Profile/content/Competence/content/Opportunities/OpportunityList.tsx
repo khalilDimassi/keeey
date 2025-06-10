@@ -246,7 +246,7 @@ const OpportunityList = ({
 
                                 {/* Match Percentage and Contract Type */}
                                 <div className="mt-2 flex items-center gap-2">
-                                    <div className="px-3 rounded-xl bg-[#9FC5C8] text-[#30797F] text-sm font-bold">
+                                    <div className="px-3 rounded-xl bg-[#9FC5C8] text-[#297280] text-sm font-bold">
                                         {calculateMatchPercentage(item)}
                                     </div>
                                     <span className="text-sm text-gray-700">Correspondent à votre profil</span>

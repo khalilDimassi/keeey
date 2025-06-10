@@ -52,7 +52,7 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
   return (
     <div
       className="bg-white p-6 rounded-lg shadow-md w-1/2"
-      style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}
+      style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
     >
       <h2 className="text-lg font-semibold mb-4">Critères</h2>
 

@@ -16,7 +16,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
     if (loading) {
         return (
             <div className="bg-white shadow rounded-lg p-4 animate-pulse"
-                style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+                style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
                 <div className="flex justify-between items-center mb-4">
                     <div className="h-6 w-1/4 bg-gray-200 rounded"></div>
                     <div className="h-6 w-6 bg-gray-200 rounded"></div>
@@ -44,7 +44,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
         org = null;
         return (
             <div className="bg-white shadow rounded-lg p-4 text-center"
-                style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+                style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
                 <div className="text-red-500 mb-2">⚠️ Erreur lors du chargement des données de l'organisation.</div>
                 <p className="text-sm text-gray-600">{error}</p>
             </div>
@@ -137,7 +137,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
     if (!org && !isAdding) {
         return (
             <div className="bg-white shadow rounded-lg p-4 text-center"
-                style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+                style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
                 <p className="text-gray-500 mb-4">Aucune donnée d'organisation disponible.</p>
                 <button
                     onClick={handleAddClick}
@@ -151,7 +151,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
 
     return (
         <div className="bg-white shadow rounded-lg p-4"
-            style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+            style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
             <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-semibold">Entreprise</h2>
                 <div className="flex gap-2">

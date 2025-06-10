@@ -68,7 +68,7 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
           <button
             key={tag}
             className={`px-4 py-2 rounded-xl text-sm flex items-center ${active
-              ? 'bg-[#30797F] border-gray-300 text-white'
+              ? 'bg-[#297280] border-gray-300 text-white'
               : 'bg-white border border-gray-300'
               }`}
             onClick={() => toggleTag('contract', tag)}
@@ -84,7 +84,7 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
           <button
             key={tag}
             className={`px-4 py-2 rounded-xl text-sm flex items-center ${active
-              ? 'bg-[#30797F] border-gray-300 text-white'
+              ? 'bg-[#297280] border-gray-300 text-white'
               : 'bg-white border border-gray-300'
               }`}
             onClick={() => toggleTag('company', tag)}
@@ -134,11 +134,11 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
             >
               <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full transform -translate-y-1/2"></div>
               <div
-                className="absolute top-1/2 left-0 h-1 bg-[#30797F] rounded-full transform -translate-y-1/2"
+                className="absolute top-1/2 left-0 h-1 bg-[#297280] rounded-full transform -translate-y-1/2"
                 style={{ width: `${criteria.distanceValue}%` }}
               ></div>
               <div
-                className="absolute top-1/2 w-3 h-3 bg-[#30797F] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-sm"
+                className="absolute top-1/2 w-3 h-3 bg-[#297280] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-sm"
                 style={{ left: `${criteria.distanceValue}%` }}
               ></div>
               <input

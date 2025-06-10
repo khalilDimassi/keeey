@@ -85,7 +85,7 @@ const ProfilePage: FC = () => {
           />
         </div>
 
-        <div className="bg-white shadow rounded-lg p-4 flex-1" style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        <div className="bg-white shadow rounded-lg p-4 flex-1" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
           <UsersCard />
         </div>
       </div>

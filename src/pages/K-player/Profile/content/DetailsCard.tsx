@@ -14,7 +14,7 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
   if (loading) {
     return (
       <div className="shadow bg-white rounded-lg p-4 animate-pulse"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <div className="flex items-center justify-between mb-4">
           <div className="h-6 w-1/3 bg-gray-200 rounded"></div>
           <div className="h-6 w-1/4 bg-gray-200 rounded"></div>
@@ -38,7 +38,7 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
   if (error) {
     return (
       <div className="shadow bg-white rounded-lg p-4 text-center"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <div className="text-red-500 mb-2">⚠️ Error loading profile</div>
         <p className="text-sm text-gray-600">{error}</p>
       </div>
@@ -48,7 +48,7 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
   if (!profile) {
     return (
       <div className="shadow bg-white rounded-lg p-4 text-center"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <p className="text-gray-500">No profile data available</p>
       </div>
     );
@@ -108,7 +108,7 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
 
   return (
     <div className="shadow bg-white rounded-lg p-4"
-      style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+      style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold">Mon profil</h2>
         <span className="text-sm bg-blue-100 text-[#215A96] px-8 py-1 rounded-xl font-bold">

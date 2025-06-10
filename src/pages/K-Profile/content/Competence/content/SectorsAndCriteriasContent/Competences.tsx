@@ -137,7 +137,7 @@ const Competences: FC<CompetencesProps> = ({
   if (error) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <h2 className="text-lg font-semibold mb-4">Compétences</h2>
         <div className="text-center py-8 text-red-500">
           <p className="font-medium">Couldn't load component data</p>
@@ -150,7 +150,7 @@ const Competences: FC<CompetencesProps> = ({
   if (loading) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl animate-pulse"
-        style={{ boxShadow: "0 0 4px 1px rgba(17, 53, 93, 0.41)", borderRadius: "10px" }}>
+        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
         <h2 className="text-lg font-semibold mb-4">Compétences</h2>
 
         {/* Skeleton for sectors */}
@@ -212,7 +212,7 @@ const Competences: FC<CompetencesProps> = ({
             className={`
                   flex items-center px-3 py-2 border shadow rounded-xl space-x-2
                   ${initialSelections?.some(s => s.id === sector.id)
-                ? 'bg-[#30797F] text-white'
+                ? 'bg-[#297280] text-white'
                 : 'border-black bg-gray-50 text-gray-700'
               }
                   ${!initialSelections?.some(s => s.id === sector.id) &&
@@ -246,7 +246,7 @@ const Competences: FC<CompetencesProps> = ({
               key={sector.id}
               type="button"
               className={`px-4 py-2 ${activeSector === sector.id
-                ? "bg-[#30797F] text-white"
+                ? "bg-[#297280] text-white"
                 : "border-black bg-gray-50 text-gray-700"
                 }`}
               onClick={() => setActiveSector(sector.id)}
@@ -291,11 +291,11 @@ const Competences: FC<CompetencesProps> = ({
                 >
                   <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-xl transform -translate-y-1/2"></div>
                   <div
-                    className="absolute top-1/2 left-0 h-2 bg-[#30797F] rounded-xl transform -translate-y-1/2"
+                    className="absolute top-1/2 left-0 h-2 bg-[#297280] rounded-xl transform -translate-y-1/2"
                     style={{ width: `${(currentLevel - 1) * 25}%` }}
                   ></div>
                   <div
-                    className="absolute top-1/2 w-5 h-5 bg-[#30797F] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md"
+                    className="absolute top-1/2 w-5 h-5 bg-[#297280] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md"
                     style={{ left: `${(currentLevel - 1) * 25}%` }}
                   ></div>
                   <input
@@ -337,7 +337,7 @@ const Competences: FC<CompetencesProps> = ({
                       <div className={`flex items-center justify-between p-3 ${isSelected ? 'bg-green-200' : 'bg-green-50'}`}>
                         <div className="flex items-center">
                           <span className={`px-3 py-2 rounded-xl ${isSelected
-                            ? 'bg-[#30797F] text-white'
+                            ? 'bg-[#297280] text-white'
                             : 'border border-gray-300 bg-white text-gray-700'
                             }`}>
                             {job.job}
@@ -346,10 +346,10 @@ const Competences: FC<CompetencesProps> = ({
                           {hasSkills && isSelected && (
                             <div className="ml-3 flex flex-wrap space-x-1">
                               {[...Array(Math.min(3, selectedSkillCount))].map((_, i) => (
-                                <div key={i} className="w-2 h-2 rounded-full bg-[#30797F]"></div>
+                                <div key={i} className="w-2 h-2 rounded-full bg-[#297280]"></div>
                               ))}
                               {selectedSkillCount > 3 && (
-                                <span className="text-xs text-[#30797F] ml-1">+{selectedSkillCount - 3}</span>
+                                <span className="text-xs text-[#297280] ml-1">+{selectedSkillCount - 3}</span>
                               )}
                             </div>
                           )}
@@ -371,7 +371,7 @@ const Competences: FC<CompetencesProps> = ({
                                   key={skill.id}
                                   type="button"
                                   className={`px-3 py-1 text-sm border rounded-xl ${isSkillSelected(activeSector, jobId, skill.id)
-                                    ? 'bg-[#30797F] text-white'
+                                    ? 'bg-[#297280] text-white'
                                     : 'border-gray-300 bg-white text-gray-700'
                                     }`}
                                   onClick={(e) => {

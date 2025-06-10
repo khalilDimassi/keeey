@@ -17,7 +17,7 @@ export default {
 			},
 			colors: {
 				'PartnerColer': '#A58E56',
-				'ProfilColer': '#30797F',
+				'ProfilColer': '#297280',
 				'PlayerColer': '#215A96',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

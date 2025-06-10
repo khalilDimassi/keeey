@@ -136,7 +136,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         <button
           style={{
             boxShadow: activeTab === "Informations"
-              ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
               : "none"
           }}
           className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Informations"
@@ -150,7 +150,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         <button
           style={{
             boxShadow: activeTab === "Compétences_Critères"
-              ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(40, 44, 40, 0.14)"
+              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #282c2824"
               : "none"
           }}
           className={`px-6 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "Compétences_Critères"
@@ -164,7 +164,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         <button
           style={{
             boxShadow: activeTab === "Candidates"
-              ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
               : "none"
           }}
           className={`px-6 py-2 flex items-center justify-center gap-2 font-medium transition-all relative ${activeTab === "Candidates"
@@ -178,7 +178,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         <button
           style={{
             boxShadow: activeTab === "Diffusion"
-              ? "0 -4px 4px -2px rgba(97, 102, 97, 0.11), 4px 0 4px -2px rgba(97, 102, 97, 0), -4px 0 4px -2px rgba(103, 109, 103, 0.14)"
+              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
               : "none"
           }}
           className={`px-6 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Diffusion"
