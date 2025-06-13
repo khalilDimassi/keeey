@@ -1,3 +1,5 @@
+import { jwtVerify, JWTPayload } from 'jose';
+
 const TOKEN_KEY = "auth_token";
 
 // Save JWT token in localStorage
@@ -30,6 +32,55 @@ export const getAuthHeader = () => {
     const token = getToken();
     return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
 };
+
+// Decode JWT Token
+interface KeeeyJwtPayload extends JWTPayload {
+    UserID: string;
+    Email: string;
+    Role: string;
+    Verified: boolean;
+    ExpiresAt: number;
+    IssuedAt: number;
+}
+
+export const decodeJwt = async (token: string | null): Promise<KeeeyJwtPayload | null> => {
+    if (!token) return null;
+    try {
+        // Note: jose uses Uint8Array for secrets, so we encode the string
+        const secretKey = new TextEncoder().encode(import.meta.env.JWT_SECRET);
+
+        const { payload } = await jwtVerify(token, secretKey);
+
+        // Type check (your existing type guard works perfectly)
+        if (isKeeeyJwtPayload(payload)) {
+            return payload;
+        }
+        return null;
+
+    } catch (error) {
+        console.error("JWT verification failed:", error);
+        return null;
+    }
+}
+
+export const isKeeeyJwtPayload = (payload: JWTPayload): payload is KeeeyJwtPayload => {
+    return (
+        typeof payload === 'object' &&
+        payload !== null &&
+        'UserID' in payload &&
+        typeof payload.UserID === 'string' &&
+        'Role' in payload &&
+        typeof payload.Role === 'string' &&
+        'Email' in payload &&
+        typeof payload.Email === 'string' &&
+        'Verified' in payload &&
+        typeof payload.Verified === 'boolean' &&
+        'IssuedAt' in payload &&
+        typeof payload.IssuedAt === 'number' &&
+        'ExpiresAt' in payload &&
+        typeof payload.ExpiresAt === 'number'
+    );
+}
 
 
 const USER_ID_KEY = "user_id";

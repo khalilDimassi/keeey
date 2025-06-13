@@ -4,16 +4,19 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut, Menu } from "lucide-react";
-import { getAuthHeader, isAuthenticated, removeToken, saveUserId } from "../../../utils/jwt";
+import { getAuthHeader, isAuthenticated, decodeJwt, getToken, removeToken, saveUserId } from "../../../utils/jwt";
 
 const Navbar = () => {
   const [authenticated, setAuthenticated] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     setAuthenticated(isAuthenticated());
+    const claims = decodeJwt(getToken());
+    setIsEmailVerified(claims ? claims.Verified : false);
   }, []);
 
   useEffect(() => {
@@ -61,6 +64,15 @@ const Navbar = () => {
         <div className="hidden md:block text-[#297280] font-semibold text-lg">
           {userName ? userName : "K-Profile"}{" "}
           <span className="text-gray-500">{userName ? "" : "(Guest)"}</span>
+        </div>
+
+        {/* Center right side: Email Verification Notification */}
+        <div className="flex items-center">
+          <a className="text-[#297280] font-semibold text-lg"
+            href="/EmailVerification"
+          >
+            {isEmailVerified && authenticated ? "Email verified" : ""}
+          </a>
         </div>
 
         {/* Right Side: Button */}
