@@ -50,9 +50,11 @@ const Navbar = () => {
     if (isLoading) return;
     setIsLoading(true);
     try {
-      // Mock API call - replace with actual axios call
-      console.log('Resending verification email...');
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Mock delay
+      await axios.get(import.meta.env.VITE_API_BASE_URL + '/api/v1/private/request-verification-email', {
+        headers: {
+          ...getAuthHeader()
+        }
+      });
     } catch (error) {
       console.error('Failed to resend verification email:', error);
     } finally {
