@@ -6,7 +6,7 @@ import KeeeyLogo from '../../assets/KeeyLogo';
 import axios from 'axios';
 
 const Navbar = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, _setAuthenticated] = useState(isAuthenticated());
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
@@ -14,22 +14,30 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAuthenticated(isAuthenticated());
-    if (authenticated) {
+    let isMounted = true;
+    if (isAuthenticated()) {
       axios
         .get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/profile`, {
           headers: getAuthHeader(),
         })
         .then((response) => {
-          const { first_name, last_name, ID, email_verified } = response.data.user;
-          setUserName(`${first_name} ${last_name}`);
-          saveUserId(ID);
-          setIsEmailVerified(email_verified);
+          if (isMounted) {
+            const { first_name, last_name, ID, email_verified } = response.data.user;
+            setUserName(`${first_name} ${last_name}`);
+            saveUserId(ID);
+            setIsEmailVerified(email_verified);
+          }
         })
         .catch((error) => {
-          console.error("Error fetching profile:", error);
+          if (isMounted) {
+            console.error("Error fetching profile:", error);
+          }
         });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const CreateAccountClick = () => {
