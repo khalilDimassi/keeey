@@ -72,10 +72,9 @@ const Navbar = () => {
         </div>
 
         {/* Center: Profile Name - Absolutely centered */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+        <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center gap-2">
           {authenticated && (
             <>
-              {/* Email Verification Icon - Small and before name */}
               <div className="flex items-center">
                 {isEmailVerified ? (
                   <div
@@ -99,7 +98,6 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* User Name */}
               <div className="text-[#297280] font-semibold text-lg whitespace-nowrap">
                 {userName || "K-Profile"}
                 {!userName && <span className="text-gray-500 ml-1">(Guest)</span>}
