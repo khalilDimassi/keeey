@@ -1,4 +1,4 @@
-import { jwtVerify, JWTPayload } from 'jose';
+import { jwtVerify, JWTPayload, decodeJwt as joseDecodeJwt } from 'jose';
 
 const TOKEN_KEY = "auth_token";
 
@@ -35,23 +35,44 @@ export const getAuthHeader = () => {
 
 // Decode JWT Token
 interface KeeeyJwtPayload extends JWTPayload {
-    UserID: string;
-    Email: string;
-    Role: string;
-    Verified: boolean;
-    ExpiresAt: number;
-    IssuedAt: number;
+    user_id: string;
+    email: string;
+    user_role: string;
+    exp: number;
+    iat: number;
+}
+
+export const decodeJwtUnsafe = (token: string | null): KeeeyJwtPayload | null => {
+    if (!token) return null;
+
+    try {
+        const payload = joseDecodeJwt(token);
+        if (isKeeeyJwtPayload(payload)) {
+            console.log('JWT Payload (typed):', JSON.stringify(payload, null, 2));
+            return payload;
+        }
+        console.log('JWT payload does not match expected structure');
+        return null;
+
+    } catch (error) {
+        console.error("JWT decoding failed:", error);
+        return null;
+    }
 }
 
 export const decodeJwt = async (token: string | null): Promise<KeeeyJwtPayload | null> => {
     if (!token) return null;
+
+    const jwtSecret = import.meta.env.VITE_JWT_SECRET;
+    if (!jwtSecret) {
+        console.warn('VITE_JWT_SECRET not available, falling back to unsafe decode');
+        return decodeJwtUnsafe(token);
+    }
+
     try {
-        // Note: jose uses Uint8Array for secrets, so we encode the string
-        const secretKey = new TextEncoder().encode(import.meta.env.JWT_SECRET);
-
+        // Note: jose uses Uint8Array for secrets, so we encode the string 
+        const secretKey = new TextEncoder().encode(jwtSecret);
         const { payload } = await jwtVerify(token, secretKey);
-
-        // Type check (your existing type guard works perfectly)
         if (isKeeeyJwtPayload(payload)) {
             return payload;
         }
@@ -59,7 +80,8 @@ export const decodeJwt = async (token: string | null): Promise<KeeeyJwtPayload |
 
     } catch (error) {
         console.error("JWT verification failed:", error);
-        return null;
+        console.warn('Falling back to unsafe decode for claims reading');
+        return decodeJwtUnsafe(token);
     }
 }
 
@@ -67,21 +89,18 @@ export const isKeeeyJwtPayload = (payload: JWTPayload): payload is KeeeyJwtPaylo
     return (
         typeof payload === 'object' &&
         payload !== null &&
-        'UserID' in payload &&
-        typeof payload.UserID === 'string' &&
-        'Role' in payload &&
-        typeof payload.Role === 'string' &&
-        'Email' in payload &&
-        typeof payload.Email === 'string' &&
-        'Verified' in payload &&
-        typeof payload.Verified === 'boolean' &&
-        'IssuedAt' in payload &&
-        typeof payload.IssuedAt === 'number' &&
-        'ExpiresAt' in payload &&
-        typeof payload.ExpiresAt === 'number'
+        'user_id' in payload &&
+        typeof payload.user_id === 'string' &&
+        'user_role' in payload &&
+        typeof payload.user_role === 'string' &&
+        'email' in payload &&
+        typeof payload.verified === 'boolean' &&
+        'iat' in payload &&
+        typeof payload.iat === 'number' &&
+        'exp' in payload &&
+        typeof payload.exp === 'number'
     );
 }
-
 
 const USER_ID_KEY = "user_id";
 

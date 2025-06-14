@@ -7,6 +7,7 @@ import RegisterPage from './pages/Auth/content/RegisterPage';
 import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
 import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
 import LayoutKProfile from './pages/K-Profile/LayoutKProfile';
+import EmailVerifLayout from './pages/Auth/content/EmailVerifLayout';
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         <Route path="/Layout/kprofile" element={<LayoutKProfile />} />
         <Route path="/Layout/kplayer" element={<LayoutKPlayer />} />
         <Route path="/Layout/kpartner" element={<LayoutKPartner />} />
+
+        <Route path="*" element={<EmailVerifLayout />} />
 
       </Routes>
     </Router>
