@@ -87,7 +87,7 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-gray-600 text-sm">Prénom</label>
+                            <label className="block text-gray-600 text-sm"><span className='text-red-500'>* </span>Prénom</label>
                             <input
                                 type="text"
                                 name="first_name"
@@ -100,7 +100,7 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 text-sm">Nom</label>
+                            <label className="block text-gray-600 text-sm"><span className='text-red-500'>* </span>Nom</label>
                             <input
                                 type="text"
                                 name="last_name"
@@ -115,7 +115,7 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
                     </div>
 
                     <div className="mt-3">
-                        <label className="block text-gray-600 text-sm">Adresse mail</label>
+                        <label className="block text-gray-600 text-sm"><span className='text-red-500'>* </span>Adresse mail</label>
                         <input
                             type="email"
                             name="email"
@@ -143,7 +143,7 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                         <div>
-                            <label className="block text-gray-600 text-sm">Mot de passe</label>
+                            <label className="block text-gray-600 text-sm"><span className='text-red-500'>* </span>Mot de passe</label>
                             <input
                                 type="password"
                                 name="password"
@@ -156,7 +156,7 @@ const RegisterForm = ({ userType, onRegister, error, isLoading }: RegisterFormPr
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 text-sm">Confirmer</label>
+                            <label className="block text-gray-600 text-sm"><span className='text-red-500'>* </span>Confirmer</label>
                             <input
                                 type="password"
                                 name="confirmPassword"
