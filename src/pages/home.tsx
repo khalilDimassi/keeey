@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { isAuthenticated, getAuthHeader, saveUserId } from '../utils/jwt';
 import KProfile from "./assets/k-profile.svg";
 import KPlayer from "./assets/k-player.svg";
 import KPartner from "./assets/k-partner.svg";
@@ -7,9 +10,59 @@ import KeeeyLogo from './assets/KeeyLogo';
 
 const Home = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      // First check if user is authenticated
+      if (!isAuthenticated()) {
+        setIsLoading(false);
+        return;
+      }
+
+      // If authenticated, fetch profile and redirect
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/profile`,
+          {
+            headers: getAuthHeader(),
+          }
+        );
+
+        const { ID, user_role } = response.data.user;
+        saveUserId(ID);
+
+        // Redirect based on role
+        if (user_role) {
+          const normalizedRole = user_role.toLowerCase().replace(/-/g, '');
+          navigate(`/Layout/${normalizedRole.toLowerCase()}`);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="mb-8">
+          <KeeeyLogo color="#297280" />
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#297280]"></div>
+          <span className="text-lg text-gray-600">Chargement...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className=" flex flex-col items-center py-4">
+    <div className="flex flex-col items-center py-4">
       {/* Logo aligné à gauche */}
       <div className="w-full px-6 mb-4 flex">
         <motion.div
@@ -47,7 +100,7 @@ const Home = () => {
           <motion.div
             key={index}
             onClick={() => navigate(`/Login/${image.alt}`)}
-            className={`cursor-pointer flex  justify-center ${image.colSpan || ""}`}
+            className={`cursor-pointer flex justify-center ${image.colSpan || ""}`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.3 }}

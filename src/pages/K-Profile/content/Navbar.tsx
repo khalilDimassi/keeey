@@ -87,12 +87,7 @@ const Navbar = () => {
             <>
               <div className="flex items-center">
                 {isEmailVerified ? (
-                  <div
-                    className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center"
-                    title="Email verified"
-                  >
-                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-                  </div>
+                  <></>
                 ) : (
                   <button
                     onClick={handleResendVerification}

@@ -21,11 +21,10 @@ const EmailVerifLayout = () => {
 
             if (response.ok) {
                 setStatus('success');
-                // Redirect after 2 seconds
                 console.log('Verification successful');
-                // setTimeout(() => {
-                //     window.location.href = '/';
-                // }, 2000);
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
             } else {
                 const errorData = await response.json().catch(() => ({}));
                 setErrorMessage(errorData.message || 'Verification failed');

@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { saveToken, saveUserId } from "../../utils/jwt";
-
-import LoginOptions from "./content/LoginOptions";
-import LoginPage from "./content/LoginPage";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { saveToken, saveUserId } from "../../utils/jwt";
 import KeeeyLogo from "../assets/KeeyLogo";
+import UnifiedAuthCard from "./content/UnifiedAuthCard";
 
 const LoginContainer = () => {
     const navigate = useNavigate();
@@ -15,6 +13,28 @@ const LoginContainer = () => {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Handle email step (check if user exists)
+    const handleEmailStep = async (email: string, userRole: string) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await axios.post(
+                import.meta.env.VITE_API_BASE_URL + "/api/v1/public/check-email",
+                { email, user_role: userRole }
+            );
+
+            // Backend returns { exists: boolean, requiresPassword: boolean }
+            return response.data;
+        } catch (error) {
+            setError("Error checking email. Please try again.");
+            console.error("Email check error:", error);
+            return { exists: false, requiresPassword: false };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle login with password
     const handleLogin = async (formData: { email: string; password: string; user_role: string }) => {
         setIsLoading(true);
         setError(null);
@@ -46,6 +66,52 @@ const LoginContainer = () => {
         }
     };
 
+    // Handle registration
+    const handleRegister = async (formData: any) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await axios.post(
+                import.meta.env.VITE_API_BASE_URL + "/api/v1/public/register",
+                formData
+            );
+
+            const token = response?.data?.token;
+            const userId = response?.data?.user?.ID || response?.data?.user?.id;
+
+            if (!token) throw new Error("Token is missing in the response.");
+
+            saveToken(token);
+            if (userId) saveUserId(userId);
+
+            // Determine redirect path based on user role
+            const redirectPath = formData.user_role === "K-PROFILE" ? "/Layout/kprofile" :
+                formData.user_role === "K-PLAYER" ? "/Layout/kplayer" :
+                    "/Layout/kpartner";
+
+            navigate(redirectPath);
+        } catch (error) {
+            setError("Registration failed. Please try again.");
+            console.error("Registration error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle social auth
+    const handleSocialAuth = async (provider: string, userRole: string) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            // Redirect to backend social auth endpoint
+            window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/auth/${provider}?role=${userRole}`;
+        } catch (error) {
+            setError(`${provider} authentication failed.`);
+            console.error("Social auth error:", error);
+            setIsLoading(false);
+        }
+    };
+
     // Configuration object for each user type
     const config = {
         kprofile: {
@@ -63,8 +129,6 @@ const LoginContainer = () => {
                 "<span class='text-[#297280] font-semibold'>Rester informé(e)</span> de la tendance du marché"
             ],
             guestPath: "/Layout/kprofile",
-            loginPage: <LoginPage userType={userType} onLogin={handleLogin} error={error || ""} isLoading={isLoading} />,
-            loginOptions: <LoginOptions userType={userType} />
         },
         kplayer: {
             color: "#215A96",
@@ -80,8 +144,6 @@ const LoginContainer = () => {
                 "<span class='text-[#215A96] font-semibold'>Rester informé(e)</span> de la tendance du marché"
             ],
             guestPath: "/LayoutKPlayer",
-            loginPage: <LoginPage userType={userType} onLogin={handleLogin} error={error || ""} isLoading={isLoading} />,
-            loginOptions: <LoginOptions userType={userType} />
         },
         kpartner: {
             color: "#A89B7B",
@@ -99,19 +161,17 @@ const LoginContainer = () => {
                 "<span class='text-[#A89B7B] font-semibold'>Garder le contrôle</span> sur la visibilité de vos profils"
             ],
             guestPath: "/Layout/KPartner",
-            loginPage: <LoginPage userType={userType} onLogin={handleLogin} error={error || ""} isLoading={isLoading} />,
-            loginOptions: <LoginOptions userType={userType} />
         }
     };
 
     const currentConfig = config[userType as keyof typeof config] || config.kprofile;
 
     return (
-        <div className="px-4">
-            <header className="w-full mt-4 h-16 flex items-center relative">
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+            <header className="w-full h-16 flex items-center justify-center relative px-4 mt-10">
                 <button
                     onClick={() => navigate("/")}
-                    className="ml-4 p-2 rounded-full hover:bg-gray-200 transition duration-300"
+                    className="absolute left-4 p-2 rounded-full hover:bg-gray-200 transition duration-300"
                 >
                     <ArrowLeft size={24} strokeWidth={2} className="text-gray-700 hover:text-gray-900" />
                 </button>
@@ -126,65 +186,95 @@ const LoginContainer = () => {
                 </motion.div>
             </header>
 
-            <main>
-                <div className="flex gap-10 px-20 flex-col md:flex-row w-full rounded-lg">
-                    {/* Features/Benefits Section */}
-                    <motion.div
-                        className="w-full mt-6 md:w-1/3 my-6 relative max-w-sm sm:max-w-md md:max-w-lg py-16 bg-white sm:p-2 shadow-lg rounded-2xl"
-                        style={{
-                            boxShadow: `0 1px 8px 3px ${currentConfig.color}${userType === 'kprofile' ? '66' : 'B3'}`,
-                            borderRadius: "16px"
-                        }}
-                        initial={{ x: -80, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 1 }}
-                    >
-                        <div className="max-w-sm mx-auto p-4 text-black">
-                            <ul className="list-disc pl-10 text-lg font-semibold">
-                                {currentConfig.features.map((feature, index) => (
-                                    <li key={index}>{feature}</li>
-                                ))}
-                            </ul>
+            {/* Main content - responsive layout */}
+            <main className="flex-1 flex items-center justify-center px-4 py-8">
+                <div className="w-full max-w-7xl">
+                    {/* Responsive grid layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
-                            <p
-                                className="mt-4"
-                                dangerouslySetInnerHTML={{ __html: currentConfig.description }}
-                            />
+                        {/* Features/Benefits Section */}
+                        <div className="flex justify-center">
+                            <div
+                                className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6"
+                                style={{
+                                    boxShadow: `0 1px 8px 3px ${currentConfig.color}${userType === 'kprofile' ? '66' : 'B3'}`,
+                                    borderRadius: "16px"
+                                }}
+                            >
+                                <div className="text-black">
+                                    {/* Features list */}
+                                    <div className="mb-6">
+                                        <ul className="space-y-2">
+                                            {currentConfig.features.map((feature, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="flex items-center text-lg font-semibold"
+                                                >
+                                                    <div
+                                                        className="w-2 h-2 rounded-full mr-3"
+                                                        style={{ backgroundColor: currentConfig.color }}
+                                                    />
+                                                    {feature}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
 
-                            <p className="mt-4 font-bold">Et vous souhaitez :</p>
-
-                            <ul className="mt-2 space-y-3">
-                                {currentConfig.benefits.map((benefit, index) => (
-                                    <li
-                                        key={index}
-                                        dangerouslySetInnerHTML={{ __html: benefit }}
+                                    {/* Description */}
+                                    <div
+                                        className="mb-6 text-gray-700"
+                                        dangerouslySetInnerHTML={{ __html: currentConfig.description }}
                                     />
-                                ))}
-                            </ul>
+
+                                    {/* Benefits */}
+                                    <div>
+                                        <p className="mb-4 font-bold text-gray-800">Et vous souhaitez :</p>
+                                        <ul className="space-y-3">
+                                            {currentConfig.benefits.map((benefit, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="flex items-start text-gray-700"
+                                                >
+                                                    <div
+                                                        className="w-1.5 h-1.5 rounded-full mt-2 mr-3 flex-shrink-0"
+                                                        style={{ backgroundColor: currentConfig.color }}
+                                                    />
+                                                    <span
+                                                        dangerouslySetInnerHTML={{ __html: benefit }}
+                                                    />
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </motion.div>
 
-                    {/* Login Form Section */}
-                    <div className="w-full md:w-1/3 py-6 rounded-lg">
-                        {currentConfig.loginPage}
-                    </div>
-
-                    {/* Login Options Section */}
-                    <div className="w-full md:w-1/3 py-6 rounded-lg">
-                        {currentConfig.loginOptions}
+                        {/* Auth Card Section */}
+                        <div className="flex justify-center">
+                            <UnifiedAuthCard
+                                userType={userType}
+                                onEmailStep={handleEmailStep}
+                                onLogin={handleLogin}
+                                onRegister={handleRegister}
+                                onSocialAuth={handleSocialAuth}
+                                error={error}
+                                isLoading={isLoading}
+                            />
+                        </div>
                     </div>
                 </div>
             </main>
 
-            <footer className="w-full mt-auto p-4 bg-white">
+            <footer className="w-full p-6 bg-white border-t">
                 <div className="flex justify-center">
                     <button
                         onClick={() => navigate(currentConfig.guestPath)}
-                        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-6 py-3 text-white rounded-xl flex items-center justify-center gap-8 shadow-md transition duration-300"
-                        style={{ background: currentConfig.color }}
+                        className="max-w-md w-full px-6 py-3 text-white rounded-xl flex items-center justify-center gap-4 shadow-md hover:shadow-lg transition duration-300 transform hover:scale-105"
+                        style={{ backgroundColor: currentConfig.color }}
                     >
-                        Essayer la plateforme en Mode Invité
-                        <svg width="20" height="30" viewBox="0 0 30 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <span className="font-medium">Essayer la plateforme en Mode Invité</span>
+                        <svg width="20" height="20" viewBox="0 0 30 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M25.1545 35.5678V0.432617H29.6205V35.5678H25.1545ZM0.591797 35.5678V0.432617L20.6886 18.0002L0.591797 35.5678Z" fill="white" />
                         </svg>
                     </button>

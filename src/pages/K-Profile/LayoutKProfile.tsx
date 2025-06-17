@@ -122,7 +122,7 @@ const LayoutKProfile = () => {
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
             onIconClick={handleIconClick}
-            defaultSelected={isOnline ? "dashboard" : "competence"}
+            defaultSelected="competence"
             horizontal={isSidebarHorizontal}
             setHorizontal={setIsSidebarHorizontal}
           />
