@@ -13,6 +13,7 @@ export interface UserData {
     phone: string;
     address: string;
     zip: string;
+    email_verified: boolean;
 }
 
 

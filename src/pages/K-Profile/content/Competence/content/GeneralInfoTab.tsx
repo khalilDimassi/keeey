@@ -1,8 +1,10 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { PencilLine, Building2, Check, X } from 'lucide-react';
+import { PencilLine, Building2, Check, X, AlertTriangle, BadgeCheck } from 'lucide-react';
 import { CompanyInfo, UserData } from '../types';
 import { fetchUserData, updateUserData } from '../services';
-import DocumentsSection from '../../../ProfileAfterLogin/DocumentsSection';
+import DocumentsSection from './DocumentsSection';
+import axios from 'axios';
+import { getAuthHeader } from '../../../../../utils/jwt';
 
 const GeneralInfoTab: FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,6 +19,7 @@ const GeneralInfoTab: FC = () => {
     phone: "",
     address: "",
     zip: "",
+    email_verified: false,
   });
 
   useEffect(() => {
@@ -141,6 +144,22 @@ const GeneralInfoTab: FC = () => {
     </div>
   );
 
+  const handleResendVerification = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await axios.get(import.meta.env.VITE_API_BASE_URL + '/api/v1/private/request-verification-email', {
+        headers: {
+          ...getAuthHeader()
+        }
+      });
+    } catch (error) {
+      console.error('Failed to resend verification email:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="animate-pulse">
@@ -221,7 +240,7 @@ const GeneralInfoTab: FC = () => {
                         {field.charAt(0).toUpperCase() + field.slice(1)}
                         <input
                           name={field}
-                          value={formData[field as keyof typeof formData]}
+                          value={String(formData[field as keyof typeof formData])}
                           onChange={handleInputChange}
                           className="w-full p-3 border rounded mt-1"
                           placeholder={field}
@@ -269,7 +288,30 @@ const GeneralInfoTab: FC = () => {
 
                 {/* Email */}
                 <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Adresse e-mail</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Adresse e-mail</span>
+                    {formData.email_verified ? (
+                      <BadgeCheck
+                        size={20}
+                        strokeWidth={2}
+                        fill="#297280"
+                        color='white'
+                      />
+                    ) : (
+                      <button
+                        onClick={handleResendVerification}
+                        disabled={loading}
+                        className="w-4 h-4 bg-orange-400 hover:bg-orange-500 rounded-full flex items-center justify-center transition-colors duration-200 group"
+                        title="Email not verified - Click to resend"
+                      >
+                        <AlertTriangle
+                          size={20}
+                          className={`w-2.5 h-2.5 text-white ${!loading ? 'animate-pulse' : ''}`}
+                          strokeWidth={2}
+                        />
+                      </button>
+                    )}
+                  </div>
                   <span className="text-base">{formData.email || '-'}</span>
                 </div>
 
