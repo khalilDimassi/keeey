@@ -1,17 +1,25 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { FaGoogle, FaApple, FaGithub, FaEnvelope, FaArrowLeft } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaGoogle, FaApple, FaGithub, FaEnvelope, FaArrowLeft, FaQuestionCircle, FaTimes, FaCheck, FaExclamationTriangle } from "react-icons/fa";
 
 type AuthStep = 'initial' | 'email-input' | 'password-input' | 'register-form';
 
 interface UnifiedAuthCardProps {
     userType: "kprofile" | "kplayer" | "kpartner";
-    onEmailStep: (email: string, userRole: string) => Promise<{ exists: boolean; requiresPassword: boolean }>;
+    onEmailStep: (email: string, userRole: string) => Promise<{ requiresPassword: boolean } | null>;
     onLogin: (formData: { email: string; password: string; user_role: string }) => void;
     onRegister: (formData: any) => void;
     onSocialAuth: (provider: string, userRole: string) => void;
+    onSupportTicket?: (ticketData: { email: string; subject: string; content: string }) => Promise<{ success: boolean; message?: string }>;
     error: string | null;
     isLoading: boolean;
+    clearError: () => void;
+}
+
+interface SupportTicket {
+    email: string;
+    subject: string;
+    content: string;
 }
 
 const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
@@ -20,11 +28,17 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
     onLogin,
     onRegister,
     onSocialAuth,
+    onSupportTicket,
     error,
-    isLoading
+    isLoading,
+    clearError
 }) => {
     const [step, setStep] = useState<AuthStep>('initial');
     const [email, setEmail] = useState('');
+    const [showSupportPopup, setShowSupportPopup] = useState(false);
+    const [supportLoading, setSupportLoading] = useState(false);
+    const [supportNotification, setSupportNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+    const [acceptTerms, setAcceptTerms] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -33,6 +47,11 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         company: '',
         user_role: userType === "kprofile" ? "K-PROFILE" :
             userType === "kplayer" ? "K-PLAYER" : "K-PARTNER"
+    });
+    const [supportTicket, setSupportTicket] = useState<SupportTicket>({
+        email: '',
+        subject: '',
+        content: ''
     });
 
     const config = {
@@ -64,6 +83,16 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         { provider: 'github', Icon: FaGithub, text: "Github", color: "text-gray-600" },
     ];
 
+    // Auto-hide support notification
+    useEffect(() => {
+        if (supportNotification) {
+            const timer = setTimeout(() => {
+                setSupportNotification(null);
+            }, 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [supportNotification]);
+
     const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email.trim()) return;
@@ -71,12 +100,16 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         const result = await onEmailStep(email, formData.user_role);
 
         setFormData(prev => ({ ...prev, email }));
+        setSupportTicket(prev => ({ ...prev, email }));
 
-        if (result.requiresPassword === true) {
-            setStep('password-input');
-        } else if (result.requiresPassword == null || result.requiresPassword == undefined) {
+        if (!result) {
             setStep('register-form');
+        } else if (result?.requiresPassword === true) {
+            setStep('password-input');
+        } else {
+            setStep('initial');
         }
+
     };
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -90,6 +123,9 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
 
     const handleRegisterSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!acceptTerms) {
+            return;
+        }
         onRegister(formData);
     };
 
@@ -97,12 +133,43 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         onSocialAuth(provider, formData.user_role);
     };
 
+    const handleSupportSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!onSupportTicket) return;
+
+        setSupportLoading(true);
+        try {
+            const result = await onSupportTicket(supportTicket);
+            setSupportNotification({
+                type: result.success ? 'success' : 'error',
+                message: result.message || (result.success ? 'Ticket envoyé avec succès!' : 'Erreur lors de l\'envoi du ticket')
+            });
+            if (result.success) {
+                setSupportTicket({ email: formData.email, subject: '', content: '' });
+            }
+        } catch (error) {
+            setSupportNotification({
+                type: 'error',
+                message: 'Erreur lors de l\'envoi du ticket'
+            });
+        } finally {
+            setSupportLoading(false);
+            setShowSupportPopup(false);
+        }
+    };
+
     const goBack = () => {
+        clearError(); // Clear error when going back
         if (step === 'password-input' || step === 'register-form') {
             setStep('email-input');
         } else if (step === 'email-input') {
             setStep('initial');
         }
+    };
+
+    const openSupportPopup = () => {
+        setSupportTicket(prev => ({ ...prev, email: formData.email || email }));
+        setShowSupportPopup(true);
     };
 
     const renderInitialStep = () => (
@@ -347,11 +414,39 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
                     />
                 </div>
 
+                <div className="flex items-start gap-3">
+                    <input
+                        type="checkbox"
+                        id="acceptTerms"
+                        checked={acceptTerms}
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        required
+                        disabled={isLoading}
+                    />
+                    <div className="flex-1 flex items-center gap-2">
+                        <label htmlFor="acceptTerms" className="text-sm text-gray-600">
+                            J'accepte les{" "}
+                            <a href="#" className="text-blue-600 hover:underline">
+                                conditions générales d'utilisation
+                            </a>
+                        </label>
+                        <button
+                            type="button"
+                            onClick={openSupportPopup}
+                            className="text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Signaler un problème"
+                        >
+                            <FaQuestionCircle size={16} />
+                        </button>
+                    </div>
+                </div>
+
                 <button
                     type="submit"
-                    className="w-full p-3 text-white rounded-xl hover:bg-opacity-90 transition text-sm font-medium"
+                    className="w-full p-3 text-white rounded-xl hover:bg-opacity-90 transition text-sm font-medium disabled:opacity-50"
                     style={{ background: currentConfig.color }}
-                    disabled={isLoading}
+                    disabled={isLoading || !acceptTerms}
                 >
                     {isLoading ? "Création..." : "Créer mon compte"}
                 </button>
@@ -359,31 +454,151 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         </motion.div>
     );
 
-    return (
+    const renderSupportPopup = () => (
         <motion.div
-            className="relative w-full max-w-md bg-white p-6 sm:p-8 shadow-lg rounded-2xl"
-            style={{ boxShadow: currentConfig.shadow }}
-            initial={{ x: -80, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={(e) => e.target === e.currentTarget && setShowSupportPopup(false)}
         >
-            <AnimatePresence mode="wait">
-                {step === 'initial' && renderInitialStep()}
-                {step === 'email-input' && renderEmailStep()}
-                {step === 'password-input' && renderPasswordStep()}
-                {step === 'register-form' && renderRegisterStep()}
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl"
+            >
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-gray-700">Support technique</h3>
+                    <button
+                        onClick={() => setShowSupportPopup(false)}
+                        className="p-1 rounded-full hover:bg-gray-100 transition"
+                        disabled={supportLoading}
+                    >
+                        <FaTimes className="text-gray-600" />
+                    </button>
+                </div>
+
+                <form onSubmit={handleSupportSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            value={supportTicket.email}
+                            onChange={(e) => setSupportTicket(prev => ({ ...prev, email: e.target.value }))}
+                            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 text-sm"
+                            required
+                            disabled={supportLoading}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                            Sujet
+                        </label>
+                        <input
+                            type="text"
+                            value={supportTicket.subject}
+                            onChange={(e) => setSupportTicket(prev => ({ ...prev, subject: e.target.value }))}
+                            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 text-sm"
+                            placeholder="Décrivez brièvement le problème"
+                            required
+                            disabled={supportLoading}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1">
+                            Description
+                        </label>
+                        <textarea
+                            value={supportTicket.content}
+                            onChange={(e) => setSupportTicket(prev => ({ ...prev, content: e.target.value }))}
+                            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 text-sm resize-none h-24"
+                            placeholder="Décrivez le problème en détail..."
+                            required
+                            disabled={supportLoading}
+                        />
+                    </div>
+
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setShowSupportPopup(false)}
+                            className="flex-1 p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition text-sm font-medium"
+                            disabled={supportLoading}
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            className="flex-1 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition text-sm font-medium disabled:opacity-50"
+                            disabled={supportLoading}
+                        >
+                            {supportLoading ? "Envoi..." : "Envoyer"}
+                        </button>
+                    </div>
+                </form>
+            </motion.div>
+        </motion.div>
+    );
+
+    return (
+        <>
+            <motion.div
+                className="relative w-full max-w-md bg-white p-6 sm:p-8 shadow-lg rounded-2xl"
+                style={{ boxShadow: currentConfig.shadow }}
+                initial={{ x: -80, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 1 }}
+            >
+                <AnimatePresence mode="wait">
+                    {step === 'initial' && renderInitialStep()}
+                    {step === 'email-input' && renderEmailStep()}
+                    {step === 'password-input' && renderPasswordStep()}
+                    {step === 'register-form' && renderRegisterStep()}
+                </AnimatePresence>
+
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+                    >
+                        <p className="text-red-600 text-sm text-center">{error}</p>
+                    </motion.div>
+                )}
+            </motion.div>
+
+            <AnimatePresence>
+                {showSupportPopup && renderSupportPopup()}
             </AnimatePresence>
 
-            {error && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
-                >
-                    <p className="text-red-600 text-sm text-center">{error}</p>
-                </motion.div>
-            )}
-        </motion.div>
+            <AnimatePresence>
+                {supportNotification && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -50, x: "-50%" }}
+                        animate={{ opacity: 1, y: 0, x: "-50%" }}
+                        exit={{ opacity: 0, y: -50, x: "-50%" }}
+                        className="fixed top-4 left-1/2 transform z-50 max-w-sm"
+                    >
+                        <div className={`p-4 rounded-lg shadow-lg flex items-center gap-3 ${supportNotification.type === 'success'
+                            ? 'bg-green-50 border border-green-200 text-green-800'
+                            : 'bg-red-50 border border-red-200 text-red-800'
+                            }`}>
+                            {supportNotification.type === 'success' ? (
+                                <FaCheck className="text-green-600 flex-shrink-0" />
+                            ) : (
+                                <FaExclamationTriangle className="text-red-600 flex-shrink-0" />
+                            )}
+                            <p className="text-sm font-medium">{supportNotification.message}</p>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 };
 

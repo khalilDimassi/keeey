@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, RefreshCw, Mail, AlertTriangle, Clock } from 'lucide-react';
-import { getAuthHeader } from '../../../utils/jwt';
+import { getAuthHeader } from '../../utils/jwt';
+
 
 const EmailVerifLayout = () => {
     const [status, setStatus] = useState('loading');
@@ -27,8 +28,15 @@ const EmailVerifLayout = () => {
                 }, 1000);
             } else {
                 const errorData = await response.json().catch(() => ({}));
-                setErrorMessage(errorData.message || 'Verification failed');
+                if (errorData.message === "User is already verified") {
+                    setStatus('already_verified');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 500);
+                    return;
+                }
 
+                setErrorMessage(errorData.message || 'Verification failed');
                 if (response.status >= 500) {
                     setErrorType('5xx');
                 } else if (response.status >= 400) {
@@ -58,6 +66,14 @@ const EmailVerifLayout = () => {
                 setStatus('resent');
             } else {
                 const errorData = await response.json().catch(() => ({}));
+                if (errorData.message === "User is already verified") {
+                    setStatus('already_verified');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 500);
+                    return;
+                }
+
                 setErrorMessage(errorData.message || 'Failed to resend verification email');
                 setStatus('error');
             }
@@ -116,16 +132,24 @@ const EmailVerifLayout = () => {
                     </div>
                 )}
                 {/* Success State */}
-                {status === 'success' && (
+                {(status === 'success' || status === 'already_verified') && (
                     <div className="space-y-6">
                         <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
                             <CheckCircle className="w-12 h-12 text-green-600" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-green-800 mb-2">Email Verified!</h1>
-                            <p className="text-gray-600 mb-4">Your email has been successfully verified.</p>
+                            <h1 className="text-2xl font-bold text-green-800 mb-2">
+                                {status === 'success' ? 'Email Verified!' : 'Already Verified!'}
+                            </h1>
+                            <p className="text-gray-600 mb-4">
+                                {status === 'success'
+                                    ? 'Your email has been successfully verified.'
+                                    : 'Your email was already verified.'}
+                            </p>
                             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                                <p className="text-green-700 text-sm">Redirecting you to the dashboard in a few seconds...</p>
+                                <p className="text-green-700 text-sm">
+                                    Redirecting you to the dashboard...
+                                </p>
                             </div>
                             <div className="flex justify-center">
                                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>

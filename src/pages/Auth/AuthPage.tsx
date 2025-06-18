@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { saveToken, saveUserId } from "../../utils/jwt";
 import KeeeyLogo from "../assets/KeeyLogo";
-import UnifiedAuthCard from "./content/UnifiedAuthCard";
+import UnifiedAuthCard from "./UnifiedAuthCard";
 
 const LoginContainer = () => {
     const navigate = useNavigate();
@@ -17,18 +17,27 @@ const LoginContainer = () => {
     const handleEmailStep = async (email: string, userRole: string) => {
         setIsLoading(true);
         setError(null);
+
         try {
-            const response = await axios.post(
-                import.meta.env.VITE_API_BASE_URL + "/api/v1/public/check-email",
+            const { data } = await axios.post<{ requiresPassword: boolean }>(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/check-email`,
                 { email, user_role: userRole }
             );
-
-            // Backend returns { exists: boolean, requiresPassword: boolean }
-            return response.data;
+            return data;
         } catch (error) {
-            setError("Error checking email. Please try again.");
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 404) {
+                    return null;
+                }
+                if (error.response?.status === 400) {
+                    setError("Invalid email format");
+                    return { requiresPassword: false };
+                }
+            }
+
+            setError("Error checking email. Please try again or use social login.");
             console.error("Email check error:", error);
-            return { exists: false, requiresPassword: false };
+            return { requiresPassword: false };
         } finally {
             setIsLoading(false);
         }
@@ -110,6 +119,46 @@ const LoginContainer = () => {
             console.error("Social auth error:", error);
             setIsLoading(false);
         }
+    };
+
+    const handleSupportTicket = async (ticketData: {
+        email: string;
+        subject: string;
+        content: string;
+    }): Promise<{ success: boolean; message?: string }> => {
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/support/tickets`,
+                {
+                    email: ticketData.email,
+                    subject: ticketData.subject,
+                    content: ticketData.content,
+                    timestamp: new Date().toISOString(),
+                    source: 'auth_form', // Track where ticket came from
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            return {
+                success: true,
+                message: response.data?.message || 'Votre ticket a été envoyé avec succès. Notre équipe vous contactera bientôt.'
+            };
+
+        } catch (error) {
+            console.error('Support ticket error:', error);
+            return {
+                success: false,
+                message: 'Impossible d\'envoyer le ticket. Veuillez réessayer plus tard.'
+            };
+        }
+    };
+
+    const clearError = () => {
+        setError(null);
     };
 
     // Configuration object for each user type
@@ -258,8 +307,10 @@ const LoginContainer = () => {
                                 onLogin={handleLogin}
                                 onRegister={handleRegister}
                                 onSocialAuth={handleSocialAuth}
+                                onSupportTicket={handleSupportTicket}
                                 error={error}
                                 isLoading={isLoading}
+                                clearError={clearError}
                             />
                         </div>
                     </div>
