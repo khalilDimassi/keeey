@@ -50,56 +50,6 @@ const Box: React.FC<BoxProps> = ({ title, children, className }) => {
 };
 
 
-const WorkInProgressBand: React.FC<{ className?: string; }> = ({ className = "" }) => {
-  return (
-    <div className={`relative overflow-hidden bg-yellow-400 ${className}`}>
-      {/* Animated gradient background */}
-      <div className="animate-pulse bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 h-full"></div>
-
-      {/* Scrolling text container */}
-      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center">
-        <div className="flex whitespace-nowrap">
-          {/* Single item that will be duplicated via CSS */}
-          <div className="inline-flex items-center animate-[scroll_8s_linear_infinite]">
-            {[...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
-              >
-                🚧 TRAVAUX EN COURS 🚧
-              </div>
-            ))}
-          </div>
-          {/* Mirror element for seamless looping */}
-          <div
-            className="inline-flex items-center animate-[scroll_8s_linear_infinite]"
-            aria-hidden="true"
-          >
-            {[...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
-              >
-                🚧 TRAVAUX EN COURS 🚧
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
 export default function Dashboard() {
   const [periode, setPeriode] = useState("cette semaine");
 
@@ -134,9 +84,15 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Layout en 2 colonnes */}
+      <div className={`relative bg-yellow-400 top-0 left-0 right-0 h-8 my-5 z-10`}>
+        <div className="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center">
+          <div className="inline-flex items-center bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4">
+            🚧 EN COURS DE CONSTRUCTION 🚧
+          </div>
+        </div>
+      </div>
 
-      <WorkInProgressBand className="absolute top-0 left-0 right-0 h-8 z-10" />
+      {/* Layout en 2 colonnes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Colonne Gauche */}
         <div className="md:col-span-2 space-y-6">

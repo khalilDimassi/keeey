@@ -180,56 +180,6 @@ const GeneralInfoTab: FC = () => {
     );
   }
 
-  const WorkInProgressBand: React.FC<{ className?: string; }> = ({ className = "" }) => {
-    return (
-      <div className={`relative overflow-hidden bg-yellow-400 ${className}`}>
-        {/* Animated gradient background */}
-        <div className="animate-pulse bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 h-full"></div>
-
-        {/* Scrolling text container */}
-        <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center">
-          <div className="flex whitespace-nowrap">
-            {/* Single item that will be duplicated via CSS */}
-            <div className="inline-flex items-center animate-[scroll_8s_linear_infinite]">
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
-                >
-                  🚧 TRAVAUX EN COURS 🚧
-                </div>
-              ))}
-            </div>
-            {/* Mirror element for seamless looping */}
-            <div
-              className="inline-flex items-center animate-[scroll_8s_linear_infinite]"
-              aria-hidden="true"
-            >
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
-                >
-                  🚧 TRAVAUX EN COURS 🚧
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
-      </div>
-    );
-  };
-
   return (
     <div className=" ">
       <div className="w-full mx-auto">
@@ -392,8 +342,24 @@ const GeneralInfoTab: FC = () => {
           </div>
 
           {/* Right Column - Company Info and Documents */}
-          <div className="bg-white   w-full md:w-[70%]">
-            <WorkInProgressBand className="absolute top-0 left-0 right-0 h-8 z-10" />
+          <div className="bg-white   w-full md:w-[70%] relative">
+            {/* Stylish Work in Progress Overlay */}
+            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
+              {/* Diagonal stripe pattern */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
+              </div>
+              {/* Text container */}
+              <div className="relative bg-white/90 border-2 border-gray-300 px-10 py-6 rounded-xl shadow-2xl">
+                {/* Main text */}
+                <div className="relative">
+                  <span className="text-3xl font-bold text-gray-800 tracking-wide inline-block transform rotate ">
+                    EN COURS DE CONSTRUCTION
+                  </span>
+                </div>
+              </div>
+            </div>
+
             {/* Company Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">

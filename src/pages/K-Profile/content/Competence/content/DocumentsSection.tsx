@@ -32,7 +32,7 @@ const DocumentCard: React.FC<{ document: Document; onDelete: (id: number) => voi
       {/* Delete button */}
       <button
         onClick={() => onDelete(document.id)}
-        className="absolute top-2 right-2 z-20 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors duration-200"
+        className="absolute top-2 right-2 z-5 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors duration-200"
         aria-label="Supprimer le document"
       >
         <Trash2 size={12} />
@@ -306,7 +306,7 @@ const DocumentsSection: React.FC = () => {
   const hasMoreDocuments = documents.length > 3;
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-xl relative overflow-hidden" style={{ boxShadow: "0 0 4px 1px #00800033" }}>
+    <div className="p-4 bg-white  rounded-xl relative overflow-hidden" >
 
       {/* Header */}
       <div className="flex justify-between items-center mb-4 mt-1">
