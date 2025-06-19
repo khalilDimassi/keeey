@@ -39,7 +39,6 @@ const GeneralInfoTab: FC = () => {
     }
   };
 
-
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
@@ -181,7 +180,6 @@ const GeneralInfoTab: FC = () => {
     );
   }
 
-
   const WorkInProgressBand: React.FC<{ className?: string; }> = ({ className = "" }) => {
     return (
       <div className={`relative overflow-hidden bg-yellow-400 ${className}`}>
@@ -271,7 +269,7 @@ const GeneralInfoTab: FC = () => {
               <>
                 <div className="space-y-4">
                   <div className="flex space-x-4 mb-4">
-                    {["Mr.", "Madame", "Autre"].map((option) => (
+                    {["M.", "Mme"].map((option) => (
                       <label key={option} className="flex items-center space-x-2">
                         <input
                           type="radio"
