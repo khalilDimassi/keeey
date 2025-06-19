@@ -49,6 +49,57 @@ const Box: React.FC<BoxProps> = ({ title, children, className }) => {
   );
 };
 
+
+const WorkInProgressBand: React.FC<{ className?: string; }> = ({ className = "" }) => {
+  return (
+    <div className={`relative overflow-hidden bg-yellow-400 ${className}`}>
+      {/* Animated gradient background */}
+      <div className="animate-pulse bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 h-full"></div>
+
+      {/* Scrolling text container */}
+      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center">
+        <div className="flex whitespace-nowrap">
+          {/* Single item that will be duplicated via CSS */}
+          <div className="inline-flex items-center animate-[scroll_8s_linear_infinite]">
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
+              >
+                🚧 TRAVAUX EN COURS 🚧
+              </div>
+            ))}
+          </div>
+          {/* Mirror element for seamless looping */}
+          <div
+            className="inline-flex items-center animate-[scroll_8s_linear_infinite]"
+            aria-hidden="true"
+          >
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4"
+              >
+                🚧 TRAVAUX EN COURS 🚧
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 export default function Dashboard() {
   const [periode, setPeriode] = useState("cette semaine");
 
@@ -57,7 +108,6 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-3 mt-1 mb-4">
-
           <svg width="32" height="33" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.5 21.0519C3.5 20.5072 3.71071 19.9848 4.08579 19.5996C4.46086 19.2144 4.96957 18.998 5.5 18.998H11.5C12.0304 18.998 12.5391 19.2144 12.9142 19.5996C13.2893 19.9848 13.5 20.5072 13.5 21.0519V27.2136C13.5 27.7583 13.2893 28.2807 12.9142 28.6659C12.5391 29.0511 12.0304 29.2675 11.5 29.2675H5.5C4.96957 29.2675 4.46086 29.0511 4.08579 28.6659C3.71071 28.2807 3.5 27.7583 3.5 27.2136V21.0519Z" fill="url(#paint0_linear_567_3764)" />
             <path d="M2.5 7.70232C2.5 7.1576 2.71071 6.63518 3.08579 6.25001C3.46086 5.86483 3.96957 5.64844 4.5 5.64844H11.5C12.0304 5.64844 12.5391 5.86483 12.9142 6.25001C13.2893 6.63518 13.5 7.1576 13.5 7.70232V14.8909C13.5 15.4356 13.2893 15.958 12.9142 16.3432C12.5391 16.7284 12.0304 16.9448 11.5 16.9448H4.5C3.96957 16.9448 3.46086 16.7284 3.08579 16.3432C2.71071 15.958 2.5 15.4356 2.5 14.8909V7.70232ZM15.5 21.0526C15.5 20.5078 15.7107 19.9854 16.0858 19.6002C16.4609 19.2151 16.9696 18.9987 17.5 18.9987H24.5C25.0304 18.9987 25.5391 19.2151 25.9142 19.6002C26.2893 19.9854 26.5 20.5078 26.5 21.0526V28.2411C26.5 28.7859 26.2893 29.3083 25.9142 29.6935C25.5391 30.0786 25.0304 30.295 24.5 30.295H17.5C16.9696 30.295 16.4609 30.0786 16.0858 29.6935C15.7107 29.3083 15.5 28.7859 15.5 28.2411V21.0526Z" fill="url(#paint1_linear_567_3764)" />
@@ -77,7 +127,6 @@ export default function Dashboard() {
               </linearGradient>
             </defs>
           </svg>
-
           <h1 className="text-xl font-semibold ">Keeey-board </h1>
         </div>
         <button className="flex items-center bg-[#297280] text-white px-4 py-2 rounded-2xl shadow hover:bg-teal-900">
@@ -86,6 +135,8 @@ export default function Dashboard() {
       </div>
 
       {/* Layout en 2 colonnes */}
+
+      <WorkInProgressBand className="absolute top-0 left-0 right-0 h-8 z-10" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Colonne Gauche */}
         <div className="md:col-span-2 space-y-6">
