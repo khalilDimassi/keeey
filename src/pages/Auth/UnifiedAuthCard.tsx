@@ -11,6 +11,7 @@ interface UnifiedAuthCardProps {
     onRegister: (formData: any) => void;
     onSocialAuth: (provider: string, userRole: string) => void;
     onSupportTicket?: (ticketData: { email: string; subject: string; content: string }) => Promise<{ success: boolean; message?: string }>;
+    onPasswordResetRequest?: (email: string) => Promise<{ success: boolean; message?: string }>;
     error: string | null;
     isLoading: boolean;
     clearError: () => void;
@@ -29,6 +30,7 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
     onRegister,
     onSocialAuth,
     onSupportTicket,
+    onPasswordResetRequest,
     error,
     isLoading,
     clearError
@@ -38,6 +40,8 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
     const [showSupportPopup, setShowSupportPopup] = useState(false);
     const [supportLoading, setSupportLoading] = useState(false);
     const [supportNotification, setSupportNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+    const [passwordResetLoading, setPasswordResetLoading] = useState(false);
+    const [passwordResetNotification, setPasswordResetNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
@@ -53,7 +57,6 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         subject: '',
         content: ''
     });
-
     const config = {
         kprofile: {
             title: "Accédez à votre compte K-Profile",
@@ -74,9 +77,7 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
             focusBorder: "focus:border-[#A89B7B]"
         }
     };
-
     const currentConfig = config[userType] || config.kprofile;
-
     const socialOptions = [
         { provider: 'google', Icon: FaGoogle, text: "Google", color: "text-red-500" },
         { provider: 'apple', Icon: FaApple, text: "Apple", color: "text-black" },
@@ -157,6 +158,27 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
             setShowSupportPopup(false);
         }
     };
+
+    const handlePasswordResetRequest = async (e: React.FormEvent) => {
+        e.preventDefault
+        if (!onPasswordResetRequest) return;
+
+        try {
+            setPasswordResetLoading(true)
+            const result = await onPasswordResetRequest(email);
+            setPasswordResetNotification({
+                type: result.success ? 'success' : 'error',
+                message: result.message || (result.success ? 'Mot de passe envoyé avec succès!' : 'Erreur lors de l\'envoi du Mot de passe')
+            });
+        } catch (error) {
+            setPasswordResetNotification({
+                type: 'error',
+                message: 'Erreur lors de l\'envoi du mot de passe'
+            });
+        } finally {
+            setPasswordResetLoading(false)
+        }
+    }
 
     const goBack = () => {
         clearError(); // Clear error when going back
@@ -301,9 +323,15 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Mot de passe
-                    </label>
+                    <div className="flex justify-between">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">Mot de passe</label>
+                        <p
+                            className="block text-sm font-medium text-gray-600 mb-2 hover:text-blue-600 cursor-pointer"
+                            onClick={handlePasswordResetRequest}
+                        >
+                            réinitialiser le mot de passe ?
+                        </p>
+                    </div>
                     <input
                         type="password"
                         value={formData.password}
@@ -314,7 +342,6 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
                         autoFocus
                     />
                 </div>
-
                 <button
                     type="submit"
                     className="w-full p-3 text-white rounded-xl hover:bg-opacity-90 transition text-sm font-medium"
@@ -565,9 +592,15 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+                        className={`mt-4 p-3 rounded-lg ${error.toLowerCase().includes("mailbox")
+                            ? "bg-green-50 border border-green-200"
+                            : "bg-red-50 border border-red-200"}`}
                     >
-                        <p className="text-red-600 text-sm text-center">{error}</p>
+                        <p className={`text-sm text-center ${error.toLowerCase().includes("mailbox")
+                            ? "text-green-600"
+                            : "text-red-600"}`}>
+                            {error}
+                        </p>
                     </motion.div>
                 )}
             </motion.div>

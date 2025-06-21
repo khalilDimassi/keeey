@@ -157,6 +157,30 @@ const LoginContainer = () => {
         }
     };
 
+    const handlePasswordResetRequest = async (email: string): Promise<{ success: boolean; message?: string }> => {
+        try {
+            setError(null);
+            setIsLoading(true);
+
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/password-reset-request`, { email: email }, { headers: { 'Content-Type': 'application/json', }, }
+            );
+
+            if (response.data.success) {
+                setError('New generated password in your mailbox');
+                return { success: true, message: 'New generated password in your mailbox' };
+            } else {
+                setError('Failed to request password reset');
+                return { success: false, message: 'Failed to request password reset' };
+            }
+        } catch (error) {
+            setError('Failed to request password reset. Please try again later.');
+            return { success: false, message: 'Failed to request password reset. Please try again later.' };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const clearError = () => {
         setError(null);
     };
@@ -308,6 +332,7 @@ const LoginContainer = () => {
                                 onRegister={handleRegister}
                                 onSocialAuth={handleSocialAuth}
                                 onSupportTicket={handleSupportTicket}
+                                onPasswordResetRequest={handlePasswordResetRequest}
                                 error={error}
                                 isLoading={isLoading}
                                 clearError={clearError}
