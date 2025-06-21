@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { MinimalSector, Sector } from "../../types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CompetencesProps {
   sectors: Sector[];
@@ -17,6 +18,7 @@ const Competences: FC<CompetencesProps> = ({
   onSelectionChange,
 }) => {
   const [activeSector, setActiveSector] = useState<number | null>(null);
+  const [sectorToDeactivate, setSectorToDeactivate] = useState<number | null>(null);
 
   useEffect(() => {
     if (initialSelections.length > 0 && !activeSector) {
@@ -29,11 +31,7 @@ const Competences: FC<CompetencesProps> = ({
   const toggleSector = (sectorId: number) => {
     const isSelected = initialSelections.some(s => s.id === sectorId);
     if (isSelected) {
-      const updatedSectors = initialSelections.filter(s => s.id !== sectorId);
-      onSelectionChange(updatedSectors);
-      if (activeSector === sectorId) {
-        setActiveSector(updatedSectors.length > 0 ? updatedSectors[0].id : null);
-      }
+      setSectorToDeactivate(sectorId);
     } else {
       if (initialSelections.length < 3) {
         const newSector = {
@@ -45,6 +43,17 @@ const Competences: FC<CompetencesProps> = ({
         setActiveSector(sectorId);
       }
     }
+  };
+
+  const confirmDeactivation = (confirm: boolean) => {
+    if (confirm && sectorToDeactivate !== null) {
+      const updatedSectors = initialSelections.filter(s => s.id !== sectorToDeactivate);
+      onSelectionChange(updatedSectors);
+      if (activeSector === sectorToDeactivate) {
+        setActiveSector(updatedSectors.length > 0 ? updatedSectors[0].id : null);
+      }
+    }
+    setSectorToDeactivate(null);
   };
 
   const handleSeniorityChange = (sectorId: number, value: number) => {
@@ -200,27 +209,28 @@ const Competences: FC<CompetencesProps> = ({
 
   return (
     <div
-      className="bg-white  w-full max-w-3xl"
+      className="bg-white  w-full"
     >
       {/* Secteur */}
-      <p className=" font-semibold mb-2">Secteur</p>
-      <div className="flex flex-wrap gap-2 mb-5">
+      <p className="font-semibold mb-2">Secteur</p>
+      <div className="flex flex-wrap gap-2 mb-5 w-full">
         {sectors.map((sector) => (
           <button
             key={sector.id}
             type="button"
             className={`
-                  flex items-center px-3 py-2 border shadow rounded-xl space-x-2
-                  ${initialSelections?.some(s => s.id === sector.id)
+        flex items-center px-3 py-2 border shadow rounded-xl space-x-2
+        whitespace-nowrap flex-grow-0 flex-shrink-0
+        ${initialSelections?.some(s => s.id === sector.id)
                 ? 'bg-[#297280] text-white'
                 : 'border-black bg-gray-50 text-gray-700'
               }
-                  ${!initialSelections?.some(s => s.id === sector.id) &&
+        ${!initialSelections?.some(s => s.id === sector.id) &&
                 initialSelections?.length >= 3
                 ? 'opacity-50'
                 : ''
               }
-                `}
+      `}
             onClick={() => toggleSector(sector.id)}
             disabled={
               !initialSelections?.some(s => s.id === sector.id) &&
@@ -232,6 +242,10 @@ const Competences: FC<CompetencesProps> = ({
               {initialSelections?.some(s => s.id === sector.id) ? "-" : "+"}
             </span>
           </button>
+        ))}
+        {/* Add invisible filler items to prevent sparse last row */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={`filler-${i}`} className="flex-grow h-0" />
         ))}
       </div>
 
@@ -262,20 +276,52 @@ const Competences: FC<CompetencesProps> = ({
         <>
           {((activeSector) => {
             const seniorityLevels = [
-              { level: 1, name: "Junior", description: "1 - 4 ans" },
-              { level: 2, name: "Mid-Level", description: "5 - 9 ans" },
-              { level: 3, name: "Senior", description: "10 - 14 ans" },
-              { level: 4, name: "Lead", description: "15 - 19 ans" },
-              { level: 5, name: "Principal", description: "20+ ans" },
+              { level: 1, name: "Junior" },
+              { level: 2, name: "Mid-Level" },
+              { level: 3, name: "Senior" },
+              { level: 4, name: "Lead" },
+              { level: 5, name: "Principal" },
             ];
-            const currentLevel = getSeniority(activeSector);
-            const currentSeniority = seniorityLevels.find(level => level.level === currentLevel);
+
+            // Convert between point value (0-21) and display level (1-5)
+            const getDisplayLevel = (points: number) => {
+              if (points <= 4) return 1;
+              if (points <= 9) return 2;
+              if (points <= 14) return 3;
+              if (points <= 19) return 4;
+              return 5;
+            };
+
+            const currentPoints = getSeniority(activeSector); // Now expects 0-21
+            const currentDisplayLevel = getDisplayLevel(currentPoints);
+            const currentSeniority = seniorityLevels.find(level => level.level === currentDisplayLevel);
+
+            const handlePointsChange = (newPoints: number) => {
+              const clamped = Math.min(21, Math.max(0, newPoints));
+              handleSeniorityChange(activeSector, clamped);
+            };
 
             return (
               <div className="my-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span className="font-medium">{currentSeniority?.name}</span>
-                  <span>{currentSeniority?.description}</span>
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePointsChange(currentPoints - 1)}
+                      disabled={currentPoints <= 0}
+                      className="p-1 text-gray-500 hover:text-[#297280] disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" color="#297280" strokeWidth={5} />
+                    </button>
+                    <span className="font-medium">{currentSeniority?.name}</span>
+                    <button
+                      onClick={() => handlePointsChange(currentPoints + 1)}
+                      disabled={currentPoints >= 21}
+                      className="p-1 text-gray-500 hover:text-[#297280] disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="h-4 w-4" color="#297280" strokeWidth={5} />
+                    </button>
+                  </div>
+                  <span>{(currentPoints > 20) ? "20+" : currentPoints}</span>
                 </div>
 
                 <div
@@ -283,33 +329,37 @@ const Competences: FC<CompetencesProps> = ({
                   onClick={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const percent = (e.clientX - rect.left) / rect.width;
-                    const newValue = Math.min(5, Math.max(1, Math.round(percent * 5)));
-                    if (newValue !== currentLevel) {
-                      handleSeniorityChange(activeSector, newValue);
-                    }
+                    const newValue = Math.min(21, Math.max(0, Math.round(percent * 21)));
+                    handlePointsChange(newValue);
                   }}
                 >
                   <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-xl transform -translate-y-1/2"></div>
                   <div
                     className="absolute top-1/2 left-0 h-2 bg-[#297280] rounded-xl transform -translate-y-1/2"
-                    style={{ width: `${(currentLevel - 1) * 25}%` }}
+                    style={{ width: `${(currentPoints / 21) * 100}%` }}
                   ></div>
                   <div
-                    className="absolute top-1/2 w-5 h-5 bg-[#297280] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md"
-                    style={{ left: `${(currentLevel - 1) * 25}%` }}
+                    className="absolute top-1/2 w-5 h-5 bg-[#297280] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md transition-all duration-100"
+                    style={{ left: `${(currentPoints / 21) * 100}%` }}
                   ></div>
                   <input
                     type="range"
-                    min="1"
-                    max="5"
-                    value={currentLevel}
-                    onChange={(e) => handleSeniorityChange(activeSector, parseInt(e.target.value))}
+                    min="0"
+                    max="21"
+                    value={currentPoints}
+                    onChange={(e) => handlePointsChange(parseInt(e.target.value))}
                     className="absolute w-full h-full opacity-0 cursor-pointer"
                   />
                 </div>
+
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
                   {seniorityLevels.map((level) => (
-                    <span key={level.level}>{level.level}</span>
+                    <span
+                      key={level.level}
+                      className={currentDisplayLevel === level.level ? "font-bold text-[#297280]" : ""}
+                    >
+                      {level.level}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -393,6 +443,30 @@ const Competences: FC<CompetencesProps> = ({
             );
           })()}
         </>
+      )}
+
+      {sectorToDeactivate !== null && (
+        <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#297280] rounded-md p-6 max-w-md w-full shadow-xl">
+            <p className="text-gray-600 mb-6">
+              Êtes-vous sûr ? Toutes les configurations du secteur seront perdues !
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => confirmDeactivation(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => confirmDeactivation(true)}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Remove Sector
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

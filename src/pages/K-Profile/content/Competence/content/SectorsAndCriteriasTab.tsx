@@ -31,7 +31,7 @@ const SectorsAndCriteriasTab: React.FC = () => {
         'OTHER': false,
       },
       mobility: {
-        'Locale': true,
+        'Locale': false,
         'Régionale': false,
         'France': false,
         'Internationale': false
@@ -160,43 +160,37 @@ const SectorsAndCriteriasTab: React.FC = () => {
 
 
   return (
-    <div className="w-full mx-auto p-6">
-      <div className="flex flex-wrap -mx-4">
-        <div className="w-full md:w-1/2 px-4 mb-8">
-          <Competences
-            sectors={state.sectors}
-            loading={state.loading}
-            error={state.error}
-            initialSelections={state.selections}
-            onSelectionChange={(newSelections) => setState(prev => ({
-              ...prev,
-              selections: newSelections,
-              sectorsChanged: true
-            }))}
-          />
-        </div>
-        <div className="w-full md:w-1/2 px-4">
-          <Criteria
-            criteria={state.criteria}
-            onCriteriaChange={(updates) => setState(prev => ({
-              ...prev,
-              criteriaChanged: true,
-              criteria: { ...prev.criteria, ...updates }
-            }))}
-          />
-          {/* Add the shared save button */}
-          {(state.sectorsChanged || state.criteriaChanged) && (
-            <div className="bottom-4 right-4">
-              <button
-                onClick={handleSaveAll}
-                disabled={state.loading}
-                className="bg-[#297280] text-white px-6 py-3 rounded-xl shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50"
-              >
-                {state.loading ? 'Saving...' : 'Save All Changes'}
-              </button>
-            </div>
-          )}
-        </div>
+    <div className="w-full flex flex-wrap -mx-4">
+      <div className="w-full md:w-1/2 px-4 mb-8">
+        <Competences
+          sectors={state.sectors}
+          loading={state.loading}
+          error={state.error}
+          initialSelections={state.selections}
+          onSelectionChange={(newSelections) => setState(prev => ({
+            ...prev,
+            selections: newSelections,
+            sectorsChanged: true
+          }))}
+        />
+      </div>
+      <div className="w-full md:w-1/2 px-4">
+        <Criteria
+          criteria={state.criteria}
+          onCriteriaChange={(updates) => setState(prev => ({
+            ...prev,
+            criteriaChanged: true,
+            criteria: { ...prev.criteria, ...updates }
+          }))}
+        />
+        {/* Add the shared save button */}
+        <button
+          onClick={handleSaveAll}
+          disabled={state.loading || !(state.criteriaChanged || state.sectorsChanged)}
+          className="bg-[#297280] text-white px-6 py-3 rounded-xl shadow-lg  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50 flex justify-self-start ml-10"
+        >
+          {state.loading ? 'Saving...' : 'Save All Changes'}
+        </button>
       </div>
     </div>
   );

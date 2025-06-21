@@ -17,6 +17,12 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
     });
   };
 
+  const HandleSalaryChange = (field: 'crit_daily_rate' | 'crit_yearly_rate', value: number) => {
+    onCriteriaChange({
+      [field]: value,
+    });
+  }
+
   const toggleMobility = (option: string) => {
     onCriteriaChange({
       mobility: {
@@ -94,8 +100,26 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
         ))}
       </div>
 
+      <h3 className="mb-2 font-semibold">TJM - Prétentions salarialess</h3>
+      <div className="flex gap-3 my-3">
+        <input
+          type="number"
+          value={criteria.crit_daily_rate}
+          onChange={(e) => HandleSalaryChange('crit_daily_rate', Number(e.target.value))}
+          className="border border-gray-300 rounded-xl p-2 w-1/5"
+        />
+        <label className="flex items-center justify-start w-1/5">€ HT / jour</label>
+        <input
+          type="number"
+          value={criteria.crit_yearly_rate}
+          onChange={(e) => HandleSalaryChange('crit_yearly_rate', Number(e.target.value))}
+          className="border border-gray-300 rounded-xl p-2 w-1/5"
+        />
+        <label className="flex items-center justify-start w-1/5">€ brut / an</label>
+      </div>
+
+      <h3 className="mb-2 font-semibold">Mobilité</h3>
       <div className="mb-6">
-        <label className="block font-semibold mb-2">Mobilité</label>
         <div className="flex flex-wrap gap-6 mb-2">
           {Object.entries(criteria.mobility).map(([option, checked]) => (
             <label key={option} className="flex items-center">
@@ -110,15 +134,13 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
           ))}
         </div>
         <div className='flex gap-2 items-center justify-center'>
-          <div>
-            <input
-              type="text"
-              placeholder="Ville"
-              value={criteria.location}
-              onChange={(e) => handleLocationChange(e.target.value)}
-              className="border border-gray-300 rounded-xl p-2 w-full"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Ville"
+            value={criteria.location}
+            onChange={(e) => handleLocationChange(e.target.value)}
+            className="border border-gray-300 rounded-xl p-2 w-1/3"
+          />
           <div className="w-full">
             <div className="flex justify-between text-xs mb-1">
               <span>{criteria.distanceValue} km</span>
@@ -156,8 +178,8 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
         </div>
       </div>
 
+      <h3 className="mb-2 font-semibold">Mode de transport</h3>
       <div className="mb-6">
-        <label className="block font-semibold mb-2">Mode de transport</label>
         <div className="space-y-3">
           <label className="flex items-center">
             <input
@@ -195,8 +217,8 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
         </div>
       </div>
 
+      <h3 className="mb-2 font-semibold">Disponibilité</h3>
       <div className="mb-6">
-        <label className="block font-semibold mb-2">Disponibilité</label>
         <div className="flex flex-wrap items-center gap-6">
           <label className="flex items-center">
             <input

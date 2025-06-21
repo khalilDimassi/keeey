@@ -186,8 +186,8 @@ export interface CriteriaFormData {
     distanceValue: number;
     transportMode: string;
     availability: string;
-    crit_daily_rate?: number;
-    crit_yearly_rate?: number;
+    crit_daily_rate: number;
+    crit_yearly_rate: number;
 }
 
 export interface ResumeSearchingDetails {
