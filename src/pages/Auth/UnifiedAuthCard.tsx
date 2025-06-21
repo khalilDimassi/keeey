@@ -40,8 +40,6 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
     const [showSupportPopup, setShowSupportPopup] = useState(false);
     const [supportLoading, setSupportLoading] = useState(false);
     const [supportNotification, setSupportNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-    const [passwordResetLoading, setPasswordResetLoading] = useState(false);
-    const [passwordResetNotification, setPasswordResetNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
@@ -164,19 +162,9 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
         if (!onPasswordResetRequest) return;
 
         try {
-            setPasswordResetLoading(true)
-            const result = await onPasswordResetRequest(email);
-            setPasswordResetNotification({
-                type: result.success ? 'success' : 'error',
-                message: result.message || (result.success ? 'Mot de passe envoyé avec succès!' : 'Erreur lors de l\'envoi du Mot de passe')
-            });
+            await onPasswordResetRequest(email);
         } catch (error) {
-            setPasswordResetNotification({
-                type: 'error',
-                message: 'Erreur lors de l\'envoi du mot de passe'
-            });
-        } finally {
-            setPasswordResetLoading(false)
+            console.error(error)
         }
     }
 
