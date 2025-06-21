@@ -1,6 +1,8 @@
 import { ChevronDown, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-// Components
+import { ResumeData } from "../types";
+import { fetchResumeData } from "../services";
+
 import Experience from "./resumeContent/Experience";
 import Profil from "./resumeContent/Profile";
 import PersonalInfo from "./resumeContent/PersonalInfo";
@@ -13,13 +15,10 @@ import Qualites from "./resumeContent/Qualites";
 import Formation from "./resumeContent/Formation";
 import Outils from "./resumeContent/Outils";
 import Autorisations from "./resumeContent/Autorisations";
-import { ResumeData } from "../types";
-import { fetchResumeData } from "../services";
 
 
 function ResumeTab() {
   const [activeSection, setActiveSection] = useState("Informations personnelles");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
@@ -110,61 +109,47 @@ function ResumeTab() {
   };
 
   return (
-    <>
-      {/* Top Header */}
-      <div className=" mx-auto  py-1">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center justify-between w-full sm:w-auto">
-            <button className="sm:hidden text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <Menu size={24} />
+    <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-4">
+      <div className="flex gap-8">
+        {/* Left Column - Navigation */}
+        <div className="w-1/5">
+          <div className="flex-row space-y-2 my-2">
+            <button className="bg-white text-teal-800 px-4 w-full py-2 rounded-3xl border border-teal-800 hover:bg-gray-100">
+              Télécharger un CV existant
+            </button>
+            <button className="bg-white text-teal-800 px-4 w-full py-2 rounded-3xl border border-teal-800 hover:bg-gray-100">
+              Importer votre profil LinkedIn
             </button>
           </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-8xl bg-white mx-auto px-4 sm:px-6 py-8"   >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Dynamic Content */}
-          <div className="lg:col-span-8 order-1 lg:order-2">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium">{activeSection}</h2>
-              </div>
-              {renderSection()}
-            </div>
+          <div className="space-y-2">
+            {sections.map((section, index) => (
+              <button
+                key={index}
+                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors 
+                  ${activeSection === section ?
+                    "bg-[#297280] text-white" :
+                    "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                onClick={() => { setActiveSection(section); }}
+              >
+                <span>{section}</span>
+                <ChevronDown size={20} />
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Right Column - Navigation */}
-          <div className={`lg:col-span-4 order-2 lg:order-1 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
-            <div className="flex justify-center gap-4 mt-4 mb-4">
-              <button className="bg-white text-teal-800 px-4 w-1/2 py-2 rounded-3xl border border-teal-800 hover:bg-gray-100">
-                Télécharger un CV existant
-              </button>
-              <button className="bg-white text-teal-800 px-4 w-1/2 py-2 rounded-3xl border border-teal-800 hover:bg-gray-100">
-                Importer votre profil LinkedIn
-              </button>
+        {/* Right Column - Dynamic Content */}
+        <div className="w-4/5">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">{activeSection}</h2>
             </div>
-            <div className="space-y-2">
-              {sections.map((section, index) => (
-                <button
-                  key={index}
-                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors ${activeSection === section ? "bg-[#297280] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  onClick={() => {
-                    setActiveSection(section);
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <span>{section}</span>
-                  <ChevronDown size={20} />
-                </button>
-              ))}
-            </div>
+            {renderSection()}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

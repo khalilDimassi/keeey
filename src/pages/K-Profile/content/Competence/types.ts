@@ -22,6 +22,7 @@ export interface PersonalData {
     last_name: string;
     title: string;
     email: string;
+    verified: boolean;
     phone: string;
     gender: string;
     img: string;
@@ -32,7 +33,7 @@ export interface PersonalData {
     birthplace: string;
     driving_permit: string;
     nationality: string;
-    linked_in: string;
+    linkedin: string;
     description: string;
 }
 

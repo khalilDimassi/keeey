@@ -60,6 +60,7 @@ export const fetchResumeData = async (): Promise<ResumeData> => {
                 last_name: resumeData.personal_info?.last_name || '',
                 title: resumeData.personal_info?.title || '',
                 email: resumeData.personal_info?.email || '',
+                verified: resumeData.personal_info?.verified || false,
                 phone: resumeData.personal_info?.phone || '',
                 gender: resumeData.personal_info?.gender || '',
                 img: resumeData.personal_info?.img || '',
@@ -70,7 +71,7 @@ export const fetchResumeData = async (): Promise<ResumeData> => {
                 birthplace: resumeData.personal_info?.birthplace || '',
                 driving_permit: resumeData.personal_info?.driving_permit || '',
                 nationality: resumeData.personal_info?.nationality || '',
-                linked_in: resumeData.personal_info?.linked_in || '',
+                linkedin: resumeData.personal_info?.linkedin || '',
                 description: resumeData.personal_info?.description || '',
             },
             trainings: resumeData.trainings || [],
@@ -141,4 +142,14 @@ export const saveCriteria = async (criteria: OpportunitiesSearchCriterias): Prom
             }
         }
     );
+};
+
+export const saveProfileImage = async (imageData: any, cropData: any) => {
+    // Placeholder service call
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log('Saving image:', { imageData, cropData });
+            resolve({ success: true, url: imageData });
+        }, 1000);
+    });
 };
