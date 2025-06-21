@@ -1,4 +1,4 @@
-import { ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ResumeData } from "../types";
 import { fetchResumeData } from "../services";
@@ -16,25 +16,29 @@ import Formation from "./resumeContent/Formation";
 import Outils from "./resumeContent/Outils";
 import Autorisations from "./resumeContent/Autorisations";
 
-
 function ResumeTab() {
   const [activeSection, setActiveSection] = useState("Informations personnelles");
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const sections = [
+  const [showOptionalPopup, setShowOptionalPopup] = useState(false);
+
+  const obligatorySections = [
     "Informations personnelles",
     "Profil",
     "Formations",
-    "Expérience professionnelle",
-    "Langue",
-    "Centre d'intérêt",
+    "Expériences",
     "Compétences",
+    "Langue"
+  ];
+
+  const optionalSections = [
+    "Outils",
     "Certificats",
     "Qualités",
     "Réalisations",
-    "Outils",
     "Autorisations",
+    "Centre d'intérêt"
   ];
 
   const fetchResume = async () => {
@@ -58,6 +62,49 @@ function ResumeTab() {
   const handleDataUpdated = () => {
     fetchResume();
   };
+
+  // Check if a section is empty based on resumeData
+  const isSectionEmpty = (section: string): boolean => {
+    if (!resumeData) return true;
+
+    switch (section) {
+      case "Informations personnelles":
+        return !resumeData.personalInfo || Object.keys(resumeData.personalInfo).length === 0;
+      case "Profil":
+        return !resumeData.personalInfo?.description || resumeData.personalInfo.description.trim() === "";
+      case "Formations":
+        return !resumeData.trainings || resumeData.trainings.length === 0;
+      case "Expériences":
+        return !resumeData.experiences || resumeData.experiences.length === 0;
+      case "Compétences":
+        return !resumeData.sectors || resumeData.sectors.length === 0;
+      case "Langue":
+        return !resumeData.languages || resumeData.languages.length === 0;
+      case "Outils":
+        return !resumeData.tools || resumeData.tools.length === 0;
+      case "Certificats":
+        return !resumeData.certifications || resumeData.certifications.length === 0;
+      case "Qualités":
+        return !resumeData.qualities || resumeData.qualities.length === 0;
+      case "Centre d'intérêt":
+        return !resumeData.interests || resumeData.interests.length === 0;
+      case "Réalisations":
+        return !resumeData.projects || resumeData.projects.length === 0;
+      case "Autorisations":
+        return !resumeData.authorizations || resumeData.authorizations.length === 0;
+      default:
+        return true;
+    }
+  };
+
+  // Get sections that should be displayed (obligatory + non-empty optional)
+  const visibleSections = [
+    ...obligatorySections,
+    ...optionalSections.filter(section => !isSectionEmpty(section))
+  ];
+
+  // Get optional sections that are empty and can be added
+  const addableOptionalSections = optionalSections.filter(section => isSectionEmpty(section));
 
   const renderSection = () => {
     if (loading) {
@@ -84,28 +131,32 @@ function ResumeTab() {
         return <Profil data={resumeData.personalInfo.description} onDataUpdated={handleDataUpdated} />;
       case "Formations":
         return <Formation data={resumeData.trainings} onDataUpdated={handleDataUpdated} />;
-      case "Expérience professionnelle":
+      case "Expériences":
         return <Experience data={resumeData.experiences} onDataUpdated={handleDataUpdated} />;
-      case "Certificats":
-        return <Certificats data={resumeData.certifications} onDataUpdated={handleDataUpdated} />;
-      case "Centre d'intérêt":
-        return <Centre data={resumeData.interests} onDataUpdated={handleDataUpdated} />;
       case "Compétences":
         return <Competences data={resumeData.sectors} />;
-      case "Réalisations":
-        return <Realisation data={resumeData.projects} onDataUpdated={handleDataUpdated} />;
-      case "Qualités":
-        return <Qualites data={resumeData.qualities} onDataUpdated={handleDataUpdated} />;
       case "Langue":
         return <Languages data={resumeData.languages} onDataUpdated={handleDataUpdated} />;
       case "Outils":
         return <Outils data={resumeData.tools} />;
+      case "Certificats":
+        return <Certificats data={resumeData.certifications} onDataUpdated={handleDataUpdated} />;
+      case "Qualités":
+        return <Qualites data={resumeData.qualities} onDataUpdated={handleDataUpdated} />;
+      case "Centre d'intérêt":
+        return <Centre data={resumeData.interests} onDataUpdated={handleDataUpdated} />;
+      case "Réalisations":
+        return <Realisation data={resumeData.projects} onDataUpdated={handleDataUpdated} />;
       case "Autorisations":
         return <Autorisations data={resumeData.authorizations} />;
-
       default:
         return <div className="text-gray-500">Section en construction...</div>;
     }
+  };
+
+  const handleAddOptionalSection = (section: string) => {
+    setActiveSection(section);
+    setShowOptionalPopup(false);
   };
 
   return (
@@ -121,21 +172,61 @@ function ResumeTab() {
               Importer votre profil LinkedIn
             </button>
           </div>
+
           <div className="space-y-2">
-            {sections.map((section, index) => (
-              <button
-                key={index}
-                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors 
-                  ${activeSection === section ?
-                    "bg-[#297280] text-white" :
-                    "bg-white text-gray-700 hover:bg-gray-100"
-                  }`}
-                onClick={() => { setActiveSection(section); }}
-              >
-                <span>{section}</span>
-                <ChevronDown size={20} />
-              </button>
-            ))}
+            {visibleSections.map((section, index) => {
+              const isObligatory = obligatorySections.includes(section);
+              const isEmpty = isSectionEmpty(section);
+              const showPulse = isObligatory && isEmpty;
+
+              return (
+                <button
+                  key={index}
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-colors relative
+                    ${activeSection === section ?
+                      "bg-[#297280] text-white" :
+                      "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
+                  onClick={() => { setActiveSection(section); }}
+                >
+                  <div className="flex items-center gap-3">
+                    {showPulse && (
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                    )}
+                    <span>{section}</span>
+                  </div>
+                  <ChevronDown size={20} />
+                </button>
+              );
+            })}
+
+            {/* Add Optional Section Button */}
+            {addableOptionalSections.length > 0 && (
+              <div className="relative">
+                <button
+                  className="w-full flex items-center justify-center p-3 rounded-2xl bg-gray-50 text-gray-600 hover:bg-gray-100 border-2 border-dashed border-gray-300 transition-colors"
+                  onClick={() => setShowOptionalPopup(!showOptionalPopup)}
+                >
+                  <Plus size={16} className="mr-2" />
+                  <span className="text-sm">Ajouter une section</span>
+                </button>
+
+                {/* Optional Sections Popup */}
+                {showOptionalPopup && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
+                    {addableOptionalSections.map((section, index) => (
+                      <button
+                        key={index}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm border-b border-gray-100 last:border-b-0"
+                        onClick={() => handleAddOptionalSection(section)}
+                      >
+                        {section}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -149,6 +240,14 @@ function ResumeTab() {
           </div>
         </div>
       </div>
+
+      {/* Backdrop to close popup when clicking outside */}
+      {showOptionalPopup && (
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => setShowOptionalPopup(false)}
+        />
+      )}
     </div>
   );
 }
