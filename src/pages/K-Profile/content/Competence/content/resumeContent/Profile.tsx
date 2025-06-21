@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Edit, Trash2, Save } from 'lucide-react';
+import { Edit, Trash2, Save, Loader2 } from 'lucide-react';
 import { getAuthHeader } from "../../../../../../utils/jwt";
 import { Button } from "../../../../../../components/ui/button";
 
@@ -61,66 +61,83 @@ const Profil = ({ data, onDataUpdated }: { data: string, onDataUpdated: () => vo
   };
 
   return (
-    <div className="space-y-4 p-4 relative">
-      {!hasData && (
+    <div className="space-y-4 px-4">
+      {/* Guidance Text (always visible) */}
+      <div className="mb-4">
         <p className="text-gray-600 text-sm">
           Pour améliorer votre CV, il est important d'ajouter un résumé ou un objectif professionnel. Cela permet de présenter rapidement vos compétences, vos expériences et vos ambitions à un recruteur. Voici quelques questions pour vous guider :
         </p>
-      )}
-
-      {!hasData && (
-        <ul className="list-disc list-inside text-gray-600 text-sm">
+        <ul className="list-disc list-inside text-gray-600 text-sm mt-2">
           <li>Quelles sont vos principales compétences professionnelles ?</li>
           <li>Quel est votre domaine d'expertise ou le type de poste que vous recherchez ?</li>
           <li>Quels sont vos objectifs à court ou long terme dans votre carrière ?</li>
         </ul>
-      )}
+      </div>
 
-      {hasData && !isEditing && (
-        <div className="relative">
-          <div className="absolute top-0 right-0 flex space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleEdit}
-              disabled={isLoading}
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="destructive"
-              size="icon"
-              onClick={handleDelete}
-              disabled={isLoading}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-          <p className="text-gray-700 whitespace-pre-wrap">{data}</p>
+      {/* Description Section */}
+      <div>
+        <div className="flex justify-between items-center mb-3 h-10">
+          <label className="block text-m font-medium text-gray-700">Description</label>
+          {hasData && !isEditing && (
+            <div className="flex space-x-2">
+              <Button size="icon" onClick={handleEdit}>
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button size="icon" onClick={handleDelete}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
-      )}
 
-      {(isEditing || !hasData) && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            value={editedData}
-            onChange={(e) => setEditedData(e.target.value)}
-            placeholder="Écrivez ici..."
-            className="w-full px-3 py-2 border border-gray-200 rounded-md h-24"
-            disabled={isLoading}
-          />
-          <div className="mt-2 flex justify-end">
-            <Button
-              onClick={handleSave}
-              disabled={isLoading || editedData.trim() === ''}
-            >
-              {isLoading ? "Sauvegarde..." : "Sauvegarder"}
-              <Save className="ml-2 h-4 w-4" />
-            </Button>
+        {/* View Mode (when hasData and not editing) */}
+        {hasData && !isEditing && (
+          <div className="w-full p-3 bg-gray-50 rounded-md h-52 overflow-y-auto whitespace-pre-wrap">
+            {data}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Edit Mode (when editing or no data exists) */}
+        {(!hasData || isEditing) && (
+          <>
+            <textarea
+              value={editedData}
+              onChange={(e) => setEditedData(e.target.value)}
+              placeholder="Écrivez ici..."
+              className="w-full px-3 py-2 border border-gray-200 rounded-md h-52 mt-1"
+              disabled={isLoading}
+            />
+            <div className="mt-2 flex justify-end gap-6">
+              <Button
+                className="bg-red-200 text-gray-500 hover:bg-red-400 hover:text-white"
+                onClick={() => {
+                  setEditedData(data)
+                  setIsEditing(false)
+                }}
+              >
+                cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isLoading || editedData.trim() === ''}
+                className="bg-[#297280] text-white hover:bg-[#1e5f6b]"
+              >
+                {isLoading ? (
+                  <span className="flex items-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sauvegarde...
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    Sauvegarder
+                    <Save className="ml-2 h-4 w-4" />
+                  </span>
+                )}
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
