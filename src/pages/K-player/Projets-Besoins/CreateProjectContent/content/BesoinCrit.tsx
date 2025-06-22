@@ -38,7 +38,18 @@ const BesoinCrit: FC<BesoinCritProps> = ({ formData, onFormDataChange }) => {
     const removeItem = (listKey: keyof OpportunityRequirements, item: string) => {
         const currentArray = Array.isArray(formData[listKey]) ? formData[listKey] : [];
         onFormDataChange(listKey, currentArray.filter(i => i !== item));
+    };
 
+    const handleContractChange = (contractValue: string, isChecked: boolean) => {
+        const currentContracts = Array.isArray(formData.contract_roles) ? formData.contract_roles : [];
+
+        if (isChecked) {
+            if (!currentContracts.includes(contractValue)) {
+                onFormDataChange("contract_roles", [...currentContracts, contractValue]);
+            }
+        } else {
+            onFormDataChange("contract_roles", currentContracts.filter(contract => contract !== contractValue));
+        }
     };
 
     return (
@@ -61,10 +72,9 @@ const BesoinCrit: FC<BesoinCritProps> = ({ formData, onFormDataChange }) => {
                 ].map(({ value, label }) => (
                     <label key={value} className="flex items-center gap-2">
                         <input
-                            type="radio"
-                            name="contract"
-                            checked={formData.contract_role === value}
-                            onChange={() => onFormDataChange("contract_role", value)}
+                            type="checkbox"
+                            checked={Array.isArray(formData.contract_roles) && formData.contract_roles.includes(value)}
+                            onChange={(e) => handleContractChange(value, e.target.checked)}
                             className="w-4 h-4 text-blue-600"
                         />
                         {label}

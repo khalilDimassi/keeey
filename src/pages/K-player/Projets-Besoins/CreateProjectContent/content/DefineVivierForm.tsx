@@ -37,7 +37,7 @@ const DefineVivierForm: FC<DefineVivierFormProps> = ({ sectors, loading, error, 
             <div className="flex flex-col w-1/2 gap-6">
                 <BesoinCrit
                     formData={{
-                        contract_role: formData.contract_role,
+                        contract_roles: formData.contract_roles,
                         crit_start_date: formData.crit_start_date,
                         crit_start_date_lastest: formData.crit_start_date_lastest,
                         crit_duration: formData.crit_duration,

@@ -1,12 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Edit, PlusCircle, Trash2 } from "lucide-react";
-import {
-  OpportunitySectors,
-  Sector,
-  OpportunityCriteria,
-  OpportunityRequirements
-} from "../../types";
-import axios, { AxiosHeaders } from "axios";
+import { OpportunitySectors, Sector, OpportunityCriteria, OpportunityRequirements } from "../../types";
+import axios from "axios";
 import { getAuthHeader } from "../../../../../utils/jwt";
 
 interface SkillsAndCriteriasProps {
@@ -26,7 +21,7 @@ const DEFAULT_FORM_DATA = {
     selected_sectors: []
   },
   criteria: {
-    contract_role: "FREELANCE",
+    contract_roles: [],
     crit_start_date: "",
     crit_start_date_lastest: "",
     crit_duration: null,
@@ -707,10 +702,16 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
                 ].map(({ value, label }) => (
                   <label key={value} className="flex items-center gap-2">
                     <input
-                      type="radio"
+                      type="checkbox"
                       name="contract"
-                      checked={formData.criteria.contract_role === value}
-                      onChange={() => onFormDataChange("criteria", "contract_role", value)}
+                      checked={formData.criteria.contract_roles?.includes(value) || false}
+                      onChange={() => {
+                        const currentRoles = formData.criteria.contract_roles || [];
+                        const newRoles = currentRoles.includes(value)
+                          ? currentRoles.filter(role => role !== value)
+                          : [...currentRoles, value];
+                        onFormDataChange("criteria", "contract_roles", newRoles);
+                      }}
                       className="w-4 h-4 text-blue-600"
                     />
                     {label}
@@ -1038,9 +1039,13 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
             {/* Read-only view for criteria */}
             <div>
               <p className="text-gray-600 mb-1">Type de contrat</p>
-              <p className="text-gray-800">
-                {formData.criteria.contract_role || "Non spécifié"}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {formData.criteria.contract_roles?.map((role, index) => (
+                  <span key={index} className="bg-gray-200 text-gray-700 px-2 py-1 rounded-xl">
+                    {role}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

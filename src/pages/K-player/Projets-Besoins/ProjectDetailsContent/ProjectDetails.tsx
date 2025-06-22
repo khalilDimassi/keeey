@@ -51,7 +51,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
       })) || [],
 
       // Criteria
-      contract_role: apiData.contract_role || 'FREELANCE',
+      contract_roles: apiData.contract_roles || [],
       crit_start_date: apiData.crit_start_date || '',
       crit_start_date_lastest: apiData.crit_start_date_lastest || '',
       crit_duration: apiData.crit_duration || 0,
@@ -225,7 +225,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
                 selected_sectors: opportunityDetails?.selected_sectors ?? [],
               },
               criteria: {
-                contract_role: opportunityDetails?.contract_role ?? "",
+                contract_roles: opportunityDetails?.contract_roles ?? [],
                 crit_start_date: opportunityDetails?.crit_start_date ?? "",
                 crit_start_date_lastest: opportunityDetails?.crit_start_date_lastest ?? "",
                 crit_duration: opportunityDetails?.crit_duration ?? 0,

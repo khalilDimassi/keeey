@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bookmark, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, Bookmark, Building, MapPin, MessageCircle, User } from 'lucide-react';
 import axios from "axios";
 import { Opportunity } from "./types";
 
@@ -49,58 +49,11 @@ const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_s
         onSubmitOpportunity(id, !is_applied);
     };
 
-    const formatTimeAgo = (dateString: string): string => {
-        if (!dateString) return "";
-
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInMilliseconds = now.getTime() - date.getTime();
-        const diffInMonths = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24 * 30));
-        const diffInDays = Math.floor((diffInMilliseconds % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-        const diffInHours = Math.floor((diffInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-        let timeAgo = "il y a";
-
-        if (diffInMonths > 0) {
-            timeAgo += ` ${diffInMonths} mois`;
-        }
-        if (diffInDays > 0) {
-            timeAgo += ` ${diffInDays} jours`;
-        }
-        if (diffInHours > 0) {
-            timeAgo += ` ${diffInHours}h`;
-        }
-
-        return timeAgo.trim();
-    };
-
-    const getStatusNameInFrench = (status: string) => {
-        switch (status) {
-            case 'PENDING':
-                return 'En attente';
-            case 'ACCEPTED':
-                return 'Accepté';
-            case 'REJECTED':
-                return 'Rejeté';
-            case 'ONGOING':
-                return 'En cours';
-            case 'CONCLUDED':
-                return 'Terminé';
-            case 'OPEN':
-                return 'Ouvert';
-            case 'CLOSED':
-                return 'Fermé';
-            default:
-                return 'Inconnu';
-        }
-    };
-
-
     if (loading) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
                 <div className="bg-white rounded-2xl p-8 max-w-md">
-                    <p className="text-center">Loading opportunity details...</p>
+                    <p className="text-center">Chargement des détails de l'opportunité...</p>
                 </div>
             </div>
         );
@@ -110,13 +63,10 @@ const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_s
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
                 <div className="bg-white rounded-2xl p-8 max-w-md">
-                    <p className="text-center text-red-500">{error || "Failed to load opportunity details."}</p>
+                    <p className="text-center text-red-500">{error || "Échec du chargement des détails de l'opportunité."}</p>
                     <div className="flex justify-center mt-4">
-                        <button
-                            className="px-4 py-2 bg-gray-200 rounded-md"
-                            onClick={onClose}
-                        >
-                            Close
+                        <button className="px-4 py-2 bg-gray-200 rounded-md" onClick={onClose}>
+                            Fermer
                         </button>
                     </div>
                 </div>
@@ -126,184 +76,171 @@ const OpportunityDetailModal = ({ opportunityId, opportunityMatch, onClose, is_s
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
-            <div className="bg-white rounded-2xl w-4/5 max-w-6xl min-h-[80vh] shadow-xl relative flex overflow-hidden">
-                {/* Left Section */}
-                <div className="flex flex-col w-2/3 p-8">
-                    <div className="flex justify-between items-start mb-6">
-                        <h3 className="text-2xl font-bold text-gray-900">{opportunity.title}</h3>
+            <div className="bg-white rounded-2xl w-full max-w-7xl max-h-[90vh] shadow-xl relative flex flex-col overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                    <div className="flex items-center gap-4">
+                        <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <ArrowLeft className="h-5 w-5 text-gray-600" />
+                        </button>
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                            <User className="h-8 w-8 text-green-600" />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="bg-green-500 text-white text-sm px-2 py-1 rounded font-medium">{opportunityMatch}%</span>
+                                <h2 className="text-xl font-semibold text-gray-900">{opportunity.title}</h2>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                    <Building className="h-4 w-4" />
+                                    Société
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <MapPin className="h-4 w-4" />
+                                    {opportunity.crit_location}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
                         <div className="flex gap-2">
-                            <p className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                {formatTimeAgo(opportunity.created_at)}
-                            </p>
-                            <p className="text-sm font-medium text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
-                                {opportunity.contract_role}
-                            </p>
+                            <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full font-medium">Compétences</span>
+                            <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full font-medium">Séniorité</span>
+                            <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium">Dispo</span>
+                            <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full font-medium">Mobilité</span>
+                            <span className="bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full font-medium">TJM</span>
                         </div>
-                    </div>
-
-                    {/* Salary and Tags */}
-                    <div className="flex flex-wrap items-center gap-3 mb-6">
-                        <div className="px-4 py-2 rounded-lg bg-teal-600 text-white font-medium">
-                            {opportunityMatch}%
+                        <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <MessageCircle className="h-4 w-4" />
+                            <span className="text-sm">Statut</span>
                         </div>
-                        <div className="px-4 py-2 rounded-lg bg-green-100 text-green-800 font-medium text-sm">
-                            Correspondant à votre profil
-                        </div>
-                        {opportunity.crit_remote && (
-                            <div className="px-4 py-2 rounded-lg bg-purple-100 text-purple-800 font-medium text-sm">
-                                Télétravail
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Job Details */}
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                        <div>
-                            <h4 className="text-sm font-semibold text-gray-500 mb-1">Localisation</h4>
-                            <p className="text-gray-800">{opportunity.crit_location || 'Non spécifié'}</p>
-                        </div>
-                        <div>
-                            <h4 className="text-sm font-semibold text-gray-500 mb-1">TJM</h4>
-                            <p className="text-gray-800">{opportunity.rate} €</p>
-                        </div>
-                        <div>
-                            <h4 className="text-sm font-semibold text-gray-500 mb-1">Durée (jours)</h4>
-                            <p className="text-gray-800">{opportunity.duration} {opportunity.duration > 1 ? 'months' : 'month'}</p>
-                        </div>
-                        <div>
-                            <h4 className="text-sm font-semibold text-gray-500 mb-1">Date de début</h4>
-                            <p className="text-gray-800">{opportunity.start_at ? new Date(opportunity.start_at).toLocaleDateString() : 'Flexible'}</p>
-                        </div>
-                    </div>
-
-                    {/* Job Description */}
-                    <div className="mt-6">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Description</h4>
-                        <div className="text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] pr-4">
-                            {opportunity.description ? (
-                                <p>{opportunity.description}</p>
-                            ) : (
-                                <div>
-                                    <p className="mb-2">
-                                        C'est un {opportunity.contract_role} poste situé dans {opportunity.crit_location}
-                                        {opportunity.crit_remote ? ' avec option de travail à distance' : ''}.
-                                    </p>
-                                    <p className="mb-2">
-                                        Le TJM est {opportunity.rate}€ et la position devrait durer {opportunity.duration} mois.
-                                    </p>
-                                    <p>
-                                        Date de début: {opportunity.start_at ? new Date(opportunity.start_at).toLocaleDateString() : 'Flexible'}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Additional Criteria */}
-                    <div className="mt-6">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Informations Complémentaires</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <h5 className="text-sm font-semibold text-gray-500 mb-1">TJM cible</h5>
-                                <p className="text-gray-800">{opportunity.crit_target_rate}€</p>
-                            </div>
-                            <div>
-                                <h5 className="text-sm font-semibold text-gray-500 mb-1">TJM maximum</h5>
-                                <p className="text-gray-800">{opportunity.crit_max_rate}€</p>
-                            </div>
-                            <div>
-                                <h5 className="text-sm font-semibold text-gray-500 mb-1">Status</h5>
-                                <p className="text-gray-800">{getStatusNameInFrench(opportunity.status)}</p>
-                            </div>
-                            <div>
-                                <h5 className="text-sm font-semibold text-gray-500 mb-1">Type</h5>
-                                <p className="text-gray-800">{opportunity.opportunity_role === "REQUIREMENT" ? "Besoin" : "Vivier"}</p>
-                            </div>
-                        </div>
+                        <button
+                            onClick={(e) => handleSave(e, opportunityId, is_saved)}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <Bookmark className="h-5 w-5" fill={is_saved ? "#fbbf24" : "none"} stroke={is_saved ? "#fbbf24" : "currentColor"} />
+                        </button>
                     </div>
                 </div>
 
-                {/* Right Section */}
-                <div className="flex flex-col w-1/3 bg-gray-50 p-8 border-l border-gray-200">
-                    <div className="flex flex-col items-start">
-                        {/* Avatar */}
-                        <div className="flex justify-center w-full mb-8">
-                            <img
-                                src="https://mtek3d.com/wp-content/uploads/2018/01/image-placeholder-500x500-300x300.jpg"
-                                alt="Avatar"
-                                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200 shadow-md"
-                            />
+                {/* Content */}
+                <div className="flex flex-1 overflow-hidden">
+                    {/* Left Column - Critères */}
+                    <div className="w-1/2 p-6 border-r border-gray-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Critères</h3>
+
+                        {/* Contract Type */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-3">Contrat proposé</label>
+                            <div className="flex gap-2">
+                                <div className="px-4 py-2 rounded-lg text-sm font-medium">
+                                    {opportunity.contract_roles}
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex flex-col w-full gap-4">
+                        {/* Dates */}
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Date de démarrage</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <span className="text-sm text-gray-700">
+                                        {opportunity.start_at ? new Date(opportunity.start_at).toLocaleDateString('fr-FR') : '25/12/2024'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Durée initiale</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <span className="text-sm text-gray-700">{opportunity.duration} mois</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Location */}
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Localisation</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <span className="text-sm text-gray-700">Paris</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Télétravail</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                                    <span className="text-sm text-gray-700">{opportunity.crit_remote ? 'oui' : 'non'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Compétences Section */}
+                        <div className="mb-6">
+                            <h4 className="text-md font-semibold text-gray-900 mb-4">Compétences</h4>
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Langue(s)</label>
+                                <div className="flex gap-2">
+                                    <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">Langue</span>
+                                    <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">Langue</span>
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Outils / Habilitations</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-white min-h-[80px]">
+                                    {/* Empty input field */}
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Qualité Relationnelles</label>
+                                <div className="p-3 border border-gray-300 rounded-lg bg-white min-h-[80px]">
+                                    {/* Empty input field */}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Description */}
+                    <div className="w-1/2 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Description du poste</h3>
+
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Contexte :</label>
+                            <div className="p-4 border border-gray-300 rounded-lg bg-white min-h-[120px]">
+                                <div className="text-sm text-gray-500">Contexte</div>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Missions :</label>
+                            <div className="p-4 border border-gray-300 rounded-lg bg-white min-h-[200px]">
+                                <div className="text-sm text-gray-500">Missions</div>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Profil attendu :</label>
+                            <div className="p-4 border border-gray-300 rounded-lg bg-white min-h-[200px]">
+                                <div className="text-sm text-gray-500">Profil attendu</div>
+                            </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <div className="mt-8">
                             <button
-                                className="bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 text-base font-medium rounded-xl transition duration-200 w-full flex items-center justify-center gap-2"
+                                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 text-base font-medium rounded-xl transition duration-200 flex items-center justify-center gap-2"
                                 onClick={(e) => handleSubmit(e, opportunityId, is_applied)}
                             >
-                                {is_applied ? (
-                                    <>
-                                        <Minus className="h-5 w-5" size={18} />
-                                        Retirer la Postulation
-                                    </>
-                                ) : (
-                                    <>
-                                        <Plus className="h-5 w-5" size={18} fill={is_saved ? "yellow" : "none"} />
-                                        Postuler
-                                    </>
-                                )}
+                                {is_applied ? 'Retirer la Postulation' : 'Postuler'}
                             </button>
-
-                            <button
-                                className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 py-3 px-6 text-base font-medium rounded-xl transition duration-200 w-full flex items-center justify-center gap-2"
-                                onClick={(e) => handleSave(e, opportunityId, is_saved)}
-                            >
-                                <Bookmark size={18} fill={is_saved ? "yellow" : "none"} />
-                                {is_saved ? "Annuler la Sauvegarde" : "Sauvegarder"}
-                            </button>
-                        </div>
-
-                        {/* Key Details Summary */}
-                        <div className="mt-8 w-full">
-                            <h5 className="text-md font-semibold text-gray-700 mb-4">Détails clés</h5>
-                            <div className="space-y-3">
-                                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="text-gray-600">Type de contrat</span>
-                                    <span className="font-medium">{opportunity.contract_role}</span>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="text-gray-600">Localisation</span>
-                                    <span className="font-medium">{opportunity.crit_location}</span>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="text-gray-600">Travail à distance</span>
-                                    <span className="font-medium">{opportunity.crit_remote ? 'Oui' : 'Non'}</span>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="text-gray-600">TJM</span>
-                                    <span className="font-medium">{opportunity.rate}€</span>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="text-gray-600">Date de début</span>
-                                    <span className="font-medium">{opportunity.start_at ? new Date(opportunity.start_at).toLocaleDateString() : 'Flexible'}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
-
-                {/* Close Button   */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 bg-white rounded-full p-2 shadow-md transition-all duration-200 hover:shadow-lg"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default OpportunityDetailModal;

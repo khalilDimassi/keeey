@@ -9,7 +9,7 @@ export interface SectorSelection {
 
 export interface OpportunityFormData {
     selected_sectors: SectorSelection[];
-    contract_role: string;
+    contract_roles: string[];
     crit_start_date: string;
     crit_start_date_lastest: string;
     crit_duration: number;

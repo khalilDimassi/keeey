@@ -49,6 +49,32 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
     onFormDataChange({ [field]: value });
   };
 
+  const handleContractChange = (contractValue: string, isChecked: boolean) => {
+    let currentContracts: string[] = [];
+    if (typeof formData.contract_roles === 'string') {
+      currentContracts = formData.contract_roles ? [formData.contract_roles] : [];
+    } else if (Array.isArray(formData.contract_roles)) {
+      currentContracts = formData.contract_roles;
+    }
+
+    if (isChecked) {
+      if (!currentContracts.includes(contractValue)) {
+        handleFieldChange("contract_roles", [...currentContracts, contractValue]);
+      }
+    } else {
+      handleFieldChange("contract_roles", currentContracts.filter(contract => contract !== contractValue));
+    }
+  };
+
+  const isContractSelected = (contractValue: string): boolean => {
+    if (typeof formData.contract_roles === 'string') {
+      return formData.contract_roles === contractValue;
+    } else if (Array.isArray(formData.contract_roles)) {
+      return formData.contract_roles.includes(contractValue);
+    }
+    return false;
+  };
+
   return (
     <div
       className="bg-white p-6 rounded-lg shadow-md w-1/2"
@@ -69,10 +95,9 @@ const Criteres: FC<CriteresProps> = ({ formData, onFormDataChange }) => {
         ].map(({ value, label }) => (
           <label key={value} className="flex items-center gap-2">
             <input
-              type="radio"
-              name="contract"
-              checked={formData.contract_role === value}
-              onChange={() => handleFieldChange("contract_role", value)}
+              type="checkbox"
+              checked={isContractSelected(value)}
+              onChange={(e) => handleContractChange(value, e.target.checked)}
               className="w-4 h-4 text-blue-600"
             />
             {label}

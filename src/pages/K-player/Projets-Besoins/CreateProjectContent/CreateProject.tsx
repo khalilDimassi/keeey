@@ -28,7 +28,7 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
     duration: 0,
     rate: 0,
     selected_sectors: [],
-    contract_role: "",
+    contract_roles: [],
     crit_start_date: "",
     crit_start_date_lastest: "",
     crit_duration: 0,
@@ -63,7 +63,6 @@ const CreateProject: FC<CreateProjectProps> = ({ onBack }) => {
     field: T,
     value: OpportunityFormData[T]
   ) => {
-    console.log(">>> updateFormData", field, value);
     setFormData(prev => ({
       ...prev,
       [field]: value

@@ -33,7 +33,7 @@ export interface Opportunity {
     responded_at: string;
     start_at: string;
     announce_at: string;
-    contract_role: string;
+    contract_roles: string[];
     opportunity_role: string;
     status: string;
     satisfaction: number;

@@ -36,7 +36,7 @@ export const submitOpportunity = async (formData: OpportunityFormData, formType:
             duration: formData.duration || 0,
             rate: formData.rate || 0,
             opportunity_role: formType,
-            contract_role: formData.contract_role,
+            contract_roles: formData.contract_roles,
             crit_start_date: formData.crit_start_date,
             crit_start_date_lastest: formData.crit_start_date_lastest,
             crit_duration: formData.crit_duration,
@@ -82,36 +82,26 @@ export const submitOpportunity = async (formData: OpportunityFormData, formType:
     }
 };
 
-export const saveOpportunityCriteria = async (formData: OpportunityFormData): Promise<void> => {
-    await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${getUserId()}/v2`,
-        formData,
-        {
-            headers: getAuthHeader(),
-        }
-    );
-};
-
-export const searchOpportunities = async (formData: OpportunityFormData): Promise<any> => {
-    const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/search`,
-        formData,
-        {
-            headers: getAuthHeader(),
-        }
-    );
-    return response.data;
-};
-
 export const saveAndSearchOpportunities = async (formData: OpportunityFormData): Promise<{
     searchResults?: any;
     error?: string;
 }> => {
     try {
-        await saveOpportunityCriteria(formData);
-        const searchResults = await searchOpportunities(formData);
+        // Save operation
+        await axios.put(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${getUserId()}/v2`,
+            formData,
+            { headers: getAuthHeader() }
+        );
 
-        return { searchResults };
+        // Search operation
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/search`,
+            formData,
+            { headers: getAuthHeader() }
+        );
+
+        return { searchResults: response.data };
     } catch (error) {
         console.error('Opportunity operation failed:', error);
         return { error: 'Failed to save/search. Please try again.' };

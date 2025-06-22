@@ -121,7 +121,7 @@ export interface OpportunitySectors {
 }
 
 export interface OpportunityCriteria {
-    contract_role: string;
+    contract_roles: string[];
     opportunity_role?: string
     crit_start_date: string;
     crit_start_date_lastest: string;
