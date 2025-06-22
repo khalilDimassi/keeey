@@ -1,51 +1,130 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { PencilLine, Building2, Check, X, AlertTriangle, BadgeCheck } from 'lucide-react';
-import { CompanyInfo, UserData } from '../types';
+import { FC, useEffect, useState } from 'react';
+import { PencilLine, Check, X, AlertTriangle, BadgeCheck, Linkedin } from 'lucide-react';
+import { ApiUserResponse, CompanyInfo, ProfileData, UserData } from '../types';
 import { fetchUserData, updateUserData } from '../services';
+import { getAuthHeader } from '../../../../../utils/jwt';
 import DocumentsSection from './DocumentsSection';
 import axios from 'axios';
-import { getAuthHeader } from '../../../../../utils/jwt';
 
 const GeneralInfoTab: FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [formData, setFormData] = useState<UserData>({
-    gender: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    occupation: "",
-    phone: "",
-    address: "",
-    zip: "",
-    email_verified: false,
+  const [_changedFields, setChangedFields] = useState<Partial<ApiUserResponse>>({});
+  const [formData, setFormData] = useState<ApiUserResponse>({
+    profile: {
+      id: "",
+      title: "",
+      description: "",
+      nationality: "",
+      birthplace: "",
+      birthdate: "",
+      driving_permit: "",
+      linked_in: "",
+      created_at: "",
+      updated_at: "",
+    } as ProfileData,
+    user: {
+      ID: "",
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      user_role: "",
+      gender: "",
+      occupation: "",
+      address: "",
+      city: "",
+      zip: "",
+      email_verified: false,
+      verification_token: "",
+      created_at: "",
+      updated_at: "",
+    } as UserData,
   });
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const userData = await fetchUserData();
+        setFormData(userData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProfile();
   }, []);
 
-  const fetchProfile = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const userData = await fetchUserData();
-      setFormData(userData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "radio" ? (checked ? value : formData.user.gender) : value;
+
+    // Check if the field belongs to user or profile
+    const userFields = ['first_name', 'last_name', 'email', 'phone', 'gender', 'occupation', 'address', 'city', 'zip'];
+    const profileFields = ['title', 'nationality', 'birthplace', 'birthdate', 'driving_permit', 'linked_in'];
+
+    setFormData(prevData => {
+      if (userFields.includes(name)) {
+        const updatedUser = {
+          ...prevData.user,
+          [name]: newValue
+        };
+
+        // Track changed fields for user
+        setChangedFields(prev => ({
+          ...prev,
+          user: {
+            ...prev.user,
+            [name]: newValue
+          }
+        }));
+
+        return {
+          ...prevData,
+          user: updatedUser
+        };
+      } else if (profileFields.includes(name)) {
+        const updatedProfile = {
+          ...prevData.profile,
+          [name]: newValue
+        };
+
+        // Track changed fields for profile
+        setChangedFields(prev => ({
+          ...prev,
+          profile: {
+            ...prev.profile,
+            [name]: newValue
+          }
+        }));
+
+        return {
+          ...prevData,
+          profile: updatedProfile
+        };
+      }
+
+      return prevData;
+    });
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
+
     try {
       await updateUserData(formData);
       setIsEditing(false);
-      await fetchUserData();
+      setChangedFields({});
+
+      const updatedData = await fetchUserData();
+      setFormData(updatedData);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
@@ -53,95 +132,11 @@ const GeneralInfoTab: FC = () => {
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleRadioChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      gender: value
-    }));
-  };
-
   const companyInfo: CompanyInfo = {
-    name: 'exemple',
-    address: 'exemple',
-    siret: 'exemple',
+    name: 'UNICEF',
+    address: 'Rue du Lac de Windermere – 1053- Les Berges du Lac 1, Tunis, Tunisia',
+    siret: '784 671 695 00087',
   };
-
-  // const documents = [
-  //   { id: 'kbis', name: 'K-BIS' },
-  //   { id: 'rib', name: 'RIB' },
-  //   { id: 'urssaf', name: 'Attestation Urssaf' },
-  //   { id: 'cv', name: 'CV' },
-  //   { id: 'portfolio', name: 'Portefolio' },
-  // ];
-
-  const GeneralInfoSkeleton = ({ error = false }: { error?: boolean }) => (
-    <div className="w-full mx-auto">
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Left Column - Personal Information Skeleton */}
-        <div className={`bg-white p-6 w-full md:w-[30%] ${error ? 'border border-red-500' : ''}`}>
-          <div className="flex justify-between items-center mb-4">
-            <div className={`h-6 w-40 rounded ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-            <div className={`h-5 w-5 rounded-full ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-          </div>
-
-          <div className="space-y-3">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <div className={`h-4 w-20 rounded ${error ? 'bg-red-200' : 'bg-gray-200'}`}></div>
-                <div className={`h-6 w-full rounded ${error ? 'bg-red-100' : 'bg-gray-100'}`}></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column - Company Info and Documents Skeleton */}
-        <div className={`bg-white w-full md:w-[70%] ${error ? 'border border-red-500' : ''}`}>
-          {/* Company Information Skeleton */}
-          <div className={`bg-white rounded-lg shadow-sm p-6 mb-6 ${error ? 'border border-red-300' : ''}`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className={`h-5 w-5 rounded-full ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-                <div className={`h-6 w-32 rounded ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-              </div>
-              <div className={`h-5 w-5 rounded-full ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-            </div>
-
-            <div className="space-y-3">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex gap-2">
-                  <div className={`h-4 w-24 rounded ${error ? 'bg-red-200' : 'bg-gray-200'}`}></div>
-                  <div className={`h-4 w-40 rounded ${error ? 'bg-red-100' : 'bg-gray-100'}`}></div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Documents Section Skeleton */}
-          <div className={`bg-white rounded-lg shadow-sm p-6 ${error ? 'border border-red-300' : ''}`}>
-            <div className={`h-6 w-40 rounded mb-4 ${error ? 'bg-red-300' : 'bg-gray-300'}`}></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className={`p-4 rounded-lg border ${error ? 'border-red-200' : 'border-gray-200'}`}>
-                  <div className="flex items-center gap-3">
-                    <div className={`h-10 w-10 rounded ${error ? 'bg-red-200' : 'bg-gray-200'}`}></div>
-                    <div className="flex-1 space-y-2">
-                      <div className={`h-4 w-3/4 rounded ${error ? 'bg-red-200' : 'bg-gray-200'}`}></div>
-                      <div className={`h-3 w-1/2 rounded ${error ? 'bg-red-100' : 'bg-gray-100'}`}></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const handleResendVerification = async () => {
     if (loading) return;
@@ -159,240 +154,552 @@ const GeneralInfoTab: FC = () => {
     }
   };
 
-  if (loading) {
+  if (loading || error) {
+    const SimpleStatusCard = ({ status }: { status: "loading" | "error" }) => (
+      <div className={`p-5 rounded-xl border ${status === "error"
+        ? "border-red-200 bg-red-50"
+        : "border-gray-200 bg-gray-50"
+        }`}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className={`w-2 h-2 rounded-full ${status === "error" ? "bg-red-500" : "bg-gray-300"
+            }`} />
+          <div className={`font-medium ${status === "error" ? "text-red-600" : "text-gray-500"
+            }`}>
+            {status === "error" ? "Error loading data" : "Loading..."}
+          </div>
+        </div>
+        <div className="space-y-2 text-sm text-gray-500">
+          <div className="h-4 bg-gray-200 rounded animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
+          <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2" />
+        </div>
+      </div>
+    );
+
     return (
-      <div className="animate-pulse">
-        <GeneralInfoSkeleton />
+      <div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map(() => (
+          <SimpleStatusCard status={error ? "error" : "loading"} />
+        ))}
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <>
-        <div className="animate-pulse">
-          <GeneralInfoSkeleton error />
-        </div>
-        <div className="text-center py-4 text-red-500 font-medium">
-          <p>{error}</p>
-        </div>
-      </>
-    );
-  }
-
   return (
-    <div className=" ">
-      <div className="w-full mx-auto">
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Left Column - Personal Information Form */}
-          <div className="bg-white p-6  w-full md:w-[30%]">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Mes Informations générales</h2>
-              {isEditing ? (
-                <div className='flex gap-3'>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="text-gray-600 hover:text-red-800 disabled:opacity-50"
-                    title="Cancel"
-                  >
-                    <X size={24} />
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    className="text-gray-600 hover:text-green-800 disabled:opacity-50"
-                    title="Save"
-                  >
-                    <Check size={24} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="text-teal-600 hover:text-teal-700"
-                  onClick={() => setIsEditing(true)}
-                  title="Edit"
-                >
-                  <PencilLine className="h-5 w-5" />
-                </button>
-              )}
+    <div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="absolute top-0 right-0 items-center m-2">
+        {isEditing ? (
+          <div className='flex gap-3'>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="text-gray-600 hover:text-red-800 disabled:opacity-50"
+              title="Cancel"
+            >
+              <X size={24} />
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="text-gray-600 hover:text-green-800 disabled:opacity-50"
+              title="Save"
+            >
+              <Check size={24} />
+            </button>
+          </div>
+        ) : (
+          <button
+            className="text-teal-600 hover:text-teal-700"
+            onClick={() => setIsEditing(true)}
+            title="Edit"
+          >
+            <PencilLine className="h-5 w-5" />
+          </button>
+        )}
+      </div>
+      {isEditing ? (
+        <>
+          {/* Personal Info */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+              Informations personnelles
+            </h3>
+
+            {/* Gender Selection */}
+            <div className="mb-4">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">Civilité</label>
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="M."
+                    checked={formData.user.gender === 'M.'}
+                    onChange={handleChange}
+                    className="text-teal-600 focus:ring-teal-500"
+                  />
+                  <span className="text-gray-700">M.</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="Mme"
+                    checked={formData.user.gender === 'Mme'}
+                    onChange={handleChange}
+                    className="text-teal-600 focus:ring-teal-500"
+                  />
+                  <span className="text-gray-700">Mme</span>
+                </label>
+              </div>
             </div>
-            {isEditing ? (
-              <>
-                <div className="space-y-4">
-                  <div className="flex space-x-4 mb-4">
-                    {["M.", "Mme"].map((option) => (
-                      <label key={option} className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          name="gender"
-                          checked={formData.gender === option}
-                          onChange={() => handleRadioChange(option)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                        <span>{option}</span>
-                      </label>
-                    ))}
-                  </div>
 
-                  {["first_name", "last_name", "email", "occupation", "address", "zip"].map(
-                    (field) => (
-                      <label key={field} className="block">
-                        {field.charAt(0).toUpperCase() + field.slice(1)}
-                        <input
-                          name={field}
-                          value={String(formData[field as keyof typeof formData])}
-                          onChange={handleInputChange}
-                          className="w-full p-3 border rounded mt-1"
-                          placeholder={field}
-                        />
-                      </label>
-                    )
-                  )}
-
-                  <label className="block mb-2">Numéro de téléphone</label>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <select className="p-3 border rounded bg-white">
-                      <option>🇫🇷</option>
-                      <option>🇬🇧</option>
-                    </select>
-                    <input
-                      name="telephone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border rounded mt-1"
-                      placeholder="Numéro de téléphone"
-                    />
-                  </div>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom</label>
+                  <input
+                    type="text"
+                    name="last_name"
+                    placeholder="Nom"
+                    value={formData.user.last_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  />
                 </div>
-              </>
-            ) : (
-              // Display View 
-              <div className="space-y-3">
-                {/* Gender */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Civilité</span>
-                  <span className="text-base">{formData.gender || '-'}</span>
+                <div className="flex-1">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Prénom</label>
+                  <input
+                    type="text"
+                    name="first_name"
+                    placeholder="Prénom"
+                    value={formData.user.first_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  />
                 </div>
+              </div>
 
-                {/* Last name */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Nom</span>
-                  <span className="text-base">{formData.last_name || '-'}</span>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Titre</label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Titre professionnel"
+                  value={formData.profile.title}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
+                <input
+                  type="text"
+                  name="nationality"
+                  placeholder="Nationalité"
+                  value={formData.profile.nationality}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+              Contact
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="adresse@email.com"
+                  value={formData.user.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Téléphone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="+33 1 23 45 67 89"
+                  value={formData.user.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">LinkedIn</label>
+                <input
+                  type="text"
+                  name="linked_in"
+                  placeholder="linkedin.com/in/profil"
+                  value={formData.profile.linked_in}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Organization Info */}
+          <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            {/* Stylish Work in Progress Overlay */}
+            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
+              </div>
+              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
+                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Organization Information
+            </h3>
+            <div className="space-y-3">
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom de l'Entreprise</label>
+                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.name}</div>
                 </div>
-
-                {/* First name */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Prénom</span>
-                  <span className="text-base">{formData.first_name || '-'}</span>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Address de l'Entreprise</label>
+                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.address}</div>
                 </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">SIREN/SIRET de l'Entreprise</label>
+                <div className="mt-1 text-gray-800 font-medium">{companyInfo.siret}</div>
+              </div>
+            </div>
+          </div>
 
-                {/* Email */}
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Adresse e-mail</span>
-                    {formData.email_verified ? (
+          {/* Address Info */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+              Adresse
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Rue</label>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="123 Rue de la Paix"
+                  value={formData.user.address}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <div className="flex gap-4">
+                <div className="w-2/5">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Code postal</label>
+                  <input
+                    type="text"
+                    name="zip"
+                    placeholder="75001"
+                    value={formData.user.zip}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div className="w-3/5">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Ville</label>
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="Paris"
+                    value={formData.user.city}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Birth & Additional Info */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Autres informations
+            </h3>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Date de naissance</label>
+                  <input
+                    type="date"
+                    name="birthdate"
+                    value={formData.profile.birthdate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Lieu de naissance</label>
+                  <input
+                    type="text"
+                    name="birthplace"
+                    placeholder="Paris, France"
+                    value={formData.profile.birthplace}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Permis de conduire</label>
+                <input
+                  type="text"
+                  name="driving_permit"
+                  placeholder="B, A2"
+                  value={formData.profile.driving_permit}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Documents */}
+          <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            {/* Stylish Work in Progress Overlay */}
+            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
+              </div>
+              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
+                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Personal Documents
+            </h3>
+            <div className="space-y-3">
+              <DocumentsSection />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Basic Info */}
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+              Informations personnelles
+            </h3>
+            <div className="space-y-3">
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Civilité</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.user.gender}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.nationality}</div>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.user.last_name}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Prénom</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.user.first_name}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+              Contact
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <div className="flex gap-1">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</label>
+                  {formData.user.email_verified ? (
+                    <div className="-mt-0.5">
                       <BadgeCheck
                         size={20}
                         strokeWidth={2}
                         fill="#297280"
                         color='white'
                       />
-                    ) : (
-                      <button
-                        onClick={handleResendVerification}
-                        disabled={loading}
-                        className="w-4 h-4 bg-orange-400 hover:bg-orange-500 rounded-full flex items-center justify-center transition-colors duration-200 group"
-                        title="Email not verified - Click to resend"
-                      >
-                        <AlertTriangle
-                          size={20}
-                          className={`w-2.5 h-2.5 text-white ${!loading ? 'animate-pulse' : ''}`}
-                          strokeWidth={2}
-                        />
-                      </button>
-                    )}
-                  </div>
-                  <span className="text-base">{formData.email || '-'}</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleResendVerification}
+                      className="w-3 h-3 mt-0.5 bg-orange-400 hover:bg-orange-500 rounded-full flex items-center justify-center  group"
+                      title="Email not verified - Click to resend"
+                    >
+                      <AlertTriangle
+                        size={20}
+                        className={`w-2 h-2 -mt-0.5 ml-0.5 text-white`}
+                        strokeWidth={2}
+                      />
+                    </button>
+                  )}
                 </div>
-
-                {/* Occupation */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Profession</span>
-                  <span className="text-base">{formData.occupation || '-'}</span>
-                </div>
-
-                {/* Phone */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Numéro de téléphone</span>
-                  <span className="text-base">{formData.phone || '-'}</span>
-                </div>
-
-                {/* Address */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Adresse</span>
-                  <span className="text-base">{formData.address || '-'}</span>
-                </div>
-
-                {/* Zip */}
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">Code postal</span>
-                  <span className="text-base">{formData.zip || '-'}</span>
-                </div>
+                <div className="mt-1 text-gray-800 font-medium">{formData.user.email}</div>
               </div>
-            )}
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Téléphone</label>
+                <div className="mt-1 text-gray-800 font-medium">{formData.user.phone}</div>
+              </div>
+              <div>
+                <div className="flex gap-2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">LinkedIn</label>
+                  <button
+                    className="-mt-1"
+                    onClick={() => {
+                      if (formData.profile.linked_in) {
+                        let url = formData.profile.linked_in.trim();
+                        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                          url = 'https://' + url;
+                        }
+                        if (url.includes('linkedin.com')) {
+                          window.open(url, '_blank');
+                        } else {
+                          console.warn('Invalid LinkedIn URL:', url);
+                        }
+                      }
+                    }}
+                    title="Visit LinkedIn Profile ?"
+                  >
+                    <Linkedin
+                      size={20}
+                      strokeWidth={0}
+                      color="white"
+                      fill="#0077B5"
+                    />
+                  </button>
+                </div>
+                <div className="mt-1 text-gray-800 font-medium">{formData.profile.linked_in}</div>
+              </div>
+            </div>
           </div>
 
-          {/* Right Column - Company Info and Documents */}
-          <div className="bg-white   w-full md:w-[70%] relative">
+          {/* Organization Info */}
+          <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
             {/* Stylish Work in Progress Overlay */}
             <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
-              {/* Diagonal stripe pattern */}
               <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
               </div>
-              {/* Text container */}
-              <div className="relative bg-white/90 border-2 border-gray-300 px-10 py-6 rounded-xl shadow-2xl">
-                {/* Main text */}
-                <div className="relative">
-                  <span className="text-3xl font-bold text-gray-800 tracking-wide inline-block transform rotate ">
-                    EN COURS DE CONSTRUCTION
-                  </span>
-                </div>
+              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
+                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
               </div>
             </div>
 
-            {/* Company Information */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium text-gray-900 flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  Entreprise
-                  <span className="text-sm font-normal text-gray-500">(si concerné)</span>
-                </h2>
-                <button className="text-teal-600 hover:text-teal-700">
-                  <PencilLine className="h-5 w-5" />
-                </button>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Organization Information
+            </h3>
+            <div className="space-y-3">
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom de l'Entreprise</label>
+                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.name}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Address de l'Entreprise</label>
+                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.address}</div>
+                </div>
               </div>
-
-              <div className="space-y-2">
-                <div>
-                  <span className="text-sm font-medium text-gray-700">Nom : </span>
-                  <span className="text-gray-600">{companyInfo.name}</span>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-700">Adresse : </span>
-                  <span className="text-gray-600">{companyInfo.address}</span>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-700">SIREN/SIRET : </span>
-                  <span className="text-gray-600">{companyInfo.siret}</span>
-                </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">SIREN/SIRET de l'Entreprise</label>
+                <div className="mt-1 text-gray-800 font-medium">{companyInfo.siret}</div>
               </div>
             </div>
-
-            <DocumentsSection />
           </div>
-        </div>
-      </div>
+
+          {/* Address Info */}
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+              Adresse
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Rue</label>
+                <div className="mt-1 text-gray-800 font-medium">{formData.user.address}</div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Code postal</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.user.zip}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Ville</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.user.city}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Birth & Additional Info */}
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Autres informations
+            </h3>
+            <div className="space-y-3">
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Date de naissance</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.birthdate}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Lieu de naissance</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.birthplace}</div>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Permis de conduire</label>
+                <div className="mt-1 text-gray-800 font-medium">{formData.profile.driving_permit}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Documents */}
+          <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            {/* Stylish Work in Progress Overlay */}
+            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
+              </div>
+              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
+                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+              Personal Documents
+            </h3>
+            <div className="space-y-3">
+              <DocumentsSection />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

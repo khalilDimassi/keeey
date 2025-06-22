@@ -4,23 +4,47 @@ export interface CompanyInfo {
     siret: string;
 }
 
+export interface ProfileData {
+    id?: string;
+    title?: string;
+    description?: string;
+    nationality?: string;
+    birthplace?: string;
+    birthdate?: string;
+    driving_permit?: string;
+    linked_in?: string;
+    created_at?: string;
+    updated_at?: string;
+}
+
 export interface UserData {
-    gender: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    occupation: string;
-    phone: string;
-    address: string;
-    zip: string;
-    email_verified: boolean;
+    ID?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    user_role?: string;
+    gender?: string;
+    occupation?: string;
+    address?: string;
+    city?: string;
+    zip?: string;
+    email_verified?: boolean;
+    verification_token?: string;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface ApiUserResponse {
+    profile: ProfileData;
+    user: UserData;
 }
 
 
 export interface PersonalData {
     first_name: string;
     last_name: string;
-    title: string;
+    occupation: string;
     email: string;
     verified: boolean;
     phone: string;

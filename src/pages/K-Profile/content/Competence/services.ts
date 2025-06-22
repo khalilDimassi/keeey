@@ -1,29 +1,35 @@
 import { getAuthHeader } from '../../../../utils/jwt';
-import { ApiResponse, MinimalSector, OpportunitiesSearchCriterias, ResumeData, ResumeSearchingDetails, SectorSuggestionsResponse, UserData } from './types';
+import { ApiResponse, ApiUserResponse, MinimalSector, OpportunitiesSearchCriterias, ResumeData, ResumeSearchingDetails, SectorSuggestionsResponse, UserData } from './types';
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const fetchUserData = async (): Promise<UserData> => {
+export const fetchUserData = async (): Promise<ApiUserResponse> => {
     try {
-        const response = await axios.get<ApiResponse<{ user: UserData }>>(
+        const response = await axios.get<ApiUserResponse>(
             `${API_BASE_URL}/api/v1/private/profile`,
             { headers: getAuthHeader() }
         );
 
-        if (response.data?.user) {
-            return response.data.user;
+        if (response.data) {
+            if (response.data) {
+                return response.data;
+            }
+            throw new Error('No user data received');
         }
         throw new Error('No user data received');
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.error || 'Failed to load profile data');
+            throw new Error(
+                error.response?.data?.error?.message ||
+                error.response?.data?.message ||
+                'Failed to load profile data'
+            );
         }
         throw new Error('Failed to load profile data');
     }
 }
-
-export const updateUserData = async (formData: UserData): Promise<void> => {
+export const updateUserData = async (formData: ApiUserResponse): Promise<void> => {
     try {
         const response = await axios.put<ApiResponse<void>>(
             `${API_BASE_URL}/api/v1/private/user-data`,
@@ -58,7 +64,7 @@ export const fetchResumeData = async (): Promise<ResumeData> => {
             personalInfo: {
                 first_name: resumeData.personal_info?.first_name || '',
                 last_name: resumeData.personal_info?.last_name || '',
-                title: resumeData.personal_info?.title || '',
+                occupation: resumeData.personal_info?.occupation || '',
                 email: resumeData.personal_info?.email || '',
                 verified: resumeData.personal_info?.verified || false,
                 phone: resumeData.personal_info?.phone || '',

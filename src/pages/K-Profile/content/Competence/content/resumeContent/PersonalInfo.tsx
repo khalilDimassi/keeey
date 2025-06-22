@@ -30,10 +30,6 @@ const PersonalInfo = ({ personalData, onDataUpdated }: { personalData: PersonalD
     img: "",
   });
 
-  const [showLinkPopup, setShowLinkPopup] = useState(false);
-  const [showFilePopup, setShowFilePopup] = useState(false);
-  const [profileImage, setProfileImage] = useState('');
-
   useEffect(() => {
     if (personalData) {
       setFormData(personalData || {
@@ -386,65 +382,9 @@ const PersonalInfo = ({ personalData, onDataUpdated }: { personalData: PersonalD
     );
   }
 
-  const handleLinkClick = () => {
-    setShowLinkPopup(true);
-  };
-
-  const handleFileClick = () => {
-    setShowFilePopup(true);
-  };
-
-  const handleSaveImage = (finalUrl: string, cropData: { x: number; y: number; size: number }) => {
-    setProfileImage(finalUrl);
-    console.log('Image saved:', { finalUrl, cropData });
-  };
-
   // Edit mode
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl border ">
-        <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center group shadow-lg ring-4 ring-[#297280] cursor-pointer">
-          {formData.img ? (
-            <img src={profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
-          ) : (
-            <div className="text-[#297280] font-medium">Photo</div>
-          )}
-          <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
-            <div
-              className="absolute left-0 top-0 w-1/2 h-full bg-blue-500 bg-opacity-20 rounded-l-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all duration-200"
-              onClick={() => handleLinkClick()}
-            >
-              <Link className="text-white" size={16} />
-            </div>
-            <div
-              className="absolute right-0 top-0 w-1/2 h-full bg-green-500 bg-opacity-20 rounded-r-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all duration-200"
-              onClick={() => handleFileClick()}
-            >
-              <Upload className="text-white" size={16} />
-            </div>
-          </div>
-        </div>
-        {/* Popups */}
-        <LinkImagePopup
-          isOpen={showLinkPopup}
-          onClose={() => setShowLinkPopup(false)}
-          onSave={handleSaveImage}
-        />
-
-        <FileImagePopup
-          isOpen={showFilePopup}
-          onClose={() => setShowFilePopup(false)}
-          onSave={handleSaveImage}
-        />
-
-        <div className="text-center sm:text-left">
-          <h2 className="text-2xl font-bold text-gray-800">{formData.first_name} {formData.last_name}</h2>
-          <div className="text-lg text-teal-600 font-medium">{formData.title}</div>
-          <div className="text-gray-600 mt-1">{formData.email} | {formData.phone}</div>
-        </div>
-      </div>
-
       {/* Edit Form Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Personal Info */}

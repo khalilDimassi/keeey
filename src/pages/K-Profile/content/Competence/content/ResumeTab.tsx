@@ -1,11 +1,11 @@
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Link, Plus, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ResumeData } from "../types";
 import { fetchResumeData } from "../services";
+import { LinkImagePopup, FileImagePopup } from "./resumeContent/pfpUpload";
 
 import Experience from "./resumeContent/Experience";
-import Profil from "./resumeContent/Profile";
-import PersonalInfo from "./resumeContent/PersonalInfo";
+import Profile from "./resumeContent/Profile";
 import Languages from "./resumeContent/Languages";
 import Certificats from "./resumeContent/Certificats";
 import Centre from "./resumeContent/Centre";
@@ -17,15 +17,14 @@ import Outils from "./resumeContent/Outils";
 import Autorisations from "./resumeContent/Autorisations";
 
 function ResumeTab() {
-  const [activeSection, setActiveSection] = useState("Informations personnelles");
+  const [activeSection, setActiveSection] = useState("Profile");
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [showOptionalPopup, setShowOptionalPopup] = useState(false);
 
   const obligatorySections = [
-    "Informations personnelles",
-    "Profil",
+    "Profile",
     "Formations",
     "Expériences",
     "Compétences",
@@ -63,14 +62,11 @@ function ResumeTab() {
     fetchResume();
   };
 
-  // Check if a section is empty based on resumeData
   const isSectionEmpty = (section: string): boolean => {
     if (!resumeData) return true;
 
     switch (section) {
-      case "Informations personnelles":
-        return !resumeData.personalInfo || Object.keys(resumeData.personalInfo).length === 0;
-      case "Profil":
+      case "Profile":
         return !resumeData.personalInfo?.description || resumeData.personalInfo.description.trim() === "";
       case "Formations":
         return !resumeData.trainings || resumeData.trainings.length === 0;
@@ -109,8 +105,8 @@ function ResumeTab() {
   const renderSection = () => {
     if (loading) {
       switch (activeSection) {
-        case "Informations personnelles":
-          return <PersonalInfo personalData={null} onDataUpdated={handleDataUpdated} />;
+        case "Profile":
+          return <Profile data={null} onDataUpdated={handleDataUpdated} />;
         default:
           return <div className="text-gray-500">Chargement en cours...</div>;
       }
@@ -125,10 +121,8 @@ function ResumeTab() {
     }
 
     switch (activeSection) {
-      case "Informations personnelles":
-        return <PersonalInfo personalData={resumeData.personalInfo} onDataUpdated={handleDataUpdated} />;
-      case "Profil":
-        return <Profil data={resumeData.personalInfo.description} onDataUpdated={handleDataUpdated} />;
+      case "Profile":
+        return <Profile data={resumeData.personalInfo.description} onDataUpdated={handleDataUpdated} />;
       case "Formations":
         return <Formation data={resumeData.trainings} onDataUpdated={handleDataUpdated} />;
       case "Expériences":
@@ -157,6 +151,23 @@ function ResumeTab() {
   const handleAddOptionalSection = (section: string) => {
     setActiveSection(section);
     setShowOptionalPopup(false);
+  };
+
+  const [showLinkPopup, setShowLinkPopup] = useState(false);
+  const [showFilePopup, setShowFilePopup] = useState(false);
+  const [profileImage, setProfileImage] = useState('');
+
+  const handleLinkClick = () => {
+    setShowLinkPopup(true);
+  };
+
+  const handleFileClick = () => {
+    setShowFilePopup(true);
+  };
+
+  const handleSaveImage = (finalUrl: string, cropData: { x: number; y: number; size: number }) => {
+    setProfileImage(finalUrl);
+    console.log('Image saved:', { finalUrl, cropData });
   };
 
   return (
@@ -232,6 +243,51 @@ function ResumeTab() {
 
         {/* Right Column - Dynamic Content */}
         <div className="w-4/5">
+
+          {/* Header Section */}
+          <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl border ">
+            <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center group shadow-lg ring-4 ring-[#297280] cursor-pointer">
+              {resumeData?.personalInfo.img ? (
+                <img src={profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <div className="text-[#297280] font-medium">Photo</div>
+              )}
+              <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200">
+                <div
+                  className="absolute left-0 top-0 w-1/2 h-full bg-blue-500 bg-opacity-20 rounded-l-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all duration-200"
+                  onClick={() => handleLinkClick()}
+                >
+                  <Link className="text-white" size={16} />
+                </div>
+                <div
+                  className="absolute right-0 top-0 w-1/2 h-full bg-green-500 bg-opacity-20 rounded-r-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all duration-200"
+                  onClick={() => handleFileClick()}
+                >
+                  <Upload className="text-white" size={16} />
+                </div>
+              </div>
+            </div>
+            {/* Popups */}
+            <LinkImagePopup
+              isOpen={showLinkPopup}
+              onClose={() => setShowLinkPopup(false)}
+              onSave={handleSaveImage}
+            />
+
+            <FileImagePopup
+              isOpen={showFilePopup}
+              onClose={() => setShowFilePopup(false)}
+              onSave={handleSaveImage}
+            />
+
+            <div className="text-center sm:text-left">
+              <h2 className="text-2xl font-bold text-gray-800">{resumeData?.personalInfo.first_name} {resumeData?.personalInfo.last_name}</h2>
+              <div className="text-lg text-teal-600 font-medium">{resumeData?.personalInfo.occupation}</div>
+              <div className="text-gray-600 mt-1">{resumeData?.personalInfo.email} | {resumeData?.personalInfo.phone}</div>
+            </div>
+          </div>
+
+          {/* Data Section */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">{activeSection}</h2>

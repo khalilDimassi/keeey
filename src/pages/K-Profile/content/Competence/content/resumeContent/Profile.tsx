@@ -4,7 +4,7 @@ import { Edit, Trash2, Save, Loader2 } from 'lucide-react';
 import { getAuthHeader } from "../../../../../../utils/jwt";
 import { Button } from "../../../../../../components/ui/button";
 
-const Profil = ({ data, onDataUpdated }: { data: string, onDataUpdated: () => void }) => {
+const Profile = ({ data, onDataUpdated }: { data: string | null, onDataUpdated: () => void }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(data || '');
   const [isLoading, setIsLoading] = useState(false);
@@ -142,4 +142,4 @@ const Profil = ({ data, onDataUpdated }: { data: string, onDataUpdated: () => vo
   );
 };
 
-export default Profil;
+export default Profile;

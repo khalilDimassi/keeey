@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, PlusCircle, Trash2, Upload, X } from "lucide-react";
+import { Plus, Trash2, Upload, X } from "lucide-react";
 
 interface Document {
   id: number;
@@ -16,19 +16,17 @@ interface FormData {
 const SAMPLE_DOCUMENTS: Document[] = [
   { id: 1, name: "K-BIS" },
   { id: 2, name: "RIB" },
-  { id: 3, name: "Attestation Urssaf" },
-  { id: 4, name: "Contrat de Travail" },
-  { id: 5, name: "Facture Électricité" }
+  { id: 3, name: "URSSAF" },
+  { id: 4, name: "SOW" },
+  { id: 5, name: "MSA" }
 ];
 
 
 const DocumentCard: React.FC<{ document: Document; onDelete: (id: number) => void; }> = ({ document, onDelete }) => {
   return (
     <div
-      className="relative flex flex-col items-center justify-center shadow-sm border rounded-lg p-4 overflow-hidden"
-      style={{ width: "15rem", height: "13rem" }}
+      className="relative flex flex-col items-center justify-center shadow-sm border rounded-xl p-4 overflow-hidden"
     >
-
       {/* Delete button */}
       <button
         onClick={() => onDelete(document.id)}
@@ -37,8 +35,6 @@ const DocumentCard: React.FC<{ document: Document; onDelete: (id: number) => voi
       >
         <Trash2 size={12} />
       </button>
-
-      <div className="w-full h-full bg-gray-300 rounded-md mt-6"></div>
       <p className="text-sm mt-2 font-medium">{document.name}</p>
     </div>
   );
@@ -306,33 +302,32 @@ const DocumentsSection: React.FC = () => {
   const hasMoreDocuments = documents.length > 3;
 
   return (
-    <div className="p-4 bg-white  rounded-xl relative overflow-hidden" >
-
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4 mt-1">
-        <h2 className="text-lg font-semibold text-gray-800">Documents</h2>
-        <button
-          className="text-[#297280] hover:text-[#1f5c68] transition-colors transform hover:scale-110 duration-200"
-          onClick={() => setIsModalOpen(true)}
-          aria-label="Ajouter un document"
-        >
-          <PlusCircle size={40} />
-        </button>
-      </div>
-
+    <div className="p-4 bg-white rounded-xl overflow-hidden" >
       {/* Documents Grid - Show only first 3 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex justify-center items-center gap-6">
         {displayedDocuments.map((doc) => (
-          <DocumentCard key={doc.id} document={doc} onDelete={handleDeleteDocument} />
+          <div
+            key={doc.id} // Don't forget the key!
+            className="flex flex-col justify-center items-center min-w-20 gap-2 border border-[#e0e7e9] rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+          >
+            <p className="text-sm font-medium text-[#2c3e50]">{doc.name}</p>
+            <button
+              onClick={() => handleDeleteDocument(doc.id)}
+              className="mt-2 bg-white hover:bg-[#f0f7f9] rounded-full p-2 w-10 h-10 flex items-center justify-center border border-[#e0e7e9] transition-colors"
+              aria-label={`Delete ${doc.name}`}
+            >
+              <Trash2 size={14} color="#e74c3c" />
+            </button>
+          </div>
         ))}
       </div>
 
       {/* Show All Button - Only render if more than 3 documents */}
       {hasMoreDocuments && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-3">
           <button
             onClick={() => setIsShowAllModalOpen(true)}
-            className="bg-gradient-to-b from-[#297280] to-[#1f5c68] text-white px-6 py-2 rounded-xl hover:from-[#1f5c68] hover:to-[#297280] transition-all duration-200 shadow-md"
+            className="bg-[#297280] hover:bg-[#246673]  text-white px-3 py-1 rounded-xl"
           >
             Voir tout ({documents.length})
           </button>
