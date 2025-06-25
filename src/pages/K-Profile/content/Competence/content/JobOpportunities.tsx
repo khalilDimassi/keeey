@@ -99,6 +99,17 @@ const JobOpportunities = () => {
     filterItems();
   }, [activeTab, contractType, opportunities, threshold]);
 
+  useEffect(() => {
+    if (selectedOpportunity) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedOpportunity]);
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
@@ -282,7 +293,7 @@ const JobOpportunities = () => {
       {selectedOpportunity && (
         <OpportunityDetailModal
           opportunityId={selectedOpportunity.opportunity_id}
-          opportunityMatch={selectedOpportunity.matching?.total_match_percentage ?? 0}
+          matchings={selectedOpportunity.matching}
           onClose={handleCloseModal}
           is_saved={selectedOpportunity.is_saved}
           is_applied={selectedOpportunity.is_applied}

@@ -29,6 +29,9 @@ export interface Opportunity {
     user_id: string;
     title: string;
     description: string;
+    context: string;
+    mission: string;
+    candidate_profile: string;
     rate: number;
     responded_at: string;
     start_at: string;
