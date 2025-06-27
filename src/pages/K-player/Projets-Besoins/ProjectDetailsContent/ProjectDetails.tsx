@@ -35,6 +35,9 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
       duration: apiData.duration.toString(),
       rate: apiData.rate.toString(),
       description: apiData.description || '',
+      context: apiData.context || '',
+      mission: apiData.mission || '',
+      candidat_profile: apiData.candidat_profile || '',
       status: apiData.status || 'PENDING',
       reference: apiData.reference || '',
       opportunity_role: apiData.opportunity_role || 'REQUIREMENT',
@@ -76,7 +79,6 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}`,
         { headers: getAuthHeader() }
       );
-
       setProjectDetails(mapApiResponseToFormData(response.data));
       setError(null);
     } catch (err) {
@@ -209,8 +211,10 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
               start_at: opportunityDetails?.start_at ?? "",
               duration: opportunityDetails?.duration ?? 0,
               rate: opportunityDetails?.rate ?? 0,
-              context: opportunityDetails?.context ?? "",
               description: opportunityDetails?.description ?? "",
+              context: opportunityDetails?.context ?? "",
+              mission: opportunityDetails?.mission ?? "",
+              candidat_profile: opportunityDetails?.candidat_profile ?? "",
             }}
             loading={loading}
             error={error}

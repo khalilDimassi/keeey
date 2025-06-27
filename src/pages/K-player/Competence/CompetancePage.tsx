@@ -5,6 +5,7 @@ import { fetchInitialSectorsCriterias, saveAndSearchOpportunities } from "./serv
 import Competences from "./content/Competences";
 import Criteres from "./content/Criteres";
 import CandidatesList from "./content/CandidatesList";
+import { getUserId } from "../../../utils/jwt";
 
 const CompetancePage = () => {
   const [sectors, setSectors] = useState<Sector[]>([]);
@@ -12,7 +13,7 @@ const CompetancePage = () => {
   const [error, setError] = useState<string | null>(null);
   const initialFormData: OpportunityFormData = {
     selected_sectors: [],
-    contract_role: '',
+    contract_roles: [],
     crit_start_date: '',
     crit_start_date_lastest: '',
     crit_duration: 0,
@@ -36,7 +37,7 @@ const CompetancePage = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const { sectors, formData } = await fetchInitialSectorsCriterias();
+        const { sectors, formData } = await fetchInitialSectorsCriterias(getUserId());
         setSectors(sectors);
         setFormData(formData);
       } catch (err) {

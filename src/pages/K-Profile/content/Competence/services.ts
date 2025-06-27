@@ -1,5 +1,5 @@
 import { getAuthHeader } from '../../../../utils/jwt';
-import { ApiResponse, ApiUserResponse, MinimalSector, OpportunitiesSearchCriterias, ResumeData, ResumeSearchingDetails, SectorSuggestionsResponse, UserData } from './types';
+import { ApiResponse, ApiUserResponse, MinimalSector, OpportunitiesSearchCriterias, ResumeData, ResumeSearchingDetails, SectorSuggestionsResponse } from './types';
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -126,7 +126,7 @@ export const fetchResumeSearchDetails = async (): Promise<ResumeSearchingDetails
 
 export const saveSectors = async (selections: MinimalSector[]): Promise<void> => {
     await axios.put(
-        `${API_BASE_URL}/api/v1/private/resume/skill/v4`,
+        `${API_BASE_URL}/api/v1/private/resume/skill/v5`,
         selections,
         {
             headers: {

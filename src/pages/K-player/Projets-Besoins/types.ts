@@ -109,6 +109,8 @@ export interface OpportunityBasicInfo {
     rate: number;
     description?: string;
     context?: string,
+    mission?: string,
+    candidat_profile?: string,
     certainty?: string,
     operational_manager?: string,
     status?: string,

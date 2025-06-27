@@ -1,6 +1,6 @@
 // opportunityServices.ts
 import axios from 'axios';
-import { CandidateEnhancements, CandidateSuggestion, MatchPercentages, OpportunityFormData, Sector } from './types';
+import { CandidateEnhancements, CandidateSuggestion, OpportunityFormData, Sector } from './types';
 import { getAuthHeader, getUserId } from '../../../utils/jwt';
 
 export const fetchSectors = async (): Promise<Sector[]> => {
@@ -10,9 +10,9 @@ export const fetchSectors = async (): Promise<Sector[]> => {
     return response.data;
 };
 
-export const fetchUserOpportunityData = async (): Promise<OpportunityFormData> => {
+export const fetchUserOpportunityData = async (id: string): Promise<OpportunityFormData> => {
     const response = await axios.get<OpportunityFormData>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/default-search`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${id}`,
         {
             headers: getAuthHeader(),
         }
@@ -20,14 +20,18 @@ export const fetchUserOpportunityData = async (): Promise<OpportunityFormData> =
     return response.data;
 };
 
-export const fetchInitialSectorsCriterias = async (): Promise<{
+export const fetchInitialSectorsCriterias = async (id: string | null): Promise<{
     sectors: Sector[];
     formData: OpportunityFormData;
 }> => {
+    if (!id) {
+        throw new Error('No User ID saved up. Relogin!!');
+    }
+
     try {
         const [sectors, formData] = await Promise.all([
             fetchSectors(),
-            fetchUserOpportunityData(),
+            fetchUserOpportunityData(id),
         ]);
         return { sectors, formData };
     } catch (error) {
