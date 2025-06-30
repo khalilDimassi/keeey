@@ -179,7 +179,7 @@ const GeneralInfoTab: FC = () => {
     return (
       <div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {[1, 2, 3, 4, 5, 6].map(() => (
-          <SimpleStatusCard status={error ? "error" : "loading"} />
+          <SimpleStatusCard key={Math.random()} status={error ? "error" : "loading"} />
         ))}
       </div>
     );

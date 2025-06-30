@@ -21,8 +21,7 @@ export const fetchOpportunitiesList = async (candidateID?: string): Promise<Oppo
             );
         }
 
-        const data = response.data ?? []
-
+        const data = response.data ?? [];
         const processedOpportunities = [];
         for (let i = 0; i < data.length; i++) {
             const opportunity = data[i];
@@ -47,7 +46,7 @@ export const fetchOpportunitiesList = async (candidateID?: string): Promise<Oppo
         processedOpportunities.sort((a, b) => {
             const aPercent = a.matching?.total_match_percentage || 0;
             const bPercent = b.matching?.total_match_percentage || 0;
-            return bPercent - aPercent; // For descending order
+            return bPercent - aPercent;
         });
 
         return processedOpportunities ?? [];

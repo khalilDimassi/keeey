@@ -2,7 +2,7 @@ export interface OpportunityListItem {
     opportunity_id: number,
     title: string,
     created_at: string,
-    contract_role: string,
+    contract_roles: string[],
     description: string,
     crit_location: string,
     crit_remote: boolean,
@@ -22,6 +22,14 @@ export interface MatchPercentages {
     tools_match_percentage: number;
     authorizations_match_percentage: number;
     qualities_match_percentage: number;
+}
+
+export interface OpportunityCompetences {
+    sectors: string[];
+    jobs: string[];
+    languages: string[];
+    tools: string[];
+    qualities: string[];
 }
 
 export interface Opportunity {

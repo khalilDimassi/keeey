@@ -73,7 +73,7 @@ const JobOpportunities = () => {
 
     if (contractType !== "ALL") {
       itemsToFilter = itemsToFilter.filter(item =>
-        item.contract_role === contractType
+        item.contract_roles.includes(contractType)
       );
     }
 
@@ -201,7 +201,6 @@ const JobOpportunities = () => {
             >
               Opportunités de mes contacts
             </button>
-
             <button
               style={{
                 boxShadow: activeTab === "Clients étant intéressés"
@@ -254,7 +253,7 @@ const JobOpportunities = () => {
 
           {/* Category Selector */}
           <select
-            className="ml-auto px-4 py-2 font-medium text-gray-500 border border-gray-200 rounded-md focus:ring-teal-500 focus:border-teal-500"
+            className="ml-auto px-4 py-2 font-medium text-gray-500 border border-gray-200 rounded-xl focus:ring-teal-500 focus:border-teal-500"
             value={contractType}
             onChange={(e) => setContractType(e.target.value)}
           >
