@@ -12,6 +12,7 @@ export interface ProfileData {
     birthplace?: string;
     birthdate?: string;
     driving_permit?: string;
+    fr_work_permit?: string;
     linked_in?: string;
     created_at?: string;
     updated_at?: string;

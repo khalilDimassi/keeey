@@ -243,7 +243,6 @@ function ResumeTab() {
 
         {/* Right Column - Dynamic Content */}
         <div className="w-4/5">
-
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl border ">
             <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center group shadow-lg ring-4 ring-[#297280] cursor-pointer">
@@ -273,13 +272,11 @@ function ResumeTab() {
               onClose={() => setShowLinkPopup(false)}
               onSave={handleSaveImage}
             />
-
             <FileImagePopup
               isOpen={showFilePopup}
               onClose={() => setShowFilePopup(false)}
               onSave={handleSaveImage}
             />
-
             <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold text-gray-800">{resumeData?.personalInfo.first_name} {resumeData?.personalInfo.last_name}</h2>
               <div className="text-lg text-teal-600 font-medium">{resumeData?.personalInfo.occupation}</div>

@@ -51,7 +51,7 @@ export const updateUserData = async (formData: ApiUserResponse): Promise<void> =
 export const fetchResumeData = async (): Promise<ResumeData> => {
     try {
         const response = await axios.get<ApiResponse<ResumeData>>(
-            `${API_BASE_URL}/api/v1/private/resume/v2`,
+            `${API_BASE_URL}/api/v1/private/resume/v3`,
             { headers: getAuthHeader() }
         );
 

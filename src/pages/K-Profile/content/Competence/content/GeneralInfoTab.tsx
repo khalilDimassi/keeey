@@ -252,7 +252,6 @@ const GeneralInfoTab: FC = () => {
                 </label>
               </div>
             </div>
-
             <div className="space-y-4">
               <div className="flex gap-4">
                 <div className="flex-1">
@@ -263,7 +262,7 @@ const GeneralInfoTab: FC = () => {
                     placeholder="Nom"
                     value={formData.user.last_name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="flex-1">
@@ -274,32 +273,19 @@ const GeneralInfoTab: FC = () => {
                     placeholder="Prénom"
                     value={formData.user.first_name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
-
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Titre</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Occupation</label>
                 <input
                   type="text"
-                  name="title"
+                  name="occupation"
                   placeholder="Titre professionnel"
-                  value={formData.profile.title}
+                  value={formData.user.occupation}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
-                <input
-                  type="text"
-                  name="nationality"
-                  placeholder="Nationalité"
-                  value={formData.profile.nationality}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -320,7 +306,7 @@ const GeneralInfoTab: FC = () => {
                   placeholder="adresse@email.com"
                   value={formData.user.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
               <div>
@@ -331,7 +317,7 @@ const GeneralInfoTab: FC = () => {
                   placeholder="+33 1 23 45 67 89"
                   value={formData.user.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
               <div>
@@ -342,7 +328,7 @@ const GeneralInfoTab: FC = () => {
                   placeholder="linkedin.com/in/profil"
                   value={formData.profile.linked_in}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -397,7 +383,7 @@ const GeneralInfoTab: FC = () => {
                   placeholder="123 Rue de la Paix"
                   value={formData.user.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
               <div className="flex gap-4">
@@ -409,7 +395,7 @@ const GeneralInfoTab: FC = () => {
                     placeholder="75001"
                     value={formData.user.zip}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="w-3/5">
@@ -420,7 +406,7 @@ const GeneralInfoTab: FC = () => {
                     placeholder="Paris"
                     value={formData.user.city}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -442,7 +428,7 @@ const GeneralInfoTab: FC = () => {
                     name="birthdate"
                     value={formData.profile.birthdate}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="flex-1">
@@ -453,7 +439,32 @@ const GeneralInfoTab: FC = () => {
                     placeholder="Paris, France"
                     value={formData.profile.birthplace}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className='w-1/2'>
+                  <label className="block h-8 text-xs  font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
+                  <input
+                    type="text"
+                    name="nationality"
+                    placeholder="Nationalité"
+                    value={formData.profile.nationality}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div className="w-1/2">
+                  <label className="block h-8 text-xs font-medium text-gray-500 uppercase tracking-wide">Authorization de travail en France</label>
+                  <input
+                    type="text"
+                    name="fr_work_permit"
+                    placeholder="-"
+                    disabled
+                    value={formData.profile.fr_work_permit ? formData.profile.fr_work_permit : "-"}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -465,7 +476,7 @@ const GeneralInfoTab: FC = () => {
                   placeholder="B, A2"
                   value={formData.profile.driving_permit}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -502,24 +513,22 @@ const GeneralInfoTab: FC = () => {
             </h3>
             <div className="space-y-3">
               <div className="flex gap-4">
-                <div className="w-1/2">
+                <div className="w-1/5">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Civilité</label>
                   <div className="mt-1 text-gray-800 font-medium">{formData.user.gender}</div>
                 </div>
-                <div className="w-1/2">
-                  <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
-                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.nationality}</div>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-1/2">
+                <div className="w-2/5">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom</label>
                   <div className="mt-1 text-gray-800 font-medium">{formData.user.last_name}</div>
                 </div>
-                <div className="w-1/2">
+                <div className="w-2/5">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Prénom</label>
                   <div className="mt-1 text-gray-800 font-medium">{formData.user.first_name}</div>
                 </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Occupation</label>
+                <div className="mt-1 text-gray-800 font-medium">{formData.user.occupation ? formData.user.occupation : "-"}</div>
               </div>
             </div>
           </div>
@@ -669,6 +678,17 @@ const GeneralInfoTab: FC = () => {
                 <div className="w-1/2">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Lieu de naissance</label>
                   <div className="mt-1 text-gray-800 font-medium">{formData.profile.birthplace}</div>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-1/2">
+                  <label className="block h-8 text-xs font-medium text-gray-500 uppercase tracking-wide">Nationalité</label>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.nationality}</div>
+                </div>
+                <div className="w-1/2">
+                  <label className="block h-8 text-xs font-medium text-gray-500 uppercase tracking-wide">Authorization de travail en France</label>
+                  {/* TODO */}
+                  <div className="mt-1 text-gray-800 font-medium">{formData.profile.fr_work_permit == null ? "-" : formData.profile.fr_work_permit === "true" ? "Oui" : "Non"}</div>
                 </div>
               </div>
               <div>
