@@ -1,85 +1,78 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../../../../../components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../../../../components/ui/accordion";
 import { useState } from "react";
-import { Sector } from "../../types";
+import { Namedsectors } from "../../types";
 
-// TODO: api change: seniority for sectors, no delete request. 
-
-// const seniorityLevels = [
-//   { level: 1, name: "Junior", description: "1 - 4 ans" },
-//   { level: 2, name: "Mid-Level", description: "5 - 9 ans" },
-//   { level: 3, name: "Senior", description: "10 - 14 ans" },
-//   { level: 4, name: "Lead", description: "15 - 19 ans" },
-//   { level: 5, name: "Principal", description: "20+ ans" },
-// ];
-
-// const getSkillLevel = (seniority: number) => {
-//   const level = seniorityLevels.find((s) => s.level === seniority);
-//   return level ? level.name : "Unknown";
-// };
-
-// const getSkillLevelColor = (level: string) => {
-//   switch (level) {
-//     case "Junior": return "text-blue-600";
-//     case "Mid-Level": return "text-green-600";
-//     case "Senior": return "text-yellow-600";
-//     case "Lead": return "text-orange-600";
-//     case "Principal": return "text-red-600";
-//     default: return "text-gray-600";
-//   }
-// };
-
-const Competences = ({ data }: { data: Sector[] }) => {
+const Competences = ({ data }: { data: Namedsectors[] }) => {
   const [sectors, _setSectors] = useState(data ?? []);
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-800">Skill Competency</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Accordion type="multiple" className="space-y-2">
-          {sectors.map((sector) => (
-            <AccordionItem key={sector.id} value={`sector-${sector.id}`} className="border border-gray-200 rounded-md">
-              <AccordionTrigger className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors">
-                <span className="text-lg font-semibold text-gray-700">{sector.name}</span>
-                {/* const seniorityInfo = seniorityLevels.find((s) => s.level === skill.seniority) || { name: "Unknown", description: "" }; */}
-                {/* <span className={`text-sm text-gray-600`}>
-                  ({seniorityInfo.name} - {seniorityInfo.description})
-                </span> */}
-              </AccordionTrigger>
-              <AccordionContent className="p-2">
-                {sector.jobs?.map((job) => (
-                  job && (
-                    <div
-                      key={job.id.toString()}
-                      className="bg-white shadow-sm rounded-md mb-2 p-3"
-                    >
-                      <div className="font-medium text-gray-600 mb-2">{job.name}</div>
-                      <div className="space-y-1">
-                        {job.skills?.map((skill) => {
-                          if (!skill) return null;
-                          return (
-                            <div
-                              key={skill.id.toString()}
-                              className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-sm"
-                            >
-                              <div className="flex items-center">
-                                <span className="mr-2">{skill.name}</span>
-                              </div>
+    <>
+      {sectors.length > 0 ? (
+        <div className="space-y-4">
+          {sectors.map(sector => {
+            const sectorData = sectors.find(s => s.sector === sector.sector);
+            return (
+              <div key={sector.sector} className="border rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium">{sectorData?.sector}</h3>
+                  <div className="flex items-center">
+                    <span className="font-medium">
+                      {sector.seniority <= 4 ? "Junior" :
+                        sector.seniority <= 9 ? "Mid-Level" :
+                          sector.seniority <= 14 ? "Senior" :
+                            sector.seniority <= 19 ? "Lead" :
+                              "Principal"}
+                    </span>
+                    <span className="text-sm text-gray-600 mx-2">Seniorité ({sector.seniority} ans)</span>
+                  </div>
+                </div>
+                {sector.jobs.length > 0 && (
+                  <div>
+                    <p className="text-gray-600 mb-1">Métiers</p>
+                    <div className="space-y-2">
+                      {sector.jobs.map(job => {
+                        const jobData = sectorData?.jobs?.find(j => j.job === job.job);
+                        return (
+                          <div key={job.job} className="pl-2">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="bg-[#297280] text-white px-3 py-1 rounded-xl">
+                                {jobData?.job}
+                              </span>
+                              {job.skills.length > 0 && (
+                                <span className="text-sm text-gray-500">
+                                  ({job.skills.length} compétence{job.skills.length > 1 ? 's' : ''})
+                                </span>
+                              )}
                             </div>
-                          );
-                        })}
-                      </div>
+
+                            {job.skills.length > 0 && (
+                              <div className="flex flex-wrap gap-2 pl-4 rounded-xl">
+                                {job.skills.map(skillId => {
+                                  const skill = jobData?.skills?.find(s => s === skillId);
+                                  return (
+                                    <span
+                                      key={skillId}
+                                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm"
+                                    >
+                                      {skill}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </CardContent>
-    </Card>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-gray-500">Aucun secteur sélectionné</p>
+      )}
+    </>
   );
 };
 

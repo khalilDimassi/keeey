@@ -617,13 +617,16 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
                       <div className="flex justify-between items-center mb-2">
                         <h3 className="font-medium">{sectorData?.sector}</h3>
                         <div className="flex items-center">
-                          <span className="text-sm text-gray-600 mr-2">Niveau:</span>
                           <span className="font-medium">
-                            {["Junior", "Mid-Level", "Senior", "Lead", "Principal"][sector.seniority - 1]}
+                            {sector.seniority <= 4 ? "Junior" :
+                              sector.seniority <= 9 ? "Mid-Level" :
+                                sector.seniority <= 14 ? "Senior" :
+                                  sector.seniority <= 19 ? "Lead" :
+                                    "Principal"}
                           </span>
+                          <span className="text-sm text-gray-600 mx-2">Seniorité ({sector.seniority} ans)</span>
                         </div>
                       </div>
-
                       {sector.jobs.length > 0 && (
                         <div>
                           <p className="text-gray-600 mb-1">Métiers</p>

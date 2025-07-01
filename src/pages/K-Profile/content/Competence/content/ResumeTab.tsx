@@ -244,7 +244,7 @@ function ResumeTab() {
         {/* Right Column - Dynamic Content */}
         <div className="w-4/5">
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl border ">
+          <div className="flex flex-col sm:flex-row items-center gap-6 p-4 m-2 rounded-xl border hover:shadow-md hover:shadow-gray-200 transition-all duration-100">
             <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center group shadow-lg ring-4 ring-[#297280] cursor-pointer">
               {resumeData?.personalInfo.img ? (
                 <img src={profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />

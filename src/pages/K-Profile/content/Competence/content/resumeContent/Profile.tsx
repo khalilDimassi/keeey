@@ -80,10 +80,10 @@ const Profile = ({ data, onDataUpdated }: { data: string | null, onDataUpdated: 
           <label className="block text-m font-medium text-gray-700">Description</label>
           {hasData && !isEditing && (
             <div className="flex space-x-2">
-              <Button size="icon" onClick={handleEdit}>
+              <Button className='rounded-xl bg-gray-100 hover:bg-[#297280] hover:text-white' size="icon" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button size="icon" onClick={handleDelete}>
+              <Button className='rounded-xl bg-gray-100 hover:bg-red-800 hover:text-white' size="icon" onClick={handleDelete}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -92,7 +92,7 @@ const Profile = ({ data, onDataUpdated }: { data: string | null, onDataUpdated: 
 
         {/* View Mode (when hasData and not editing) */}
         {hasData && !isEditing && (
-          <div className="w-full p-3 bg-gray-50 rounded-md h-52 overflow-y-auto whitespace-pre-wrap">
+          <div className="w-full p-3 bg-gray-50 rounded-2xl h-52 overflow-y-auto whitespace-pre-wrap">
             {data}
           </div>
         )}
@@ -104,12 +104,12 @@ const Profile = ({ data, onDataUpdated }: { data: string | null, onDataUpdated: 
               value={editedData}
               onChange={(e) => setEditedData(e.target.value)}
               placeholder="Écrivez ici..."
-              className="w-full px-3 py-2 border border-gray-200 rounded-md h-52 mt-1"
+              className="w-full px-4 py-2 border border-gray-200 rounded-2xl h-52 mt-1"
               disabled={isLoading}
             />
             <div className="mt-2 flex justify-end gap-6">
               <Button
-                className="bg-red-200 text-gray-500 hover:bg-red-400 hover:text-white"
+                className="bg-red-200 text-gray-500 hover:bg-red-800 hover:text-white rounded-xl"
                 onClick={() => {
                   setEditedData(data)
                   setIsEditing(false)
@@ -120,7 +120,7 @@ const Profile = ({ data, onDataUpdated }: { data: string | null, onDataUpdated: 
               <Button
                 onClick={handleSave}
                 disabled={isLoading || editedData.trim() === ''}
-                className="bg-[#297280] text-white hover:bg-[#1e5f6b]"
+                className="bg-[#297280] text-white hover:bg-[#1e5f6b] transition-colors rounded-xl"
               >
                 {isLoading ? (
                   <span className="flex items-center">

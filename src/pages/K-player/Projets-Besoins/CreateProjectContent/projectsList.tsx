@@ -224,7 +224,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
       {/* Header with sorting options */}
       <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-[90px_385px_auto_auto_1fr_160px] gap-4 items-center font-medium">
         <button
-          className="flex items-center gap-1"
+          className="flex justify-self-center items-center gap-1"
           onClick={() => handleSort('status')}
         >
           Statut
@@ -244,7 +244,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
         </button>
 
         <button
-          className="flex items-center gap-1 w-[100px]"
+          className="flex items-center justify-center gap-1 w-32"
           onClick={() => handleSort('reference')}
         >
           Référence
@@ -254,7 +254,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
         </button>
 
         <button
-          className="flex items-center gap-1 w-[60px]"
+          className="flex justify-center items-center gap-1 w-20"
           onClick={() => handleSort('date')}
         >
           Date
@@ -264,7 +264,7 @@ const ProjectsList = ({ Opportunities, onSelectOpportunity, loading, error }: Pr
         </button>
 
         <div className="text-right">Participants</div>
-        <div>Actions</div>
+        <div className="text-center">Actions</div>
       </div>
 
       <div className="animate-stagger">
@@ -327,12 +327,12 @@ const OpportunityItem = ({ Opportunity, onSelectOpportunity, getStatusColor, get
     <span className="font-medium truncate">{Opportunity.title}</span>
 
     {/* Reference */}
-    <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center">
+    <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center  w-32">
       {Opportunity.reference}
     </span>
 
     {/* Date */}
-    <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded text-center">
+    <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded text-center w-20">
       {Opportunity.date || Opportunity.start_at || 'N/A'}
     </span>
 
@@ -365,8 +365,7 @@ const OpportunityItem = ({ Opportunity, onSelectOpportunity, getStatusColor, get
     {/* Button */}
     <button
       onClick={() => onSelectOpportunity(Opportunity)}
-      className="flex items-center gap-1 bg-blue-700 text-white px-4 py-1 rounded-lg text-center"
-      style={{ borderRadius: "20px", backgroundColor: "#215A96" }}
+      className="flex justify-center items-center gap-1 bg-[#215A96] text-white mx-4 px-2 py-1 rounded-xl text-center"
     >
       <ChevronRight size={16} />
       Voir détails

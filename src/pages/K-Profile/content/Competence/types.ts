@@ -146,13 +146,22 @@ export interface Tool {
     name: string;
 }
 
+export interface Namedsectors {
+    sector: string;
+    seniority: number;
+    jobs: {
+        job: string;
+        skills: string[];
+    }[];
+}
+
 export interface ResumeData {
     personalInfo: PersonalData;
     trainings: Training[];
     experiences: Experience[];
     certifications: Certification[];
     interests: Interest[];
-    sectors: Sector[];
+    sectors: Namedsectors[];
     projects: Project[];
     qualities: Quality[];
     languages: Language[];
