@@ -100,21 +100,21 @@ export interface Interest {
 
 export interface Skill {
     id: number;
-    name?: string;
+    Name?: string;
     skill?: string;
     seniority: number;
 }
 
 export interface Job {
     id: number;
-    name?: string;
+    Name?: string;
     job?: string;
     skills: Skill[];
 }
 
 export interface Sector {
     id: number;
-    name?: string;
+    Name?: string;
     sector?: string;
     jobs: Job[];
 }

@@ -112,7 +112,7 @@ export const JobButton = ({
                 <span
                     className="cursor-pointer"
                     onClick={onMainClick}
-                >{job.job}</span>
+                >{job.Name}</span>
 
                 <span
                     className="ml-2 border-l-2 pl-2 cursor-pointer"

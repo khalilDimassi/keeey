@@ -238,7 +238,7 @@ const Competences: FC<CompetencesProps> = ({
               initialSelections?.length >= 3
             }
           >
-            {sector.sector}{" "}
+            {sector.Name}{" "}
             <span className="ml-2">
               {initialSelections?.some(s => s.id === sector.id) ? "-" : "+"}
             </span>
@@ -264,7 +264,7 @@ const Competences: FC<CompetencesProps> = ({
                 }`}
               onClick={() => setActiveSector(sector.id)}
             >
-              {sectors.find((s) => s.id === sector.id)?.sector}
+              {sectors.find((s) => s.id === sector.id)?.Name}
             </button>
           ))}
         </div>
@@ -417,7 +417,7 @@ const Competences: FC<CompetencesProps> = ({
                                       }`}
                                     onClick={() => toggleSkill(activeSector, expandedJob, skill.id)}
                                   >
-                                    {skill.skill}
+                                    {skill.Name}
                                   </button>
                                 ))}
                               </div>
