@@ -1,14 +1,6 @@
-export interface SectorSelection {
-    id: number;
-    seniority: number;
-    jobs: {
-        id: number;
-        skills: number[];
-    }[];
-}
 
 export interface OpportunityFormData {
-    selected_sectors: SectorSelection[];
+    selected_sectors: MinimalSector[];
     contract_roles: string[];
     crit_start_date: string;
     crit_start_date_lastest: string;
@@ -24,22 +16,34 @@ export interface OpportunityFormData {
     qualities: string[];
 }
 
-export interface Sector {
-    includes(id: number): unknown;
+export interface MinimalSector {
     id: number;
-    sector?: string;
-    jobs: Job[] | null;
-}
-
-export interface Job {
-    id: number;
-    job?: string;
-    skills: Skill[] | null;
+    seniority: number;
+    jobs: {
+        id: number;
+        skills: number[];
+    }[];
 }
 
 export interface Skill {
     id: number;
+    Name?: string;
     skill?: string;
+    seniority: number;
+}
+
+export interface Job {
+    id: number;
+    Name?: string;
+    job?: string;
+    skills: Skill[];
+}
+
+export interface Sector {
+    id: number;
+    Name?: string;
+    sector?: string;
+    jobs: Job[];
 }
 
 export interface CandidateSkill {

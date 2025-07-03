@@ -91,11 +91,11 @@ const CompetancePage = () => {
       </div>
       <div className="p-4 flex gap-5">
         <Competences
-          formData={formData}
           sectors={sectors}
           loading={loading}
           error={error}
-          onFormDataChange={handleFormDataChange}
+          initialSelections={formData.selected_sectors ?? []}
+          onSelectionChange={handleFormDataChange}
         />
         <Criteres
           formData={formData}

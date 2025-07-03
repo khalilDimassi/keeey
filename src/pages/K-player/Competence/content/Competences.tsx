@@ -1,77 +1,81 @@
-import { FC, useEffect, useState } from "react";
-import { OpportunityFormData, Sector } from "../types";
+import { FC, Fragment, useEffect, useState } from "react";
+import { Job, MinimalSector, OpportunityFormData, Sector } from "../types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { JobButton, JobButtonColorScheme } from "../../../K-Profile/content/Competence/content/SectorsAndCriteriasContent/JobButton";
 
 interface CompetencesProps {
   sectors: Sector[];
   loading: boolean;
   error: string | null;
-  formData: OpportunityFormData;
-  onFormDataChange: (newData: Partial<OpportunityFormData>) => void;
+  initialSelections: MinimalSector[];
+  onSelectionChange: (newData: Partial<OpportunityFormData>) => void;
 }
 
-const Competences: FC<CompetencesProps> = ({
-  sectors = [],
-  loading,
-  error,
-  formData,
-  onFormDataChange,
-}) => {
+const Competences: FC<CompetencesProps> = ({ sectors = [], loading, error, initialSelections, onSelectionChange }) => {
   const [activeSector, setActiveSector] = useState<number | null>(null);
+  const [sectorToDeactivate, setSectorToDeactivate] = useState<number | null>(null);
+  const [expandedJob, setExpandedJob] = useState<number | null>(null);
+  const [hoveredToggleButton, setHoveredToggleButton] = useState<number | null>(null);
+
   useEffect(() => {
-    if (formData.selected_sectors && formData.selected_sectors.length > 0 && !activeSector) {
-      setActiveSector(formData.selected_sectors[0].id);
-    } else if (!formData.selected_sectors || formData.selected_sectors.length === 0) {
+    if (initialSelections && initialSelections.length > 0) {
+      if (!activeSector || !initialSelections.some(s => s.id === activeSector)) {
+        setActiveSector(initialSelections[0].id);
+      }
+    } else {
       setActiveSector(null);
     }
-  }, [formData.selected_sectors]);
+  }, [initialSelections, activeSector]);
 
   const toggleSector = (sectorId: number) => {
-    const isSelected = formData.selected_sectors.some(s => s.id === sectorId);
-
+    const isSelected = initialSelections.some(s => s.id === sectorId);
     if (isSelected) {
-      // Remove sector
-      const updatedSectors = formData.selected_sectors.filter(s => s.id !== sectorId);
-      onFormDataChange({ selected_sectors: updatedSectors });
+      setSectorToDeactivate(sectorId);
+    } else {
+      if (initialSelections.length < 3) {
+        const newSector = {
+          id: sectorId,
+          seniority: 1,
+          jobs: [],
+        };
+        onSelectionChange({ selected_sectors: [...initialSelections, newSector] });
+        setActiveSector(sectorId);
+      }
+    }
+  };
 
-      // Update active sector if needed
-      if (activeSector === sectorId) {
+  const confirmDeactivation = (confirm: boolean) => {
+    if (confirm && sectorToDeactivate !== null) {
+      const updatedSectors = initialSelections.filter(s => s.id !== sectorToDeactivate);
+      onSelectionChange({ selected_sectors: updatedSectors });
+      if (activeSector === sectorToDeactivate) {
         setActiveSector(updatedSectors.length > 0 ? updatedSectors[0].id : null);
       }
-    } else if (formData.selected_sectors.length < 3) {
-      // Add new sector
-      const newSector = {
-        id: sectorId,
-        seniority: 1,
-        jobs: [],
-      };
-      onFormDataChange({
-        selected_sectors: [...formData.selected_sectors, newSector],
-      });
-      setActiveSector(sectorId);
     }
+    setSectorToDeactivate(null);
   };
 
   const handleSeniorityChange = (sectorId: number, value: number) => {
-    const updatedSectors = formData.selected_sectors.map(sector =>
+    const updatedSectors = initialSelections.map(sector =>
       sector.id === sectorId ? { ...sector, seniority: value } : sector
     );
-    onFormDataChange({ selected_sectors: updatedSectors });
+    onSelectionChange({ selected_sectors: updatedSectors });
   };
 
   const toggleJob = (sectorId: number, jobId: number) => {
-    const updatedSectors = formData.selected_sectors.map(sector => {
+    const updatedSectors = initialSelections.map(sector => {
       if (sector.id !== sectorId) return sector;
 
       const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
 
       if (jobIndex >= 0) {
-        // Remove job
+        // Job is selected, remove it
         return {
           ...sector,
           jobs: sector.jobs.filter(j => j.id !== jobId),
         };
       } else {
-        // Add new job
+        // Job is not selected, add it
         return {
           ...sector,
           jobs: [...sector.jobs, { id: jobId, skills: [] }],
@@ -79,11 +83,11 @@ const Competences: FC<CompetencesProps> = ({
       }
     });
 
-    onFormDataChange({ selected_sectors: updatedSectors });
+    onSelectionChange({ selected_sectors: updatedSectors });
   };
 
   const toggleSkill = (sectorId: number, jobId: number, skillId: number) => {
-    const updatedSectors = formData.selected_sectors.map(sector => {
+    const updatedSectors = initialSelections.map(sector => {
       if (sector.id !== sectorId) return sector;
 
       const updatedJobs = sector.jobs.map(job => {
@@ -102,12 +106,12 @@ const Competences: FC<CompetencesProps> = ({
       return { ...sector, jobs: updatedJobs };
     });
 
-    onFormDataChange({ selected_sectors: updatedSectors });
+    onSelectionChange({ selected_sectors: updatedSectors });
   };
 
   // Count selected skills for a job
   const countSelectedSkillsForJob = (sectorId: number, jobId: number) => {
-    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    const sector = initialSelections.find(s => s.id === sectorId);
     if (!sector) return 0;
 
     const job = sector.jobs.find(j => j.id === jobId);
@@ -116,13 +120,13 @@ const Competences: FC<CompetencesProps> = ({
 
   // Check if a job is selected
   const isJobSelected = (sectorId: number, jobId: number) => {
-    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    const sector = initialSelections.find(s => s.id === sectorId);
     return sector ? sector.jobs.some(j => j.id === jobId) : false;
   };
 
   // Check if a skill is selected
   const isSkillSelected = (sectorId: number, jobId: number, skillId: number) => {
-    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    const sector = initialSelections.find(s => s.id === sectorId);
     if (!sector) return false;
 
     const job = sector.jobs.find(j => j.id === jobId);
@@ -131,8 +135,13 @@ const Competences: FC<CompetencesProps> = ({
 
   // Get seniority level for a sector
   const getSeniority = (sectorId: number) => {
-    const sector = formData.selected_sectors.find(s => s.id === sectorId);
+    const sector = initialSelections.find(s => s.id === sectorId);
     return sector ? sector.seniority : 1;
+  };
+
+  // Check if sector is selected
+  const isSectorSelected = (sectorId: number) => {
+    return initialSelections.some(s => s.id === sectorId);
   };
 
   const randomWidth = () => {
@@ -204,207 +213,264 @@ const Competences: FC<CompetencesProps> = ({
     );
   }
 
-
   return (
     <div
       className="w-full max-w-3xl p-6 flex flex-col gap-2 rounded-xl bg-white shadow-[0_0_4px_1px_rgba(17,53,93,0.41)]"
     >
       <h2 className="text-lg font-semibold mb-1">Compétences</h2>
       {/* Secteur */}
-      <p className="text-black font-semibold mb-1">Secteur <span className="text-gray-600 font-thin text-sm">(jusqu'à 3 secteurs)</span></p>
+      <p className="text-black font-semibold mb-1">Secteur <span className="text-gray-600 font-thin text-sm">(jusqu'à 3 secteurs)</span></p>
       <div className="flex flex-wrap gap-2 mb-8">
         {sectors.map((sector) => (
           <button
             key={sector.id}
             type="button"
-            className={`
-                  flex items-center px-3 py-2 border shadow rounded-xl space-x-2
-                  ${formData.selected_sectors?.some(s => s.id === sector.id)
+            className={`flex items-center px-3 py-2 border shadow rounded-xl space-x-2 whitespace-nowrap flex-grow-0 flex-shrink-0
+              ${isSectorSelected(sector.id)
                 ? 'bg-[#215A96] text-white'
                 : 'border-black bg-gray-50 text-gray-700'
               }
-                  ${!formData.selected_sectors?.some(s => s.id === sector.id) &&
-                formData.selected_sectors?.length >= 3
+              ${!isSectorSelected(sector.id) && initialSelections.length >= 3
                 ? 'opacity-50'
                 : ''
               }
-                `}
+            `}
             onClick={() => toggleSector(sector.id)}
-            disabled={
-              !formData.selected_sectors?.some(s => s.id === sector.id) &&
-              formData.selected_sectors?.length >= 3
-            }
+            disabled={!isSectorSelected(sector.id) && initialSelections.length >= 3}
           >
-            {sector.sector}{" "}
+            {sector.Name}{" "}
             <span className="ml-2">
-              {formData.selected_sectors?.some(s => s.id === sector.id) ? "-" : "+"}
+              {isSectorSelected(sector.id) ? "-" : "+"}
             </span>
           </button>
+        ))}
+        {/* Add invisible filler items to prevent sparse last row */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={`sector-filler-${i}`} className="flex-grow h-0" />
         ))}
       </div>
 
       {/* Selected sectors display */}
-      {formData.selected_sectors?.length > 0 && (
-        <div className="flex justify-center mb-5">
-          <div className="inline-flex border border-gray-300 rounded-[20px] overflow-hidden">
-            {formData.selected_sectors.map((sector) => (
-              <button
-                key={sector.id}
-                type="button"
-                className={`px-4 py-2 ${activeSector === sector.id
-                  ? "bg-[#215A96] text-white"
-                  : "bg-gray-50 text-gray-700"
-                  } ${sector.id === formData.selected_sectors[0].id ? "rounded-l-[20px]" : ""} 
-        ${sector.id === formData.selected_sectors[formData.selected_sectors.length - 1].id ? "rounded-r-[20px]" : ""}`}
-                onClick={() => setActiveSector(sector.id)}
-              >
-                {sectors.find((s) => s.id === sector.id)?.sector}
-              </button>
-            ))}
-          </div>
+      {initialSelections && initialSelections.length > 0 && (
+        <div className="flex flex-row justify-center items-stretch overflow-hidden mb-6">
+          {initialSelections.map((sector, index) => (
+            <button
+              key={sector.id}
+              type="button"
+              className={`
+              px-4 py-2 
+              border border-gray-300
+              ${index === 0 ? 'rounded-l-full' : 'border-l-0'} 
+              ${index === initialSelections.length - 1 ? 'rounded-r-full' : ''}
+              ${activeSector === sector.id
+                  ? "bg-[#215A96] text-white border-[#215A96]"
+                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                }
+            `}
+              onClick={() => {
+                setActiveSector(sector.id)
+                setExpandedJob(null)
+              }}
+            >
+              {sectors.find((s) => s.id === sector.id)?.Name}
+            </button>
+          ))}
         </div>
       )}
+
       {/* Seniority & Jobs */}
-      {
-        activeSector !== null && (
-          <>
-            {((activeSector) => {
-              const seniorityLevels = [
-                { level: 1, name: "Junior", description: "1 - 4 ans" },
-                { level: 2, name: "Mid-Level", description: "5 - 9 ans" },
-                { level: 3, name: "Senior", description: "10 - 14 ans" },
-                { level: 4, name: "Lead", description: "15 - 19 ans" },
-                { level: 5, name: "Principal", description: "20+ ans" },
-              ];
-              const currentLevel = getSeniority(activeSector);
-              const currentSeniority = seniorityLevels.find(level => level.level === currentLevel);
+      {activeSector !== null && (
+        <>
+          {((activeSector) => {
+            const seniorityLevels = [
+              { level: 1, name: "Junior" },
+              { level: 2, name: "Mid-Level" },
+              { level: 3, name: "Senior" },
+              { level: 4, name: "Chef" },
+              { level: 5, name: "Principal" },
+            ];
 
-              return (
-                <div className="mb-5">
-                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+            const getDisplayLevel = (points: number) => {
+              if (points <= 4) return 1;
+              if (points <= 9) return 2;
+              if (points <= 14) return 3;
+              if (points <= 19) return 4;
+              return 5;
+            };
+
+            const currentPoints = getSeniority(activeSector);
+            const currentDisplayLevel = getDisplayLevel(currentPoints);
+            const currentSeniority = seniorityLevels.find(level => level.level === currentDisplayLevel);
+
+            const handlePointsChange = (newPoints: number) => {
+              const clamped = Math.min(21, Math.max(0, newPoints));
+              handleSeniorityChange(activeSector, clamped);
+            };
+
+            return (
+              <div className="my-4">
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePointsChange(currentPoints - 1)}
+                      disabled={currentPoints <= 0}
+                      className="p-1 text-gray-500 hover:text-[#215A96] disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" color="#215A96" strokeWidth={5} />
+                    </button>
                     <span className="font-medium">{currentSeniority?.name}</span>
-                    <span>{currentSeniority?.description}</span>
+                    <button
+                      onClick={() => handlePointsChange(currentPoints + 1)}
+                      disabled={currentPoints >= 21}
+                      className="p-1 text-gray-500 hover:text-[#215A96] disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="h-4 w-4" color="#215A96" strokeWidth={5} />
+                    </button>
                   </div>
-
-                  <div
-                    className="relative w-full h-8 mb-2 cursor-pointer"
-                    onClick={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const percent = (e.clientX - rect.left) / rect.width;
-                      const newValue = Math.min(5, Math.max(1, Math.round(percent * 5)));
-                      if (newValue !== currentLevel) {
-                        handleSeniorityChange(activeSector, newValue);
-                      }
-                    }}
-                  >
-                    <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-xl transform -translate-y-1/2"></div>
-                    <div
-                      className="absolute top-1/2 left-0 h-2 bg-[#215A96] rounded-xl transform -translate-y-1/2"
-                      style={{ width: `${(currentLevel - 1) * 25}%` }}
-                    ></div>
-                    <div
-                      className="absolute top-1/2 w-5 h-5 bg-[#215A96] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md"
-                      style={{ left: `${(currentLevel - 1) * 25}%` }}
-                    ></div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      value={currentLevel}
-                      onChange={(e) => handleSeniorityChange(activeSector, parseInt(e.target.value))}
-                      className="absolute w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    {seniorityLevels.map((level) => (
-                      <span key={level.level}>{level.level}</span>
-                    ))}
-                  </div>
+                  <span>{(currentPoints > 20) ? "20+" : currentPoints} ans</span>
                 </div>
-              );
-            })(activeSector)}
-            <p className="text-gray-600 mb-1">Metier</p>
-            {(() => {
-              const sector = sectors.find(s => s.id === activeSector);
-              if (!sector?.jobs) return null;
 
-              return (
-                <div className="space-y-2">
+                <div
+                  className="relative w-full h-8 mb-2 cursor-pointer"
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    const newValue = Math.min(21, Math.max(0, Math.round(percent * 21)));
+                    handlePointsChange(newValue);
+                  }}
+                >
+                  <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-xl transform -translate-y-1/2"></div>
+                  <div
+                    className="absolute top-1/2 left-0 h-2 bg-[#215A96] rounded-xl transform -translate-y-1/2"
+                    style={{ width: `${(currentPoints / 21) * 100}%` }}
+                  ></div>
+                  <div
+                    className="absolute top-1/2 w-5 h-5 bg-[#215A96] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md transition-all duration-100"
+                    style={{ left: `${(currentPoints / 21) * 100}%` }}
+                  ></div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="21"
+                    value={currentPoints}
+                    onChange={(e) => handlePointsChange(parseInt(e.target.value))}
+                    className="absolute w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  {seniorityLevels.map((level) => (
+                    <span
+                      key={level.level}
+                      className={currentDisplayLevel === level.level ? "font-bold text-[#215A96]" : ""}
+                    >
+                      {level.level}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })(activeSector)}
+
+          <div className="mb-6" />
+          <div className="text-lg font-semibold mb-2 text-gray-800">Metier</div>
+          {(() => {
+            const sector = sectors.find(s => s.id === activeSector);
+            if (!sector?.jobs) return null;
+
+            return (
+              <div className="my-4">
+                {/* Job buttons in flex wrap */}
+                <div className="flex flex-wrap gap-2 mb-4">
                   {sector.jobs.map(job => {
-                    const selectedSkillCount = countSelectedSkillsForJob(activeSector, job.id);
-                    const isSelected = isJobSelected(activeSector, job.id);
-                    const hasSkills = !!(job.skills?.length);
+                    const handleMainClick = (job: Job) => {
+                      setExpandedJob(expandedJob === job.id ? null : job.id);
+                    };
+
+                    const handleToggleClick = (sector: number, jobId: number) => {
+                      toggleJob(sector, jobId);
+                    };
 
                     return (
-                      <div
-                        key={job.id}
-                        className="border rounded-xl overflow-hidden cursor-pointer"
-                        onClick={() => toggleJob(activeSector, job.id)}
-                      >
-                        <div className={`flex items-center justify-between p-3 ${isSelected ? 'bg-blue-200' : 'bg-blue-50'}`}>
-                          <div className="flex items-center">
-                            <span className={`px-3 py-2 rounded-xl ${isSelected
-                              ? 'bg-[#215A96] text-white'
-                              : 'border border-gray-300 bg-white text-gray-700'
-                              }`}>
-                              {job.job}
-                            </span>
+                      <Fragment key={job.id}>
+                        <JobButton
+                          job={job}
+                          isSelected={isJobSelected(activeSector, job.id)}
+                          hasSkills={!!(job.skills?.length)}
+                          selectedSkillCount={countSelectedSkillsForJob(activeSector, job.id)}
+                          isToggleHovered={hoveredToggleButton === job.id}
+                          colorScheme={JobButtonColorScheme.kplayer}
+                          onMainClick={() => handleMainClick(job)}
+                          onToggleClick={() => handleToggleClick(activeSector, job.id)}
+                          onToggleMouseEnter={() => setHoveredToggleButton(job.id)}
+                          onToggleMouseLeave={() => setHoveredToggleButton(null)}
+                        />
 
-                            {hasSkills && isSelected && (
-                              <div className="ml-3 flex flex-wrap space-x-1">
-                                {[...Array(Math.min(3, selectedSkillCount))].map((_, i) => (
-                                  <div key={i} className="w-2 h-2 rounded-full bg-[#215A96]"></div>
-                                ))}
-                                {selectedSkillCount > 3 && (
-                                  <span className="text-xs text-[#215A96] ml-1">+{selectedSkillCount - 3}</span>
-                                )}
+                        {/* Skills dropdown - appears right after the selected job button */}
+                        {expandedJob === job.id && (
+                          <div className="basis-full">
+                            <div className="w-full bg-green-50 border border-green-200 rounded-xl p-4 my-2">
+                              <div className="text-sm font-medium text-gray-700 mb-3 flex flex-row gap-1">
+                                Competances pour: <p className="font-bold">{job.job}</p>
                               </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {hasSkills && isSelected && ((activeSector, jobId) => {
-                          const sector = sectors.find(s => s.id === activeSector);
-                          if (!sector) return null;
-
-                          const job = sector.jobs?.find(j => j.id === jobId);
-                          if (!job || !job.skills?.length) return null;
-
-                          return (
-                            <div className="ml-6 mt-2 mb-4">
                               <div className="flex flex-wrap gap-2">
-                                {job.skills.map(skill => (
+                                {job.skills?.map(skill => (
                                   <button
                                     key={skill.id}
                                     type="button"
-                                    className={`px-3 py-1 text-sm border rounded-xl ${isSkillSelected(activeSector, jobId, skill.id)
+                                    className={`px-3 py-1 text-sm border rounded-xl ${isSkillSelected(activeSector, expandedJob, skill.id)
                                       ? 'bg-[#215A96] text-white'
                                       : 'border-gray-300 bg-white text-gray-700'
                                       }`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleSkill(activeSector, jobId, skill.id);
-                                    }}
+                                    onClick={() => toggleSkill(activeSector, expandedJob, skill.id)}
                                   >
-                                    {skill.skill}
+                                    {skill.Name}
                                   </button>
                                 ))}
                               </div>
                             </div>
-                          );
-                        })(activeSector, job.id)}
-                      </div>
+                          </div>
+                        )}
+                      </Fragment>
                     );
                   })}
+
+                  {/* Add invisible filler items to prevent sparse last row */}
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={`job-filler-${i}`} className="flex-grow h-0" />
+                  ))}
                 </div>
-              );
-            })()}
-          </>
-        )
-      }
+              </div>
+            );
+          })()}
+        </>
+      )}
+
+      {sectorToDeactivate !== null && (
+        <div className="fixed inset-0 bg-black bg-opacity-65 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#215A96] rounded-2xl p-6 max-w-md w-full shadow-xl">
+            <p className="text-gray-600 mb-6">
+              Êtes-vous sûr ? Toutes les configurations du secteur seront perdues !
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => confirmDeactivation(false)}
+                className="px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => confirmDeactivation(true)}
+                className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Remove Sector
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div >
   );
 };
 
 export default Competences;
-

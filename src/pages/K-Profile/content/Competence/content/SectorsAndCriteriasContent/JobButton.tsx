@@ -28,18 +28,18 @@ const colorSchemes = {
     },
     [JobButtonColorScheme.kplayer]: {
         selected: {
-            bg: 'bg-[#FFD700]',
-            text: 'text-gray-800',
-            hover: 'bg-[#FFE44D]'
+            bg: 'bg-[#215A96]',
+            text: 'text-white',
+            hover: 'bg-[#bccee0] hover:text-gray-800'
         },
         unselected: {
             bg: 'bg-gray-100',
             text: 'text-gray-600',
             border: 'border-gray-200',
-            hover: 'bg-[#FFF5CC]'
+            hover: 'bg-[#bccee0] text-gray-800'
         },
         badge: {
-            bg: 'bg-blue-500',
+            bg: 'bg-red-500',
             text: 'text-white'
         }
     },

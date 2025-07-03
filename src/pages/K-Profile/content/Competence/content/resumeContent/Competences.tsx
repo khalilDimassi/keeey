@@ -11,15 +11,15 @@ const Competences = ({ data }: { data: Namedsectors[] }) => {
           {sectors.map(sector => {
             const sectorData = sectors.find(s => s.sector === sector.sector);
             return (
-              <div key={sector.sector} className="border rounded-xl p-4">
-                <div className="flex justify-between items-center mb-2">
+              <div key={sector.sector} className="border rounded-xl p-4 bg-gray-50 hover:shadow-md">
+                <div className="flex justify-between items-center mb-2 ">
                   <h3 className="font-medium">{sectorData?.sector}</h3>
                   <div className="flex items-center">
                     <span className="font-medium">
                       {sector.seniority <= 4 ? "Junior" :
                         sector.seniority <= 9 ? "Mid-Level" :
                           sector.seniority <= 14 ? "Senior" :
-                            sector.seniority <= 19 ? "Lead" :
+                            sector.seniority <= 19 ? "Chef" :
                               "Principal"}
                     </span>
                     <span className="text-sm text-gray-600 mx-2">Seniorité ({sector.seniority} ans)</span>
@@ -51,7 +51,7 @@ const Competences = ({ data }: { data: Namedsectors[] }) => {
                                   return (
                                     <span
                                       key={skillId}
-                                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm"
+                                      className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-sm"
                                     >
                                       {skill}
                                     </span>

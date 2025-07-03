@@ -44,7 +44,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
       satisfaction: apiData.satisfaction || 0,
 
       // Sectors
-      selected_sectors: apiData.sectors?.map((sector: any) => ({
+      selected_sectors: apiData.selected_sectors?.map((sector: any) => ({
         id: sector.id,
         seniority: sector.seniority,
         jobs: sector.jobs?.map((job: any) => ({

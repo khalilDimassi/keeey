@@ -252,16 +252,21 @@ const Competences: FC<CompetencesProps> = ({
 
       {/* Selected sectors display */}
       {initialSelections?.length > 0 && (
-        <div className="flex flex-row justify-self-center justify-center items-stretch border border-gray-300 rounded-md overflow-hidden mb-6"
-          style={{ borderRadius: "20px" }}>
-          {initialSelections.map((sector) => (
+        <div className="flex flex-row justify-center items-stretch overflow-hidden mb-6">
+          {initialSelections.map((sector, index) => (
             <button
               key={sector.id}
               type="button"
-              className={`px-4 py-2 border-black ${activeSector === sector.id
-                ? "bg-[#297280] text-white"
-                : "bg-gray-50 text-gray-700"
-                }`}
+              className={`
+            px-4 py-2 
+            border border-gray-300
+            ${index === 0 ? 'rounded-l-full' : 'border-l-0'} 
+            ${index === initialSelections.length - 1 ? 'rounded-r-full' : ''}
+            ${activeSector === sector.id
+                  ? "bg-[#297280] text-white border-[#297280]"
+                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                }
+          `}
               onClick={() => setActiveSector(sector.id)}
             >
               {sectors.find((s) => s.id === sector.id)?.Name}
@@ -278,11 +283,10 @@ const Competences: FC<CompetencesProps> = ({
               { level: 1, name: "Junior" },
               { level: 2, name: "Mid-Level" },
               { level: 3, name: "Senior" },
-              { level: 4, name: "Lead" },
+              { level: 4, name: "Chef" },
               { level: 5, name: "Principal" },
             ];
 
-            // Convert between point value (0-21) and display level (1-5)
             const getDisplayLevel = (points: number) => {
               if (points <= 4) return 1;
               if (points <= 9) return 2;

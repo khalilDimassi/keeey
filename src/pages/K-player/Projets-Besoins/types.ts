@@ -1,3 +1,5 @@
+import { MinimalSector } from "../Competence/types";
+
 export interface KProfile {
     first_name: string;
     last_name: string;
@@ -23,19 +25,19 @@ export interface Opportunity {
 
 export interface Skill {
     id: number;
-    skill: string;
+    Name: string;
     seniority: number;
 }
 
 export interface Job {
     id: number;
-    job: string;
+    Name: string;
     skills: Skill[];
 }
 
 export interface Sector {
     id: number;
-    sector: string;
+    Name: string;
     jobs: Job[];
 }
 
@@ -91,15 +93,6 @@ export interface MatchPercentages {
     qualities_match_percentage: number;
 }
 
-export interface SectorSelection {
-    id: number;
-    seniority: number;
-    jobs: {
-        id: number;
-        skills: number[];
-    }[];
-}
-
 export interface OpportunityBasicInfo {
     title: string;
     announce_at: string;
@@ -119,7 +112,7 @@ export interface OpportunityBasicInfo {
 }
 
 export interface OpportunitySectors {
-    selected_sectors: SectorSelection[];
+    selected_sectors: MinimalSector[];
 }
 
 export interface OpportunityCriteria {
