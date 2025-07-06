@@ -20,10 +20,7 @@ export const fetchUserOpportunityData = async (id: string): Promise<OpportunityF
     return response.data;
 };
 
-export const fetchInitialSectorsCriterias = async (id: string | null): Promise<{
-    sectors: Sector[];
-    formData: OpportunityFormData;
-}> => {
+export const fetchInitialSectorsCriterias = async (id: string | null): Promise<{ sectors: Sector[]; formData: OpportunityFormData; }> => {
     if (!id) {
         throw new Error('No User ID saved up. Relogin!!');
     }
@@ -61,10 +58,7 @@ export const searchOpportunities = async (formData: OpportunityFormData): Promis
     return response.data;
 };
 
-export const saveAndSearchOpportunities = async (formData: OpportunityFormData): Promise<{
-    searchResults?: any;
-    error?: string;
-}> => {
+export const saveAndSearchOpportunities = async (formData: OpportunityFormData): Promise<{ searchResults?: any; error?: string; }> => {
     try {
         await saveOpportunityCriteria(formData);
         const searchResults = await searchOpportunities(formData);
@@ -99,15 +93,23 @@ export const fetchSubmittedCandidates = async (opportunityId: string): Promise<C
     }));
 };
 
-export const fetchCandidateEnhancements = async (
-    opportunityId: string,
-    candidateId: string
-): Promise<CandidateEnhancements> => {
+export const fetchCandidateEnhancements = async (opportunityId: string, candidateId: string): Promise<CandidateEnhancements> => {
     if (!opportunityId || opportunityId === "0" || opportunityId === "") {
         return {
             total_match_percentage: 0,
+            skills_match_percentage: 0,
+            seniority_match_percentage: 0,
+            jobs_match_percentage: 0,
+            sectors_match_percentage: 0,
+            availability_match_percentage: 0,
+            rate_match_percentage: 0,
+            mobility_match_percentage: 0,
+            languages_match_percentage: 0,
+            tools_match_percentage: 0,
+            authorizations_match_percentage: 0,
+            qualities_match_percentage: 0,
             is_starred: false,
-            is_validated: false
+            is_validated: false,
         };
     }
 
@@ -117,15 +119,23 @@ export const fetchCandidateEnhancements = async (
     return response.data;
 };
 
-export const fetchCandidateEnhancementsForUser = async (
-    userId: string,
-    candidateId: string
-): Promise<CandidateEnhancements> => {
+export const fetchCandidateEnhancementsForUser = async (userId: string, candidateId: string): Promise<CandidateEnhancements> => {
     if (!userId || userId === "0" || userId === "") {
         return {
             total_match_percentage: 0,
+            skills_match_percentage: 0,
+            seniority_match_percentage: 0,
+            jobs_match_percentage: 0,
+            sectors_match_percentage: 0,
+            availability_match_percentage: 0,
+            rate_match_percentage: 0,
+            mobility_match_percentage: 0,
+            languages_match_percentage: 0,
+            tools_match_percentage: 0,
+            authorizations_match_percentage: 0,
+            qualities_match_percentage: 0,
             is_starred: false,
-            is_validated: false
+            is_validated: false,
         };
     }
 
@@ -135,10 +145,8 @@ export const fetchCandidateEnhancementsForUser = async (
     );
     return response.data;
 };
-export const fetchCandidatesWithMatchData = async (
-    apiType: string,
-    opportunityId?: string
-): Promise<CandidateSuggestion[]> => {
+
+export const fetchCandidatesWithMatchData = async (apiType: string, opportunityId?: string): Promise<CandidateSuggestion[]> => {
     try {
         const candidates = apiType === "SUBMITTED" && opportunityId
             ? await fetchSubmittedCandidates(opportunityId)
@@ -155,17 +163,28 @@ export const fetchCandidatesWithMatchData = async (
 
                     return {
                         ...candidate,
-                        totalMatchPercentage: Math.round(enhancements.total_match_percentage),
-                        isStarred: enhancements.is_starred,
-                        isValidated: enhancements.is_validated
+                        matching: enhancements
                     };
                 } catch (error) {
                     console.error(`Error fetching enhancements for candidate ${candidate.user_id}:`, error);
                     return {
                         ...candidate,
-                        totalMatchPercentage: 0,
-                        isStarred: false,
-                        isValidated: false
+                        matching: {
+                            total_match_percentage: 0,
+                            skills_match_percentage: 0,
+                            seniority_match_percentage: 0,
+                            jobs_match_percentage: 0,
+                            sectors_match_percentage: 0,
+                            availability_match_percentage: 0,
+                            rate_match_percentage: 0,
+                            mobility_match_percentage: 0,
+                            languages_match_percentage: 0,
+                            tools_match_percentage: 0,
+                            authorizations_match_percentage: 0,
+                            qualities_match_percentage: 0,
+                            is_starred: false,
+                            is_validated: false,
+                        }
                     };
                 }
             })
@@ -181,10 +200,9 @@ export const fetchCandidatesWithMatchData = async (
     }
 };
 
-export const starCandidate = async (
-    opportunityId: string,
-    userId: string
-): Promise<void> => {
+export const starCandidate = async (opportunityId: string, userId: string): Promise<void> => {
+    console.log(`Star candidate with id: ${userId} in opportunity with id: ${opportunityId}`);
+
     await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/candidates/${userId}/star`,
         {},
@@ -192,10 +210,7 @@ export const starCandidate = async (
     );
 };
 
-export const validateCandidateInterest = async (
-    opportunityId: string,
-    userId: string
-): Promise<void> => {
+export const validateCandidateInterest = async (opportunityId: string, userId: string): Promise<void> => {
     await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/candidates/${userId}/validate`,
         {},
@@ -203,11 +218,7 @@ export const validateCandidateInterest = async (
     );
 };
 
-export const updateCandidateStatus = (
-    candidates: CandidateSuggestion[],
-    userId: string,
-    updates: Partial<CandidateSuggestion>
-): CandidateSuggestion[] => {
+export const updateCandidateStatus = (candidates: CandidateSuggestion[], userId: string, updates: Partial<CandidateSuggestion>): CandidateSuggestion[] => {
     return candidates.map(candidate =>
         candidate.user_id === userId
             ? { ...candidate, ...updates }

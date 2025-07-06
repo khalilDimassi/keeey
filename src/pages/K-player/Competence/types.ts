@@ -1,4 +1,3 @@
-
 export interface OpportunityFormData {
     selected_sectors: MinimalSector[];
     contract_roles: string[];
@@ -51,6 +50,74 @@ export interface CandidateSkill {
     seniority: number;
 }
 
+export interface CandidateSector {
+    sector_name: string;
+    seniority: number;
+    job_names: string[];
+}
+
+export interface Language {
+    id: number;
+    name: string;
+}
+
+export interface Tool {
+    id: number;
+    name: string;
+}
+
+export interface Quality {
+    id: number;
+    name: string;
+}
+
+export interface Training {
+    id: number;
+    name: string;
+    description: string;
+    organization: string;
+    city: string;
+    started_at: string;
+    ended_at: string;
+    present: boolean;
+}
+
+export interface Experience {
+    id: number;
+    title: string;
+    description: string;
+    employer: string;
+    city: string;
+    started_at: string;
+    ended_at: string;
+    present: boolean;
+}
+
+
+export interface Candidate {
+    user_id: string;
+    first_name: string;
+    last_name: string;
+    city: string;
+    occupation: string;
+    organization: string;
+    years_experience: number;
+    description: string;
+    trainings: Training[];
+    experiences: Experience[];
+    contracts: string[];
+    availability: string;
+    tjm: number;
+    salary: number;
+    location: string;
+    mobility: string;
+    remote: boolean;
+    sectors: CandidateSector[];
+    languages: Language[];
+    tools: Tool[];
+    qualities: Quality[];
+}
+
 export interface CandidateSuggestion {
     user_id: string;
     first_name: string;
@@ -58,12 +125,13 @@ export interface CandidateSuggestion {
     rating: number;
     availability: string;
     skills: CandidateSkill[] | null;
-    totalMatchPercentage?: number;
+    matching?: CandidateEnhancements;
     isStarred?: boolean;
     isValidated?: boolean;
 }
 
-export interface MatchPercentages {
+
+export interface CandidateEnhancements {
     total_match_percentage: number;
     skills_match_percentage: number;
     seniority_match_percentage: number;
@@ -76,10 +144,7 @@ export interface MatchPercentages {
     tools_match_percentage: number;
     authorizations_match_percentage: number;
     qualities_match_percentage: number;
-}
 
-export interface CandidateEnhancements {
-    total_match_percentage: number;
     is_starred: boolean;
     is_validated: boolean;
 }

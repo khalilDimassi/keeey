@@ -115,7 +115,7 @@ const OpportunityDetailModal = ({ opportunityId, matchings, onClose, is_saved, i
 
   return (
     <div onClick={onClose} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
-      <div className="bg-white rounded-xl w-4/6 shadow-xl relative flex flex-col overflow-y-hidden">
+      <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-xl w-4/6 shadow-xl relative flex flex-col overflow-y-hidden">
         {/* Header */}
         <div className="flex flex-row gap-10 justify-between items-center py-4 pr-8">
           <div className="flex flex-row gap-2">

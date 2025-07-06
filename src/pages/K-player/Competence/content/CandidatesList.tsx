@@ -4,6 +4,7 @@ import { CandidateSuggestion, CandidateSkill } from "../types";
 import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "../services";
 import { isAuthenticated } from "../../../../utils/jwt";
 import { emitter } from "../../../../utils/eventEmitter";
+import CandidateDetailModal from "./CandidateDetailsModale";
 
 interface CandidatesListProps {
   apiType?: string;
@@ -14,6 +15,8 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   const [candidateSuggestion, setCandidateSuggestion] = useState<CandidateSuggestion[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<CandidateSuggestion[]>([]);
   const [showExtraSkills, setShowExtraSkills] = useState<{ [key: string]: boolean }>({});
+  const [selectedCandidate, setSelectedCandidate] = useState<CandidateSuggestion | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
@@ -26,7 +29,6 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       setError(null);
       const candidates = await fetchCandidatesWithMatchData(apiType, opportunityId);
       setCandidateSuggestion(candidates);
-      setFilteredCandidates(candidates);
     } catch (err) {
       console.error("Failed to load candidates:", err);
       setError(err instanceof Error ? err.message : 'Failed to load candidates');
@@ -37,13 +39,10 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
 
   useEffect(() => {
     loadCandidates();
-
     const handleRefresh = () => {
       setVersion(v => v + 1);
     };
-
     emitter.on('refreshSuggestions', handleRefresh);
-
     return () => {
       emitter.off('refreshSuggestions', handleRefresh);
     };
@@ -54,30 +53,28 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   }, [version]);
 
   useEffect(() => {
-    // First filter by match percentage
     const filtered = candidateSuggestion.filter(candidate =>
-      candidate.totalMatchPercentage !== undefined &&
-      candidate.totalMatchPercentage >= matchPercentageFilter
+      candidate.matching?.total_match_percentage !== undefined &&
+      candidate.matching?.total_match_percentage >= matchPercentageFilter
     );
-
-    // Then sort by starred/validated status and match percentage
     const sorted = [...filtered].sort((a, b) => {
-      // First priority: Starred candidates
       if (a.isStarred && !b.isStarred) return -1;
       if (!a.isStarred && b.isStarred) return 1;
 
-      // Second priority: Validated candidates
       if (a.isValidated && !b.isValidated) return -1;
       if (!a.isValidated && b.isValidated) return 1;
 
-      // Third priority: Match percentage (higher first)
-      const matchA = a.totalMatchPercentage || 0;
-      const matchB = b.totalMatchPercentage || 0;
+      const matchA = a.matching?.total_match_percentage || 0;
+      const matchB = b.matching?.total_match_percentage || 0;
       return matchB - matchA;
     });
 
     setFilteredCandidates(sorted);
   }, [matchPercentageFilter, candidateSuggestion]);
+
+  const handleCloseModal = () => {
+    setSelectedCandidate(null);
+  };
 
   const handleStarCandidate = async (userId: string) => {
     try {
@@ -92,8 +89,8 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           if (!a.isStarred && b.isStarred) return 1;
           if (a.isValidated && !b.isValidated) return -1;
           if (!a.isValidated && b.isValidated) return 1;
-          const matchA = a.totalMatchPercentage || 0;
-          const matchB = b.totalMatchPercentage || 0;
+          const matchA = a.matching?.total_match_percentage || 0;
+          const matchB = b.matching?.total_match_percentage || 0;
           return matchB - matchA;
         });
       });
@@ -116,8 +113,8 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           if (!a.isStarred && b.isStarred) return 1;
           if (a.isValidated && !b.isValidated) return -1;
           if (!a.isValidated && b.isValidated) return 1;
-          const matchA = a.totalMatchPercentage || 0;
-          const matchB = b.totalMatchPercentage || 0;
+          const matchA = a.matching?.total_match_percentage || 0;
+          const matchB = b.matching?.total_match_percentage || 0;
           return matchB - matchA;
         });
       });
@@ -205,7 +202,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
             {/* Badge correspondance */}
             <div className="flex-shrink-0">
               <span className="bg-blue-200 text-blue-800 px-3 py-1 text-sm font-bold rounded-xl">
-                {candidate.totalMatchPercentage ? `${Math.round(candidate.totalMatchPercentage)}%` : "0%"} correspondant
+                {candidate.matching?.total_match_percentage ? `${Math.round(candidate.matching?.total_match_percentage)}%` : "0%"} correspondant
               </span>
             </div>
 
@@ -311,7 +308,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
                 <button
                   className="p-2 text-white bg-[#215A96] rounded-full hover:bg-gray-500 transition-colors"
                   title="Open user profile"
-                  onClick={() => {/* Placeholder for user profile popup */ }}
+                  onClick={() => setSelectedCandidate(candidate)}
                 >
                   <ArrowUpRight size={18} />
                 </button>
@@ -336,6 +333,19 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           </div>
         );
       })}
+
+      {/* Detail Modal */}
+      {selectedCandidate && (
+        <CandidateDetailModal
+          candidateId={selectedCandidate.user_id}
+          matchings={selectedCandidate.matching ?? null}
+          onClose={handleCloseModal}
+          is_starred={selectedCandidate.isStarred ?? false}
+          is_validated={selectedCandidate.isValidated ?? false}
+          onStarCandidate={handleStarCandidate}
+          onValidateInterest={handleValidateInterest}
+        />
+      )}
     </div>
   );
 
@@ -346,7 +356,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
         const highestSenioritySkill = getHighestSenioritySkill(skills);
         const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSenioritySkill.seniority);
         const extraSkillsCount = skills.length - 2;
-        const backgroundColor = interpolateColor(candidate.totalMatchPercentage ?? 0);
+        const backgroundColor = interpolateColor(candidate.matching?.total_match_percentage ?? 0);
         const textColor = getTextColor(backgroundColor);
 
         return (
@@ -366,7 +376,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
                 color: textColor,
               }}
             >
-              {candidate.totalMatchPercentage ?? 0}% correspondant
+              {candidate.matching?.total_match_percentage ?? 0}% correspondant
             </span>
 
             {/* Nom + Détails */}
@@ -547,6 +557,10 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
 
       {/* Liste des candidats */}
       {apiType === "SUBMITTED" ? renderSubmittedView() : renderDefaultView()}
+
+      <footer className="mt-24">
+
+      </footer>
     </>
   );
 };
