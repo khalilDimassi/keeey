@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Bookmark, Building, MailCheck, MapPin, User, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Bookmark, Building, MailCheck, MapPin, User, Loader2, AlertCircle, StarOff, Star } from 'lucide-react';
 import axios from "axios";
 import { Candidate, CandidateEnhancements } from "../types";
 
@@ -42,7 +42,6 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                 setLoading(false);
             }
         };
-
         loadCandidateDetails();
     }, [candidateId]);
 
@@ -164,7 +163,7 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                                 {candidate?.organization &&
                                     <span className="flex items-center gap-1 animate-slide-in-left">
                                         <Building size={15} />
-                                        Société
+                                        {candidate?.organization ? candidate?.organization : "-"}
                                     </span>
                                 }
                                 {candidate?.location &&
@@ -254,10 +253,18 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                                 <MailCheck size={30} fill={is_validated ? "#fbbf24" : "none"} stroke={is_validated ? "#fbbf24" : "currentColor"} />
                             </button>
                             <button
+                                className={`p-2 bg-black rounded-full transition-colors ${is_starred
+                                    ? 'hover:text-red-500 text-green-500'
+                                    : 'hover:text-green-500 text-white'
+                                    }`}
                                 onClick={(e) => handleAction(e, candidate?.user_id ?? "", "star")}
-                                className="hover:bg-gray-100 rounded-lg transition-all transform hover:scale-110"
+                                title={is_starred ? 'Remove star' : 'Add star'}
                             >
-                                <Bookmark size={30} fill={is_starred ? "#fbbf24" : "none"} stroke={is_starred ? "#fbbf24" : "currentColor"} />
+                                {is_starred ? (
+                                    <StarOff fill="green" size={18} />
+                                ) : (
+                                    <Star fill="white" size={18} />
+                                )}
                             </button>
                         </div>
                     </div>
@@ -329,7 +336,7 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                                 <div className="flex flex-wrap items-center gap-3">
                                     <label className="block text-xs font-medium text-gray-700">Secteurs</label>
                                     {candidate?.sectors?.map((item, index) => (
-                                        <div key={index} className="bg-blue-200 rounded-xl text-xs font-medium px-2 py-0.5 transition-all hover:bg-blue-300 hover:scale-105">{item.sector_name}</div>
+                                        <div key={index} className="bg-blue-200 rounded-xl text-xs font-medium px-2 py-0.5 transition-all hover:bg-blue-300 hover:scale-105">{item.sector_name} | {item.seniority} ans</div>
                                     ))}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-3">

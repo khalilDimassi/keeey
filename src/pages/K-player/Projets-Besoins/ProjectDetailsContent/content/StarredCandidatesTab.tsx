@@ -136,7 +136,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(competenceScore)}`}>
                                         Compétences
                                     </span>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 w-full bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         <p>Score: {Math.round(competenceScore)}%</p>
                                         <hr className="my-1" />
                                         <p>Emplois: {Math.round(candidate.matching_scores?.jobs_match_percentage ?? 0)}%</p>
@@ -152,7 +152,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.seniority_match_percentage ?? 0)}`}>
                                         Séniorité
                                     </span>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 w-full bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         Score: {Math.round(candidate.matching_scores?.seniority_match_percentage ?? 0)}%
                                     </div>
                                 </div>
@@ -162,7 +162,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.availability_match_percentage ?? 0)}`}>
                                         Dispo
                                     </span>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 w-full bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         Score: {Math.round(candidate.matching_scores?.availability_match_percentage ?? 0)}%
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.rate_match_percentage ?? 0)}`}>
                                         TJM
                                     </span>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 w-full bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         Score: {Math.round(candidate.matching_scores?.rate_match_percentage ?? 0)}%
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.mobility_match_percentage ?? 0)}`}>
                                         Mobilité
                                     </span>
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 w-full bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
                                         Score: {Math.round(candidate.matching_scores?.mobility_match_percentage ?? 0)}%
                                     </div>
                                 </div>
