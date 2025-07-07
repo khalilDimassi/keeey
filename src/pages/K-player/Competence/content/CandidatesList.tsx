@@ -145,6 +145,18 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   };
 
   useEffect(() => {
+    if (selectedCandidate) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [selectedCandidate]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       Object.entries(extraSkillsRef.current).forEach(([userId, ref]) => {
         if (ref && !ref.contains(event.target as Node)) {
