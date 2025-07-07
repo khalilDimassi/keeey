@@ -117,7 +117,7 @@ const Competences: FC<CompetencesProps> = ({
     if (!sector) return 0;
 
     const job = sector?.jobs?.find(j => j.id === jobId) ?? null;
-    return job ? job.skills.length : 0;
+    return job ? job.skills?.length : 0;
   };
 
   // Check if a job is selected

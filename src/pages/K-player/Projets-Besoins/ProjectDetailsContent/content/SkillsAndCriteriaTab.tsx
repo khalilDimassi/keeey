@@ -236,9 +236,13 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
   const handleSaveSkills = async () => {
     try {
       setIsSubmitting(true);
+      const filteredSectors = formData.sectors.selected_sectors.filter(
+        sector => sector.jobs && sector.jobs.length > 0
+      );
+
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/v2`,
-        { selected_sectors: formData.sectors.selected_sectors },
+        { selected_sectors: filteredSectors },
         { headers: { 'Content-Type': 'application/json', ...getAuthHeader() } }
       );
 
