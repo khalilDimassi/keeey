@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { FaGoogle, FaApple, FaGithub, FaEnvelope, FaArrowLeft, FaQuestionCircle, FaTimes, FaCheck, FaExclamationTriangle } from "react-icons/fa";
 
-type AuthStep = 'initial' | 'email-input' | 'password-input' | 'register-form';
+type AuthStep = 'initial' | 'password-input' | 'register-form';
 
 interface UnifiedAuthCardProps {
     userType: "kprofile" | "kplayer" | "kpartner";
@@ -105,10 +105,7 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
             setStep('register-form');
         } else if (result?.requiresPassword === true) {
             setStep('password-input');
-        } else {
-            setStep('initial');
         }
-
     };
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -158,21 +155,19 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
     };
 
     const handlePasswordResetRequest = async (e: React.FormEvent) => {
-        e.preventDefault
+        e.preventDefault();
         if (!onPasswordResetRequest) return;
 
         try {
             await onPasswordResetRequest(email);
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
 
     const goBack = () => {
         clearError(); // Clear error when going back
         if (step === 'password-input' || step === 'register-form') {
-            setStep('email-input');
-        } else if (step === 'email-input') {
             setStep('initial');
         }
     };
@@ -218,43 +213,6 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
                 <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
-            <motion.button
-                onClick={() => setStep('email-input')}
-                className="w-full flex items-center justify-center gap-2 p-4 text-white rounded-xl hover:bg-opacity-90 transition text-sm sm:text-base"
-                style={{ background: currentConfig.color }}
-                initial={{ y: 15, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isLoading}
-            >
-                <FaEnvelope className="text-white" />
-                <span>Continuer avec email</span>
-            </motion.button>
-        </motion.div>
-    );
-
-    const renderEmailStep = () => (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-        >
-            <div className="flex items-center mb-6">
-                <button
-                    onClick={goBack}
-                    className="p-2 rounded-full hover:bg-gray-100 transition mr-2"
-                    disabled={isLoading}
-                >
-                    <FaArrowLeft className="text-gray-600" />
-                </button>
-                <h2 className="text-lg font-bold text-gray-700">
-                    Entrez votre email
-                </h2>
-            </div>
-
             <form onSubmit={handleEmailSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -268,18 +226,23 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
                         placeholder="votre@email.com"
                         required
                         disabled={isLoading}
-                        autoFocus
                     />
                 </div>
 
-                <button
+                <motion.button
                     type="submit"
-                    className="w-full p-3 text-white rounded-xl hover:bg-opacity-90 transition text-sm font-medium"
+                    className="w-full flex items-center justify-center gap-2 p-4 text-white rounded-xl hover:bg-opacity-90 transition text-sm sm:text-base"
                     style={{ background: currentConfig.color }}
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     disabled={isLoading || !email.trim()}
                 >
-                    {isLoading ? "Vérification..." : "Continuer"}
-                </button>
+                    <FaEnvelope className="text-white" />
+                    <span>{isLoading ? "Vérification..." : "Continuer avec email"}</span>
+                </motion.button>
             </form>
         </motion.div>
     );
@@ -571,7 +534,6 @@ const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
             >
                 <AnimatePresence mode="wait">
                     {step === 'initial' && renderInitialStep()}
-                    {step === 'email-input' && renderEmailStep()}
                     {step === 'password-input' && renderPasswordStep()}
                     {step === 'register-form' && renderRegisterStep()}
                 </AnimatePresence>
