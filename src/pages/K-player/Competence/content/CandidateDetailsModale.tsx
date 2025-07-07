@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Bookmark, Building, MailCheck, MapPin, User, Loader2, AlertCircle, StarOff, Star } from 'lucide-react';
+import { ArrowLeft, Building, MailCheck, MapPin, User, Loader2, AlertCircle, StarOff, Star } from 'lucide-react';
 import axios from "axios";
 import { Candidate, CandidateEnhancements } from "../types";
 

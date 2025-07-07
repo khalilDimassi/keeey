@@ -35,6 +35,7 @@ export interface OpportunityCompetences {
 export interface Opportunity {
     opportunity_id: number;
     user_id: string;
+    organization: string;
     title: string;
     description: string;
     context: string;
