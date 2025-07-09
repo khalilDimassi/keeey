@@ -27,7 +27,7 @@ const fakeMissions: Mission[] = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 export default function MissionsTable() {
-  const [missions, setMissions] = useState<Mission[]>(fakeMissions);
+  const [missions, _setMissions] = useState<Mission[]>(fakeMissions);
 
   return (
     <div className=" min-h-screen w-full  flex flex-col ">

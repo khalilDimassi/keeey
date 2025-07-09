@@ -14,7 +14,7 @@ import MissionsTable from "./content/Missions/MissionsTable";
 import KProfile from "./content/Competence/ProfilePage";
 import JobOpportunities from "./content/Competence/content/JobOpportunities";
 import Oportunite from "./content/Competence/mode guest/Oportunite";
-import Contacts from "./content/Contact/Contacts";
+import Contacts from "./content/Contact/ContactsPage";
 
 const LayoutKProfile = () => {
   const [isOnline] = useState(isAuthenticated);
@@ -112,12 +112,10 @@ const LayoutKProfile = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#FCFCFC] p-2">
+    <div className="w-full min-h-screen bg-slate-100 p-2">
       <Navbar />
-
       <div
-        className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-[calc(100%-64px)]`}
-        style={{ marginTop: "20px" }}
+        className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-full -mt-11 pt-16`}
       >
         <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
           <Sidebar
@@ -127,13 +125,13 @@ const LayoutKProfile = () => {
             setHorizontal={setIsSidebarHorizontal}
           />
         </div>
-
         <div className="flex flex-col w-full ">
           {renderActiveComponent()}
         </div>
       </div>
-
-      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
+      {showLoginPopup &&
+        <Login onClose={() => setShowLoginPopup(false)} />
+      }
     </div>
   );
 };

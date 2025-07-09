@@ -265,9 +265,8 @@ const OpportunityList = ({
                             </p>
                         </div>
 
-                        {/* Icons */}
+                        {/* actions buttons */}
                         <div className="absolute top-2 right-3 flex gap-4">
-                            {/* Apply Button */}
                             <button
                                 className={`p-1 rounded-md transition-all duration-200 ${item.is_applied
                                     ? 'text-green-500 hover:text-red-500'
@@ -280,7 +279,6 @@ const OpportunityList = ({
                                 {item.is_applied ? <MailX /> : <MailCheck />}
                             </button>
 
-                            {/* Save Button */}
                             <button
                                 className={`p-1 rounded-md transition-all duration-200 ${item.is_saved
                                     ? "text-black hover:text-red-500 "
