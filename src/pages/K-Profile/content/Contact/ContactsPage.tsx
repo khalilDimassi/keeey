@@ -180,7 +180,7 @@ const ContactsPage = () => {
               className="ml-auto h-fit flex self-center items-center bg-[#297280] text-white text-sm px-5 py-1.5 rounded-full shadow-md hover:bg-teal-900"
               onClick={handleNewContact}
             >
-              <Plus className="w-3 h-3 mr-1" /> Ajouter un contact
+              <Plus className="w-3 h-3 mr-1" /> Ajouter un {activeTab === 'cooptation' ? 'parrain' : 'contact'}
             </button>
           </div>
 
