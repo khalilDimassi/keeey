@@ -9,6 +9,8 @@ interface ContactsReferencesContentProps {
   error: string | null;
   onReload: () => void;
   onAddContact: () => void;
+  handleContactDetails: (contact: contactFetch) => void;
+  handleContactDelete: (contactID: number) => void;
 }
 
 const ContactsTableSkeleton = ({ loading = false, error = null as string | null, empty = false, onReload = () => { }, onAddContact = () => { } }) => {
@@ -211,7 +213,7 @@ const renderStatusBadge = (status: string) => {
   );
 };
 
-const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, loading, error, onReload, onAddContact }: ContactsReferencesContentProps) => (
+const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, loading, error, onReload, onAddContact, handleContactDetails, handleContactDelete }: ContactsReferencesContentProps) => (
   <div className="p-6">
     <table className="w-full border-collapse bg-white shadow-lg ">
       <thead>
@@ -229,7 +231,7 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
       <tbody>
         {loading && (
           <ContactsTableSkeleton
-            key={1}
+            key={10000}
             loading={true}
             onReload={onReload}
           />
@@ -237,7 +239,7 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
 
         {error && (
           <ContactsTableSkeleton
-            key={2}
+            key={20000}
             error={error}
             onReload={onReload}
           />
@@ -245,7 +247,7 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
 
         {!loading && !error && (displayedContacts.length === 0 || !displayedContacts.some((contact) => contact.role === "REFERRAL")) && (
           <ContactsTableSkeleton
-            key={3}
+            key={30000}
             empty={true}
             onAddContact={onAddContact}
           />
@@ -254,7 +256,7 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
         {!loading && !error && !isTransitioning && displayedContacts.length > 0 && displayedContacts.some((contact) => contact.role === "REFERRAL") && (
           displayedContacts.map((contact, index) => (
             <tr
-              key={contact.id}
+              key={contact.ID}
               className="border-b bg-gray-50 hover:bg-green-50"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -299,34 +301,34 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
               </td>
               <td className="p-3">
                 <div className="flex items-center justify-end w-full gap-4 animate-slide-in-right" style={{ animationDelay: `${index * 0.05 + 0.4}s` }}>
-                  <button
-                    className="p-2 text-white bg-[#297280] rounded-full hover:bg-gray-500 transition-all duration-200 transform hover:scale-110"
-                    title="Contact profile"
-                    onClick={() => { }}
-                  >
-                    <ArrowUpRight size={15} />
-                  </button>
+                  <ArrowUpRight
+                    className="p-1 text-white bg-[#297280] rounded-full hover:shadow-md transition-all duration-200 transform hover:scale-110"
+                    cursor={"pointer"}
+                    size={30}
+                    onClick={() => { handleContactDetails(contact) }}
+                  />
 
-                  <button
-                    onClick={() => { }}
-                    className={`px-3 py-1.5 rounded-full flex items-center gap-1 transition-all duration-200 transform hover:scale-110 ${contact.id
-                      ? 'text-green-500 hover:text-red-500'
-                      : 'text-black hover:text-green-500'
-                      }`}
-                    title={contact.id ? 'Cancel submission' : 'Submit opportunity'}
-                  >
-                    {contact.id ? (
-                      <MailX size={24} />
-                    ) : (
-                      <MailCheck size={24} />
-                    )}
-                  </button>
+                  {contact.is_request_sent ? (
+                    <MailX
+                      className="text-[#297280] hover:text-red-500 transition-all duration-200 transform hover:scale-110"
+                      cursor={"pointer"}
+                      size={30}
+                      strokeWidth={2.5}
+                    />
+                  ) : (
+                    <MailCheck
+                      className="text-[#297280] hover:text-green-500 transition-all duration-200 transform hover:scale-110"
+                      cursor={"pointer"}
+                      size={30}
+                      strokeWidth={2.5}
+                    />
+                  )}
 
                   <Trash2
                     size={32}
-                    color="#297280"
-                    className="cursor-pointer hover:text-[#1e5d63] transition-all duration-200 transform hover:scale-110"
-                    onClick={() => { }}
+                    cursor={"pointer"}
+                    className="text-[#297280] hover:text-red-700 transition-all duration-200 transform hover:scale-110"
+                    onClick={() => { handleContactDelete(contact.ID) }}
                   />
                 </div>
               </td>

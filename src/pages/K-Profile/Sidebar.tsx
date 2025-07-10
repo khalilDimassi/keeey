@@ -7,8 +7,8 @@ import TargetSVG from "./SidebarIcons/TargetSVG";
 export type ActiveComponent =
   "dashboard"
   | "competence"
-  | "contact"
   | "bookmark"
+  | "contact"
   | "missions"
   | "settings"
   | null;
@@ -32,8 +32,8 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
   const icons: { id: ActiveComponent; Icon: LucideIcon }[] = [
     { id: "dashboard", Icon: Dashbord },
     { id: "competence", Icon: CompetenceSVG },
-    { id: "contact", Icon: Contact },
     { id: "bookmark", Icon: Bookmark },
+    { id: "contact", Icon: Contact },
     { id: "missions", Icon: TargetSVG },
     { id: "settings", Icon: Settings },
   ];

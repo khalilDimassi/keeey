@@ -1,12 +1,17 @@
 export interface contactFetch {
-    id: string;
+    ID: number;
+    user_id: string;
     status: string;
+    is_request_sent: boolean;
     role: string;
     gender: string;
     last_name: string;
     first_name: string;
     occupation: string;
     company: string;
+    email: string;
+    phone: string;
+    note: string;
     recommendation: string;
     nbrProjects: number;
     nbrMissions: number;
