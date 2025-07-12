@@ -1,5 +1,5 @@
 import { useState, useEffect, FC } from 'react';
-import { fetchOpportunities, deleteOpportunity, submitOpportunity, cancelSubmission } from './services';
+import { fetchOpportunities, deleteOpportunity, submitOpportunity } from './services';
 import { Enhancements, Opportunity, OpportunityStatus } from './types';
 import { ArrowUpCircle, ArrowUpRight, BookmarkIcon, MailCheck, MailX, Trash2 } from 'lucide-react';
 import JobOpportunities from '../Competence/content/JobOpportunities';
@@ -60,17 +60,6 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
       );
     } catch (err) {
       console.error('Failed to submit opportunity:', err);
-    }
-  };
-
-  const handleCancelSubmission = async (id: string) => {
-    try {
-      const updatedOpportunity = await cancelSubmission(id);
-      setOpportunities(prev =>
-        prev.map(opp => opp.id === id ? updatedOpportunity : opp)
-      );
-    } catch (err) {
-      console.error('Failed to cancel submission:', err);
     }
   };
 
@@ -255,6 +244,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
+                          onClick={() => { handleSubmit(opp.id) }}
                         />
                       ) : (
                         <MailCheck
@@ -262,6 +252,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
+                          onClick={() => { handleSubmit(opp.id) }}
                         />
                       )}
                       <Trash2

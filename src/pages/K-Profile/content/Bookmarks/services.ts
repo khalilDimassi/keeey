@@ -108,18 +108,4 @@ export const submitOpportunity = async (id: string): Promise<Opportunity> => {
         }
         throw new Error('An unknown error occurred while submitting opportunity');
     }
-};
-
-export const cancelSubmission = async (id: string): Promise<Opportunity> => {
-    try {
-        const response = await axios.put<Opportunity>(`${API_BASE_URL}/opportunities/${id}/submit`
-            , {}, { headers: { ...getAuthHeader() } }
-        );
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.data) {
-            throw new Error(error.response.data);
-        }
-        throw new Error('An unknown error occurred while canceling submission');
-    }
-};
+}; 
