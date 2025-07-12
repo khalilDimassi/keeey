@@ -11,7 +11,7 @@ const CandidatesList: React.FC = () => {
         </h2>
         <div className="relative">
           <button className="flex items-center gap-2 bg-white px-3 py-1 md:px-4 md:py-2 rounded-md border border-gray-300 text-gray-700 text-sm">
-            Matching 
+            Matching
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 9l6 6 6-6" />
             </svg>
@@ -85,7 +85,7 @@ const CandidatesList: React.FC = () => {
               </button>
 
               {/* Validate interest button */}
-              <button className="bg-PartnerColer hover:bg-amber-800 text-white px-2 md:px-4 py-1 md:py-2 rounded-xl md:rounded-xl flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <button className="bg-[#A58E56] hover:bg-amber-800 text-white px-2 md:px-4 py-1 md:py-2 rounded-xl md:rounded-xl flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                 <svg width="14" height="14" className="md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
@@ -93,7 +93,7 @@ const CandidatesList: React.FC = () => {
               </button>
 
               {/* Arrow button */}
-              <button className="bg-PartnerColer p-1 md:p-2 rounded-full flex items-center justify-center">
+              <button className="bg-[#A58E56] p-1 md:p-2 rounded-full flex items-center justify-center">
                 <svg width="14" height="14" className="md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="7" y1="17" x2="17" y2="7" />
                   <polyline points="7 7 17 7 17 17" />

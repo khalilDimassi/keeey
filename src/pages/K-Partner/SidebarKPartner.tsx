@@ -97,7 +97,7 @@ const SidebarKPartner = ({ onIconClick, defaultSelected, horizontal, setHorizont
               }}
             >
               <Icon
-                className={`w-6 h-6 transition-all duration-500 ${activeIcon === id ? "text-PartnerColer" : "text-white hover:text-gray-200"
+                className={`w-6 h-6 transition-all duration-500 ${activeIcon === id ? "text-[#A58E56]" : "text-white hover:text-gray-200"
                   }`}
               />
 

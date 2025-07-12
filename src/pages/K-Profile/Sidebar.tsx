@@ -67,7 +67,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
               <div
                 className="absolute bg-white rounded-full"
                 style={{
-                  width: "3rem",
+                  width: "4rem",
                   height: "2.5rem",
                   border: "3px solid rgba(140, 214, 194, 0.47)",
                   boxShadow: "1px 2px 8px #a5d8ca",
@@ -76,18 +76,18 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
             )}
 
             <div
-              className="relative z-10 transition-transform duration-500"
+              className="relative z-10 transition-transform duration-300"
               style={{
                 transform: horizontal
                   ? "translateY(0px)"
                   : activeIcon === id
-                    ? "translateX(4px)" // Slide animation when selected in vertical mode
+                    ? "translateX(14px)"
                     : "translateX(0px)",
               }}
             >
-              <Icon className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500
+              <Icon className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-300
                    ${activeIcon === id
-                  ? "text-ProfilColer"
+                  ? "text-[#297280]"
                   : "text-white hover:text-gray-200"}`} />
             </div>
           </div>

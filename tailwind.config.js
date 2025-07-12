@@ -16,9 +16,6 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			colors: {
-				'PartnerColer': '#A58E56',
-				'ProfilColer': '#297280',
-				'PlayerColer': '#215A96',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {

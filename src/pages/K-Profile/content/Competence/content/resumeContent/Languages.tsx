@@ -137,8 +137,8 @@ const Languages = ({ data, onDataUpdated }: { data: Language[], onDataUpdated: (
               onChange={handleChange}
               placeholder={error && !newLanguage.name ? "Le nom de la langue est requis" : "Entrez une langue"}
               className={`w-full px-3 py-2 border border-gray-200 rounded-xl ${error && !newLanguage.name
-                  ? "placeholder-red-300 bg-red-50"
-                  : "placeholder-gray-400 bg-gray-50"
+                ? "placeholder-red-300 bg-red-50"
+                : "placeholder-gray-400 bg-gray-50"
                 }`}
             />
           </div>

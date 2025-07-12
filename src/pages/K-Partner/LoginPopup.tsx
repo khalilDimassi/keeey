@@ -33,7 +33,7 @@ const Login = ({ onClose }: { onClose: () => void }) => {
         </p>
 
         {/* Create Account Button */}
-        <button className="w-full bg-PartnerColer text-white font-medium py-2 rounded-lg flex items-center mt-5 justify-center">
+        <button className="w-full bg-[#A58E56] text-white font-medium py-2 rounded-lg flex items-center mt-5 justify-center">
 
           <a href="/LoginKPartner" className="text-white ml-1 hover:underline"> 🔒 Créer un compte</a>
         </button>
