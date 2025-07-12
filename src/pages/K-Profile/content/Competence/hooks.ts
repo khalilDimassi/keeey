@@ -23,12 +23,12 @@ interface HookParams {
 
 const useOpportunitiesFilter = ({ activeTab, contractType, threshold }: HookParams) => {
     const [rawOpportunities, setRawOpportunities] = useState<OpportunityListItem[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [listLoading, setListLoading] = useState<boolean>(false);
+    const [listError, setListError] = useState<string | null>(null);
     const setData = useCallback((updater: OpportunityListItem[] | ((prev: OpportunityListItem[]) => OpportunityListItem[])) => {
         setRawOpportunities(updater);
-        setLoading(false);
-        setError(null);
+        setListLoading(false);
+        setListError(null);
     }, []);
 
 
@@ -68,10 +68,10 @@ const useOpportunitiesFilter = ({ activeTab, contractType, threshold }: HookPara
         filteredItems,
         rawOpportunities,
         setRawOpportunities: setData,
-        loading,
-        error,
-        setLoading,
-        setError
+        listLoading,
+        listError,
+        setListLoading,
+        setListError
     };
 };
 
