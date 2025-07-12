@@ -258,32 +258,34 @@ const OpportunityList = ({ items, loading, error, onItemClick, onSaveOpportunity
                         </div>
 
                         {/* actions buttons */}
-                        <div className="absolute top-2 right-3 flex gap-4">
-                            <button
-                                className={`p-1 rounded-md transition-all duration-200 ${item.is_applied
-                                    ? 'text-green-500 hover:text-red-500'
-                                    : 'text-black hover:text-green-500'
-                                    }`}
-                                onClick={(e) => handleSubmitClick(e, item.opportunity_id, item.is_applied)}
-                                aria-label={item.is_applied ? "Applied" : "Apply"}
-                                title={item.is_applied ? 'Cancel application' : 'Send application'}
-                            >
-                                {item.is_applied ? <MailX /> : <MailCheck />}
-                            </button>
+                        <div className="absolute top-3 right-5 flex gap-4">
+                            {item.is_applied ? (
+                                <MailX
+                                    className="hover:text-red-500 transition-all duration-200 transform hover:scale-110 mt-1"
+                                    cursor={"pointer"}
+                                    onClick={(e) => handleSubmitClick(e, item.opportunity_id, item.is_applied)}
+                                    aria-label="Applied"
+                                    size={30}
+                                />
+                            ) : (
+                                <MailCheck
+                                    className="hover:text-green-500 transition-all duration-200 transform hover:scale-110 mt-1"
+                                    cursor={"pointer"}
+                                    onClick={(e) => handleSubmitClick(e, item.opportunity_id, item.is_applied)}
+                                    aria-label="Apply"
+                                    size={30}
+                                />
+                            )}
 
-                            <button
-                                className={`p-1 rounded-md transition-all duration-200 ${item.is_saved
+                            <Bookmark
+                                className={`mt-1 transition-all duration-200 ${item.is_saved
                                     ? "text-black hover:text-red-500 "
                                     : "text-black hover:text-yellow-400 "
                                     }`}
+                                size={30}
+                                fill={item.is_saved ? "yellow" : "none"}
                                 onClick={(e) => handleSaveClick(e, item.opportunity_id, item.is_saved)}
-                                aria-label={item.is_saved ? "Saved" : "Save"}
-                            >
-                                <Bookmark
-                                    size={24}
-                                    fill={item.is_saved ? "yellow" : "none"}
-                                />
-                            </button>
+                            />
                         </div>
                     </div>
                 );

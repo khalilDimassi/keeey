@@ -181,7 +181,7 @@ export interface ApiResponse<T> {
     experiences?: Experience[];
     certifications?: Certification[];
     interests?: Interest[];
-    sectors?: Sector[];
+    sectors?: Namedsectors[];
     projects?: Project[];
     qualities?: Quality[];
     languages?: Language[];

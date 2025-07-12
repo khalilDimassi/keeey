@@ -1,5 +1,5 @@
 import { getAuthHeader, isAuthenticated } from "../../../../../../utils/jwt";
-import { InterestedKPlayer, KPlayerListItem, MatchPercentages, OpportunityListItem } from "./types";
+import { MatchPercentages, OpportunityListItem } from "./types";
 import axios, { AxiosResponse } from "axios";
 
 

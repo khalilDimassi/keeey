@@ -26,38 +26,40 @@ const OpportunityDetailModal = ({ opportunityId, matchings, onClose, is_saved, i
     return () => clearTimeout(timer);
   }, []);
 
+
+  const loadOpportunityDetails = async (opportunityId: number) => {
+    try {
+      const response = await axios.get<Opportunity>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunityId}`
+      )
+      setOpportunity(response.data);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load opportunity details.');
+    }
+  };
+
+  const loadOpportunityCompentances = async (opportunityId: number) => {
+    try {
+      const response = await axios.get<OpportunityCompetences>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunityId}/skills`
+      )
+      setOpportunityCompetences(response.data);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load opportunity compentances.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    const loadOpportunityDetails = async () => {
-      try {
-        const response = await axios.get<Opportunity>(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunityId}`
-        )
-        setOpportunity(response.data);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load opportunity details.');
-      }
-    };
 
-    const loadOpportunityCompentances = async () => {
-      try {
-        const response = await axios.get<OpportunityCompetences>(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunityId}/skills`
-        )
-        setOpportunityCompetences(response.data);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load opportunity compentances.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadOpportunityDetails();
-    loadOpportunityCompentances();
+    loadOpportunityDetails(opportunityId);
+    loadOpportunityCompentances(opportunityId);
   }, [opportunityId]);
 
   const calculateCompetenceScore = (scores: MatchPercentages | null): number => {
@@ -94,6 +96,11 @@ const OpportunityDetailModal = ({ opportunityId, matchings, onClose, is_saved, i
     } else {
       console.error("Invalid action");
     }
+
+    setLoading(true);
+    setError(null);
+    loadOpportunityDetails(opportunityId);
+    loadOpportunityCompentances(opportunityId);
   };
 
   const handleClose = () => {
@@ -166,7 +173,7 @@ const OpportunityDetailModal = ({ opportunityId, matchings, onClose, is_saved, i
 
     return (
       <div className={`transform transition-all duration-500 ease-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
-        <div className="bg-white rounded-xl shadow-xl relative flex flex-col overflow-y-hidden">
+        <div className="bg-white rounded-xl shadow-xl relative flex flex-col overflow-y-hidden pb-4">
           {/* Header - unchanged */}
           <div className="flex flex-row gap-10 justify-between items-center py-4 pr-8">
             <div className="flex flex-row gap-2">
