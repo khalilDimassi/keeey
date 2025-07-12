@@ -551,7 +551,7 @@ const OpportunityDetailModal = ({ opportunityId, matchings, onClose, is_saved, i
   return (
     <div
       onClick={handleClose}
-      className={`fixed inset-0 flex items-center justify-center bg-black z-50 p-4 transition-all duration-300 ease-out ${isVisible ? 'bg-opacity-60' : 'bg-opacity-0'}`}
+      className={`fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 p-4 transform transition-all duration-500 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
     >
       <div className="w-4/6" onClick={(e) => e.stopPropagation()}>
         {loading && <LoadingContent />}

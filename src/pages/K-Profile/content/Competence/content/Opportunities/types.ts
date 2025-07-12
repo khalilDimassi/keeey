@@ -9,6 +9,9 @@ export interface OpportunityListItem {
     matching: MatchPercentages | null,
     is_saved: boolean,
     is_applied: boolean
+
+    client_id: string
+    contact_id: number
 }
 
 export interface MatchPercentages {

@@ -124,39 +124,4 @@ export const saveOpportunity = async (opportunityId: number) => {
     } catch (error) {
         // Optionally, show an error message to the user
     }
-};
-
-export const fetchInterestedKplayers = async (): Promise<KPlayerListItem[]> => {
-    try {
-        if (!isAuthenticated()) {
-            return [];
-        }
-
-        const response = await axios.get<InterestedKPlayer[]>(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/interested-clients`,
-            {
-                headers: {
-                    ...getAuthHeader()
-                }
-            }
-        );
-
-        // Transform the data to only include what we need
-        return response.data?.map(item => ({
-            id: item.KPlayer.ID,
-            organizationId: item.KPlayer.organization_id,
-            role: item.KPlayer.player_role,
-            firstName: item.User.first_name,
-            lastName: item.User.last_name,
-            email: item.User.email,
-            phone: item.User.phone,
-            gender: item.User.gender,
-            occupation: item.User.occupation,
-            createdAt: item.User.created_at
-        })) || [];
-
-    } catch (error) {
-        console.error("Failed to fetch interested KPlayers:", error);
-        return [];
-    }
-};
+}; 

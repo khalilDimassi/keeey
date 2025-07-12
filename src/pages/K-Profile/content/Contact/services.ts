@@ -38,9 +38,9 @@ export const createContact = async (contact_role: string, data?: contactCreate) 
     }
 };
 
-export const updateContact = async (contact_id: string, data?: contactFetch) => {
+export const updateContact = async (contact_id: number, data?: contactFetch) => {
     try {
-        if (contact_id !== "" && contact_id) {
+        if (contact_id !== 0 && contact_id) {
             if (!data) {
                 throw new Error("Missing referral data.");
             }

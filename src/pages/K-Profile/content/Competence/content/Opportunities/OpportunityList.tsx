@@ -13,14 +13,7 @@ interface OpportunityListProps {
 
 const ITEMS_PER_PAGE = 5;
 
-const OpportunityList = ({
-    items,
-    loading,
-    error,
-    onItemClick,
-    onSaveOpportunity,
-    onSubmitOpportunity
-}: OpportunityListProps) => {
+const OpportunityList = ({ items, loading, error, onItemClick, onSaveOpportunity, onSubmitOpportunity }: OpportunityListProps) => {
     const [displayedItems, setDisplayedItems] = useState<OpportunityListItem[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -218,14 +211,13 @@ const OpportunityList = ({
     };
 
     return (
-        <div className="space-y-6 p-6 max-h-[70vh] overflow-y-auto">
+        <>
             {displayedItems.map((item, index) => {
                 const isLastItem = index === displayedItems.length - 1;
                 return (
-                    <div
+                    <div className="bg-slate-50 mb-3 p-4 rounded-xl hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
                         key={item.opportunity_id}
                         ref={isLastItem ? setLastItemRef : null}
-                        className="bg-white p-4 hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
                         onClick={() => onItemClick(item)}
                     >
                         {/* Avatar with initials as placeholder */}
@@ -303,7 +295,7 @@ const OpportunityList = ({
                     <p>Chargement de plus d'opportunités...</p>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
