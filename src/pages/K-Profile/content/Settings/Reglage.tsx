@@ -41,18 +41,16 @@ export default function Reglage() {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex items-center space-x-2 mb-5">
-        <Settings className="text-teal-800" size={35} />
-        <h1 className="text-2xl font-semibold">Réglage</h1>
+    <div className="w-full">
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden ml-auto"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+      <div className="flex items-center space-x-3 my-4">
+        <Settings
+          className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 `}
+          color="#297280"
+        />
+        <h1 className="text-xl font-semibold text-black">
+          Réglage
+        </h1>
       </div>
 
       <div className="flex flex-col md:flex-row">

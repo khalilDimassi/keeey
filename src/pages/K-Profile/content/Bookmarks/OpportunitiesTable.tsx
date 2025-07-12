@@ -146,143 +146,142 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="relative w-full">
-      <div className="w-full overflow-x-auto rounded-lg px-4">
-        <div className="flex items-center space-x-3 py-4">
-          <BookmarkIcon color='#297280' fill='#297280' size={40} />
-          <h1 className="text-xl font-semibold">Opportunités sauvegardées</h1>
-        </div>
-
-        <table className="w-full">
-          <thead className="border-b-4">
-            <tr>
-              {[
-                "Matching %", "Société", "Titre", "Démarrage", "Durée",
-                "Localisation", "TJM", "Compétences", "Séniorité",
-                "Commentaire", "Statut", ""
-              ].map((header) => (
-                <th
-                  key={header}
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {loading ? (
-              <>
-                {[...Array(5)].map((_, index) => (
-                  <OpportunitySkeleton key={index} />
-                ))}
-              </>
-            ) : (
-              opportunities.map((opp) => {
-                const competenceScore = calculateCompetenceScore(opp.enhancements ?? null);
-
-                return (
-                  <tr key={opp.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2">
-                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {Math.round(opp.enhancements?.total_match_percentage ?? 0 * 10)}%
-                      </span>
-                    </td>
-                    <td className="px-4 py-2">{opp.company || "-"}</td>
-                    <td className="px-4 py-2">{opp.title || "-"}</td>
-                    <td className="px-4 py-2">{opp.start_date || "-"}</td>
-                    <td className="px-4 py-2">{opp.duration || "-"}</td>
-                    <td className="px-4 py-2">{opp.location || "-"}</td>
-                    <td className="px-4 py-2">
-                      <div className="relative group mx-auto w-6 h-6">
-                        <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(opp.enhancements?.rate_match_percentage ?? 0)}`}></div>
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
-                          Score: {Math.round(opp.enhancements?.rate_match_percentage ?? 0)}%
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      {/* Competence */}
-                      <div className="relative group mx-auto w-6 h-6">
-                        <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(competenceScore)}`}></div>
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
-                          <p>Score: {Math.round(competenceScore)}%</p>
-                          <p>Emplois: {Math.round(opp.enhancements?.jobs_match_percentage ?? 0)}%</p>
-                          <p>Langues: {Math.round(opp.enhancements?.languages_match_percentage ?? 0)}%</p>
-                          <p>Outils: {Math.round(opp.enhancements?.tools_match_percentage ?? 0)}%</p>
-                          <p>Qualités: {Math.round(opp.enhancements?.qualities_match_percentage ?? 0)}%</p>
-                          <p>Autorisations: {Math.round(opp.enhancements?.authorizations_match_percentage ?? 0)}%</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      {/* Seniority */}
-                      <div className="relative group mx-auto w-6 h-6">
-                        <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(opp.enhancements?.seniority_match_percentage ?? 0)}`}></div>
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
-                          Score: {Math.round(opp.enhancements?.seniority_match_percentage ?? 0)}%
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">{opp.comment || "-"}</td>
-                    <td className="px-4 py-2">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${opp.status === 'OPEN' ? 'bg-blue-100 text-blue-800' :
-                        opp.status === 'PENDING' ? 'bg-yellow-200 text-yellow-900' :
-                          opp.status === 'ACCEPTED' ? 'bg-green-200 text-green-900' :
-                            opp.status === 'ONGOING' ? 'bg-purple-200 text-purple-900' :
-                              opp.status === 'CONCLUDED' ? 'bg-gray-200 text-gray-900' :
-                                opp.status === 'REJECTED' ? 'bg-red-200 text-red-900' :
-                                  'bg-gray-200 text-gray-800'
-                        }`}>
-                        {statusLabels[opp.status]}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="flex space-x-2 gap-4">
-                        <button
-                          className="p-2 text-white bg-[#297280] rounded-full hover:bg-gray-500 transition-colors"
-                          title="Open user profile"
-                          onClick={() => { }}
-                        >
-                          <ArrowUpRight size={15} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            opp.enhancements?.is_applied
-                              ? handleCancelSubmission(opp.id)
-                              : handleSubmit(opp.id)
-                          }}
-                          className={`px-3 py-1.5 rounded-full flex items-center gap-1 transition-colors ${opp.enhancements?.is_applied
-                            ? 'text-green-500 hover:text-red-500'
-                            : 'text-black hover:text-green-500'
-                            }`}
-                          title={opp.enhancements?.is_applied ? 'Cancel submission' : 'Submit opportunity'}
-                        >
-                          {opp.enhancements?.is_applied ? (
-                            <MailX size={24} />
-                          ) : (
-                            <MailCheck size={24} />
-                          )}
-                        </button>
-                        <Trash2
-                          size={32}
-                          color="#297280"
-                          className="cursor-pointer hover:text-[#1e5d63]"
-                          onClick={() => handleDelete(opp.id)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+    <div className="min-h-screen w-full flex flex-col">
+      <div className="flex items-center space-x-3 my-4">
+        <BookmarkIcon
+          className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 `}
+          color="#297280"
+          fill="#297280"
+        />
+        <h1 className="text-xl font-semibold text-black">
+          Opportunités sauvegardées
+        </h1>
       </div>
+      <table className="w-full">
+        <thead>
+          <tr>
+            {[
+              "% Matching", "Société", "Titre", "Démarrage", "Durée",
+              "Localisation", "TJM", "Compétences", "Séniorité",
+              "Commentaire", "Statut", ""
+            ].map((header) => (
+              <th
+                key={header}
+                className="px-4 py-3 text-left text-xs font-medium text-gray-600 tracking-wider"
+              >
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <>
+              {[...Array(3)].map((_, index) => (
+                <OpportunitySkeleton key={index} />
+              ))}
+            </>
+          ) : (
+            opportunities.map((opp) => {
+              const competenceScore = calculateCompetenceScore(opp.enhancements ?? null);
+              return (
+                <tr key={opp.id} className="hover:bg-white">
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                      {Math.round(opp.enhancements?.total_match_percentage ?? 0 * 10)}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.company || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.title || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.start_date || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.duration || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.location || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <div className="relative group mx-auto w-6 h-6">
+                      <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(opp.enhancements?.rate_match_percentage ?? 0)}`}></div>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                        Score: {Math.round(opp.enhancements?.rate_match_percentage ?? 0)}%
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    {/* Competence */}
+                    <div className="relative group mx-auto w-6 h-6">
+                      <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(competenceScore)}`}></div>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                        <p>Score: {Math.round(competenceScore)}%</p>
+                        <p>Emplois: {Math.round(opp.enhancements?.jobs_match_percentage ?? 0)}%</p>
+                        <p>Langues: {Math.round(opp.enhancements?.languages_match_percentage ?? 0)}%</p>
+                        <p>Outils: {Math.round(opp.enhancements?.tools_match_percentage ?? 0)}%</p>
+                        <p>Qualités: {Math.round(opp.enhancements?.qualities_match_percentage ?? 0)}%</p>
+                        <p>Autorisations: {Math.round(opp.enhancements?.authorizations_match_percentage ?? 0)}%</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    {/* Seniority */}
+                    <div className="relative group mx-auto w-6 h-6">
+                      <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(opp.enhancements?.seniority_match_percentage ?? 0)}`}></div>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-10">
+                        Score: {Math.round(opp.enhancements?.seniority_match_percentage ?? 0)}%
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.comment || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${opp.status === 'OPEN' ? 'bg-blue-100 text-blue-800' :
+                      opp.status === 'PENDING' ? 'bg-yellow-200 text-yellow-900' :
+                        opp.status === 'ACCEPTED' ? 'bg-green-200 text-green-900' :
+                          opp.status === 'ONGOING' ? 'bg-purple-200 text-purple-900' :
+                            opp.status === 'CONCLUDED' ? 'bg-gray-200 text-gray-900' :
+                              opp.status === 'REJECTED' ? 'bg-red-200 text-red-900' :
+                                'bg-gray-200 text-gray-800'
+                      }`}>
+                      {statusLabels[opp.status]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <div className="flex space-x-2 gap-4">
+                      <button
+                        className="p-0.5 text-white bg-[#297280] rounded-full hover:bg-gray-500 transition-colors"
+                        title="Open user profile"
+                        onClick={() => { }}
+                      >
+                        <ArrowUpRight size={15} />
+                      </button>
+                      {opp.enhancements?.is_applied ? (
+                        <MailX
+                          className="text-[#297280] hover:text-red-500 transition-all duration-200 transform hover:scale-110"
+                          cursor={"pointer"}
+                          size={20}
+                          strokeWidth={2.5}
+                        />
+                      ) : (
+                        <MailCheck
+                          className="text-[#297280] hover:text-green-500 transition-all duration-200 transform hover:scale-110"
+                          cursor={"pointer"}
+                          size={20}
+                          strokeWidth={2.5}
+                        />
+                      )}
+                      <Trash2
+                        size={20}
+                        color="#297280"
+                        className="cursor-pointer hover:text-[#1e5d63]"
+                        onClick={() => handleDelete(opp.id)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
 
       <div className="flex justify-center mt-4">
         <button
-          className="bg-white rounded-full p-1 shadow-sm border border-gray-200"
+          className=" rounded-full p-1 shadow-sm "
           onClick={onClose}
         >
           <ArrowUpCircle size={32} color="#297280" />
@@ -290,7 +289,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
       </div>
 
       <JobOpportunities />
-    </div >
+    </div>
   );
 };
 

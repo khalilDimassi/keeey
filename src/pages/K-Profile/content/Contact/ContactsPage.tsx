@@ -144,11 +144,14 @@ const ContactsPage = () => {
     ) : (
       <>
         <div className="min-h-screen w-full flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center space-x-3 ">
-              <Contact size={38} color="#297280" />
-              <h1 className="text-xl font-semibold">Contacts</h1>
-            </div>
+          <div className="flex items-center space-x-3 my-4">
+            <Contact
+              className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 `}
+              color="#297280"
+            />
+            <h1 className="text-xl font-semibold text-black">
+              Contacts
+            </h1>
           </div>
 
           {/* Tab Navigation */}

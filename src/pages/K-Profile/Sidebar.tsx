@@ -46,25 +46,20 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
 
   return (
     <div
-      className={`absolute rounded-2xl transition-all duration-500 bg-[#297280] 
-      ${horizontal
-          ? "w-[98%] h-16 grid place-items-center mt-[]"
-          : "w-[80px] h-[700px] left-[10px] flex flex-col items-center"
+      className={`rounded-2xl  bg-[#297280] ${horizontal
+        ? "w-full mx-16 h-16 flex items-center justify-center"
+        : "w-[8%] h-fit py-8 left-[10px] flex items-center justify-center"
         }`}
     >
       {/* Sidebar Icons */}
-      <div className={`grid 
-        ${horizontal
-          ? " grid-cols-6 gap-x-40 justify-center items-center"
-          : "flex flex-col gap-8 items-center"}`}>
+      <div className={`flex ${horizontal
+        ? "flex-row gap-x-40 justify-center items-center"
+        : "flex-col gap-20 py-12 items-center"}`}>
 
         {icons.map(({ id, Icon }) => (
           <div
             key={id}
-            className={`relative cursor-pointer flex items-center transition-all duration-500 
-              ${horizontal
-                ? "p-2"
-                : "mt-12 "}`}
+            className={`relative cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
             onClick={() => handleIconClick(id)}
           >
             {/* Selection Indicator (Only for Vertical Mode) */}

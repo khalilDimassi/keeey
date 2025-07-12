@@ -4,7 +4,6 @@ import { isAuthenticated } from "../../utils/jwt";
 
 import Navbar from "./content/Navbar";
 import Dashboard from "./content/Dashboard/Dashboard";
-import OpportunisteSaving from "./content/Bookmarks/OpportunisteSaving";
 import OpportunitiesTable from "./content/Bookmarks/OpportunitiesTable";
 import Reglage from "./content/Settings/Reglage";
 import Login from "./LoginPopup";
@@ -88,17 +87,7 @@ const LayoutKProfile = () => {
         return <MissionsTable />;
 
       case "bookmark":
-        if (showSaving) {
-          return <OpportunitiesTable onClose={handleCloseSaving} />;
-        }
-        return <>
-          <div className="flex flex-col items-center justify-center">
-            <button onClick={() => handleIconClickSaving("bookmark")}>
-              <ArrowDownCircle size={32} color="#297280" />
-            </button>
-          </div>
-          <OpportunisteSaving /></>
-          ;
+        return <OpportunitiesTable onClose={handleCloseSaving} />;
 
       case "contact":
         return <Contacts />;
@@ -115,16 +104,15 @@ const LayoutKProfile = () => {
     <div className="w-full min-h-screen bg-slate-100 p-2">
       <Navbar />
       <div
-        className={`flex ${isSidebarHorizontal ? "flex-col" : ""} w-full h-full -mt-11 pt-16`}
+        className={`flex ${isSidebarHorizontal ? "flex-col items-center" : "items-start"} gap-4 w-full h-full -mt-11 pt-16`}
       >
-        <div className={`${isSidebarHorizontal ? "w-full h-16 flex justify-center" : "w-28 h-full"}`}>
-          <Sidebar
-            onIconClick={handleIconClick}
-            defaultSelected="competence"
-            horizontal={isSidebarHorizontal}
-            setHorizontal={setIsSidebarHorizontal}
-          />
-        </div>
+        <Sidebar
+          onIconClick={handleIconClick}
+          defaultSelected="competence"
+          horizontal={isSidebarHorizontal}
+          setHorizontal={setIsSidebarHorizontal}
+        />
+
         <div className="flex flex-col w-full ">
           {renderActiveComponent()}
         </div>
