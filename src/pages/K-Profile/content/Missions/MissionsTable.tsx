@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, ArrowRight, Plus, Trash2, Target } from "lucide-react";
+import { Star, Plus } from "lucide-react";
 import MissionsDetails from "./MissionsDetails";
 
 interface Mission {

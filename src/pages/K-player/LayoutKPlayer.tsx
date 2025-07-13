@@ -1,53 +1,49 @@
 import { useState } from "react";
 import { isAuthenticated } from "../../utils/jwt";
+import { ActiveComponent, SidebarKPlayer } from "../assets/Sidebar";
+import CompetancePage from "./Competence/CompetancePage";
 import Login from "./LoginPopup";
 import NavbarKPlayer from "./NavbarKPlayer";
-import SidebarKPlayer, { ActiveComponent } from "./SidebarKPlayer";
 import ProfilePage from "./Profile/ProfilePage";
-import Mission from "./content/Mission/Mission";
-import ContactPage from "./content/Contact/ContactPage";
-import Reglage from "./content/Reglage/Reglage";
-import CompetancePage from "./Competence/CompetancePage";
 import ProjetsBesoinsPage from "./Projets-Besoins/ProjetsBesoinsPage";
+import ContactPage from "./content/Contact/ContactPage";
+import Mission from "./content/Mission/Mission";
+import Reglage from "./content/Reglage/Reglage";
 
 const LayoutKPlayer = () => {
   const [isOnline] = useState(isAuthenticated);
-  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>("companyPage");
+  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>("company");
   const [showLoginPopup, setShowLoginPopup] = useState(!isOnline);
 
-  const handleIconClick = (componentId: ActiveComponent) => {
-    if (!isOnline && componentId !== "companyPage") {
+  const handleIconClick = (id: ActiveComponent) => {
+    if (!isOnline && id !== "company") {
       setShowLoginPopup(true);
       return;
     }
-    setActiveComponent(componentId);
+    setActiveComponent(id);
   };
 
   return (
-    <div className="w-full p-2 bg-gray-100">
+    <div className="w-full bg-gray-100">
       {/* Navbar */}
-      <div className="w-full h-12">
-        <NavbarKPlayer />
-      </div>
+      <NavbarKPlayer />
 
-      <div className="flex w-full h-[calc(100%-64px)]">
+      <div className="flex w-full mx-4">
         {/* Sidebar */}
-        <div className="w-28">
-          <SidebarKPlayer
-            onIconClick={handleIconClick}
-            defaultSelected={isOnline ? "dashboardPage" : "companyPage"}
-          />
-        </div>
+        <SidebarKPlayer
+          onIconClick={handleIconClick}
+          defaultSelected="dashboard"
+        />
 
         {/* Content  */}
-        <div className="flex flex-col w-full mt-14 px-6">
-          {ActiveComponent === "dashboardPage" && <div>Dashboard Content Here</div>}
-          {ActiveComponent === "companyPage" && <CompetancePage />}
-          {ActiveComponent === "searchPage" && <ProjetsBesoinsPage />}
-          {ActiveComponent === "profilePage" && <ProfilePage />}
-          {ActiveComponent === "missionsPage" && <Mission />}
-          {ActiveComponent === "contactsPage" && <ContactPage />}
-          {ActiveComponent === "settingsPage" && <Reglage />}
+        <div className="flex flex-col w-full mt-3 px-3">
+          {ActiveComponent === "dashboard" && <div>Dashboard Content Here</div>}
+          {ActiveComponent === "profile" && <ProfilePage />}
+          {ActiveComponent === "company" && <ProjetsBesoinsPage />}
+          {ActiveComponent === "contacts" && <ContactPage />}
+          {ActiveComponent === "missions" && <Mission />}
+          {ActiveComponent === "search" && <CompetancePage />}
+          {ActiveComponent === "settings" && <Reglage />}
         </div>
       </div>
 

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import SidebarKPlayer from "./SidebarKPartner";
 import { isAuthenticated } from "../../utils/jwt";
 import NavbarKPartner from "./NavbarKPartner";
 import CandidatesList from "./Mode_Guest_Opportunites/CandidatesList";
@@ -8,13 +7,22 @@ import Opportunite from "./Mode_Guest_Opportunites/Opportunite";
 import Opportunite_pour_consultant from "./Mode_Guest_Opportunites/Opportunite_pour_consultant";
 import { Search } from "lucide-react";
 import Login from "./LoginPopup";
+import { ActiveComponent, SidebarKPartner } from "../assets/Sidebar";
 
-type IconId = "dashboard" | "fileText1" | "bookmark" | "target" | "competence" | "user" | "settings" | "contact" | null;
+// type IconId = "dashboard"
+//   | "fileText1"
+//   | "bookmark"
+//   | "target"
+//   | "competence"
+//   | "user"
+//   | "settings"
+//   | "contact"
+//   | null;
 
 const LayoutKPartner = () => {
   const [_showProfile, setShowProfile] = useState(false);
   const [isOnline] = useState(isAuthenticated); // Connection state
-  const [activeComponent, setActiveComponent] = useState<IconId>(
+  const [activeComponent, setActiveComponent] = useState<ActiveComponent>(
     isOnline ? "dashboard" : "competence"
   );
   const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated); // Login popup state
@@ -34,16 +42,16 @@ const LayoutKPartner = () => {
     }
   }, []);
 
-  const handleIconClick = (componentId: IconId) => {
-    if (!isOnline && componentId !== "competence") {
+  const handleIconClick = (id: ActiveComponent) => {
+    if (!isOnline && id !== "competence") {
       setShowLoginPopup(true);
       return;
     }
 
-    setActiveComponent(componentId);
+    setActiveComponent(id);
 
     // When clicking competence icon, show the appropriate components
-    if (componentId === "competence") {
+    if (id === "competence") {
       // Reset sidebar to vertical when accessing competence
       setIsSidebarHorizontal(false);
 
@@ -59,7 +67,7 @@ const LayoutKPartner = () => {
         setShowOpportuniteList(true);
       }
     } else {
-      setShowProfile(componentId === "user");
+      setShowProfile(id === "user");
     }
   };
 
@@ -122,15 +130,13 @@ const LayoutKPartner = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
-      <div className="w-full h-12 px-10">
-        <NavbarKPartner />
-      </div>
+      <NavbarKPartner />
 
       {isSidebarHorizontal ? (
         // Horizontal sidebar layout when closed
         <div className="w-full flex flex-col px-10">
           <div className="w-[98%]">
-            <SidebarKPlayer
+            <SidebarKPartner
               onIconClick={handleIconClick}
               defaultSelected={isOnline ? "dashboard" : "competence"}
               horizontal={isSidebarHorizontal}
@@ -145,15 +151,13 @@ const LayoutKPartner = () => {
         </div>
       ) : (
         // Vertical sidebar layout - original layout
-        <div className="flex w-full px-10">
-          <div style={{ width: "7rem" }}>
-            <SidebarKPlayer
-              onIconClick={handleIconClick}
-              defaultSelected={isOnline ? "dashboard" : "competence"}
-              horizontal={isSidebarHorizontal}
-              setHorizontal={setIsSidebarHorizontal}
-            />
-          </div>
+        <div className="flex w-full px-3">
+          <SidebarKPartner
+            onIconClick={handleIconClick}
+            defaultSelected={isOnline ? "dashboard" : "competence"}
+            horizontal={isSidebarHorizontal}
+            setHorizontal={setIsSidebarHorizontal}
+          />
 
           <div className="flex flex-col w-full" style={{ marginTop: "3rem" }}>
             {activeComponent === "competence" && !isOnline && (

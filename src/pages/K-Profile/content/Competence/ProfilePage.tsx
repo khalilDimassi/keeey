@@ -3,7 +3,7 @@ import { isAuthenticated } from "../../../../utils/jwt";
 import GuestMode from "./content/GuestMode";
 import OnlineMode from "./content/OnlineMode";
 import JobOpportunities from "./content/JobOpportunities";
-import CompetenceSVG from "../../SidebarIcons/CompetenceSVG";
+import { CompetenceSVG } from "../../../assets/SVGcomponents";
 
 const KProfile = ({ onClose }: { onClose: () => void }) => {
   const [isOnline] = useState(isAuthenticated);

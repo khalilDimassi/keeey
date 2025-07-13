@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import logo from "../assets/logoKeeePartner.svg"
 import { useNavigate } from "react-router-dom";
 import { UserPlus, LogOut } from "lucide-react";
 import { getAuthHeader, isAuthenticated, removeToken } from "../../utils/jwt";
@@ -38,7 +37,7 @@ const NavbarKPartner = () => {
   }, []);
 
   return (
-    <div className="flex justify-between items-center bg-white p-2 rounded-xl" style={{ boxShadow: "0 4px 15px #be9a2345" }}>
+    <div className="flex justify-between items-center bg-white p-2 rounded-xl mb-6 m-3" style={{ boxShadow: "0 4px 15px #be9a2345" }}>
       {/* Left Side: Logo and Name */}
       <div className="flex items-center ">
         <svg width="140" height="61" viewBox="0 0 160 61" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => navigate("/")} >

@@ -1,38 +1,26 @@
 import { useState } from "react";
 import { ArrowDownCircle } from "lucide-react";
 import { isAuthenticated } from "../../utils/jwt";
-
 import Navbar from "./content/Navbar";
 import Dashboard from "./content/Dashboard/Dashboard";
 import OpportunitiesTable from "./content/Bookmarks/OpportunitiesTable";
 import Reglage from "./content/Settings/Reglage";
 import Login from "./LoginPopup";
-
-import Sidebar, { ActiveComponent } from "./Sidebar";
 import MissionsTable from "./content/Missions/MissionsTable";
 import KProfile from "./content/Competence/ProfilePage";
 import JobOpportunities from "./content/Competence/content/JobOpportunities";
 import Oportunite from "./content/Competence/mode guest/Oportunite";
 import Contacts from "./content/Contact/ContactsPage";
+import { ActiveComponent, SidebarKProfile } from "../assets/Sidebar";
 
 const LayoutKProfile = () => {
   const [isOnline] = useState(isAuthenticated);
   const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated);
 
   const [showKProfile, setShowKProfile] = useState(true);
-  const [showSaving, setShowSaving] = useState(true);
   const [activeComponent, setActiveComponent] = useState<ActiveComponent>("competence");
   const [isSidebarHorizontal, setIsSidebarHorizontal] = useState(false);
 
-  const handleIconClickSaving = (componentId: ActiveComponent) => {
-    if (!isOnline && componentId !== "bookmark") {
-      setShowLoginPopup(true);
-      return;
-    }
-    setActiveComponent(componentId);
-    setIsSidebarHorizontal(false);
-    setShowSaving(true);
-  };
 
   const handleIconClick = (componentId: ActiveComponent) => {
     if (!isOnline && componentId !== "competence") {
@@ -50,21 +38,12 @@ const LayoutKProfile = () => {
     setIsSidebarHorizontal(true);
   };
 
-  const handleCloseSaving = () => {
-    setShowSaving(false);
-    setIsSidebarHorizontal(true);
-  };
-
   const renderActiveComponent = () => {
     switch (activeComponent) {
       case "dashboard":
         return <Dashboard />;
-
       case "competence":
-        if (showKProfile) {
-          return <KProfile onClose={handleCloseKProfile} />;
-        }
-
+        if (showKProfile) return <KProfile onClose={handleCloseKProfile} />;
         return isOnline ?
           <>
             <div className="flex flex-col items-center justify-center">
@@ -82,19 +61,14 @@ const LayoutKProfile = () => {
             </div>
             <Oportunite />
           </>;
-
       case "missions":
         return <MissionsTable />;
-
       case "bookmark":
-        return <OpportunitiesTable onClose={handleCloseSaving} />;
-
+        return <OpportunitiesTable />;
       case "contact":
         return <Contacts />;
-
       case "settings":
         return <Reglage />;
-
       default:
         return null;
     }
@@ -106,7 +80,14 @@ const LayoutKProfile = () => {
       <div
         className={`flex ${isSidebarHorizontal ? "flex-col items-center" : "items-start"} gap-4 w-full h-full -mt-11 pt-16`}
       >
-        <Sidebar
+        {/* <Sidebar
+          onIconClick={handleIconClick}
+          defaultSelected="competence"
+          horizontal={isSidebarHorizontal}
+          setHorizontal={setIsSidebarHorizontal}
+        /> */}
+
+        <SidebarKProfile
           onIconClick={handleIconClick}
           defaultSelected="competence"
           horizontal={isSidebarHorizontal}

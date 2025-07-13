@@ -5,7 +5,6 @@ import { ArrowUpCircle, ArrowUpRight, BookmarkIcon, MailCheck, MailX, Trash2 } f
 import JobOpportunities from '../Competence/content/JobOpportunities';
 
 interface OpportunitiesTableProps {
-  onClose: () => void;
 }
 
 const statusLabels: Record<OpportunityStatus, string> = {
@@ -18,7 +17,7 @@ const statusLabels: Record<OpportunityStatus, string> = {
   CLOSED: 'Fermé'
 };
 
-const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
+const OpportunitiesTable: FC<OpportunitiesTableProps> = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -291,7 +290,7 @@ const OpportunitiesTable: FC<OpportunitiesTableProps> = ({ onClose }) => {
       <div className="flex justify-center mt-4">
         <button
           className=" rounded-full p-1 shadow-sm "
-          onClick={onClose}
+          onClick={() => { }}
         >
           <ArrowUpCircle size={32} color="#297280" />
         </button>
