@@ -11,7 +11,8 @@ import KProfile from "./content/Competence/ProfilePage";
 import JobOpportunities from "./content/Competence/content/JobOpportunities";
 import Oportunite from "./content/Competence/mode guest/Oportunite";
 import Contacts from "./content/Contact/ContactsPage";
-import { ActiveComponent, SidebarKProfile } from "../assets/Sidebar";
+import { SidebarKProfile } from "../assets/Sidebar";
+import { ActiveComponent } from "../assets/types";
 
 const LayoutKProfile = () => {
   const [isOnline] = useState(isAuthenticated);
@@ -38,69 +39,52 @@ const LayoutKProfile = () => {
     setIsSidebarHorizontal(true);
   };
 
-  const renderActiveComponent = () => {
-    switch (activeComponent) {
-      case "dashboard":
-        return <Dashboard />;
-      case "competence":
-        if (showKProfile) return <KProfile onClose={handleCloseKProfile} />;
-        return isOnline ?
-          <>
-            <div className="flex flex-col items-center justify-center">
-              <button onClick={() => handleIconClick("competence")}>
-                <ArrowDownCircle size={32} color="#297280" />
-              </button>
-            </div>
-            <JobOpportunities />
-          </> :
-          <>
-            <div className="flex flex-col items-center justify-center">
-              <button onClick={() => handleIconClick("competence")}>
-                <ArrowDownCircle size={32} color="#297280" />
-              </button>
-            </div>
-            <Oportunite />
-          </>;
-      case "missions":
-        return <MissionsTable />;
-      case "bookmark":
-        return <OpportunitiesTable />;
-      case "contact":
-        return <Contacts />;
-      case "settings":
-        return <Reglage />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="w-full min-h-screen bg-slate-100 p-2">
-      <Navbar />
-      <div
-        className={`flex ${isSidebarHorizontal ? "flex-col items-center" : "items-start"} gap-4 w-full h-full -mt-11 pt-16`}
-      >
-        {/* <Sidebar
-          onIconClick={handleIconClick}
-          defaultSelected="competence"
-          horizontal={isSidebarHorizontal}
-          setHorizontal={setIsSidebarHorizontal}
-        /> */}
+      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
 
+      <Navbar />
+      <div className={`flex ${isSidebarHorizontal ? "flex-col items-center" : "items-start"} gap-4 w-full h-full -mt-11 pt-16`} >
         <SidebarKProfile
           onIconClick={handleIconClick}
           defaultSelected="competence"
           horizontal={isSidebarHorizontal}
           setHorizontal={setIsSidebarHorizontal}
         />
-
-        <div className="flex flex-col w-full ">
-          {renderActiveComponent()}
+        <div className="flex flex-col w-full mt-3 px-3">
+          {activeComponent === "dashboard" && <Dashboard />}
+          {activeComponent === "missions" && <MissionsTable />}
+          {activeComponent === "bookmark" && <OpportunitiesTable />}
+          {activeComponent === "contact" && <Contacts />}
+          {activeComponent === "settings" && <Reglage />}
+          {activeComponent === "competence" && (
+            showKProfile ? (
+              <KProfile onClose={handleCloseKProfile} />
+            ) : isOnline ? (
+              <>
+                <div className="flex flex-col items-center justify-center">
+                  <button onClick={() => handleIconClick("competence")}>
+                    <ArrowDownCircle size={32} color="#297280" />
+                  </button>
+                </div>
+                <JobOpportunities />
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col items-center justify-center">
+                  <button onClick={() => handleIconClick("competence")}>
+                    <ArrowDownCircle size={32} color="#297280" />
+                  </button>
+                </div>
+                <Oportunite />
+              </>
+            )
+          )}
         </div>
       </div>
-      {showLoginPopup &&
-        <Login onClose={() => setShowLoginPopup(false)} />
-      }
+      <footer className="flex items-center justify-center w-full h-16 my-4 py-4 bg-slate-100 text-gray-600">
+        <p className="text-sm">© 2025 Keeey. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { isAuthenticated } from "../../utils/jwt";
-import { ActiveComponent, SidebarKPlayer } from "../assets/Sidebar";
-import CompetancePage from "./Competence/CompetancePage";
+import { SidebarKPlayer } from "../assets/Sidebar";
+import { ActiveComponent } from "../assets/types";
+
 import Login from "./LoginPopup";
+import CompetancePage from "./Competence/CompetancePage";
 import NavbarKPlayer from "./NavbarKPlayer";
 import ProfilePage from "./Profile/ProfilePage";
 import ProjetsBesoinsPage from "./Projets-Besoins/ProjetsBesoinsPage";
@@ -12,11 +14,11 @@ import Reglage from "./content/Reglage/Reglage";
 
 const LayoutKPlayer = () => {
   const [isOnline] = useState(isAuthenticated);
-  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>("company");
+  const [ActiveComponent, setActiveComponent] = useState<ActiveComponent>("search");
   const [showLoginPopup, setShowLoginPopup] = useState(!isOnline);
 
   const handleIconClick = (id: ActiveComponent) => {
-    if (!isOnline && id !== "company") {
+    if (!isOnline && id !== "search") {
       setShowLoginPopup(true);
       return;
     }
@@ -25,17 +27,14 @@ const LayoutKPlayer = () => {
 
   return (
     <div className="w-full bg-gray-100">
-      {/* Navbar */}
-      <NavbarKPlayer />
+      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
 
+      <NavbarKPlayer />
       <div className="flex w-full mx-4">
-        {/* Sidebar */}
         <SidebarKPlayer
           onIconClick={handleIconClick}
-          defaultSelected="dashboard"
+          defaultSelected="search"
         />
-
-        {/* Content  */}
         <div className="flex flex-col w-full mt-3 px-3">
           {ActiveComponent === "dashboard" && <div>Dashboard Content Here</div>}
           {ActiveComponent === "profile" && <ProfilePage />}
@@ -46,9 +45,9 @@ const LayoutKPlayer = () => {
           {ActiveComponent === "settings" && <Reglage />}
         </div>
       </div>
-
-      {/* Login Popup */}
-      {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
+      <footer className="flex items-center justify-center w-full h-16 my-4 py-4 bg-slate-100 text-gray-600">
+        <p className="text-sm">© 2025 Keeey. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

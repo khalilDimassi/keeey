@@ -1,32 +1,12 @@
 import { useState, useEffect } from "react";
 import { Settings, Bookmark, Contact, Building2, Search, UserCheck } from "lucide-react";
 import { DashbordSVG, CompetenceSVG, TargetSVG, CvSvG } from "./SVGcomponents";
+import { ActiveComponent, ProfileType } from "./types";
 
 // TODO: Mock components for demonstration - replace with actual imports 
 const GroupContacr = ({ className }: { className?: string }) => <Contact className={className} />;
 const Contactetoile = ({ className }: { className?: string }) => <UserCheck className={className} />;
 const Staff_recruiting = ({ className }: { className?: string }) => <Building2 className={className} />;
-
-export type ProfileType =
-    | "kprofile"
-    | "kplayer"
-    | "kpartner";
-
-export type ActiveComponent =
-    | "dashboard"
-    | "competence"
-    | "bookmark"
-    | "contact"
-    | "missions"
-    | "settings"
-    | "company"
-    | "search"
-    | "profile"
-    | "contacts"
-    | "fileText1"
-    | "target"
-    | "user"
-    | null;
 
 interface IconItem {
     id: ActiveComponent;
