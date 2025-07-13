@@ -5,10 +5,10 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + "/api/v1/private";
 
 export const fetchCandidateMatchPercentage = async (
-    opportunityId: string,
+    opportunityId: number,
     userId: string
 ): Promise<Enhancements | null> => {
-    if (!opportunityId || opportunityId === "0" || opportunityId === "") return null;
+    if (!opportunityId || opportunityId === 0) return null;
 
     const response = await axios.get<Enhancements>(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/${opportunityId}/${userId}/matching`
@@ -37,7 +37,7 @@ export const fetchOpportunities = async (): Promise<Opportunity[]> => {
                     response.data[index].enhancements = enhancements;
                 }
             } catch (error) {
-
+                console.error(error);
             }
         }
 
@@ -50,7 +50,7 @@ export const fetchOpportunities = async (): Promise<Opportunity[]> => {
     }
 };
 
-export const fetchOpportunityDetails = async (id: string): Promise<Opportunity> => {
+export const fetchOpportunityDetails = async (id: number): Promise<Opportunity> => {
     try {
         const response = await axios.get<Opportunity>(`${API_BASE_URL}/opportunities/${id}`,
             { headers: { ...getAuthHeader() } }
@@ -64,10 +64,7 @@ export const fetchOpportunityDetails = async (id: string): Promise<Opportunity> 
     }
 };
 
-export const updateOpportunityStatus = async (
-    id: string,
-    payload: OpportunityUpdatePayload
-): Promise<Opportunity> => {
+export const updateOpportunityStatus = async (id: number, payload: OpportunityUpdatePayload): Promise<Opportunity> => {
     try {
         const response = await axios.patch<Opportunity>(
             `${API_BASE_URL}/opportunities/${id}/status`,
@@ -83,7 +80,7 @@ export const updateOpportunityStatus = async (
     }
 };
 
-export const deleteOpportunity = async (id: string): Promise<void> => {
+export const deleteOpportunity = async (id: number): Promise<void> => {
     try {
         await axios.delete(`${API_BASE_URL}/opportunities/${id}`
             , { headers: { ...getAuthHeader() } }
@@ -96,7 +93,7 @@ export const deleteOpportunity = async (id: string): Promise<void> => {
     }
 };
 
-export const submitOpportunity = async (id: string): Promise<Opportunity> => {
+export const submitOpportunity = async (id: number): Promise<Opportunity> => {
     try {
         const response = await axios.put<Opportunity>(`${API_BASE_URL}/opportunities/${id}/submit`
             , {}, { headers: { ...getAuthHeader() } }

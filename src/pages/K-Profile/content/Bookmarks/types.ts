@@ -1,5 +1,5 @@
 export interface Opportunity {
-    id: string;
+    id: number;
     company: string;
     title: string;
     start_date: string;

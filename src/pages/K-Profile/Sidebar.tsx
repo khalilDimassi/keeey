@@ -48,7 +48,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
     <div
       className={`rounded-2xl  bg-[#297280] ${horizontal
         ? "w-full mx-16 h-16 flex items-center justify-center"
-        : "w-[8%] h-fit py-8 left-[10px] flex items-center justify-center"
+        : "w-[7%] h-fit py-8 left-[10px] flex items-center justify-center"
         }`}
     >
       {/* Sidebar Icons */}
@@ -64,7 +64,7 @@ const Sidebar = ({ onIconClick, defaultSelected, horizontal, setHorizontal }: Si
           >
             <div
               className={`transition-all duration-300 ${!horizontal && activeIcon === id
-                ? "bg-white rounded-full py-2 px-4 ml-6"
+                ? "bg-white rounded-full py-2 px-4 ml-4"
                 : ""}`}
             >
               <Icon

@@ -414,7 +414,7 @@ const CompetenceCategory = ({ label, items }: { label: string; items: string[] }
 );
 
 // Main component
-const JobOpportunities = () => {
+const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClose?: () => void }) => {
   const [activeTab, setActiveTab] = useState<OpportunityTab>("Opportunités");
   const [contractType, setContractType] = useState<ContractType>("ALL");
   const [threshold, setThreshold] = useState(0);
@@ -424,6 +424,12 @@ const JobOpportunities = () => {
     contractType,
     threshold
   });
+
+  useEffect(() => {
+    if (selectedID) {
+      setSelectedOpportunity(filteredItems.find(i => i.opportunity_id === selectedID));
+    }
+  }, [filteredItems, selectedID]);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -527,6 +533,8 @@ const JobOpportunities = () => {
   const handleCloseModal = () => {
     setIsVisible(false);
     setTimeout(() => setSelectedOpportunity(null), 300);
+
+    if (onClose) onClose();
   };
 
   if (listLoading && displayedItems.length === 0) {
@@ -558,7 +566,7 @@ const JobOpportunities = () => {
                     ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
                     : "none"
                 }}
-                className={`px-8 py-3 flex gap-2 items-center font-medium transition-all relative ${activeTab === tab
+                className={`px-8 py-3 sm:text-sm md:text-md flex gap-2 items-center font-medium transition-all relative ${activeTab === tab
                   ? "text-gray-900 bg-white rounded-t-xl z-10"
                   : "text-gray-400"
                   }`}
