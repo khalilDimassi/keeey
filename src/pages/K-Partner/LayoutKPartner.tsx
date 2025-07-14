@@ -1,23 +1,14 @@
 import { useState, useEffect } from "react";
 import { isAuthenticated } from "../../utils/jwt";
-import NavbarKPartner from "./NavbarKPartner";
+import { Search } from "lucide-react";
+import { SidebarKPartner } from "../assets/Sidebar";
+import { ActiveComponent } from "../assets/types";
 import CandidatesList from "./Mode_Guest_Opportunites/CandidatesList";
 import Profile_besoin_specifique from "./Mode_Guest_Opportunites/Profile_besoin_specifique";
 import Opportunite from "./Mode_Guest_Opportunites/Opportunite";
 import Opportunite_pour_consultant from "./Mode_Guest_Opportunites/Opportunite_pour_consultant";
-import { Search } from "lucide-react";
 import Login from "./LoginPopup";
-import { ActiveComponent, SidebarKPartner } from "../assets/Sidebar";
-
-// type IconId = "dashboard"
-//   | "fileText1"
-//   | "bookmark"
-//   | "target"
-//   | "competence"
-//   | "user"
-//   | "settings"
-//   | "contact"
-//   | null;
+import { NavbarKPartner } from "../assets/Navbar";
 
 const LayoutKPartner = () => {
   const [_showProfile, setShowProfile] = useState(false);

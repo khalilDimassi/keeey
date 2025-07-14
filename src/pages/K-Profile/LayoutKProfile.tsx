@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ArrowDownCircle } from "lucide-react";
 import { isAuthenticated } from "../../utils/jwt";
-import Navbar from "./content/Navbar";
+import { SidebarKProfile } from "../assets/Sidebar";
+import { ActiveComponent } from "../assets/types";
+
 import Dashboard from "./content/Dashboard/Dashboard";
 import OpportunitiesTable from "./content/Bookmarks/OpportunitiesTable";
 import Reglage from "./content/Settings/Reglage";
@@ -11,8 +13,7 @@ import KProfile from "./content/Competence/ProfilePage";
 import JobOpportunities from "./content/Competence/content/JobOpportunities";
 import Oportunite from "./content/Competence/mode guest/Oportunite";
 import Contacts from "./content/Contact/ContactsPage";
-import { SidebarKProfile } from "../assets/Sidebar";
-import { ActiveComponent } from "../assets/types";
+import { NavbarKProfile } from "../assets/Navbar";
 
 const LayoutKProfile = () => {
   const [isOnline] = useState(isAuthenticated);
@@ -43,7 +44,7 @@ const LayoutKProfile = () => {
     <div className="w-full min-h-screen bg-slate-100 p-2">
       {showLoginPopup && <Login onClose={() => setShowLoginPopup(false)} />}
 
-      <Navbar />
+      <NavbarKProfile />
       <div className={`flex ${isSidebarHorizontal ? "flex-col items-center" : "items-start"} gap-4 w-full h-full -mt-11 pt-16`} >
         <SidebarKProfile
           onIconClick={handleIconClick}

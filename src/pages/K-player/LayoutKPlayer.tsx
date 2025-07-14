@@ -5,12 +5,12 @@ import { ActiveComponent } from "../assets/types";
 
 import Login from "./LoginPopup";
 import CompetancePage from "./Competence/CompetancePage";
-import NavbarKPlayer from "./NavbarKPlayer";
 import ProfilePage from "./Profile/ProfilePage";
 import ProjetsBesoinsPage from "./Projets-Besoins/ProjetsBesoinsPage";
 import ContactPage from "./content/Contact/ContactPage";
 import Mission from "./content/Mission/Mission";
 import Reglage from "./content/Reglage/Reglage";
+import { NavbarKPlayer } from "../assets/Navbar";
 
 const LayoutKPlayer = () => {
   const [isOnline] = useState(isAuthenticated);
