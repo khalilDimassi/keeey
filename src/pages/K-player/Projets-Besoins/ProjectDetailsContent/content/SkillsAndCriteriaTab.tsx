@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Edit, PlusCircle, Trash2 } from "lucide-reac
 import { OpportunitySectors, Sector, OpportunityCriteria, OpportunityRequirements, Job } from "../../types";
 import axios from "axios";
 import { getAuthHeader } from "../../../../../utils/jwt";
-import { JobButton, JobButtonColorScheme } from "../../../../K-Profile/content/Competence/content/SectorsAndCriteriasContent/JobButton";
+import { JobButton, JobButtonColorScheme } from "../../../../K-Profile/Competence/content/SectorsAndCriteriasContent/JobButton";
 
 interface SkillsAndCriteriasProps {
   sectors: Sector[];

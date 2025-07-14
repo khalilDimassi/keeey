@@ -1,12 +1,13 @@
-
+import { LayoutKPlayer, LayoutKProfile } from './pages/components/Layout';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Home from './pages/home';
-import AuthPage from './pages/Auth/AuthPage';
-import LayoutKPlayer from './pages/K-player/LayoutKPlayer';
-import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
-import LayoutKProfile from './pages/K-Profile/LayoutKProfile';
 import EmailVerifLayout from './pages/Auth/EmailVerifLayout';
+import AuthPage from './pages/Auth/AuthPage';
+import Home from './pages/home';
+
+// TODO: unified
+import LayoutKPartner from './pages/K-Partner/LayoutKPartner';
+
 
 
 function App() {

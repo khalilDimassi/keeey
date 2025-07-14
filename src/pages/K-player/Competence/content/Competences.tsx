@@ -1,7 +1,7 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Job, MinimalSector, OpportunityFormData, Sector } from "../types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { JobButton, JobButtonColorScheme } from "../../../K-Profile/content/Competence/content/SectorsAndCriteriasContent/JobButton";
+import { JobButton, JobButtonColorScheme } from "../../../K-Profile/Competence/content/SectorsAndCriteriasContent/JobButton";
 
 interface CompetencesProps {
   sectors: Sector[];

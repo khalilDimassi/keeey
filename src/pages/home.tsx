@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import axios from 'axios';
 import { isAuthenticated, getAuthHeader, saveUserId } from '../utils/jwt';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+
+import KPartner from "./assets/k-partner.svg";
 import KProfile from "./assets/k-profile.svg";
 import KPlayer from "./assets/k-player.svg";
-import KPartner from "./assets/k-partner.svg";
 import KeeeyLogo from './assets/KeeyLogo';
+import axios from 'axios';
 
 const Home = () => {
   const navigate = useNavigate();

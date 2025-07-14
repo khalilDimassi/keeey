@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { isAuthenticated } from "../../utils/jwt";
 import { Search } from "lucide-react";
-import { SidebarKPartner } from "../assets/Sidebar";
-import { ActiveComponent } from "../assets/types";
+import { SidebarKPartner } from "../components/Sidebar";
+import { ActiveComponent } from "../components/types";
 import CandidatesList from "./Mode_Guest_Opportunites/CandidatesList";
 import Profile_besoin_specifique from "./Mode_Guest_Opportunites/Profile_besoin_specifique";
 import Opportunite from "./Mode_Guest_Opportunites/Opportunite";
 import Opportunite_pour_consultant from "./Mode_Guest_Opportunites/Opportunite_pour_consultant";
 import Login from "./LoginPopup";
-import { NavbarKPartner } from "../assets/Navbar";
+import { NavbarKPartner } from "../components/Navbar";
 
 const LayoutKPartner = () => {
   const [_showProfile, setShowProfile] = useState(false);
