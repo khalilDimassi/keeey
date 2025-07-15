@@ -16,12 +16,11 @@ const KProfileRoutes = () => {
     return (
         <Routes>
             <Route path="dashboard" element={<DashboardKProfile />} />
-            <Route path="missions" element={<MissionsKProfile />} />
+            <Route path="profile" element={<ProfileKProfile onClose={() => { }} />} />
             <Route path="bookmarks" element={<BookmarksKProfile />} />
             <Route path="contacts" element={<ContactsKProfile />} />
-            <Route path="settings" element={<ReglageKProfile />} />
-            <Route path="competence" element={isOnline ? <JobOpportunities /> : <Oportunite />} />
-            <Route path="competence/profile" element={<ProfileKProfile onClose={() => { }} />} />
+            <Route path="missions" element={<MissionsKProfile />} />
+            <Route path="settingss" element={<ReglageKProfile />} />
 
             <Route path="*" element={isOnline ? <JobOpportunities /> : <Oportunite />} />
         </Routes>

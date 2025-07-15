@@ -733,9 +733,6 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
                                     <div className="flex flex-wrap gap-2 pl-4">
                                       {job.skills.map(skillId => {
                                         const skill = jobData?.skills?.find(s => s.id === skillId);
-                                        console.log("jobdata: " + jobData ? jobData : "null");
-                                        console.log("job: " + job ? job : "null");
-
                                         return (
                                           <span
                                             key={skillId}

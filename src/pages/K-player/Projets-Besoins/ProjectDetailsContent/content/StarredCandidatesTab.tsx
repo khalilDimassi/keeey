@@ -118,20 +118,14 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                             key={candidate.user_id}
                             className="bg-white rounded-xl shadow-sm border p-4 flex items-center gap-4"
                         >
-                            {/* Match percentage */}
                             <div className="w-16 h-8 bg-blue-200 rounded-xl flex items-center justify-center text-blue-800 font-bold">
                                 {Math.round(candidate.totalMatchPercentage ?? 0 * 10)}%
                             </div>
-
-                            {/* Name and role */}
                             <div className="w-48">
                                 <h3 className="font-semibold">{candidate.first_name} {candidate.last_name}</h3>
                                 <p className="text-sm text-gray-500">{candidate.occupation}</p>
                             </div>
-
-                            {/* Tags */}
                             <div className="flex gap-2 flex-1">
-                                {/* Competences */}
                                 <div className="relative group">
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(competenceScore)}`}>
                                         Compétences
@@ -146,8 +140,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                         <p>Autorisations: {Math.round(candidate.matching_scores?.authorizations_match_percentage ?? 0)}%</p>
                                     </div>
                                 </div>
-
-                                {/* Seniority */}
                                 <div className="relative group">
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.seniority_match_percentage ?? 0)}`}>
                                         Séniorité
@@ -156,8 +148,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                         Score: {Math.round(candidate.matching_scores?.seniority_match_percentage ?? 0)}%
                                     </div>
                                 </div>
-
-                                {/* Availability */}
                                 <div className="relative group">
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.availability_match_percentage ?? 0)}`}>
                                         Dispo
@@ -166,8 +156,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                         Score: {Math.round(candidate.matching_scores?.availability_match_percentage ?? 0)}%
                                     </div>
                                 </div>
-
-                                {/* TJM (Rate) */}
                                 <div className="relative group">
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.rate_match_percentage ?? 0)}`}>
                                         TJM
@@ -176,8 +164,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                         Score: {Math.round(candidate.matching_scores?.rate_match_percentage ?? 0)}%
                                     </div>
                                 </div>
-
-                                {/* Mobility */}
                                 <div className="relative group">
                                     <span className={`px-4 py-1 rounded-xl text-sm ${getTagColorClass(candidate.matching_scores?.mobility_match_percentage ?? 0)}`}>
                                         Mobilité
@@ -187,11 +173,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id }: CandidatesProps) 
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Comment section */}
-                            {/* TODO: add comment space */}
-
-                            {/* Action buttons */}
                             <div className="flex gap-2">
                                 <button
                                     className="p-2 text-white bg-[#215A96] rounded-full hover:bg-gray-500 transition-colors"

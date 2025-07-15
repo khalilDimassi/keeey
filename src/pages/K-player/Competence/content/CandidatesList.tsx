@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Star, ArrowUpRight, Check, MailCheck, MailX, StarOff } from "lucide-react";
-import { CandidateSuggestion, CandidateSkill } from "../types";
+import { CandidateSuggestion, CandidateJob } from "../types";
 import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "../services";
 import { isAuthenticated } from "../../../../utils/jwt";
 import { emitter } from "../../../../utils/eventEmitter";
@@ -68,8 +68,8 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       const matchB = b.matching?.total_match_percentage || 0;
       return matchB - matchA;
     });
-
     setFilteredCandidates(sorted);
+
   }, [matchPercentageFilter, candidateSuggestion]);
 
   const handleCloseModal = () => {
@@ -124,9 +124,9 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
     }
   };
 
-  const getHighestSenioritySkill = (skills: CandidateSkill[]) => {
-    if (skills.length === 0) return { skill: "No skill", seniority: 0 };
-    return skills.reduce((highest, skill) => (skill.seniority > highest.seniority ? skill : highest), skills[0]);
+  const getHighestSeniorityJob = (jobs: CandidateJob[]) => {
+    if (jobs.length === 0) return { job: "No job", seniority: 0 };
+    return jobs.reduce((highest, job) => (job.seniority > highest.seniority ? job : highest), jobs[0]);
   };
 
   const seniorityLevels = [
@@ -195,49 +195,54 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
     setMatchPercentageFilter(Math.min(100, Math.max(0, value)));
   };
 
+  const getSeniorityLevel = (yearsOfExperience: number) => {
+    return seniorityLevels.find(level => {
+      if (level.level === 5) return yearsOfExperience >= 20; // Principal (20+ years)
+      if (level.level === 4) return yearsOfExperience >= 15 && yearsOfExperience <= 19; // Lead (15-19)
+      if (level.level === 3) return yearsOfExperience >= 10 && yearsOfExperience <= 14; // Senior (10-14)
+      if (level.level === 2) return yearsOfExperience >= 5 && yearsOfExperience <= 9; // Mid-Level (5-9)
+      return yearsOfExperience >= 1 && yearsOfExperience <= 4; // Junior (1-4)
+    });
+  };
+
   const renderDefaultView = () => (
-    <div className="space-y-3">
+    <>
       {filteredCandidates.map((candidate) => {
-        const skills = candidate.skills ?? [];
-        const highestSenioritySkill = getHighestSenioritySkill(skills);
-        const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSenioritySkill.seniority);
-        const extraSkillsCount = skills.length - 1;
+        const jobs = candidate.jobs ?? [];
+        const highestSeniorityJob = getHighestSeniorityJob(jobs);
+        const highestSeniorityLevel = getSeniorityLevel(highestSeniorityJob.seniority);
+        const extraJobsCount = jobs.length - 1;
 
         return (
           <div
             key={candidate.user_id}
-            className={`bg-white p-3 flex items-center gap-4 shadow-md rounded-xl ${candidate.isStarred ? 'border-2 border-yellow-400' :
+            className={`mb-4 bg-white p-3 flex justify-between items-center gap-4 shadow-md rounded-xl ${candidate.isStarred ? 'border-2 border-yellow-400' :
               candidate.isValidated ? 'border border-green-500' : ''
               }`}
             style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}
           >
-            {/* Badge correspondance */}
             <div className="flex-shrink-0">
               <span className="bg-blue-200 text-blue-800 px-3 py-1 text-sm font-bold rounded-xl">
                 {candidate.matching?.total_match_percentage ? `${Math.round(candidate.matching?.total_match_percentage)}%` : "0%"} correspondant
               </span>
             </div>
 
-            {/* Nom + Détails */}
-            <div className="flex-shrink-0 min-w-[120px]">
+            <div className="w-[150px]">
               <span className="font-semibold">{`${candidate.first_name} ${candidate.last_name}`}</span>
             </div>
 
-            {/* Évaluation */}
-            <div className="flex-shrink-0 flex items-center gap-1 min-w-[60px]">
+            <div className="flex items-center gap-1 min-w-[60px]">
               <Star size={16} className="text-yellow-500" />
               <span className="text-gray-600">{candidate.rating}</span>
             </div>
 
-            {/* Niveau */}
-            <div className="flex-1 min-w-[100px] max-w-[160px]">
+            <div className="w-[160px]">
               <span className="text-gray-500">
                 {highestSeniorityLevel ? `${highestSeniorityLevel.name}: ${highestSeniorityLevel.description}` : "-"}
               </span>
             </div>
 
-            {/* Disponibilité */}
-            <div className="flex-shrink-0 min-w-[100px] flex justify-center">
+            <div className="min-w-[100px] flex justify-center">
               <span className="bg-gray-200 text-gray-700 px-3 py-1 text-xs rounded w-full text-center">
                 {(() => {
                   switch (candidate.availability) {
@@ -256,13 +261,14 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
 
             <div className="inline-block w-0.5 self-stretch bg-neutral-100 dark:bg-white/10"></div>
 
-            {/* Compétences */}
-            <div className="flex-1 flex justify-between items-center gap-4 overflow-hidden min-w-[200px]">
-              <span className="text-gray-600 text-sm">Competances:</span>
-              <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded inline-flex items-center">
-                {highestSenioritySkill.skill}
-              </span>
-              {extraSkillsCount > 0 && (
+            <div className="flex justify-between items-center gap-2 w-[400px]">
+              <div>
+                <span className="text-gray-600 text-sm mr-1">Competances:</span>
+                <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded inline-flex items-center text-nowrap w-fit">
+                  {highestSeniorityJob.job} | {highestSeniorityJob.seniority} ans
+                </span>
+              </div>
+              {extraJobsCount > 0 && (
                 <div
                   className="relative"
                   ref={el => extraSkillsRef.current[candidate.user_id] = el}
@@ -271,21 +277,21 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
                     onClick={() => toggleExtraSkills(candidate.user_id)}
                     className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full cursor-pointer"
                   >
-                    +{extraSkillsCount}
+                    +{extraJobsCount}
                   </button>
                   {showExtraSkills[candidate.user_id] && (
                     <div className="absolute bg-white p-2 rounded-lg shadow-md mt-2 max-h-40 overflow-y-auto z-10">
                       <ul className="space-y-2">
-                        {skills.slice(1).map((skill, index) => {
-                          const seniorityLevel = seniorityLevels.find(level => level.level === skill.seniority) || {
+                        {jobs.slice(1).map((job, index) => {
+                          const seniorityLevel = seniorityLevels.find(level => level.level === job.seniority) || {
                             level: 0,
-                            name: "Unknown",
-                            description: "Unknown",
+                            name: "-",
+                            description: "-",
                           };
 
                           return (
                             <li key={index} className="text-xs text-gray-600 border-b border-gray-200 pb-2">
-                              <div>{skill.skill}</div>
+                              <div>{job.job}</div>
                               <div>
                                 {seniorityLevel.name}: {seniorityLevel.description}
                               </div>
@@ -299,47 +305,43 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
               )}
             </div>
 
-            {/* Actions à droite */}
             {isAuthenticated() && (
-              <div className="flex-shrink-0 flex items-center gap-4 ml-auto">
-                <button
-                  className={`p-2 bg-black rounded-full transition-colors ${candidate.isStarred
-                    ? 'hover:text-red-500 text-green-500'
-                    : 'hover:text-green-500 text-white'
-                    }`}
-                  onClick={() => handleStarCandidate(candidate.user_id)}
-                  title={candidate.isStarred ? 'Remove star' : 'Add star'}
-                >
-                  {candidate.isStarred ? (
-                    <StarOff fill="green" size={18} />
-                  ) : (
-                    <Star fill="white" size={18} />
-                  )}
-                </button>
+              <div className="flex items-center gap-4">
+                {candidate.matching?.is_starred ? (
+                  <StarOff
+                    fill="green"
+                    size={24}
+                    className="p-0.5 bg-black rounded-full hover:text-red-500 text-green-500 cursor-pointer transition-colors"
+                    onClick={() => handleStarCandidate(candidate.user_id)}
+                  />
+                ) : (
+                  <Star
+                    fill="white"
+                    size={24}
+                    className="p-0.5 bg-black rounded-full hover:text-green-500 text-white cursor-pointer transition-colors"
+                    onClick={() => handleStarCandidate(candidate.user_id)}
+                  />
+                )}
 
-                <button
-                  className="p-2 text-white bg-[#215A96] rounded-full hover:bg-gray-500 transition-colors"
-                  title="Open user profile"
+                <ArrowUpRight
+                  size={24}
+                  className="p-0.5 text-white bg-[#215A96] rounded-full hover:bg-gray-500 cursor-pointer transition-colors"
                   onClick={() => setSelectedCandidate(candidate)}
-                >
-                  <ArrowUpRight size={18} />
-                </button>
+                />
 
-                <button
-                  className={`px-3 py-1.5 rounded-full bg-[#215A96] flex items-center gap-1 transition-colors ${candidate.isValidated
-                    ? 'text-green-500 hover:text-red-500'
-                    : 'text-white hover:text-green-500'
-                    }`}
-                  onClick={() => handleValidateInterest(candidate.user_id)}
-                  disabled={candidate.isValidated}
-                  title={candidate.isValidated ? 'Revoke validation' : 'Validate interest'}
-                >
-                  {candidate.isValidated ? (
-                    <MailX size={24} />
-                  ) : (
-                    <MailCheck size={24} />
-                  )}
-                </button>
+                {candidate.matching?.is_validated ? (
+                  <MailX
+                    size={24}
+                    className="px-1 rounded-full bg-[#215A96] text-green-500 hover:text-red-500 cursor-pointer transition-colors"
+                    onClick={() => handleValidateInterest(candidate.user_id)}
+                  />
+                ) : (
+                  <MailCheck
+                    size={24}
+                    className="px-1 rounded-full bg-[#215A96] text-white hover:text-green-500 cursor-pointer transition-colors"
+                    onClick={() => handleValidateInterest(candidate.user_id)}
+                  />
+                )}
               </div>
             )}
           </div>
@@ -352,22 +354,22 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
           candidateId={selectedCandidate.user_id}
           matchings={selectedCandidate.matching ?? null}
           onClose={handleCloseModal}
-          is_starred={selectedCandidate.isStarred ?? false}
-          is_validated={selectedCandidate.isValidated ?? false}
+          is_starred={selectedCandidate.matching?.is_starred ?? false}
+          is_validated={selectedCandidate.matching?.is_validated ?? false}
           onStarCandidate={handleStarCandidate}
           onValidateInterest={handleValidateInterest}
         />
       )}
-    </div>
+    </>
   );
 
   const renderSubmittedView = () => (
     <div className="space-y-3">
       {filteredCandidates.map((candidate) => {
-        const skills = candidate.skills ?? [];
-        const highestSenioritySkill = getHighestSenioritySkill(skills);
-        const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSenioritySkill.seniority);
-        const extraSkillsCount = skills.length - 2;
+        const jobs = candidate.jobs ?? [];
+        const highestSeniorityJob = getHighestSeniorityJob(jobs);
+        const highestSeniorityLevel = seniorityLevels.find(level => level.level === highestSeniorityJob.seniority);
+        const extraJobsCount = jobs.length - 2;
         const backgroundColor = interpolateColor(candidate.matching?.total_match_percentage ?? 0);
         const textColor = getTextColor(backgroundColor);
 
@@ -414,19 +416,19 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
             <div className="flex items-center gap-4">
               <span className="text-gray-600 text-sm">Compétences:</span>
               <span className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded items-center">
-                {highestSenioritySkill.skill}
+                {highestSeniorityJob.job}
               </span>
-              {skills.slice(1, 2).map((skill, index) => (
+              {jobs.slice(1, 2).map((job, index) => (
                 <span
                   key={index}
                   className="bg-blue-300 text-blue-800 px-2 py-1 text-xs rounded items-center"
                 >
-                  {skill.skill}
+                  {job.job}
                 </span>
               ))}
-              {extraSkillsCount > 0 && (
+              {extraJobsCount > 0 && (
                 <span className="bg-black text-white w-6 h-6 flex items-center justify-center text-xs font-semibold rounded-full">
-                  +{extraSkillsCount}
+                  +{extraJobsCount}
                 </span>
               )}
             </div>

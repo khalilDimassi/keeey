@@ -250,7 +250,7 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                                 onClick={(e) => handleAction(e, candidate?.user_id ?? "", "validate")}
                                 className="hover:bg-gray-100 rounded-lg transition-all transform hover:scale-110"
                             >
-                                <MailCheck size={30} fill={is_validated ? "#fbbf24" : "none"} stroke={is_validated ? "#fbbf24" : "currentColor"} />
+                                <MailCheck size={30} stroke={is_validated ? "greens" : "currentColor"} />
                             </button>
                             <button
                                 className={`p-2 bg-black rounded-full transition-colors ${is_starred
@@ -462,7 +462,7 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
     return (
         <div
             onClick={handleClose}
-            className={`fixed inset-0 flex items-center justify-center bg-black z-50 p-4 transition-all duration-300 ease-out ${isVisible ? 'bg-opacity-60' : 'bg-opacity-0'
+            className={`fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 transform transition-all duration-500 ease-in-out ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
                 }`}
         >
             <div className=" w-4/6 " onClick={(e) => e.stopPropagation()}>

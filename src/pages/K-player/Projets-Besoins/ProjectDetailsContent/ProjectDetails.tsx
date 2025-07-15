@@ -124,14 +124,15 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
 
   return (
     <div className="p-4 w-full mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <button
+      <div className="flex justify-start gap-3 items-end h-8 mb-4">
+        <ArrowLeft
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-600"
-        >
-          <ArrowLeft size={20} />
-          <span className="text-lg font-medium">Détails du besoin</span>
-        </button>
+          className="mb-1 text-gray-600"
+          cursor={"pointer"}
+          size={20}
+        />
+        <span className="text-lg font-medium">Détails du besoin:</span>
+        <h1 className="ml-12 mb-1 text-2xl font-bold text-[#215A96]">{opportunityDetails?.title ?? "-"}</h1>
       </div>
 
       <div className="flex relative">

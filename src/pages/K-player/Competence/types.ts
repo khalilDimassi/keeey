@@ -45,8 +45,8 @@ export interface Sector {
     jobs: Job[];
 }
 
-export interface CandidateSkill {
-    skill: string;
+export interface CandidateJob {
+    job: string;
     seniority: number;
 }
 
@@ -124,7 +124,7 @@ export interface CandidateSuggestion {
     last_name: string;
     rating: number;
     availability: string;
-    skills: CandidateSkill[] | null;
+    jobs: CandidateJob[] | null;
     matching?: CandidateEnhancements;
     isStarred?: boolean;
     isValidated?: boolean;

@@ -11,7 +11,7 @@ interface ProfileRoutesProps {
 
 const ProfileRoutes = ({ profileType }: ProfileRoutesProps) => {
     const defaultRoutes = {
-        kprofile: <Navigate to="/kprofile/competence" replace />,
+        kprofile: <Navigate to="/kprofile/profile" replace />,
         kplayer: <Navigate to="/kplayer/profile" replace />,
         kpartner: <Navigate to="/kpartner/profile" replace />
     };
