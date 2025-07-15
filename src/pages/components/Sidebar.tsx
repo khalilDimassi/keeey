@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 import { Settings, Bookmark, Contact, Building2, Search, UserCheck } from "lucide-react";
 import { DashbordSVG, CompetenceSVG, TargetSVG, CvSvG, ProfileCompanySVG } from "./SVGcomponents";
-import { ActiveComponent, ProfileType } from "./types";
+import { ProfileType } from "./types";
 
 // TODO: Mock components for demonstration - replace with actual imports 
 const GroupContacr = ({ className }: { className?: string }) => <Contact className={className} />;
@@ -9,7 +9,8 @@ const Contactetoile = ({ className }: { className?: string }) => <UserCheck clas
 const Staff_recruiting = ({ className }: { className?: string }) => <Building2 className={className} />;
 
 interface IconItem {
-  id: ActiveComponent;
+  id: string;
+  path: string;
   Icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -23,22 +24,10 @@ interface ProfileConfig {
 
 interface SidebarProps {
   profileType: ProfileType;
-  onIconClick: (id: ActiveComponent) => void;
-  defaultSelected: ActiveComponent;
   horizontal?: boolean;
-  setHorizontal?: (value: boolean) => void;
 }
 
-const UnifiedSidebar = ({ profileType, onIconClick, defaultSelected, horizontal = false, setHorizontal }: SidebarProps) => {
-  const [activeIcon, setActiveIcon] = useState<ActiveComponent | null>(horizontal ? null : defaultSelected);
-
-  useEffect(() => {
-    if (horizontal) {
-      setActiveIcon(null);
-    }
-  }, [horizontal]);
-
-  // Profile configurations
+const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
   const profileConfigs: Record<ProfileType, ProfileConfig> = {
     kprofile: {
       backgroundColor: "#297280",
@@ -46,12 +35,12 @@ const UnifiedSidebar = ({ profileType, onIconClick, defaultSelected, horizontal 
       boxShadow: "3px 3px 7px rgb(20, 57, 64)",
       selectedTextColor: "#297280",
       icons: [
-        { id: "dashboard", Icon: DashbordSVG },
-        { id: "competence", Icon: CompetenceSVG },
-        { id: "bookmark", Icon: Bookmark },
-        { id: "contact", Icon: Contact },
-        { id: "missions", Icon: TargetSVG },
-        { id: "settings", Icon: Settings },
+        { id: "dashboard", path: "/kprofile/dashboard", Icon: DashbordSVG },
+        { id: "competence", path: "/kprofile/competence", Icon: CompetenceSVG },
+        { id: "bookmark", path: "/kprofile/bookmarks", Icon: Bookmark },
+        { id: "contact", path: "/kprofile/contacts", Icon: Contact },
+        { id: "missions", path: "/kprofile/missions", Icon: TargetSVG },
+        { id: "settings", path: "/kprofile/settings", Icon: Settings },
       ]
     },
     kplayer: {
@@ -60,13 +49,12 @@ const UnifiedSidebar = ({ profileType, onIconClick, defaultSelected, horizontal 
       boxShadow: "3px 3px 7px rgb(40, 41, 112)",
       selectedTextColor: "#215A96",
       icons: [
-        { id: "dashboard", Icon: DashbordSVG },
-        { id: "profile", Icon: ProfileCompanySVG },
-        { id: "search", Icon: Search },
-        // { id: "company", Icon: Building2 },
-        { id: "contacts", Icon: Contact },
-        { id: "missions", Icon: TargetSVG },
-        { id: "settings", Icon: Settings },
+        { id: "dashboard", path: "/kplayer/dashboard", Icon: DashbordSVG },
+        { id: "profile", path: "/kplayer/profile", Icon: ProfileCompanySVG },
+        { id: "search", path: "/kplayer/projects", Icon: Search },
+        { id: "contacts", path: "/kplayer/contacts", Icon: Contact },
+        { id: "missions", path: "/kplayer/missions", Icon: TargetSVG },
+        { id: "settings", path: "/kplayer/settings", Icon: Settings },
       ]
     },
     kpartner: {
@@ -75,99 +63,64 @@ const UnifiedSidebar = ({ profileType, onIconClick, defaultSelected, horizontal 
       boxShadow: "1px 2px 8px rgb(102, 80, 8)",
       selectedTextColor: "#A58E56",
       icons: [
-        { id: "dashboard", Icon: DashbordSVG },
-        { id: "competence", Icon: CompetenceSVG },
-        { id: "fileText1", Icon: CvSvG },
-        { id: "bookmark", Icon: Staff_recruiting },
-        { id: "contact", Icon: GroupContacr },
-        { id: "user", Icon: Contactetoile },
-        { id: "target", Icon: TargetSVG },
-        { id: "settings", Icon: Settings },
+        { id: "dashboard", path: "/kpartner/dashboard", Icon: DashbordSVG },
+        { id: "competence", path: "/kpartner/competence", Icon: CompetenceSVG },
+        { id: "fileText1", path: "/kpartner/cv", Icon: CvSvG },
+        { id: "bookmark", path: "/kpartner/staff", Icon: Staff_recruiting },
+        { id: "contact", path: "/kpartner/group", Icon: GroupContacr },
+        { id: "user", path: "/kpartner/contacts", Icon: Contactetoile },
+        { id: "target", path: "/kpartner/missions", Icon: TargetSVG },
+        { id: "settings", path: "/kpartner/settings", Icon: Settings },
       ]
     }
   };
 
   const config = profileConfigs[profileType];
 
-  const handleIconClick = (id: ActiveComponent) => {
-    setActiveIcon(id);
-    if (setHorizontal) {
-      setHorizontal(false);
-    }
-    onIconClick(id);
-  };
-
-  const renderKStyle = (profileType: ProfileType) => {
-    const colorConfig = {
-      kprofile: {
-        backgroundColor: config.backgroundColor,
-        borderColor: config.borderColor,
-        selectedTextColor: config.selectedTextColor,
-        boxShadow: config.boxShadow,
-      },
-      kplayer: {
-        backgroundColor: config.backgroundColor,
-        borderColor: config.borderColor,
-        selectedTextColor: config.selectedTextColor,
-        boxShadow: config.boxShadow,
-      },
-      kpartner: {
-        backgroundColor: config.backgroundColor,
-        borderColor: config.borderColor,
-        selectedTextColor: config.selectedTextColor,
-        boxShadow: config.boxShadow,
-      },
-    }[profileType];
-
+  const renderKStyle = () => {
     return (
       <div
         className={`rounded-2xl ${horizontal
           ? "w-full mx-16 h-16 flex items-center justify-center"
           : "w-[6%] h-fit py-8 left-[10px] flex items-center justify-center"
           }`}
-        style={{ background: colorConfig.backgroundColor }}
+        style={{ background: config.backgroundColor }}
       >
         <div className={`flex ${horizontal
           ? "flex-row gap-x-40 justify-center items-center"
           : "flex-col gap-20 py-12 items-center"
           }`}>
-          {config.icons.map(({ id, Icon }) => (
-            <div
+          {config.icons.map(({ id, path, Icon }) => (
+            <NavLink
               key={id}
+              to={path}
               className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
-              onClick={() => handleIconClick(id)}
             >
-              <div
-                className={`transition-all duration-300 ${!horizontal && activeIcon === id
-                  ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
-                  : ""
-                  }`}
-              >
-                <Icon
-                  className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${activeIcon === id
-                    ? `text-[${colorConfig.selectedTextColor}]`
-                    : "text-white hover:text-gray-200"
+              {({ isActive }) => (
+                <div
+                  className={`transition-all duration-300 ${!horizontal && isActive
+                    ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
+                    : ""
                     }`}
-                />
-              </div>
-            </div>
+                >
+                  <Icon
+                    className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive
+                      ? `text-[${config.selectedTextColor}]`
+                      : "text-white hover:text-gray-200"
+                      }`}
+                  />
+                </div>
+              )}
+            </NavLink>
           ))}
         </div>
       </div>
     );
   };
 
-  // Default to kprofile style for all profiles, but allow specific overrides
-  if (profileType === "kplayer") {
-    return renderKStyle("kplayer");
-  } else if (profileType === "kpartner") {
-    return renderKStyle("kpartner");
-  } else {
-    return renderKStyle("kprofile");
-  }
+  return renderKStyle();
 };
 
-// Export individual components for backward compatibility
 export const SidebarKProfile = (props: Omit<SidebarProps, 'profileType'>) => (
   <UnifiedSidebar {...props} profileType="kprofile" />
 );

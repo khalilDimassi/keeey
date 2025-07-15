@@ -62,9 +62,9 @@ const LoginContainer = () => {
             if (userId) saveUserId(userId);
 
             // Determine redirect path based on user role
-            const redirectPath = formData.user_role === "K-PROFILE" ? "/Layout/kprofile" :
-                formData.user_role === "K-PLAYER" ? "/Layout/kplayer" :
-                    "/Layout/kpartner";
+            const redirectPath = formData.user_role === "K-PROFILE" ? "/kprofile" :
+                formData.user_role === "K-PLAYER" ? "/kplayer" :
+                    "/kpartner";
 
             navigate(redirectPath);
         } catch (error) {
@@ -94,9 +94,9 @@ const LoginContainer = () => {
             if (userId) saveUserId(userId);
 
             // Determine redirect path based on user role
-            const redirectPath = formData.user_role === "K-PROFILE" ? "/Layout/kprofile" :
-                formData.user_role === "K-PLAYER" ? "/Layout/kplayer" :
-                    "/Layout/kpartner";
+            const redirectPath = formData.user_role === "K-PROFILE" ? "/kprofile" :
+                formData.user_role === "K-PLAYER" ? "/kplayer" :
+                    "/kpartner";
 
             navigate(redirectPath);
         } catch (error) {
@@ -201,7 +201,7 @@ const LoginContainer = () => {
                 "<span class='text-[#297280] font-semibold'>Suivre vos missions</span>",
                 "<span class='text-[#297280] font-semibold'>Rester informé(e)</span> de la tendance du marché"
             ],
-            guestPath: "/Layout/kprofile",
+            guestPath: "/kprofile",
         },
         kplayer: {
             color: "#215A96",
@@ -216,7 +216,7 @@ const LoginContainer = () => {
                 "<span class='text-[#215A96] font-semibold'>Garder le contact</span> avec vos partenaires et votre réseau",
                 "<span class='text-[#215A96] font-semibold'>Rester informé(e)</span> de la tendance du marché"
             ],
-            guestPath: "/LayoutKPlayer",
+            guestPath: "/KPlayer",
         },
         kpartner: {
             color: "#A89B7B",
@@ -233,7 +233,7 @@ const LoginContainer = () => {
                 "<span class='text-[#A89B7B] font-semibold'>Garder le contact</span> avec vos partenaires et votre réseau",
                 "<span class='text-[#A89B7B] font-semibold'>Garder le contrôle</span> sur la visibilité de vos profils"
             ],
-            guestPath: "/Layout/KPartner",
+            guestPath: "/KPartner",
         }
     };
 

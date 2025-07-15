@@ -35,8 +35,7 @@ const Home = () => {
 
         // Redirect based on role
         if (user_role) {
-          const normalizedRole = user_role.toLowerCase().replace(/-/g, '');
-          navigate(`/Layout/${normalizedRole.toLowerCase()}`);
+          navigate(`/${user_role.toLowerCase().replace(/-/g, '').toLowerCase()}`);
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
