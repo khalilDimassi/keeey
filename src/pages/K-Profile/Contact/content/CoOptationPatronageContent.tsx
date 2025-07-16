@@ -1,4 +1,4 @@
-import { AlertCircle, RefreshCw, Plus, UserRound, User, Star, StarHalf, ArrowUpRight, MailX, MailCheck, Trash2 } from "lucide-react";
+import { AlertCircle, RefreshCw, UserRound, User, Star, StarHalf, ArrowUpRight, MailX, MailCheck, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { contactFetch } from "../types";
 
@@ -8,12 +8,11 @@ interface CoOptationPatronageContentProps {
     loading: boolean;
     error: string | null;
     onReload: () => void;
-    onAddContact: () => void;
     handleContactDetails: (contact: contactFetch) => void;
     handleContactDelete: (contactID: number) => void;
 }
 
-const CoOptationPatronageSkeleton = ({ loading = false, error = null as string | null, empty = false, onReload = () => { }, onAddContact = () => { } }) => {
+const CoOptationPatronageSkeleton = ({ loading = false, error = null as string | null, empty = false, onReload = () => { } }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [_currentState, setCurrentState] = useState<string | null>(null);
 
@@ -182,17 +181,12 @@ const CoOptationPatronageSkeleton = ({ loading = false, error = null as string |
                         ))}
                     </div>
                 </td>
-                {/* Actions column - Add cooptation button */}
+                {/* Actions column - Add contact button */}
                 <td className="p-3">
                     <div className="flex items-center justify-end w-full gap-4">
-                        <button
-                            onClick={onAddContact}
-                            className="flex items-center gap-1 px-3 py-1.5 text-white bg-[#297280] rounded-full hover:bg-teal-900 transition-all duration-200 transform hover:scale-105 text-sm animate-slide-in-right"
-                            title="Add new cooptation"
-                        >
-                            <Plus size={15} />
-                            Ajouter une cooptation
-                        </button>
+                        <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
+                        <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
+                        <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
                     </div>
                 </td>
             </tr>
@@ -205,8 +199,8 @@ const CoOptationPatronageSkeleton = ({ loading = false, error = null as string |
 
 const renderStatusBadge = (status: string) => {
     const statusStyles: Record<string, { label: string; bg: string; text: string }> = {
-        "REGISTRED": { label: "Inscrit", bg: "bg-green-100", text: "text-green-800" },
-        "NOT-REGISTRED": { label: "Contact NI", bg: "bg-orange-100", text: "text-orange-800" },
+        "REGISTERED": { label: "Inscrit", bg: "bg-green-100", text: "text-green-800" },
+        "NOT-REGISTERED": { label: "Contact NI", bg: "bg-orange-100", text: "text-orange-800" },
         "CONTACTED": { label: "Contacté", bg: "bg-blue-100", text: "text-blue-800" },
         "ACCEPTED": { label: "Accepté", bg: "bg-green-200", text: "text-green-900" },
         "REJECTED": { label: "Rejeté", bg: "bg-red-100", text: "text-red-700" },
@@ -227,7 +221,7 @@ const renderStatusBadge = (status: string) => {
 };
 
 
-const CoOptationPatronageContent = ({ displayedContacts, isTransitioning, loading, error, onReload, onAddContact, handleContactDetails, handleContactDelete }: CoOptationPatronageContentProps) => (
+const CoOptationPatronageContent = ({ displayedContacts, isTransitioning, loading, error, onReload, handleContactDetails, handleContactDelete }: CoOptationPatronageContentProps) => (
     <div className="p-6">
         <table className="w-full border-collapse bg-white shadow-lg ">
             <thead>
@@ -263,7 +257,6 @@ const CoOptationPatronageContent = ({ displayedContacts, isTransitioning, loadin
                     <CoOptationPatronageSkeleton
                         key={30000}
                         empty={true}
-                        onAddContact={onAddContact}
                     />
                 )}
 

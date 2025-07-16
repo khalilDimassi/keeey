@@ -1,4 +1,4 @@
-import { AlertCircle, RefreshCw, Plus, UserRound, User, ArrowUpRight, MailX, MailCheck, Trash2 } from "lucide-react";
+import { AlertCircle, RefreshCw, UserRound, User, ArrowUpRight, MailX, MailCheck, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { contactFetch } from "../types";
 
@@ -8,17 +8,15 @@ interface ContactsReferencesContentProps {
   loading: boolean;
   error: string | null;
   onReload: () => void;
-  onAddContact: () => void;
   handleContactDetails: (contact: contactFetch) => void;
   handleContactDelete: (contactID: number) => void;
 }
 
-const ContactsTableSkeleton = ({ loading = false, error = null as string | null, empty = false, onReload = () => { }, onAddContact = () => { } }) => {
+const ContactsTableSkeleton = ({ loading = false, error = null as string | null, empty = false, onReload = () => { } }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [_currentState, setCurrentState] = useState<string | null>(null);
 
   useEffect(() => {
-    // Add a small delay to ensure smooth transitions
     const timer = setTimeout(() => {
       setIsVisible(true);
       if (loading) setCurrentState('loading');
@@ -29,7 +27,6 @@ const ContactsTableSkeleton = ({ loading = false, error = null as string | null,
     return () => clearTimeout(timer);
   }, [loading, error, empty]);
 
-  // Loading state - show multiple pulsing rows with staggered animation
   if (loading) {
     return (
       <>
@@ -82,7 +79,6 @@ const ContactsTableSkeleton = ({ loading = false, error = null as string | null,
     );
   }
 
-  // Error state - show error message and reload button
   if (error) {
     return (
       <tr className={`border-b bg-red-50 hover:bg-red-100 transition-all duration-300 ${isVisible ? 'animate-slide-in-left' : 'opacity-0 translate-x-4'
@@ -135,7 +131,6 @@ const ContactsTableSkeleton = ({ loading = false, error = null as string | null,
     );
   }
 
-  // Empty state - show empty skeleton with add contact button
   if (empty) {
     return (
       <tr className={`border-b bg-gray-50 hover:bg-green-50 transition-all duration-300 ${isVisible ? 'animate-fade-in-up' : 'opacity-0 translate-y-4'
@@ -173,14 +168,9 @@ const ContactsTableSkeleton = ({ loading = false, error = null as string | null,
         {/* Actions column - Add contact button */}
         <td className="p-3">
           <div className="flex items-center justify-end w-full gap-4">
-            <button
-              onClick={onAddContact}
-              className="flex items-center gap-1 px-3 py-1.5 text-white bg-[#297280] rounded-full hover:bg-teal-900 transition-all duration-200 transform hover:scale-105 text-sm animate-slide-in-right"
-              title="Add new contact"
-            >
-              <Plus size={15} />
-              Ajouter un contact
-            </button>
+            <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
+            <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
+            <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
           </div>
         </td>
       </tr>
@@ -192,8 +182,8 @@ const ContactsTableSkeleton = ({ loading = false, error = null as string | null,
 
 const renderStatusBadge = (status: string) => {
   const statusStyles: Record<string, { label: string; bg: string; text: string }> = {
-    "REGISTRED": { label: "Inscrit", bg: "bg-green-100", text: "text-green-800" },
-    "NOT-REGISTRED": { label: "Contact NI", bg: "bg-orange-100", text: "text-orange-800" },
+    "REGISTERED": { label: "Inscrit", bg: "bg-green-100", text: "text-green-800" },
+    "NOT-REGISTERED": { label: "Contact NI", bg: "bg-orange-100", text: "text-orange-800" },
     "CONTACTED": { label: "Contacté", bg: "bg-blue-100", text: "text-blue-800" },
     "ACCEPTED": { label: "Accepté", bg: "bg-green-200", text: "text-green-900" },
     "REJECTED": { label: "Rejeté", bg: "bg-red-100", text: "text-red-700" },
@@ -213,7 +203,7 @@ const renderStatusBadge = (status: string) => {
   );
 };
 
-const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, loading, error, onReload, onAddContact, handleContactDetails, handleContactDelete }: ContactsReferencesContentProps) => (
+const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, loading, error, onReload, handleContactDetails, handleContactDelete }: ContactsReferencesContentProps) => (
   <div className="p-6">
     <table className="w-full border-collapse bg-white shadow-lg ">
       <thead>
@@ -249,7 +239,6 @@ const ContactsReferencesContent = ({ displayedContacts = [], isTransitioning, lo
           <ContactsTableSkeleton
             key={30000}
             empty={true}
-            onAddContact={onAddContact}
           />
         )}
 

@@ -19,6 +19,7 @@ const ContactsKProfile = () => {
   const [formTouched, setFormTouched] = useState(false);
   const [selectedContact, setSelectedContact] = useState<contactFetch | null>(null);
   const [activeDetailsTab, setActiveDetailsTab] = useState('informations');
+  const [occupationType, setOccupationType] = useState('');
 
 
   useEffect(() => {
@@ -121,7 +122,7 @@ const ContactsKProfile = () => {
             </button>
 
             {/* Co-optation/Patronage Tab */}
-            <button
+            {selectedContact.role === "SPONSOR" && <button
               onClick={() => setActiveDetailsTab('missions')}
               className={`px-6 py-3 font-medium text-sm rounded-tl-xl rounded-tr-xl relative -ml-1 ${activeDetailsTab === 'missions'
                 ? 'text-black bg-white shadow-[0_0_8px_0_rgba(0,0,0,0.1)] z-10'
@@ -129,7 +130,7 @@ const ContactsKProfile = () => {
                 }`}
             >
               Ses Missions
-            </button>
+            </button>}
           </div>
 
           <div className={`overflow-x-auto rounded-b-xl rounded-r-xl bg-white shadow-lg ${activeDetailsTab === 'missions' ? 'rounded-l-xl' : ''}`}>
@@ -210,7 +211,6 @@ const ContactsKProfile = () => {
                     setError(null);
                     loadContacts()
                   }}
-                  onAddContact={handleNewContact}
                   handleContactDetails={setSelectedContact}
                   handleContactDelete={handleContactDelete}
                 />
@@ -225,7 +225,6 @@ const ContactsKProfile = () => {
                     setError(null);
                     loadContacts()
                   }}
-                  onAddContact={handleNewContact}
                   handleContactDetails={setSelectedContact}
                   handleContactDelete={handleContactDelete}
                 />
@@ -234,7 +233,6 @@ const ContactsKProfile = () => {
           </div>
         </div>
 
-        {/* TODO: for the moment it's the same, but it will be different in the future */}
         {showForm && activeTab === 'referrals' ? (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in"
@@ -394,13 +392,19 @@ const ContactsKProfile = () => {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const form = e.currentTarget;
+
+                  const occupationValue =
+                    form.occupationType.value === 'employee'
+                      ? form.occupationDetails.value
+                      : form.occupationType.value;
+
                   createContact("SPONSOR", {
                     gender: form.gender.value,
                     first_name: form.first_name.value,
                     last_name: form.last_name.value,
                     email: form.email.value,
                     company: form.company.value,
-                    occupation: form.occupation.value,
+                    occupation: occupationValue,
                     phone: form.phone?.value || "",
                     notes: form.notes?.value || "",
                     request_reference: form.request_reference.checked
@@ -444,21 +448,49 @@ const ContactsKProfile = () => {
 
                 {/* Company & Occupation */}
                 <div className="flex gap-4">
-                  <input
-                    type="text"
-                    placeholder="Société"
-                    name="company"
-                    className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                    onChange={() => setFormTouched(true)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Fonction"
-                    name="occupation"
-                    className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                    onChange={() => setFormTouched(true)}
-                  />
+                  <div className="w-1/2">
+                    <select
+                      name="occupationType"
+                      className="w-full border rounded-xl px-3 py-2 text-sm"
+                      onChange={(e) => {
+                        setFormTouched(true);
+                        setOccupationType(e.target.value);
+                      }}
+                    >
+                      <option value="">Sélectionner une profession...</option>
+                      <option value="freelancer">Indépendant</option>
+                      <option value="employee">Employé</option>
+                      <option value="businessOwner">Propriétaire d'entreprise</option>
+                    </select>
+                  </div>
+
+                  <div className="w-1/2">
+                    <input
+                      type="text"
+                      placeholder={(occupationType === 'freelancer' || occupationType === '') ? 'Non applicable' : "Nom de l'entreprise"}
+                      name="company"
+                      className={`w-full border rounded-xl px-3 py-2 text-sm transition-all ${(occupationType === 'freelancer' || occupationType === '')
+                        ? 'bg-gray-100 cursor-not-allowed opacity-70'
+                        : 'bg-white'
+                        }`}
+                      disabled={(occupationType === 'freelancer' || occupationType === '')}
+                      onChange={() => setFormTouched(true)}
+                    />
+                  </div>
                 </div>
+
+                {/* Occupation details field - only shown if not freelancer */}
+                {occupationType && occupationType === 'employee' && (
+                  <div className="mt-4">
+                    <input
+                      type="text"
+                      placeholder="Votre titre de poste"
+                      name="occupationDetails"
+                      className="w-full border rounded-xl px-3 py-2 text-sm"
+                      onChange={() => setFormTouched(true)}
+                    />
+                  </div>
+                )}
 
                 {/* Email & Phone */}
                 <div className="flex gap-4">
@@ -489,16 +521,6 @@ const ContactsKProfile = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-between items-center px-4">
-                  {/* Checkbox */}
-                  <label className="flex items-center gap-2 text-sm text-gray-700">
-                    <input
-                      type="checkbox"
-                      name="request_reference"
-                      className="accent-[#297280]"
-                      onChange={() => setFormTouched(true)}
-                    />
-                    Demander une référence
-                  </label>
                   <button
                     type="submit"
                     className="bg-[#297280] flex items-center text-white px-4 py-1 rounded-full h-fit hover:bg-teal-900 transition-all duration-200"

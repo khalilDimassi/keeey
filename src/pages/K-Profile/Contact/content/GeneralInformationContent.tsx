@@ -151,7 +151,7 @@ const GeneralInformationContent = ({ selectedContact, refreshContactData }: Gene
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label>Fonction principale / Titre</label>
-                                        <span className="px-4 py-2 rounded-xl w-full h-fit bg-gray-100 text-gray-800 ">{dispolayConstact.occupation}</span>
+                                        <span className="px-4 py-2 rounded-xl w-full h-fit bg-gray-100 text-gray-800 ">{dispolayConstact.occupation || "Non renseigné..."}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label>Numéro de téléphone</label>
