@@ -69,11 +69,19 @@ const ContactsKProfile = () => {
 
   const handleContactDelete = async (contactID: number) => {
     try {
+      const isConfirmed = window.confirm("Are you sure you want to delete this contact?");
+      if (!isConfirmed) {
+        return;
+      }
+
       await deleteContact(contactID);
       const updatedContacts = contacts.filter((contact) => contact.ID !== contactID);
       setContacts(updatedContacts);
+
+      alert("Contact deleted successfully!");
     } catch (error) {
       console.error("Failed to delete contact:", error);
+      alert("Failed to delete contact. Please try again.");
     }
   };
 
