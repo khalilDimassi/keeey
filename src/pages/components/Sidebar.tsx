@@ -36,7 +36,7 @@ const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
       selectedTextColor: "#297280",
       icons: [
         { id: "dashboard", path: "/kprofile/dashboard", Icon: DashbordSVG },
-        { id: "competence", path: "/kprofile/competence", Icon: CompetenceSVG },
+        { id: "competence", path: "/kprofile/profile", Icon: CompetenceSVG },
         { id: "bookmark", path: "/kprofile/bookmarks", Icon: Bookmark },
         { id: "contact", path: "/kprofile/contacts", Icon: Contact },
         { id: "missions", path: "/kprofile/missions", Icon: TargetSVG },
