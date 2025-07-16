@@ -76,7 +76,7 @@ export const fetchCandidateSuggestions = async (): Promise<CandidateSuggestion[]
     );
     return response.data.map(candidate => ({
         ...candidate,
-        skills: candidate.skills ?? [],
+        jobs: candidate.jobs ?? [],
         totalMatchPercentage: 0
     }));
 };
@@ -88,7 +88,7 @@ export const fetchSubmittedCandidates = async (opportunityId: string): Promise<C
     );
     return response.data.map(candidate => ({
         ...candidate,
-        skills: candidate.skills ?? [],
+        jobs: candidate.jobs ?? [],
         totalMatchPercentage: 0
     }));
 };

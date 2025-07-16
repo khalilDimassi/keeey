@@ -398,9 +398,9 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
   }
 
   return (
-    <div className="w-full mx-auto grid grid-cols-2 gap-6">
+    <div className="w-full bg-white rounded-b-xl rounded-r-xl shadow-lg p-6 grid grid-cols-2 gap-6">
       {/* Skills Section */}
-      <div className="bg-white rounded-lg p-6 shadow-md">
+      <div className="bg-white rounded-xl p-6 hover:shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Compétences</h2>
           <Edit
@@ -762,7 +762,7 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
       </div>
 
       {/* Criteria & Requirements Section */}
-      <div className="bg-white rounded-lg p-6 shadow-md">
+      <div className="bg-white rounded-xl p-6 hover:shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Critères & Requirements</h2>
           <Edit

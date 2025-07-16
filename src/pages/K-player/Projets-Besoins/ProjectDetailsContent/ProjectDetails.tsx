@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Star } from 'lucide-react';
-import axios from 'axios';
 import { EnhancedCandidate, OpportunityFormData, Sector } from '../types';
 import { fetchCandidatesWithMatchData, fetchSectors } from '../services';
 import { getAuthHeader } from '../../../../utils/jwt';
 
-import CandidatesList from '../../Competence/content/CandidatesList';
+import axios from 'axios';
 import GeneralInformationTab from './content/GeneralInformationTab';
 import SkillsAndCriterias from './content/SkillsAndCriteriaTab';
 import StarredCandidatesComp from './content/StarredCandidatesTab';
 import Diffusion from './content/DiffusionConfigTab';
+import CandidatesList from '../../Competence/content/CandidatesList';
 
 interface ProjectDetailsProps {
   opportunity_id: string;
@@ -24,6 +24,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
 
   const mapApiResponseToFormData = (apiData: any): OpportunityFormData => {
     return {
@@ -121,6 +122,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
     loadStarredCandidates(opportunity_id);
   }, [opportunity_id]);
 
+  const handleCloseModal = () => setSelectedCandidateId(null);
 
   return (
     <div className="p-4 w-full mx-auto">
@@ -194,71 +196,68 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         </button>
       </div>
 
-      <div className={`relative bg-white p-4 shadow-lg ${activeTab === "Informations"
-        ? "rounded-b-xl rounded-r-xl"
-        : "rounded-xl"
-        }`}>
-        <div className="hover-box p-4">
-          {activeTab === "Informations" && (<GeneralInformationTab
-            opportunity_id={opportunity_id}
-            formData={{
-              title: opportunityDetails?.title ?? "",
-              status: opportunityDetails?.status ?? "",
-              certainty: opportunityDetails?.certainty ?? "",
-              operational_manager: opportunityDetails?.operational_manager ?? "",
-              reference: opportunityDetails?.reference ?? "",
-              announce_at: opportunityDetails?.announce_at ?? "",
-              responded_at: opportunityDetails?.responded_at ?? "",
-              start_at: opportunityDetails?.start_at ?? "",
-              duration: opportunityDetails?.duration ?? 0,
-              rate: opportunityDetails?.rate ?? 0,
-              description: opportunityDetails?.description ?? "",
-              context: opportunityDetails?.context ?? "",
-              mission: opportunityDetails?.mission ?? "",
-              candidat_profile: opportunityDetails?.candidat_profile ?? "",
-            }}
-            loading={loading}
-            error={error}
-          />)}
-          {activeTab === "Compétences_Critères" && <SkillsAndCriterias
-            opportunity_id={opportunity_id}
-            sectors={sectors}
-            loading={loading}
-            error={error}
-            initialFormData={{
-              sectors: {
-                selected_sectors: opportunityDetails?.selected_sectors ?? [],
-              },
-              criteria: {
-                contract_roles: opportunityDetails?.contract_roles ?? [],
-                crit_start_date: opportunityDetails?.crit_start_date ?? "",
-                crit_start_date_lastest: opportunityDetails?.crit_start_date_lastest ?? "",
-                crit_duration: opportunityDetails?.crit_duration ?? 0,
-                crit_duration_lastest: opportunityDetails?.crit_duration_lastest ?? 0,
-                crit_target_rate: opportunityDetails?.crit_target_rate ?? 0,
-                crit_max_rate: opportunityDetails?.crit_max_rate ?? 0,
-                crit_location: opportunityDetails?.crit_location ?? "",
-                crit_remote: opportunityDetails?.crit_remote ?? false,
-              },
-              requirements: {
-                tools: opportunityDetails?.tools ?? [],
-                authorizations: opportunityDetails?.authorizations ?? [],
-                languages: opportunityDetails?.languages ?? [],
-                qualities: opportunityDetails?.qualities ?? [],
-              },
-            }}
-          />}
-          {activeTab === "Candidates" && <StarredCandidatesComp
-            opportunity_id={opportunity_id}
-            candidates={starredCandidates}
-            loading={loading}
-            error={error}
-          />}
-          {activeTab === "Diffusion" && <Diffusion
-            opportunity_id={opportunity_id}
-          />}
-        </div>
-      </div>
+      <>
+        {activeTab === "Informations" && (<GeneralInformationTab
+          opportunity_id={opportunity_id}
+          formData={{
+            title: opportunityDetails?.title ?? "",
+            status: opportunityDetails?.status ?? "",
+            certainty: opportunityDetails?.certainty ?? "",
+            operational_manager: opportunityDetails?.operational_manager ?? "",
+            reference: opportunityDetails?.reference ?? "",
+            announce_at: opportunityDetails?.announce_at ?? "",
+            responded_at: opportunityDetails?.responded_at ?? "",
+            start_at: opportunityDetails?.start_at ?? "",
+            duration: opportunityDetails?.duration ?? 0,
+            rate: opportunityDetails?.rate ?? 0,
+            description: opportunityDetails?.description ?? "",
+            context: opportunityDetails?.context ?? "",
+            mission: opportunityDetails?.mission ?? "",
+            candidat_profile: opportunityDetails?.candidat_profile ?? "",
+          }}
+          loading={loading}
+          error={error}
+        />)}
+        {activeTab === "Compétences_Critères" && <SkillsAndCriterias
+          opportunity_id={opportunity_id}
+          sectors={sectors}
+          loading={loading}
+          error={error}
+          initialFormData={{
+            sectors: {
+              selected_sectors: opportunityDetails?.selected_sectors ?? [],
+            },
+            criteria: {
+              contract_roles: opportunityDetails?.contract_roles ?? [],
+              crit_start_date: opportunityDetails?.crit_start_date ?? "",
+              crit_start_date_lastest: opportunityDetails?.crit_start_date_lastest ?? "",
+              crit_duration: opportunityDetails?.crit_duration ?? 0,
+              crit_duration_lastest: opportunityDetails?.crit_duration_lastest ?? 0,
+              crit_target_rate: opportunityDetails?.crit_target_rate ?? 0,
+              crit_max_rate: opportunityDetails?.crit_max_rate ?? 0,
+              crit_location: opportunityDetails?.crit_location ?? "",
+              crit_remote: opportunityDetails?.crit_remote ?? false,
+            },
+            requirements: {
+              tools: opportunityDetails?.tools ?? [],
+              authorizations: opportunityDetails?.authorizations ?? [],
+              languages: opportunityDetails?.languages ?? [],
+              qualities: opportunityDetails?.qualities ?? [],
+            },
+          }}
+        />}
+        {activeTab === "Candidates" && <StarredCandidatesComp
+          opportunity_id={opportunity_id}
+          candidates={starredCandidates}
+          loading={loading}
+          error={error}
+          onSelectedCandidate={setSelectedCandidateId}
+        />}
+        {activeTab === "Diffusion" && <Diffusion
+          opportunity_id={opportunity_id}
+        />}
+      </>
+
       <div className="mt-6">
         <div className="flex mb-4 border-b border-gray-200">
           <button
@@ -282,6 +281,8 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
         <CandidatesList
           apiType={candidatesTab === "submitted" ? 'SUBMITTED' : 'ALL'}
           opportunityId={opportunity_id}
+          selectedCandidateId={selectedCandidateId ?? ""}
+          onClodeModal={handleCloseModal}
         />
       </div>
     </div>

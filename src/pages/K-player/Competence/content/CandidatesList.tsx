@@ -9,13 +9,15 @@ import CandidateDetailModal from "./CandidateDetailsModale";
 interface CandidatesListProps {
   apiType?: string;
   opportunityId?: string;
+  selectedCandidateId?: string;
+  onClodeModal?: () => void;
 }
 
-const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps) => {
+const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, onClodeModal }: CandidatesListProps) => {
   const [candidateSuggestion, setCandidateSuggestion] = useState<CandidateSuggestion[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<CandidateSuggestion[]>([]);
   const [showExtraSkills, setShowExtraSkills] = useState<{ [key: string]: boolean }>({});
-  const [selectedCandidate, setSelectedCandidate] = useState<CandidateSuggestion | null>(null);
+  const [selectedCandidateID, setSelectedCandidateID] = useState<string | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +75,8 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   }, [matchPercentageFilter, candidateSuggestion]);
 
   const handleCloseModal = () => {
-    setSelectedCandidate(null);
+    setSelectedCandidateID(null);
+    onClodeModal?.();
   };
 
   const handleStarCandidate = async (userId: string) => {
@@ -145,7 +148,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
   };
 
   useEffect(() => {
-    if (selectedCandidate) {
+    if (selectedCandidateID) {
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
@@ -154,7 +157,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
     return () => {
       document.body.classList.remove('overflow-hidden');
     };
-  }, [selectedCandidate]);
+  }, [selectedCandidateID]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -204,6 +207,10 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       return yearsOfExperience >= 1 && yearsOfExperience <= 4; // Junior (1-4)
     });
   };
+
+  useEffect(() => {
+    if (selectedCandidateId) setSelectedCandidateID(selectedCandidateId);
+  }, [selectedCandidateId]);
 
   const renderDefaultView = () => (
     <>
@@ -326,7 +333,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
                 <ArrowUpRight
                   size={24}
                   className="p-0.5 text-white bg-[#215A96] rounded-full hover:bg-gray-500 cursor-pointer transition-colors"
-                  onClick={() => setSelectedCandidate(candidate)}
+                  onClick={() => setSelectedCandidateID(candidate.user_id)}
                 />
 
                 {candidate.matching?.is_validated ? (
@@ -349,13 +356,13 @@ const CandidatesList = ({ apiType = "ALL", opportunityId }: CandidatesListProps)
       })}
 
       {/* Detail Modal */}
-      {selectedCandidate && (
+      {selectedCandidateID && (
         <CandidateDetailModal
-          candidateId={selectedCandidate.user_id}
-          matchings={selectedCandidate.matching ?? null}
+          candidateId={selectedCandidateID}
+          matchings={filteredCandidates.find(candidate => candidate.user_id === selectedCandidateID)?.matching ?? null}
           onClose={handleCloseModal}
-          is_starred={selectedCandidate.matching?.is_starred ?? false}
-          is_validated={selectedCandidate.matching?.is_validated ?? false}
+          is_starred={filteredCandidates.find(candidate => candidate.user_id === selectedCandidateID)?.matching?.is_starred ?? false}
+          is_validated={filteredCandidates.find(candidate => candidate.user_id === selectedCandidateID)?.matching?.is_validated ?? false}
           onStarCandidate={handleStarCandidate}
           onValidateInterest={handleValidateInterest}
         />

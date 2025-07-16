@@ -158,7 +158,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
   }
 
   return (
-    <div className="max-w-7xl mx-auto rounded-lg p-4">
+    <div className="w-full bg-white rounded-b-xl rounded-r-xl shadow-lg p-4">
       <div className="flex justify-end mb-4">
         {isEditing ? (
           <div className="flex gap-2">
