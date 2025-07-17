@@ -4,6 +4,30 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    warmup: {
+      clientFiles: [
+        // Add frequently used files
+        './src/main.tsx',
+        './src/App.tsx',
+        './src/pages/home.tsx',
+        './src/pages/components/Navbar.tsx',
+        './src/pages/components/sidebar.tsx',
+        './src/pages/components/BaseLayout.tsx',
+        './src/pages/components/SVGcomponents.tsx',
+      ],
+    },
+  },
+  optimizeDeps: {
+    // Add other large dependencies
+    include: [
+      'react',
+      'react-dom',
+      'lucide-react'
+    ],
+    // Exclude problematic packages if needed
+    exclude: [],
+  },
   plugins: [
     react(),
     nodePolyfills({
@@ -16,11 +40,6 @@ export default defineConfig({
       },
     }),
   ],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-    // Explicitly include problematic modules
-    include: [],
-  },
   define: {
     // Fix global variable issues
     'process.env': {},
