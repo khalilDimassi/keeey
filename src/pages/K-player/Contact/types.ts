@@ -1,4 +1,18 @@
-export type contactRole = "INTERNAL-CONTACT" | "EXTERNAL-CONTACT";
+export type contactRole =
+    | "INTERNAL-CONTACT"
+    | "EXTERNAL-CONTACT"
+    | "CONSULTANT";
+
+export type contactStatus =
+    | "REGISTERED"
+    | "NOT-REGISTERED"
+    | "CONTACTED"
+    | "ACCEPTED"
+    | "REJECTED"
+    | "IN-MISSION"
+    | "MISSION-HK"
+    | "SEARCHING"
+    | "ARCHIVE";
 
 export interface contact {
     id: number;
@@ -11,5 +25,6 @@ export interface contact {
     phone: string;
     ongoing_projects: number;
     role: contactRole;
+    status: contactStatus;
 }
 
