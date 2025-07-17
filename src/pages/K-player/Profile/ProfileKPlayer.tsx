@@ -73,12 +73,14 @@ const ProfileKPlayer = () => {
       <div className="p-4 flex flex-col md:flex-row gap-6 bg-gray-100">
         <div className="flex flex-col gap-6 w-full md:w-1/3">
           <DetailsCard
+            role={profile?.profile.player_role || "-"}
             profile={profile}
             loading={prfLoading}
             error={prfError}
             onDataUpdate={onPrfDataUpdate}
           />
           <OrgCard
+            role={profile?.profile.player_role || "-"}
             org={org}
             loading={orgLoading}
             error={orgError}
@@ -87,7 +89,9 @@ const ProfileKPlayer = () => {
         </div>
 
         <div className="bg-white shadow rounded-lg p-4 flex-1" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
-          <UsersCard />
+          <UsersCard
+            role={profile?.profile.player_role || "-"}
+          />
         </div>
       </div>
     </div>

@@ -1,18 +1,20 @@
-import { Check, Pencil, Plus, X } from "lucide-react";
-import DocumentsSectionProfileKplayer from "./DocumentsSectionProfileKplayer";
-import { Organization } from "../types";
-import { FC, useState } from "react";
-import axios from "axios";
 import { getAuthHeader } from "../../../../utils/jwt";
+import { Check, Pencil, Plus, X } from "lucide-react";
+import { Organization, Role } from "../types";
+import { useState } from "react";
+
+import DocumentsSectionProfileKplayer from "./DocumentsSectionProfileKplayer";
+import axios from "axios";
 
 interface OrgCardProps {
+    role: Role;
     org: Organization | null;
     loading?: boolean;
     error?: string | null;
     onDataUpdate?: () => void;
 }
 
-const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataUpdate }) => {
+const OrgCard = ({ role, org, loading = false, error = null, onDataUpdate }: OrgCardProps) => {
     if (loading) {
         return (
             <div className="bg-white shadow rounded-lg p-4 animate-pulse"
@@ -172,7 +174,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
                                 <Check size={16} />
                             </button>
                         </>
-                    ) : (
+                    ) : role === "ADMIN" && (
                         <button
                             onClick={handleEditClick}
                             className="text-[#215A96]"
@@ -273,7 +275,7 @@ const OrgCard: FC<OrgCardProps> = ({ org, loading = false, error = null, onDataU
 
             {!isAdding && (
                 <div className="mt-3">
-                    <DocumentsSectionProfileKplayer />
+                    <DocumentsSectionProfileKplayer role={role} />
                 </div>
             )}
         </div>

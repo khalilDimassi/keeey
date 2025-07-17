@@ -1,16 +1,17 @@
-import { Check, Pencil, X } from "lucide-react"
-import { Profile } from "../types";
-import { FC, useState } from "react";
 import { UpdateKplayerProfile } from "../services";
+import { Check, Pencil, X } from "lucide-react"
+import { Profile, Role } from "../types";
+import { useState } from "react";
 
 interface DetailsCardProps {
+  role: Role;
   profile: Profile | null;
   loading?: boolean;
   error?: string | null;
   onDataUpdate?: () => void;
 }
 
-const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = null, onDataUpdate }) => {
+const DetailsCard = ({ role, profile, loading = false, error = null, onDataUpdate }: DetailsCardProps) => {
   if (loading) {
     return (
       <div className="shadow bg-white rounded-lg p-4 animate-pulse"
@@ -112,7 +113,7 @@ const DetailsCard: FC<DetailsCardProps> = ({ profile, loading = false, error = n
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold">Mon profil</h2>
         <span className="text-sm bg-blue-100 text-[#215A96] px-8 py-1 rounded-xl font-bold">
-          {profile.profile.player_role === 'ADMIN' ? 'Administrateur' : 'Employé'}
+          {role === 'ADMIN' ? 'Administrateur' : role === 'REGULAR' ? 'Employé' : "-"}
         </span>
         <>
           {isEditing ? (
