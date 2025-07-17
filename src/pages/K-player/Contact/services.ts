@@ -9,8 +9,6 @@ export const fetchContacts = async () => {
             `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts`,
             { headers: getAuthHeader() }
         );
-        console.log(response.data);
-
         return response.data;
     } catch (error) {
         throw new Error('Failed to fetch contacts: ' + (error instanceof Error ? error.message : String(error)));
