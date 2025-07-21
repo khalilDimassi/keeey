@@ -41,7 +41,7 @@ const BaseLayout = ({ profileType }: BaseLayoutProps) => {
                 </div>
             </div>
             <footer className="flex items-center justify-center w-full h-16 my-4 py-4 bg-slate-100 text-gray-600">
-                <p className="text-sm">© 2025 <span className={`bg-[${profileType === "kplayer" ? "#215A96" : profileType === "kpartner" ? "#A89B7B" : "#297280"}] bg-clip-padding px-0.5 text-white`}>K</span >eeey. All rights reserved.</p>
+                <p className="text-sm">© 2025 Keeey. All rights reserved.</p>
             </footer>
         </div>
     );

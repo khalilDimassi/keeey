@@ -17,18 +17,17 @@ const SectorsAndCriteriasTab: React.FC = () => {
       location: '',
       contractTags: {
         'FREELANCE': false,
-        'CONSULTANT': false,
         'PORTAGE': false,
         'CDI': false,
         'CDD': false,
         'CDI-C': false
       },
       companyTags: {
+        'OTHER': false,
         'LARGE': false,
         'INDUSTRIAL': false,
         'PME/TPE': false,
         'ESN': false,
-        'OTHER': false,
       },
       mobility: {
         'Locale': false,

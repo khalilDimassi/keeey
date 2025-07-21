@@ -1,8 +1,8 @@
 import { useState } from "react";
-import CloseButton from "./CloseButton";
-import GeneralInfoTab from "./GeneralInfoTab";
-import SectorsAndCriteriasTab from "./SectorsAndCriteriasTab";
-import ResumeTab from "./ResumeTab";
+import CloseButton from "./content/CloseButton";
+import GeneralInfoTab from "./content/GeneralInfoTab";
+import SectorsAndCriteriasTab from "./content/SectorsAndCriteriasTab";
+import ResumeTab from "./content/ResumeTab";
 
 const OnlineMode = ({ onClose }: { onClose: () => void }) => {
   const [activeTab, setActiveTab] = useState("Informations");
@@ -10,7 +10,7 @@ const OnlineMode = ({ onClose }: { onClose: () => void }) => {
   const tabs = [
     { id: "Informations", label: "Informations Générales" },
     { id: "Compétences_Critères", label: "Compétences & Critères" },
-    { id: "CV_compéténces", label: "CV / Dossier de compéténces" },
+    { id: "CV_compéténces", label: "CV / Dossier de compétences" },
   ];
 
 

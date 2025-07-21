@@ -2,8 +2,8 @@ import { useState } from "react";
 import { isAuthenticated } from "../../../utils/jwt";
 import { CompetenceSVG } from "../../components/SVGcomponents";
 
-import GuestMode from "./content/GuestMode";
-import OnlineMode from "./content/OnlineMode";
+import GuestMode from "./GuestMode";
+import OnlineMode from "./OnlineMode";
 import JobOpportunities from "./content/JobOpportunities";
 
 const ProfileKProfile = ({ onClose }: { onClose: () => void }) => {

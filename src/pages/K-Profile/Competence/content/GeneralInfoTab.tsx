@@ -527,7 +527,7 @@ const GeneralInfoTab: FC = () => {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Occupation</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Fonction</label>
                 <div className="mt-1 text-gray-800 font-medium">{formData.user.occupation ? formData.user.occupation : "-"}</div>
               </div>
             </div>
@@ -686,7 +686,7 @@ const GeneralInfoTab: FC = () => {
                   <div className="mt-1 text-gray-800 font-medium">{formData.profile.nationality}</div>
                 </div>
                 <div className="w-1/2">
-                  <label className="block h-8 text-xs font-medium text-gray-500 uppercase tracking-wide">Authorization de travail en France</label>
+                  <label className="block h-8 text-xs font-medium text-gray-500 uppercase tracking-wide">Autorisation de travail en France</label>
                   {/* TODO */}
                   <div className="mt-1 text-gray-800 font-medium">{formData.profile.fr_work_permit == null ? "-" : formData.profile.fr_work_permit === "true" ? "Oui" : "Non"}</div>
                 </div>

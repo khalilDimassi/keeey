@@ -1,7 +1,7 @@
 import { useState } from "react";
-import CloseButton from "./CloseButton";
-import Competencies from "../mode guest/Competencies";
-import SearchCriteria from "../mode guest/SearchCriteria";
+import CloseButton from "./content/CloseButton";
+import Competencies from "./mode guest/Competencies";
+import SearchCriteria from "./mode guest/SearchCriteria";
 
 const GuestMode = ({ onClose }: { onClose: () => void }) => {
   const [activeTab, setActiveTab] = useState("criteria");

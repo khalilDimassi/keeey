@@ -17,7 +17,9 @@ const UsersCard = ({ role }: { role: Role }) => {
       let data: OrgMember[] = [];
       try {
         data = await FetchOrgMembers();
-        setOrgMembers(data);
+        if (data) {
+          setOrgMembers(data);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
@@ -38,6 +40,8 @@ const UsersCard = ({ role }: { role: Role }) => {
       }
     }
   };
+
+
 
   return (
     <>
@@ -104,7 +108,7 @@ const UsersCard = ({ role }: { role: Role }) => {
             </tr>
           )}
 
-          {!loading && !error && orgMembers.length === 0 && (
+          {!loading && !error && (orgMembers ? (orgMembers.length ?? 0) === 0 : true) && (
             <tr>
               <td colSpan={role === "ADMIN" ? 6 : 5} className="p-4 text-center">
                 <div className="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-3 rounded">
@@ -114,7 +118,7 @@ const UsersCard = ({ role }: { role: Role }) => {
             </tr>
           )}
 
-          {!loading && !error && orgMembers.length > 0 && (
+          {!loading && !error && (orgMembers ? (orgMembers.length ?? 0) > 0 : false) && (
             orgMembers.map(member => (
               <tr key={member.ID} className="border-b">
                 <td className="p-2">

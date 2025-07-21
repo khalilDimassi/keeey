@@ -50,20 +50,20 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
 
   const contractTranslations: Record<string, string> = {
     'FREELANCE': 'Freelance / Indépendant',
-    'CONSULTANT': 'Consultant',
     'PORTAGE': 'Portage',
     'CDI': 'CDI',
     'CDD': 'CDD',
-    'CDI-C': 'CDI Cadre'
+    'CDI-C': 'CDI-C'
   };
 
   const companyTranslations: Record<string, string> = {
-    'LARGE': 'Greandes entreprises',
+    'OTHER': 'Tout/Pas de critère',
+    'LARGE': 'Grandes entreprises',
     'INDUSTRIAL': 'Entreprise industrielle / Client final',
     'PME/TPE': 'PME/TPE',
-    'ESN': `Bureaux d'Études / ESN / Conseil`,
-    'OTHER': 'Tout/Pas de critère'
+    'ESN': `Bureaux d'Études / ESN / Conseil`
   };
+
   const isDate = /^\d{4}-\d{2}-\d{2}$/.test(criteria.availability);
 
   return (
