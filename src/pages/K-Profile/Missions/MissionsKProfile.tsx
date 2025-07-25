@@ -180,6 +180,35 @@ const MissionsKProfile = () => {
     }
   };
 
+  const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        onDismiss();
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }, [onDismiss]);
+
+    const bgColor = type === 'error' ? 'bg-red-50' : 'bg-green-50';
+    const textColor = type === 'error' ? 'text-red-500' : 'text-green-500';
+
+    return (
+      <div className={`${textColor} p-2 ${bgColor} rounded flex justify-between items-centers`}>
+        <span>
+          {prefix && <span className="font-semibold">{prefix} </span>}
+          {message}
+        </span>
+        <button
+          onClick={onDismiss}
+          className="ml-4 text-gray-500 hover:text-gray-700"
+          aria-label="Dismiss message"
+        >
+          ×
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col">
       {/* Header with title and add button */}
@@ -207,14 +236,14 @@ const MissionsKProfile = () => {
       {/* Status messages */}
       {(missionsError || missionError || operationError || successMessage) && (
         <div className="mb-4">
-          {missionsError && <div className="text-red-500 p-2 bg-red-50 rounded">Missions Error: {missionsError}</div>}
-          {missionError && <div className="text-red-500 p-2 bg-red-50 rounded">Mission Error: {missionError}</div>}
-          {operationError && <div className="text-red-500 p-2 bg-red-50 rounded">Operation Error: {operationError}</div>}
-          {successMessage && <div className="text-green-500 p-2 bg-green-50 rounded">{successMessage}</div>}
+          {missionsError && (<MessageWithDismiss message={missionsError} type="error" prefix="Missions Error:" onDismiss={() => setMissionsError(null)} />)}
+          {missionError && (<MessageWithDismiss message={missionError} type="error" prefix="Mission Error:" onDismiss={() => setMissionError(null)} />)}
+          {operationError && (<MessageWithDismiss message={operationError} type="error" prefix="Operation Error:" onDismiss={() => setOperationError(null)} />)}
+          {successMessage && (<MessageWithDismiss message={successMessage} type="success" onDismiss={() => setSuccessMessage(null)} />)}
         </div>
       )}
 
-      {/* Mission summary when details are shown */}
+      {/* Mission  details */}
       {selectedMissionId && (
         <table className="w-[80%] my-2">
           <thead>
