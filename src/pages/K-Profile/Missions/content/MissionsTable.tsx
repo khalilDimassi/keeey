@@ -28,8 +28,8 @@ const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missi
             {missions.map((mission) => (
               <tr key={mission.id} className="border-b hover:bg-gray-50">
                 <td className="p-3">
-                  <span className="bg-green-200 text-green-600 px-4 py-1 rounded-md text-sm">
-                    {mission.status}
+                  <span className={`px-4 py-1 text-xs font-bold rounded-full ${mission.status === "ONGOING" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                    {mission.status === "ONGOING" ? "En cours" : "Terminée"}
                   </span>
                 </td>
                 <td className="p-3">{mission.company}</td>
@@ -40,7 +40,11 @@ const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missi
                 <td className="p-3">{mission.rate}</td>
                 <td className="p-3 flex">
                   {Array(5).fill(0).map((_, index) => (
-                    <Star key={index} className={`h-5 w-5 ${index < mission.satisfaction ? "text-yellow-500" : "text-gray-300"}`} />
+                    <Star
+                      key={index}
+                      size={20}
+                      fill={index < mission.satisfaction ? "#EAB308" : "none"}
+                      className={`${index < mission.satisfaction ? "text-[#EAB308]" : "text-[#D1D5DB]"}`} />
                   ))}
                 </td>
                 <td className="p-3">

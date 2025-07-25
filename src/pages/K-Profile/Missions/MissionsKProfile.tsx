@@ -27,7 +27,7 @@ const MissionsKProfile = () => {
 
   // State for form
   const [newMission, setNewMission] = useState<Omit<DetailedMission, 'id'>>({
-    status: '',
+    status: 'ONGOING',
     company: '',
     contact: '',
     title: '',
@@ -87,7 +87,7 @@ const MissionsKProfile = () => {
       setMissions(updatedMissions);
       // Reset form
       setNewMission({
-        status: '',
+        status: 'ONGOING',
         company: '',
         contact: '',
         title: '',

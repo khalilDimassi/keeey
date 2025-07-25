@@ -6,7 +6,7 @@ const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { missio
   return (
     <div className="space-y-4">
       {loading ? (
-        <div className="text-center py-8">Loading mission details...</div>
+        <div className="text-center py-8">Chargement des détails de la mission...</div>
       ) : (
         <>
           <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-x-auto">
@@ -27,7 +27,7 @@ const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { missio
               {!mission.invoices || mission.invoices.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="text-center py-4 text-gray-500">
-                    No invoices available for this mission
+                    Aucune facture disponible pour cette mission
                   </td>
                 </tr>
               ) : (
