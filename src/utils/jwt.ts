@@ -48,10 +48,8 @@ export const decodeJwtUnsafe = (token: string | null): KeeeyJwtPayload | null =>
     try {
         const payload = joseDecodeJwt(token);
         if (isKeeeyJwtPayload(payload)) {
-            console.log('JWT Payload (typed):', JSON.stringify(payload, null, 2));
             return payload;
         }
-        console.log('JWT payload does not match expected structure');
         return null;
 
     } catch (error) {

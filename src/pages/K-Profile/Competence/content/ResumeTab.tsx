@@ -167,7 +167,7 @@ function ResumeTab() {
 
   const handleSaveImage = (finalUrl: string, cropData: { x: number; y: number; size: number }) => {
     setProfileImage(finalUrl);
-    console.log('Image saved:', { finalUrl, cropData });
+    console.info('Image saved:', { finalUrl, cropData });
   };
 
   return (

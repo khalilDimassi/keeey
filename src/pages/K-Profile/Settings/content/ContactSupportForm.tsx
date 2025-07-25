@@ -10,7 +10,6 @@ function ContactSupportForm() {
       alert("Tous les champs doivent être remplis !");
       return;
     }
-    console.log("Message envoyé !");
   };
 
   return (

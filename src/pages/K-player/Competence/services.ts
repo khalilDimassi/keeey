@@ -201,8 +201,6 @@ export const fetchCandidatesWithMatchData = async (apiType: string, opportunityI
 };
 
 export const starCandidate = async (opportunityId: string, userId: string): Promise<void> => {
-    console.log(`Star candidate with id: ${userId} in opportunity with id: ${opportunityId}`);
-
     await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunityId}/candidates/${userId}/star`,
         {},

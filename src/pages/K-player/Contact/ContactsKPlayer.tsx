@@ -273,7 +273,7 @@ const ContactsKPlayer = () => {
                           <ArrowRight
                             size={24}
                             className="transition-colors duration-100 hover:text-blue-700 cursor-pointer"
-                            onClick={() => console.log("unimplemented")}
+                            onClick={() => { }}
                           />
                         </div>
                       </td>

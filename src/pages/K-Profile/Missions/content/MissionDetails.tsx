@@ -3,9 +3,6 @@ import { DetailedMission, Invoice } from "../types";
 const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { mission: DetailedMission, handleCRA: (invoiceId: number) => void, handleInvoice: (invoiceId: number) => void, loading: boolean }) => {
   if (!mission) return null;
 
-  console.log(mission);
-
-
   return (
     <div className="space-y-4">
       {loading ? (

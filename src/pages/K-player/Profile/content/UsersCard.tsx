@@ -161,10 +161,10 @@ const UsersCard = ({ role }: { role: Role }) => {
                   <td className="p-2">
                     <div className="flex gap-2">
                       <PenBox size={24} className="transition-colors duration-100 hover:text-blue-700 cursor-pointer" onClick={() => {
-                        console.log("> not implimented yet");
+
                       }} />
                       <Trash2 size={24} className="transition-colors duration-100 hover:text-red-700 cursor-pointer" onClick={() => {
-                        console.log("> not implimented yet");
+
                       }} />
                     </div>
                   </td>

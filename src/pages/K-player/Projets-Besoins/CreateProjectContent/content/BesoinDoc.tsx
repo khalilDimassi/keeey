@@ -38,8 +38,7 @@ const BesoinDocModal: React.FC<BesoinDocModalProps> = ({ isOpen, onClose }) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log(formData);
+        // Handle form submission here 
         onClose();
     };
 

@@ -67,8 +67,7 @@ const CompetancePage = () => {
       setSubmitStatus({ loading: false, error });
     } else {
       setSubmitStatus({ loading: false, error: null });
-      // TODO: Handle search results if needed
-      console.log("Search results:", searchResults);
+      // TODO: Handle search results if needed 
     }
   };
 

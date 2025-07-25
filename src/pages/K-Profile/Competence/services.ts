@@ -154,7 +154,7 @@ export const saveProfileImage = async (imageData: any, cropData: any) => {
     // Placeholder service call
     return new Promise((resolve) => {
         setTimeout(() => {
-            console.log('Saving image:', { imageData, cropData });
+            console.info('Saving image:', { imageData, cropData });
             resolve({ success: true, url: imageData });
         }, 1000);
     });
@@ -252,7 +252,6 @@ export const submitToOpportunity = async (opportunityId: number) => {
         );
 
         if (response.status === 200) {
-            console.log("Successfully submitted to opportunity:", opportunityId);
             // Optionally, update the UI or show a success message
         }
     } catch (error) {

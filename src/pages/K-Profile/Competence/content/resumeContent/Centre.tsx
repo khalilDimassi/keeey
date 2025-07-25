@@ -30,7 +30,6 @@ const Centre = ({ data, onDataUpdated }: { data: Interest[], onDataUpdated: () =
 
   const handleSubmit = async () => {
     try {
-      console.log(newInterest)
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/resume/interest`,
         newInterest,

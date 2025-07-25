@@ -98,8 +98,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id, onSelectedCandidate
                     }
 
                     const currentValidationStatus = candidate.matching_scores?.is_validated ?? false;
-                    console.log('Current validation status:', currentValidationStatus);
-
                     try {
                         handleValidateInterest(candidate.user_id, !currentValidationStatus);
                         emitter.emit('refreshSuggestions');

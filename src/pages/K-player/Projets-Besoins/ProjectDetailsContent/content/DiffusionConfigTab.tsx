@@ -19,8 +19,7 @@ const Diffusion = ({ opportunity_id }: { opportunity_id: string }) => {
   };
 
   const handleAddContact = () => {
-    // Logique pour ajouter un contact
-    console.log('Ajouter un contact');
+    // Logique pour ajouter un contact 
   };
 
   return (

@@ -287,11 +287,7 @@ const DocumentsSection: React.FC = () => {
 
     setDocuments(prev => [...prev, newDocument]);
 
-    // Here you would typically send the data to your backend
-    console.log('New document added:', {
-      ...formData,
-      id: newDocument.id
-    });
+    // TODO: typically send the data to your backend 
   };
 
   const handleDeleteDocument = (id: number) => {

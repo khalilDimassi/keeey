@@ -22,7 +22,6 @@ const EmailVerifLayout = () => {
 
             if (response.ok) {
                 setStatus('success');
-                console.log('Verification successful');
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 1000);
