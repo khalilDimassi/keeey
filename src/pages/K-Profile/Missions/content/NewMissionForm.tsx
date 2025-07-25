@@ -150,7 +150,9 @@ const NewMissionForm = ({
                   onChange={(e) => {
                     setFormTouched(true);
                     setNewMission({ ...newMission, company: e.target.value });
+                    setShowCompanyDropdown(true);
                   }}
+                  onFocus={() => setShowCompanyDropdown(true)}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
                   disabled={loadingCompanies}
                 />
@@ -165,23 +167,41 @@ const NewMissionForm = ({
                 <p className="text-red-500 text-xs mt-1">{companyError}</p>
               )}
 
-              {showCompanyDropdown && companies.length > 0 && (
-                <div className="absolute z-10 w-full max-h-32 bg-white border border-gray-200 rounded-lg shadow-lg overflow-auto">
-                  {companies.map((company) => (
-                    <div
-                      key={company.id}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200"
-                      onClick={() => {
-                        setNewMission({ ...newMission, company: company.name });
-                        setShowCompanyDropdown(false);
-                        setFormTouched(true);
-                      }}
-                    >
-                      <span
-                        className="font-sm border-l-4 pl-3 border-green-500"
-                      >{company.name}</span>
-                    </div>
-                  ))}
+              {showCompanyDropdown && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                  {companies
+                    .filter(company =>
+                      company.name.toLowerCase().includes(newMission.company.toLowerCase())
+                    )
+                    .map((company) => (
+                      <div
+                        key={company.id}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          setNewMission({ ...newMission, company: company.name });
+                          setShowCompanyDropdown(false);
+                          setFormTouched(true);
+                        }}
+                      >
+                        <span
+                          className="font-sm border-l-4 pl-3 border-green-500"
+                        >{company.name}</span>
+                      </div>
+                    ))
+                  }
+                  {companies.filter(company =>
+                    company.name.toLowerCase().includes(newMission.company.toLowerCase())
+                  ).length === 0 && (
+                      <div
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
+                        onClick={() => {
+                          setShowCompanyDropdown(false);
+                          setFormTouched(true);
+                        }}
+                      >
+                        + Créer "{newMission.company}"
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -200,7 +220,9 @@ const NewMissionForm = ({
                   onChange={(e) => {
                     setFormTouched(true);
                     setNewMission({ ...newMission, contact: e.target.value });
+                    setShowContactDropdown(true);
                   }}
+                  onFocus={() => setShowContactDropdown(true)}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
                   disabled={loadingContacts}
                 />
@@ -215,23 +237,48 @@ const NewMissionForm = ({
                 <p className="text-red-500 text-xs mt-1">{contactError}</p>
               )}
 
-              {showContactDropdown && contacts.length > 0 && (
-                <div key={new Date().getTime()} className="absolute z-10 w-full max-h-32 bg-white border border-gray-200 rounded-lg shadow-lg overflow-auto">
-                  {contacts.map((contact) => (
-                    <div
-                      key={contact.id}
-                      className="px-4 py-2 bg-gray-50s hover:bg-gray-100 cursor-pointer border-b border-gray-200"
-                      onClick={() => {
-                        setNewMission({ ...newMission, contact: contact.first_name + ' ' + contact.last_name });
-                        setShowContactDropdown(false);
-                        setFormTouched(true);
-                      }}
-                    >
-                      <span
-                        className={`font-sm border-l-4 pl-3 ${contact.status === "REGISTERED" ? "border-green-500" : contact.status === "NOT-REGISTERED" ? "border-orange-500" : "border-red-500"}`}
-                      >{contact.first_name} {contact.last_name}</span>
-                    </div>
-                  ))}
+              {showContactDropdown && (
+                <div className="absolute z-10 mt-1 w-full max-h-32 bg-white border border-gray-200 rounded-lg shadow-lg overflow-auto">
+                  {contacts
+                    .filter(contact =>
+                      `${contact.first_name} ${contact.last_name}`
+                        .toLowerCase()
+                        .includes(newMission.contact.toLowerCase())
+                    )
+                    .map((contact) => (
+                      <div
+                        key={contact.id}
+                        className="px-4 py-2 bg-gray-50s hover:bg-gray-100 cursor-pointer border-b border-gray-200"
+                        onClick={() => {
+                          setNewMission({
+                            ...newMission,
+                            contact: `${contact.first_name} ${contact.last_name}`
+                          });
+                          setShowContactDropdown(false);
+                          setFormTouched(true);
+                        }}
+                      >
+                        <span
+                          className={`font-sm border-l-4 pl-3 ${contact.status === "REGISTERED" ? "border-green-500" : contact.status === "NOT-REGISTERED" ? "border-orange-500" : "border-red-500"}`}
+                        >{contact.first_name} {contact.last_name}</span>
+                      </div>
+                    ))
+                  }
+                  {contacts.filter(contact =>
+                    `${contact.first_name} ${contact.last_name}`
+                      .toLowerCase()
+                      .includes(newMission.contact.toLowerCase())
+                  ).length === 0 && newMission.contact.length > 0 && (
+                      <div
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
+                        onClick={() => {
+                          setShowContactDropdown(false);
+                          setFormTouched(true);
+                        }}
+                      >
+                        + Créer "{newMission.contact}"
+                      </div>
+                    )}
                 </div>
               )}
             </div>

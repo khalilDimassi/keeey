@@ -44,7 +44,8 @@ const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missi
                       key={index}
                       size={20}
                       fill={index < mission.satisfaction ? "#EAB308" : "none"}
-                      className={`${index < mission.satisfaction ? "text-[#EAB308]" : "text-[#D1D5DB]"}`} />
+                      className={`${index < mission.satisfaction ? "text-[#EAB308]" : "text-[#D1D5DB]"}`}
+                    />
                   ))}
                 </td>
                 <td className="p-3">

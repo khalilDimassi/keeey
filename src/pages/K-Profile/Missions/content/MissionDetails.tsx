@@ -3,6 +3,9 @@ import { DetailedMission, Invoice } from "../types";
 const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { mission: DetailedMission, handleCRA: (invoiceId: number) => void, handleInvoice: (invoiceId: number) => void, loading: boolean }) => {
   if (!mission) return null;
 
+  console.log(mission);
+
+
   return (
     <div className="space-y-4">
       {loading ? (
@@ -34,8 +37,8 @@ const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { missio
                 mission.invoices.map((invoice: Invoice) => (
                   <tr key={invoice.id} className="hover:bg-gray-50 text-center">
                     <td className="p-3">
-                      <span className="bg-green-200 text-green-600 px-4 py-1 rounded-md text-sm">
-                        {mission.status}
+                      <span className={`px-4 py-1 text-xs font-bold rounded-full ${invoice.status === "ONGOING" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                        {invoice.status === "ONGOING" ? "En cours" : "Terminée"}
                       </span>
                     </td>
                     <td className="p-3">{invoice.year}</td>

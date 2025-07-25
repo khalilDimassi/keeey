@@ -27,7 +27,7 @@ export interface Mission {
 
 export interface Invoice {
     id: number;
-    status: string;
+    status: missionStatus;
     year: string;
     month: string;
     days: number;

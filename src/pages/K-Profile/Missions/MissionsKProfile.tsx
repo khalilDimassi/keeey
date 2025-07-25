@@ -261,8 +261,8 @@ const MissionsKProfile = () => {
           <tbody>
             <tr className="text-xs text-center">
               <td className="p-3">
-                <span className="bg-green-200 text-green-600 px-4 py-1 rounded-md text-xs">
-                  {(mission?.status ?? "-")}
+                <span className={`px-4 py-1 text-xs rounded-full ${mission?.status === "ONGOING" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                  {mission?.status === "ONGOING" ? "En cours" : "Terminée"}
                 </span>
               </td>
               <td className="p-3">{(mission?.company ?? "-")}</td>
@@ -276,10 +276,8 @@ const MissionsKProfile = () => {
                   <Star
                     key={index}
                     size={20}
-                    className={`${index < (mission?.satisfaction ?? 0) ?
-                      "text-yellow-500" :
-                      "text-gray-300"
-                      }`}
+                    fill={index < mission?.satisfaction! ? "#EAB308" : "none"}
+                    className={`${index < mission?.satisfaction! ? "text-[#EAB308]" : "text-[#D1D5DB]"}`}
                   />
                 ))}
               </td>
