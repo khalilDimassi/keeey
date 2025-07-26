@@ -38,12 +38,14 @@ export const CvSvG = forwardRef<SVGSVGElement, LucideProps>(({ size = 24, color 
         </svg>
     );
 });
-export const DashbordSVG = forwardRef<SVGSVGElement, LucideProps>(({ className, ...props }, ref) => (
+export const DashbordSVG = forwardRef<SVGSVGElement, LucideProps>(({ size = 24, fill = "currentColor", className, ...props }, ref) => (
     <svg
         ref={ref}
+        width={size}
+        height={size}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 33 33"
-        fill="currentColor"
+        fill={fill}
         className={className}
         {...props}
     >

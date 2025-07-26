@@ -66,6 +66,14 @@ function NotificationsSettings({ alSettings, onRefresh, setMessage }: { alSettin
 
   return (
     <>
+      <div className={`relative bg-yellow-400 top-0 left-0 right-0 h-8 my-5 z-10`}>
+        <div className="absolute inset-0 bg-black bg-opacity-10 flex justify-center items-center">
+          <div className="inline-flex items-center bg-black bg-opacity-20 text-black font-bold text-xs px-2 py-1 rounded mx-4">
+            🚧 EN COURS DE CONSTRUCTION 🚧
+          </div>
+        </div>
+      </div>
+
       <header className="mb-10 flex flex-row items-center justify-between">
         <h2 className="text-3xl font-semibold text-[#30797F]">
           Alertes / notifications

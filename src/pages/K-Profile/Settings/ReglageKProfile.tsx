@@ -1,4 +1,4 @@
-import { Ban, Bell, CheckCircle, ChevronRight, CreditCard, Headphones, Key, Settings, Shield, Subscript, } from "lucide-react";
+import { Ban, Bell, CheckCircle, ChevronRight, CreditCard, Headphones, Key, Settings, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MenuItem, alertesSettings, confidalitySettings } from "./types";
 import { loadAlertesSettings, loadConfidalitySettings } from "./services";
