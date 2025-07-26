@@ -1,7 +1,7 @@
 export interface CompanyInfo {
-    name: string;
-    address: string;
-    siret: string;
+    name?: string;
+    address?: string;
+    siret?: string;
 }
 
 export interface ProfileData {
@@ -39,6 +39,7 @@ export interface UserData {
 export interface ApiUserResponse {
     profile: ProfileData;
     user: UserData;
+    company: CompanyInfo;
 }
 
 

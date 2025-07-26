@@ -41,6 +41,11 @@ const GeneralInfoTab: FC = () => {
       created_at: "",
       updated_at: "",
     } as UserData,
+    company: {
+      name: "",
+      address: "",
+      siret: "",
+    } as CompanyInfo
   });
 
   useEffect(() => {
@@ -67,6 +72,7 @@ const GeneralInfoTab: FC = () => {
     // Check if the field belongs to user or profile
     const userFields = ['first_name', 'last_name', 'email', 'phone', 'gender', 'occupation', 'address', 'city', 'zip'];
     const profileFields = ['title', 'nationality', 'birthplace', 'birthdate', 'driving_permit', 'linked_in'];
+    const companyFields = ['company_name', 'company_address', 'siret'];
 
     setFormData(prevData => {
       if (userFields.includes(name)) {
@@ -107,6 +113,25 @@ const GeneralInfoTab: FC = () => {
           ...prevData,
           profile: updatedProfile
         };
+      } else if (companyFields.includes(name)) {
+        const updatedCompany = {
+          ...prevData.company,
+          [name]: newValue
+        };
+
+        // Track changed fields for company
+        setChangedFields(prev => ({
+          ...prev,
+          company: {
+            ...prev.company,
+            [name]: newValue
+          }
+        }));
+
+        return {
+          ...prevData,
+          company: updatedCompany
+        };
       }
 
       return prevData;
@@ -130,12 +155,6 @@ const GeneralInfoTab: FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const companyInfo: CompanyInfo = {
-    name: 'UNICEF',
-    address: 'Rue du Lac de Windermere – 1053- Les Berges du Lac 1, Tunis, Tunisia',
-    siret: '784 671 695 00087',
   };
 
   const handleResendVerification = async () => {
@@ -336,16 +355,6 @@ const GeneralInfoTab: FC = () => {
 
           {/* Organization Info */}
           <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-            {/* Stylish Work in Progress Overlay */}
-            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
-              </div>
-              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
-                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
-              </div>
-            </div>
-
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
               Organization Information
@@ -354,16 +363,37 @@ const GeneralInfoTab: FC = () => {
               <div className="flex gap-4">
                 <div className="w-1/2">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom de l'Entreprise</label>
-                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.name}</div>
+                  <input
+                    type="text"
+                    name="company_name"
+                    placeholder="Nom de l'entreprise"
+                    value={formData.company ? formData.company.name : ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
                 </div>
                 <div className="w-1/2">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Address de l'Entreprise</label>
-                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.address}</div>
+                  <input
+                    type="text"
+                    name="company_address"
+                    placeholder="Adresse de l'entreprise"
+                    value={formData.company ? formData.company.address : ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">SIREN/SIRET de l'Entreprise</label>
-                <div className="mt-1 text-gray-800 font-medium">{companyInfo.siret}</div>
+                <input
+                  type="text"
+                  name="siret"
+                  placeholder="SIREN/SIRET de l'entreprise"
+                  value={formData.company ? formData.company.siret : ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl mt-1 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                />
               </div>
             </div>
           </div>
@@ -607,16 +637,6 @@ const GeneralInfoTab: FC = () => {
 
           {/* Organization Info */}
           <div className="relative bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-            {/* Stylish Work in Progress Overlay */}
-            <div className="absolute inset-0 bg-gray-100/80 z-10 flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_#e5e7eb_0,_#e5e7eb_25px,_transparent_25px,_transparent_50px)] opacity-60"></div>
-              </div>
-              <div className="bg-white border-2 border-gray-300 px-8 py-4 rounded-xl shadow-lg z-10">
-                <span className="text-l font-bold text-gray-700">EN COURS DE CONSTRUCTION</span>
-              </div>
-            </div>
-
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <div className="mt-1 w-2 h-2 bg-orange-500 rounded-full"></div>
               Organization Information
@@ -625,16 +645,16 @@ const GeneralInfoTab: FC = () => {
               <div className="flex gap-4">
                 <div className="w-1/2">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom de l'Entreprise</label>
-                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.name}</div>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.company ? formData.company.name : "-"}</div>
                 </div>
                 <div className="w-1/2">
                   <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Address de l'Entreprise</label>
-                  <div className="mt-1 text-gray-800 font-medium">{companyInfo.address}</div>
+                  <div className="mt-1 text-gray-800 font-medium">{formData.company ? formData.company.address : "-"}</div>
                 </div>
               </div>
               <div>
                 <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">SIREN/SIRET de l'Entreprise</label>
-                <div className="mt-1 text-gray-800 font-medium">{companyInfo.siret}</div>
+                <div className="mt-1 text-gray-800 font-medium">{formData.company ? formData.company.siret : "-"}</div>
               </div>
             </div>
           </div>
