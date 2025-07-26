@@ -1,88 +1,111 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { alertesSettings, NotificationIds, NotificationSetting } from "../types";
+import { updateAlertesSettings } from "../services";
 
-function NotificationsSettings() {
-  const [alerts, setAlerts] = useState({
-    offerMatch: true,
-    contactOffer: false,
-  });
 
-  const [notificationTypes, setNotificationTypes] = useState({
-    email: true,
-    sms: false,
-    push: false,
-  });
 
-  const toggleAlert = (key: keyof typeof alerts) => {
-    setAlerts((prev) => ({ ...prev, [key]: !prev[key] }));
+function NotificationsSettings({ alSettings, onRefresh, setMessage }: { alSettings: alertesSettings, onRefresh: () => void, setMessage: (message: string) => void }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [notificationSettings, setNotificationSettings] = useState<alertesSettings>(alSettings);
+
+  const handleToggle = (setting: NotificationSetting) => {
+    setNotificationSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
   };
 
-  const toggleNotificationType = (key: keyof typeof notificationTypes) => {
-    setNotificationTypes((prev) => ({ ...prev, [key]: !prev[key] }));
+  const Toggle = ({ checked, onChange, id }: { checked: boolean, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, id: NotificationIds }) => {
+    return (
+      <div className="relative inline-block w-11 h-5">
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-[#30797F] cursor-pointer transition-colors duration-300 ease-in-out"
+        />
+        <label
+          htmlFor={id}
+          className="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-all duration-300 ease-in-out peer-checked:translate-x-6 peer-checked:border-[#30797F] peer-checked:scale-110 cursor-pointer"
+        />
+      </div>
+    );
   };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      if (notificationSettings !== alSettings) {
+        await updateAlertesSettings(notificationSettings);
+        setSuccess("Mot de passe modifié avec succès");
+        onRefresh();
+      } else {
+        setSuccess("Aucune modification");
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to change notifications settings");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      setMessage(error);
+    } else if (success) {
+      setMessage(success);
+    }
+  }, [error, success]);
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold text-teal-800 mb-6">
-        Alertes / notifications
-      </h2>
+    <>
+      <header className="mb-10 flex flex-row items-center justify-between">
+        <h2 className="text-3xl font-semibold text-[#30797F]">
+          Alertes / notifications
+        </h2>
 
-      {/* TYPES D'ALERTES */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-700 mb-2">Types d'alertes</h3>
-        <div className="space-y-3">
-          {Object.entries(alerts).map(([key, value]) => (
-            <label key={key} className="flex items-center gap-3 cursor-pointer">
-              <div
-                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${value ? "bg-[#297280]" : "bg-gray-300"
-                  }`}
-                onClick={() => toggleAlert(key as keyof typeof alerts)}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${value ? "translate-x-6" : "translate-x-0"
-                    }`}
-                ></div>
-              </div>
-              <span className="text-gray-700">
-                {key === "offerMatch"
-                  ? "Nouvelle offre correspondante"
-                  : "Nouvelle offre d'un contact"}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* TYPES DE NOTIFICATIONS */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-700 mb-2">Types de notifications</h3>
-        <div className="space-y-3">
-          {Object.entries(notificationTypes).map(([key, value]) => (
-            <label key={key} className="flex items-center gap-3 cursor-pointer">
-              <div
-                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${value ? "bg-[#297280]" : "bg-gray-300"
-                  }`}
-                onClick={() => toggleNotificationType(key as keyof typeof notificationTypes)}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${value ? "translate-x-6" : "translate-x-0"
-                    }`}
-                ></div>
-              </div>
-              <span className="text-gray-700">
-                {key === "email" ? "e-mail" : key === "sms" ? "SMS" : "Notification push"}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* BOUTON TERMINER */}
-      <div className="flex justify-end">
-        <button className="bg-[#297280] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-[#297280] transition-all">
-          Terminer
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+          {loading ? "Chargement..." : "Terminer"}
         </button>
-      </div>
-    </div>
+      </header>
+
+      <main className="flex flex-row gap-8">
+        <div className="flex flex-col gap-3">
+          <label className="text-md font-medium">Types d'alertes</label>
+          <div className="flex flex-row gap-4">
+            <Toggle checked={notificationSettings.newMatchingOffer} onChange={() => handleToggle('newMatchingOffer')} id="new-offer-toggle" />
+            <label>Nouvelle offre correspondante</label>
+          </div>
+          <div className="flex flex-row gap-4">
+            <Toggle checked={notificationSettings.newContactOffer} onChange={() => handleToggle('newContactOffer')} id="contact-offer-toggle" />
+            <label>Nouvelle offre d'un contact</label>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <label className="text-md font-medium">Types de notifications</label>
+          <div className="flex flex-row gap-4">
+            <Toggle checked={notificationSettings.email} onChange={() => handleToggle('email')} id="email-toggle" />
+            <label>E-mail</label>
+          </div>
+          <div className="flex flex-row gap-4">
+            <Toggle checked={notificationSettings.sms} onChange={() => handleToggle('sms')} id="sms-toggle" />
+            <label>SMS</label>
+          </div>
+          <div className="flex flex-row gap-4">
+            <Toggle checked={notificationSettings.push} onChange={() => handleToggle('push')} id="push-toggle" />
+            <label>Notification Push</label>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 

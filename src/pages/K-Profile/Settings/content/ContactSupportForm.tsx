@@ -1,62 +1,90 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supportTicket } from "../types";
+import { sendSupportTicket } from "../services";
 
-function ContactSupportForm() {
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
+function ContactSupportForm({ setMessage }: { setMessage: (message: string) => void }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [formData, setFormData] = useState<supportTicket>({
+    subject: "",
+    body: "",
+  })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setFormData({
+      subject: "",
+      body: "",
+    });
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (!subject || !message) {
-      alert("Tous les champs doivent être remplis !");
-      return;
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await sendSupportTicket(formData.subject, formData.body);
+      setSuccess("Message envoyé avec succès");
+      resetForm();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to send support ticket");
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      setMessage(error);
+    } else if (success) {
+      setMessage(success);
+    }
+  }, [error, success]);
+
   return (
-    <div>
-      <div className="flex justify-between items-center w-full">
-        <h2 className="text-2xl font-semibold text-teal-800 mb-6">
+    <>
+      <header className="mb-10 flex flex-row items-center justify-between">
+        <h2 className="text-3xl font-semibold text-[#30797F]">
           Contact / Support
         </h2>
-        <button
-          type="submit"
-          className="bg-[#297280] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-[#297280] transition-all"
-        >
-          Envoyer
+
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+          {loading ? "Chargement..." : "Envoyer"}
         </button>
-      </div>
+      </header>
 
-      <form onSubmit={handleSubmit} className="space-y-5 w-1/3">
-        {/* Sujet Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Sujet</label>
+      <main className="flex flex-col">
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2" htmlFor="subject">
+            Sujet
+          </label>
           <input
+            className="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="subject"
             type="text"
-            className="w-full p-3 border border-gray-300 rounded-xl "
-            placeholder="Entrez le sujet de votre message"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            required
+            placeholder="Sujet"
+            value={formData.subject}
+            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
           />
         </div>
 
-        {/* Message Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Message</label>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2" htmlFor="body">
+            Message
+          </label>
           <textarea
-            className="w-full p-3 border border-gray-300 rounded-xl "
-            placeholder="Écrivez votre message ici"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            rows={5}
-            required
+            className="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="body"
+            rows={8}
+            placeholder="Message"
+            value={formData.body}
+            onChange={(e) => setFormData({ ...formData, body: e.target.value })}
           />
         </div>
-
-        {/* Submit Button */}
-
-      </form>
-    </div>
+      </main>
+    </>
   );
 }
 export default ContactSupportForm;

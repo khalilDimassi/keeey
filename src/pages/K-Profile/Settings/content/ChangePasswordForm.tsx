@@ -1,161 +1,98 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { changePassword } from "../services";
 
-interface FormData {
-  current_password: string;
-  new_password: string;
-  confirm_password: string;
-}
+const ChangePasswordForm = ({ setMessage }: { setMessage: (message: string) => void }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-interface NotificationState {
-  show: boolean;
-  message: string;
-  type: 'success' | 'error';
-}
-
-const ChangePasswordForm = () => {
-  const [formData, setFormData] = useState<FormData>({
-    current_password: "",
-    new_password: "",
-    confirm_password: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState<NotificationState>({
-    show: false,
-    message: "",
-    type: 'success'
+  const [formData, setFormData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const resetForm = () => {
+    setFormData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setNotification({ show: false, message: "", type: 'success' });
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
-    if (formData.new_password !== formData.confirm_password) {
-      setNotification({
-        show: true,
-        message: "Les mots de passe ne correspondent pas",
-        type: 'error'
-      });
-      return;
-    }
-
-    setIsLoading(true);
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/password`,
-        {
-          current_password: formData.current_password,
-          new_password: formData.new_password,
-        }
-      );
-
-      if (response.status === 200) {
-        setNotification({
-          show: true,
-          message: "Votre mot de passe a été modifié avec succès",
-          type: 'success'
-        });
-        setFormData({
-          current_password: "",
-          new_password: "",
-          confirm_password: "",
-        });
-      }
+      await changePassword(formData.currentPassword, formData.newPassword, formData.confirmPassword);
+      setSuccess("Mot de passe modifié avec succès");
+      resetForm();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setNotification({
-          show: true,
-          message: error.response?.data?.message || "Une erreur est survenue",
-          type: 'error'
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "Une erreur est survenue",
-          type: 'error'
-        });
-      }
+      setError(error instanceof Error ? error.message : "Failed to change password");
     } finally {
-      setIsLoading(false);
-      setTimeout(() => {
-        setNotification(prev => ({ ...prev, show: false }));
-      }, 5000);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      setMessage(error);
+    } else if (success) {
+      setMessage(success);
+    }
+  }, [error, success]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
-      {notification.show && (
-        <div className={`p-4 rounded-md mb-4 ${notification.type === 'success'
-          ? 'bg-green-50 text-green-700 border border-green-200'
-          : 'bg-red-50 text-red-700 border border-red-200'
-          }`}
-        >
-          {notification.message}
-        </div>
-      )}
+    <>
+      <header className="mb-10 flex flex-row items-center justify-between">
+        <h2 className="text-3xl font-semibold text-[#30797F]">
+          Changer de mot de passe
+        </h2>
 
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Mot de passe actuel
-          </label>
-          <input
-            type="password"
-            name="current_password"
-            value={formData.current_password}
-            onChange={handleChange}
-            className="mt-3 block w-full px-3 py-2 text-lg bg-gray-100 border-2 rounded-2xl focus:border-green-600 focus:ring-green-500"
-            required
-          />
-        </div>
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+          {loading ? "Chargement..." : "Modifier le mot de passe"}
+        </button>
+      </header>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Nouveau mot de passe
-          </label>
+      <main className="grid grid-cols-4 gap-4 pr-8 text-start">
+        <label htmlFor="currentPassword" className="my-auto">Mot de passe actuel</label>
+        <input
+          type="password"
+          id="currentPassword"
+          name="currentPassword"
+          value={formData.currentPassword}
+          placeholder="Mot de passe actuel"
+          className="col-span-3 border rounded-xl p-2"
+          onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+        />
+        <label htmlFor="newPassword" className="my-auto">Nouveau mot de passe</label>
+        <input
+          type="password"
+          id="newPassword"
+          name="newPassword"
+          value={formData.newPassword}
+          placeholder="Nouveau mot de passe"
+          className="col-span-3 border rounded-xl p-2"
+          onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+        />
+        <label htmlFor="confirmPassword" className="my-auto">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          placeholder="Confirmer le mot de passe"
+          className="col-span-3 border rounded-xl p-2"
+          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+        />
 
-          <input
-            type="password"
-            name="new_password"
-            value={formData.new_password}
-            onChange={handleChange}
-            className="mt-3 block w-full px-4 py-2 text-lg bg-gray-100 border-2 rounded-2xl focus:border-green-100 focus:ring-green-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Confirmer le nouveau mot de passe
-          </label>
-          <input
-            type="password"
-            name="confirm_password"
-            value={formData.confirm_password}
-            onChange={handleChange}
-            className="mt-3 block w-full px-4 py-2 text-lg bg-gray-100 border-2  rounded-2xl focus:border-green-600 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-lg font-medium text-white bg-[#297280] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
-      >
-        {isLoading ? "Chargement..." : "Modifier le mot de passe"}
-      </button>
-    </form>
+        {error && <p className="text-red-500 bg-red-50 rounded-xl p-2">{error}</p>}
+        {success && <p className="text-green-500 bg-green-50 rounded-xl p-2">{success}</p>}
+      </main>
+    </>
   );
 };
 

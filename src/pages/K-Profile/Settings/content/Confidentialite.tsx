@@ -1,60 +1,91 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
+import { ConfidalityIds, ConfidalitySetting, confidalitySettings } from "../types";
+import { updateConfidalitySettings } from "../services";
 
-function Confidentialite() {
-  const [profileVisibility, setProfileVisibility] = useState({
-    everyone: false,
-    platformOnly: true,
-    contactsOnly: false,
-    noOne: false,
-  });
+function Confidentialite({ confSettings, onRefresh, setMessage }: { confSettings: confidalitySettings, onRefresh: () => void, setMessage: (message: string) => void }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [confidalitySettings, setConfidalitySettings] = useState<confidalitySettings>(confSettings);
 
-  const toggleProfileVisibility = (key: keyof typeof profileVisibility) => {
-    setProfileVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleToggle = (setting: ConfidalitySetting) => {
+    setConfidalitySettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
   };
 
+  const Toggle = ({ checked, onChange, id }: { checked: boolean, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, id: ConfidalityIds }) => {
+    return (
+      <div className="relative inline-block w-11 h-5">
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-[#30797F] cursor-pointer transition-colors duration-300 ease-in-out"
+        />
+        <label
+          htmlFor={id}
+          className="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-all duration-300 ease-in-out peer-checked:translate-x-6 peer-checked:border-[#30797F] peer-checked:scale-110 cursor-pointer"
+        />
+      </div>
+    );
+  };
+
+  const handleSubmit = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      if (confidalitySettings !== confSettings) {
+        await updateConfidalitySettings(confidalitySettings);
+        setSuccess("Mot de passe modifié avec succès");
+        onRefresh();
+      } else {
+        setSuccess("Aucune modification");
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to change confidality settings");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold text-teal-800 mb-6">
-        Confidentialité et accès
-      </h2>
+    <>
+      <header className="mb-10 flex flex-row items-center justify-between">
+        <h2 className="text-3xl font-semibold text-[#30797F]">
+          Confidentialité et accès
+        </h2>
 
-      {/* VISIBILITÉ DU PROFIL */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-700 mb-2">Qui peut voir mon profil ?</h3>
-        <div className="space-y-3">
-          {Object.entries(profileVisibility).map(([key, value]) => (
-            <label key={key} className="flex items-center gap-3 cursor-pointer">
-              <div
-                className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${value ? "bg-[#297280]" : "bg-gray-300"
-                  }`}
-                onClick={() => toggleProfileVisibility(key as keyof typeof profileVisibility)}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${value ? "translate-x-6" : "translate-x-0"
-                    }`}
-                ></div>
-              </div>
-              <span className="text-gray-700">
-                {key === "everyone"
-                  ? "Tout le monde"
-                  : key === "platformOnly"
-                    ? "Plateforme uniquement"
-                    : key === "contactsOnly"
-                      ? "Uniquement contacts"
-                      : "Personne"}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* BOUTON TERMINER */}
-      <div className="flex justify-end">
-        <button className="bg-[#297280] text-white px-6 py-3 rounded-3xl font-semibold hover:bg-[#297280] transition-all">
-          Terminer
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+          {loading ? "Chargement..." : "Terminer"}
         </button>
-      </div>
-    </div>
+      </header>
+
+      <main className="grid grid-cols-2 gap-4">
+        <label className="col-span-2 text-md font-medium">Qui peut voir mon profil</label>
+        <div className="flex flex-row gap-4">
+          <Toggle checked={confidalitySettings.everyone} onChange={() => handleToggle('everyone')} id="everyone-toggle" />
+          <label>tout le monde</label>
+        </div>
+        <div className="flex flex-row gap-4">
+          <Toggle checked={confidalitySettings.platform} onChange={() => handleToggle('platform')} id="platform-toggle" />
+          <label>plateforme uniquement</label>
+        </div>
+        <div className="flex flex-row gap-4">
+          <Toggle checked={confidalitySettings.contacts} onChange={() => handleToggle('contacts')} id="contacts-toggle" />
+          <label>mon réseau</label>
+        </div>
+        <div className="flex flex-row gap-4">
+          <Toggle checked={confidalitySettings.company} onChange={() => handleToggle('company')} id="company-toggle" />
+          <label>entreprise sélectionnée</label>
+        </div>
+      </main>
+    </>
   );
 }
 

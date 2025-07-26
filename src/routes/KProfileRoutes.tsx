@@ -20,7 +20,7 @@ const KProfileRoutes = () => {
             <Route path="bookmarks" element={<BookmarksKProfile />} />
             <Route path="contacts" element={<ContactsKProfile />} />
             <Route path="missions" element={<MissionsKProfile />} />
-            <Route path="settingss" element={<ReglageKProfile />} />
+            <Route path="settings" element={<ReglageKProfile />} />
 
             <Route path="*" element={isOnline ? <JobOpportunities /> : <Oportunite />} />
         </Routes>
