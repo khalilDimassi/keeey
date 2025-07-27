@@ -1,4 +1,4 @@
-import { getAuthHeader } from "../../../utils/jwt";
+import { getAuthHeader, getUserId, isAuthenticated } from "../../../utils/jwt";
 
 import axios from "axios";
 import { alertesSettings, confidalitySettings, PasswordChangePayload } from "./types";
@@ -97,11 +97,11 @@ export const updateConfidalitySettings = async (data: confidalitySettings): Prom
   }
 }
 
-export const sendSupportTicket = async (subject: string, message: string): Promise<void> => {
+export const sendSupportTicket = async (subject: string, content: string): Promise<void> => {
   try {
     await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/support-tickets`,
-      { subject, message },
+      `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/support-tickets`,
+      { subject, content, user_id: (isAuthenticated() ? getUserId() : null), source: 'REGISTRED K-PROFILE' },
       { headers: getAuthHeader() }
     );
   } catch (error) {

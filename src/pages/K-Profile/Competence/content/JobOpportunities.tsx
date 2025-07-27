@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
 import { getUserId } from "../../../../utils/jwt";
-import useOpportunitiesFilter, { ContractType, OpportunityTab } from "../hooks";
-import { fetchOpportunitiesList, fetchOpportunityCompetences, fetchOpportunityDetails } from "../services";
+import { AlertCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
+import { fetchOpportunitiesList, fetchOpportunityCompetences, fetchOpportunityDetails, saveOpportunity, submitToOpportunity } from "../services";
 import { OpportunityListItem, MatchPercentages, Opportunity, OpportunityCompetences } from "../types";
+import useOpportunitiesFilter, { ContractType, OpportunityTab } from "../hooks";
 
 // Utility functions
 const formatTimeAgo = (dateString: string): string => {
@@ -510,7 +510,9 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
     loadDetails(selectedOpportunity);
   }, [selectedOpportunity]);
 
-  const handleSaveOpportunity = (opportunityId: number, is_saved: boolean) => {
+  const handleSaveOpportunity = async (opportunityId: number, is_saved: boolean) => {
+    await saveOpportunity(opportunityId);
+
     setRawOpportunities(prev =>
       prev.map(item =>
         item.opportunity_id === opportunityId
@@ -520,7 +522,9 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
     );
   };
 
-  const handleSubmitOpportunity = (opportunityId: number, is_applied: boolean) => {
+  const handleSubmitOpportunity = async (opportunityId: number, is_applied: boolean) => {
+    await submitToOpportunity(opportunityId);
+
     setRawOpportunities(prev =>
       prev.map(item =>
         item.opportunity_id === opportunityId
