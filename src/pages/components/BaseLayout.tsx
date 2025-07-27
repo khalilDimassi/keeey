@@ -1,4 +1,3 @@
-// BaseLayout.tsx
 import { Outlet } from 'react-router-dom';
 import { isAuthenticated } from "../../utils/jwt";
 import { useState } from "react";
@@ -7,12 +6,10 @@ import { NavbarKProfile, NavbarKPlayer, NavbarKPartner } from './Navbar';
 import { SidebarKProfile, SidebarKPlayer, SidebarKPartner } from './Sidebar';
 
 import LoginPopup from './LoginPopup';
+import { useSidebar } from './SidebarContext';
 
-interface BaseLayoutProps {
-    profileType: ProfileType;
-}
 
-const BaseLayout = ({ profileType }: BaseLayoutProps) => {
+const BaseLayout = ({ profileType }: { profileType: ProfileType }) => {
     const navbarComponents = {
         kprofile: NavbarKProfile,
         kplayer: NavbarKPlayer,
@@ -28,14 +25,21 @@ const BaseLayout = ({ profileType }: BaseLayoutProps) => {
     const NavbarComponent = navbarComponents[profileType];
     const SidebarComponent = sidebarComponents[profileType];
     const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated);
+    const { isHorizontal } = useSidebar();
 
     return (
         <div className={`w-full min-h-screen bg-slate-100 ${profileType === "kplayer" ? "overflow-hidden" : "p-2"}`}>
             {showLoginPopup && <LoginPopup profileType={profileType} onClose={() => setShowLoginPopup(false)} />}
 
             <NavbarComponent />
+            {isHorizontal && (
+                <div className="w-full">
+                    <SidebarComponent horizontal />
+                </div>
+            )}
+
             <div className="flex items-start gap-4 w-full h-full px-4">
-                <SidebarComponent />
+                {!isHorizontal && <SidebarComponent />}
                 <div className="flex flex-col w-full mt-3 px-3">
                     <Outlet />
                 </div>

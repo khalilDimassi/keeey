@@ -1,11 +1,16 @@
+import { ArrowUpCircle } from "lucide-react";
 import { useState } from "react";
-import CloseButton from "./content/CloseButton";
+
 import GeneralInfoTab from "./content/GeneralInfoTab";
 import SectorsAndCriteriasTab from "./content/SectorsAndCriteriasTab";
 import ResumeTab from "./content/ResumeTab";
+import { useNavigate } from "react-router-dom";
+import { useSidebar } from "../../components/SidebarContext";
 
-const OnlineMode = ({ onClose }: { onClose: () => void }) => {
+const OnlineMode = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Informations");
+  const { isHorizontal, toggleOrientation } = useSidebar();
 
   const tabs = [
     { id: "Informations", label: "Informations Générales" },
@@ -55,7 +60,16 @@ const OnlineMode = ({ onClose }: { onClose: () => void }) => {
           {activeTab === "Informations" && <GeneralInfoTab />}
           {activeTab === "Compétences_Critères" && <SectorsAndCriteriasTab />}
           {activeTab === "CV_compéténces" && <ResumeTab />}
-          <CloseButton onClick={onClose} />
+
+          <ArrowUpCircle
+            onClick={() => {
+              toggleOrientation();
+              navigate("/kprofile/opportunities");
+            }}
+            cursor={"pointer"}
+            size={40}
+            className="absolute z-20 -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm text-[#297280] border border-gray-200"
+          />
         </div>
       </div>
     </>

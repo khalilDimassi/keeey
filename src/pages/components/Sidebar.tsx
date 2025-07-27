@@ -77,48 +77,43 @@ const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
 
   const config = profileConfigs[profileType];
 
-  const renderKStyle = () => {
-    return (
-      <div
-        className={`rounded-2xl ${horizontal
-          ? "w-full mx-16 h-16 flex items-center justify-center"
-          : "w-[6%] h-fit py-8 left-[10px] flex items-center justify-center"
-          }`}
-        style={{ background: config.backgroundColor }}
-      >
-        <div className={`flex ${horizontal
-          ? "flex-row gap-x-40 justify-center items-center"
-          : "flex-col gap-20 py-12 items-center"
-          }`}>
-          {config.icons.map(({ id, path, Icon }) => (
-            <NavLink
-              key={id}
-              to={path}
-              className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
-            >
-              {({ isActive }) => (
-                <div
-                  className={`transition-all duration-300 ${!horizontal && isActive
-                    ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
-                    : ""
+  return (
+    <div
+      className={`rounded-2xl bg-[${config.backgroundColor}] ${horizontal
+        ? "w-[90%] mx-16 h-16 flex items-center justify-center"
+        : "w-[6%] h-fit py-8 left-[10px] flex items-center justify-center"
+        }`}
+    >
+      <div className={`flex ${horizontal
+        ? "flex-row gap-x-40 justify-center items-center"
+        : "flex-col gap-20 py-12 items-center"
+        }`}>
+        {config.icons.map(({ id, path, Icon }) => (
+          <NavLink
+            key={id}
+            to={path}
+            className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
+          >
+            {({ isActive }) => (
+              <div
+                className={`transition-all duration-300 ${!horizontal && isActive
+                  ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
+                  : ""
+                  }`}
+              >
+                <Icon
+                  className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive
+                    ? `text-[${config.selectedTextColor}]`
+                    : "text-white hover:text-gray-200"
                     }`}
-                >
-                  <Icon
-                    className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive
-                      ? `text-[${config.selectedTextColor}]`
-                      : "text-white hover:text-gray-200"
-                      }`}
-                  />
-                </div>
-              )}
-            </NavLink>
-          ))}
-        </div>
+                />
+              </div>
+            )}
+          </NavLink>
+        ))}
       </div>
-    );
-  };
-
-  return renderKStyle();
+    </div>
+  );
 };
 
 export const SidebarKProfile = (props: Omit<SidebarProps, 'profileType'>) => (

@@ -1,10 +1,15 @@
 import { useState } from "react";
-import CloseButton from "./content/CloseButton";
 import Competencies from "./mode guest/Competencies";
 import SearchCriteria from "./mode guest/SearchCriteria";
+import { useNavigate } from "react-router-dom";
+import { ArrowUpCircle } from "lucide-react";
+import { useSidebar } from "../../components/SidebarContext";
 
-const GuestMode = ({ onClose }: { onClose: () => void }) => {
+
+const GuestMode = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("criteria");
+  const { isHorizontal, toggleOrientation } = useSidebar();
 
   const tabs = [
     { id: "competencies", label: "Mes Compétences" },
@@ -28,7 +33,15 @@ const GuestMode = ({ onClose }: { onClose: () => void }) => {
       <div className="relative bg-white rounded-xl">
         <div className="hover-box p-4 shadow-lg rounded-2xl">
           {activeTab === "criteria" ? <SearchCriteria /> : <Competencies />}
-          <CloseButton onClick={onClose} />
+          <ArrowUpCircle
+            onClick={() => {
+              toggleOrientation();
+              navigate("/kprofile/opportunities");
+            }}
+            cursor={"pointer"}
+            size={40}
+            className="absolute z-20 -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-sm text-[#297280] border border-gray-200"
+          />
         </div>
       </div>
 

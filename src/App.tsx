@@ -5,6 +5,7 @@ import BaseLayout from './pages/components/BaseLayout';
 import AuthPage from './pages/Auth/AuthPage';
 import Home from './pages/Home';
 import ProfileRoutes from './routes/ProfileRoutes';
+import { SidebarProvider } from './pages/components/SidebarContext';
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
         <Route path="/email-verification" element={<EmailVerifLayout />} />
 
         {/* Profile routes */}
-        <Route path="/kprofile/*" element={<BaseLayout profileType="kprofile" />}>
+        <Route path="/kprofile/*" element={<SidebarProvider><BaseLayout profileType="kprofile" /></SidebarProvider>}>
           <Route path="*" element={<ProfileRoutes profileType="kprofile" />} />
         </Route>
 

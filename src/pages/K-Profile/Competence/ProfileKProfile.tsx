@@ -6,7 +6,7 @@ import GuestMode from "./GuestMode";
 import OnlineMode from "./OnlineMode";
 import JobOpportunities from "./content/JobOpportunities";
 
-const ProfileKProfile = ({ onClose }: { onClose: () => void }) => {
+const ProfileKProfile = () => {
   const [isOnline] = useState(isAuthenticated);
 
   return (
@@ -22,9 +22,9 @@ const ProfileKProfile = ({ onClose }: { onClose: () => void }) => {
       </div>
 
       {isOnline ? (
-        <OnlineMode onClose={onClose} />
+        <OnlineMode />
       ) : (
-        <GuestMode onClose={onClose} />
+        <GuestMode />
       )}
 
       <JobOpportunities />

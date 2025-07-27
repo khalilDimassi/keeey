@@ -125,4 +125,4 @@ export const updateUserId = (newUserId: string) => {
 // Check if user ID exists
 export const hasUserId = (): boolean => {
     return getUserId() !== null;
-};
+}; 
