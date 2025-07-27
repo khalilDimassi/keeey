@@ -99,10 +99,10 @@ const ReglageKProfile = () => {
             Réglage
           </h1>
         </div>
-        {message && <div className={`flex items-center text-sm py-2 px-3 rounded-xl 
-          ${message?.includes("erreur") ?
-            "bg-red-100 text-red-600" :
-            "bg-green-100 text-green-600"}`}
+
+        {message && <div className={`flex items-center text-sm py-1 px-3 rounded-xl ${message?.includes("erreur") ?
+          "bg-red-100 text-red-600" :
+          "bg-green-100 text-green-600"}`}
         >
           {message?.includes("erreur") ?
             <Ban size={16} color="red" className="mr-2" /> :

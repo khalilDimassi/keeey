@@ -88,9 +88,6 @@ const ChangePasswordForm = ({ setMessage }: { setMessage: (message: string) => v
           className="col-span-3 border rounded-xl p-2"
           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
         />
-
-        {error && <p className="text-red-500 bg-red-50 rounded-xl p-2">{error}</p>}
-        {success && <p className="text-green-500 bg-green-50 rounded-xl p-2">{success}</p>}
       </main>
     </>
   );
