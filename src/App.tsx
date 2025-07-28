@@ -22,12 +22,12 @@ function App() {
         </Route>
 
         {/* Player routes */}
-        <Route path="/kplayer/*" element={<BaseLayout profileType="kplayer" />}>
+        <Route path="/kplayer/*" element={<SidebarProvider><BaseLayout profileType="kplayer" /></SidebarProvider>}>
           <Route path="*" element={<ProfileRoutes profileType="kplayer" />} />
         </Route>
 
         {/* Partner routes */}
-        <Route path="/kpartner/*" element={<BaseLayout profileType="kpartner" />}>
+        <Route path="/kpartner/*" element={<SidebarProvider><BaseLayout profileType="kpartner" /></SidebarProvider>}>
           <Route path="*" element={<ProfileRoutes profileType="kpartner" />} />
         </Route>
       </Routes>
