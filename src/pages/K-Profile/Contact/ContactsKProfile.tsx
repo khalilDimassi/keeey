@@ -1,5 +1,5 @@
 import { createContact, loadContacts, deleteContact } from "./services";
-import { ArrowLeft, Contact, Plus, Trash2, } from "lucide-react";
+import { ArrowLeft, Ban, Contact, Plus, Trash2, } from "lucide-react";
 import { useEffect, useState } from "react";
 import { contactFetch } from "./types";
 
@@ -12,7 +12,8 @@ const ContactsKProfile = () => {
   const [activeTab, setActiveTab] = useState('referrals');
   const [contacts, setContacts] = useState<contactFetch[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const [postError, setPostError] = useState<string | null>(null);
   const [displayedContacts, setDisplayedContacts] = useState<contactFetch[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -22,13 +23,14 @@ const ContactsKProfile = () => {
   const [occupationType, setOccupationType] = useState('');
 
 
+
   useEffect(() => {
     const fetchContacts = async () => {
-      setError(null);
+      setDataError(null);
       setLoading(true);
       const [data, error] = await loadContacts();
       if (error) {
-        setError(error);
+        setDataError(error);
       } else if (data) {
         setContacts(data);
       }
@@ -40,7 +42,7 @@ const ContactsKProfile = () => {
 
   useEffect(() => {
     // Handle smooth transition between states
-    if (loading || error) {
+    if (loading || dataError) {
       setIsTransitioning(true);
       setDisplayedContacts([]);
 
@@ -62,7 +64,7 @@ const ContactsKProfile = () => {
       setDisplayedContacts([]);
       setIsTransitioning(false);
     }
-  }, [loading, error, contacts]);
+  }, [loading, dataError, contacts]);
 
   const handleNewContact = () => {
     setShowForm(true);
@@ -82,7 +84,7 @@ const ContactsKProfile = () => {
       alert("Contact deleted successfully!");
     } catch (error) {
       console.error("Failed to delete contact:", error);
-      alert("Failed to delete contact. Please try again.");
+      setPostError("Failed to delete contact: " + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -95,6 +97,59 @@ const ContactsKProfile = () => {
         setFormTouched(false);
       }
     }
+  };
+
+  async function handleSubmission(contactType: string, form: EventTarget & HTMLFormElement) {
+    const res = await createContact(contactType, {
+      gender: form.gender.value,
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      email: form.email.value,
+      company: form.company.value,
+      occupation: form.occupation.value,
+      phone: form.phone?.value || "",
+      notes: form.notes?.value || "",
+      request_reference: form.request_reference.checked
+    });
+
+    if (res) {
+      setPostError(res);
+      setShowForm(false);
+      setFormTouched(false);
+    } else {
+      setShowForm(false);
+      setFormTouched(false);
+      setDataError(null);
+      loadContacts();
+    }
+  }
+
+  const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        onDismiss();
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }, [onDismiss]);
+
+    const bgColor = type === 'error' ? 'bg-red-50' : 'bg-green-50';
+    const textColor = type === 'error' ? 'text-red-500' : 'text-green-500';
+
+    return (
+      <div className={`${textColor} p-2 ${bgColor} rounded-full flex flex-row items-center ml-auto`}>
+        <Ban size={16} color="red" className="mr-2" />
+        {prefix && <span className="font-semibold mr-2">{prefix} </span>}
+        {message}
+        <button
+          onClick={onDismiss}
+          className="ml-4 text-gray-500 hover:text-gray-700"
+          aria-label="Dismiss message"
+        >
+          ×
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -154,14 +209,20 @@ const ContactsKProfile = () => {
     ) : (
       <>
         <div className="min-h-screen w-full flex flex-col">
-          <div className="flex items-center space-x-3 my-4">
-            <Contact
-              className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 `}
-              color="#297280"
-            />
-            <h1 className="text-xl font-semibold text-black">
-              Contacts
-            </h1>
+          <div className="flex items-center justify-between space-x-3 my-4">
+            <div className="flex items-center space-x-3 ">
+              <Contact
+                className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-all duration-500 `}
+                color="#297280"
+              />
+              <h1 className="text-xl font-semibold text-black">
+                Contacts
+              </h1>
+            </div>
+
+            {postError && (
+              <MessageWithDismiss message={postError} type="error" prefix="Erreur:" onDismiss={() => setPostError(null)} />
+            )}
           </div>
 
           {/* Tab Navigation */}
@@ -206,9 +267,9 @@ const ContactsKProfile = () => {
                   displayedContacts={displayedContacts.some(contact => contact.role === 'REFERRAL') ? displayedContacts.filter(contact => contact.role === 'REFERRAL') : displayedContacts}
                   isTransitioning={isTransitioning}
                   loading={loading}
-                  error={error}
+                  error={dataError}
                   onReload={() => {
-                    setError(null);
+                    setDataError(null);
                     loadContacts()
                   }}
                   handleContactDetails={setSelectedContact}
@@ -220,9 +281,9 @@ const ContactsKProfile = () => {
                   displayedContacts={displayedContacts.some(contact => contact.role === 'SPONSOR') ? displayedContacts.filter(contact => contact.role === 'SPONSOR') : displayedContacts}
                   isTransitioning={isTransitioning}
                   loading={loading}
-                  error={error}
+                  error={dataError}
                   onReload={() => {
-                    setError(null);
+                    setDataError(null);
                     loadContacts()
                   }}
                   handleContactDetails={setSelectedContact}
@@ -254,21 +315,7 @@ const ContactsKProfile = () => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const form = e.currentTarget;
-                  createContact("REFERRAL", {
-                    gender: form.gender.value,
-                    first_name: form.first_name.value,
-                    last_name: form.last_name.value,
-                    email: form.email.value,
-                    company: form.company.value,
-                    occupation: form.occupation.value,
-                    phone: form.phone?.value || "",
-                    notes: form.notes?.value || "",
-                    request_reference: form.request_reference.checked
-                  });
-
-                  setShowForm(false);
-                  setFormTouched(false);
+                  handleSubmission("REFERRAL", e.currentTarget);
                 }}
                 className="space-y-4"
               >

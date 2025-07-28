@@ -34,7 +34,7 @@ export const createContact = async (contact_role: string, data?: contactCreate) 
             || error.message
             || "Erreur inconnue lors de l'ajout du contact.";
 
-        console.error(errorMessage);
+        return errorMessage;
     }
 };
 
@@ -57,7 +57,7 @@ export const updateContact = async (contact_id: number, data?: contactFetch) => 
             || error.message
             || "Erreur inconnue lors de la mise à jour du contact.";
 
-        console.error(errorMessage);
+        return errorMessage;
     }
 };
 
@@ -76,6 +76,6 @@ export const deleteContact = async (contact_id: number) => {
             || error.message
             || "Erreur inconnue lors de la suppression du contact.";
 
-        console.error(errorMessage);
+        return errorMessage;
     }
 };
