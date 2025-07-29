@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getUserId } from "../../../../utils/jwt";
-import { AlertCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
+import { useSidebar } from "../../../components/SidebarContext";
+import { AlertCircle, ArrowDownCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
 import { fetchOpportunitiesList, fetchOpportunityCompetences, fetchOpportunityDetails, saveOpportunity, submitToOpportunity } from "../services";
 import { OpportunityListItem, MatchPercentages, Opportunity, OpportunityCompetences } from "../types";
 import useOpportunitiesFilter, { ContractType, OpportunityTab } from "../hooks";
@@ -424,6 +425,7 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
     contractType,
     threshold
   });
+
 
   useEffect(() => {
     if (selectedID) {

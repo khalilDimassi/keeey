@@ -25,9 +25,10 @@ interface ProfileConfig {
 interface SidebarProps {
   profileType: ProfileType;
   horizontal?: boolean;
+  toggleSidebar: () => void;
 }
 
-const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
+const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: SidebarProps) => {
   const profileConfigs: Record<ProfileType, ProfileConfig> = {
     kprofile: {
       backgroundColor: "#297280",
@@ -92,6 +93,12 @@ const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
           <NavLink
             key={id}
             to={path}
+            onClick={() => {
+              window.scrollTo(0, 0);
+              if (horizontal) {
+                toggleSidebar();
+              }
+            }}
             className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
           >
             {({ isActive }) => (
@@ -102,7 +109,7 @@ const UnifiedSidebar = ({ profileType, horizontal = false, }: SidebarProps) => {
                   }`}
               >
                 <Icon
-                  className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive
+                  className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive && !horizontal
                     ? `text-[${config.selectedTextColor}]`
                     : "text-white hover:text-gray-200"
                     }`}

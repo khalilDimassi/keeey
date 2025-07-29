@@ -12,7 +12,6 @@ export const SidebarProvider = ({ children }: { children: React.ReactNode }) => 
 
     const toggleOrientation = () => {
         setIsHorizontal(prev => !prev);
-        console.log("Orientation changed to:", isHorizontal ? "vertical" : "horizontal");
     }
 
     return (

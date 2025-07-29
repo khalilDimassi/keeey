@@ -25,7 +25,7 @@ const BaseLayout = ({ profileType }: { profileType: ProfileType }) => {
     const NavbarComponent = navbarComponents[profileType];
     const SidebarComponent = sidebarComponents[profileType];
     const [showLoginPopup, setShowLoginPopup] = useState(!isAuthenticated);
-    const { isHorizontal } = useSidebar();
+    const { isHorizontal, toggleOrientation } = useSidebar();
 
     return (
         <div className={`w-full min-h-screen bg-slate-100 ${profileType === "kplayer" ? "overflow-hidden" : "p-2"}`}>
@@ -34,12 +34,12 @@ const BaseLayout = ({ profileType }: { profileType: ProfileType }) => {
             <NavbarComponent />
             {isHorizontal && (
                 <div className="w-full">
-                    <SidebarComponent horizontal />
+                    <SidebarComponent horizontal toggleSidebar={toggleOrientation} />
                 </div>
             )}
 
             <div className="flex items-start gap-4 w-full h-full px-4">
-                {!isHorizontal && <SidebarComponent />}
+                {!isHorizontal && <SidebarComponent toggleSidebar={toggleOrientation} />}
                 <div className="flex flex-col w-full mt-3 px-3">
                     <Outlet />
                 </div>
