@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PencilLine, Check, X, AlertTriangle, BadgeCheck, Linkedin } from 'lucide-react';
 import { ApiUserResponse, CompanyInfo, ProfileData, UserData } from '../types';
 import { fetchUserData, updateUserData } from '../services';
@@ -6,7 +6,7 @@ import { getAuthHeader } from '../../../../utils/jwt';
 import DocumentsSection from './DocumentsSection';
 import axios from 'axios';
 
-const GeneralInfoTab: FC = () => {
+const GeneralInfoTab = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -205,8 +205,8 @@ const GeneralInfoTab: FC = () => {
   }
 
   return (
-    <div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="absolute top-0 right-0 items-center m-2">
+    <div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-xl p-6 pt-14 shadow-md">
+      <div className="absolute top-3 right-3 items-center m-2">
         {isEditing ? (
           <div className='flex gap-3'>
             <button

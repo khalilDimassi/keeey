@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import { OpportunityListItem } from "./content/Opportunities/types";
+import { OpportunityListItem } from "./types";
 
 export type OpportunityTab =
-    | "Opportunités"
-    | "Opportunités de mes contacts"
-    | "Clients étant intéressés";
+    | "ALL"
+    | "CONTACTS"
+    | "CLIENTS"
+    | "SAVED";
 
 export type ContractType =
     | "ALL"
@@ -35,10 +36,10 @@ const useOpportunitiesFilter = ({ activeTab, contractType, threshold }: HookPara
     const filteredItems = useMemo(() => {
         let items: OpportunityListItem[] = [...rawOpportunities];
         switch (activeTab) {
-            case "Opportunités de mes contacts":
+            case "CONTACTS":
                 items = items.filter(i => i.contact_id && i.contact_id !== 0);
                 break;
-            case "Clients étant intéressés":
+            case "CLIENTS":
                 items = items.filter(i => i.client_id && i.client_id !== "");
                 break;
             default:

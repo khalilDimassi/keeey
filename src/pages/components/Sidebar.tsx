@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Settings, Bookmark, Contact, Building2, Search, UserCheck } from "lucide-react";
-import { DashbordSVG, CompetenceSVG, TargetSVG, CvSvG, ProfileCompanySVG } from "./SVGcomponents";
+import { Settings, Contact, Building2, Search, UserCheck } from "lucide-react";
+import { DashbordSVG, CompetenceSVG, TargetSVG, CvSvG, ProfileCompanySVG, OpportunitiesSVG } from "./SVGcomponents";
 import { ProfileType } from "./types";
 
 // TODO: Mock components for demonstration - replace with actual imports 
@@ -28,6 +28,7 @@ interface SidebarProps {
   toggleSidebar: () => void;
 }
 
+
 const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: SidebarProps) => {
   const profileConfigs: Record<ProfileType, ProfileConfig> = {
     kprofile: {
@@ -38,7 +39,7 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
       icons: [
         { id: "dashboard", path: "/kprofile/dashboard", Icon: DashbordSVG },
         { id: "competence", path: "/kprofile/profile", Icon: CompetenceSVG },
-        { id: "bookmark", path: "/kprofile/bookmarks", Icon: Bookmark },
+        { id: "bookmark", path: "/kprofile/bookmarks", Icon: OpportunitiesSVG },
         { id: "contact", path: "/kprofile/contacts", Icon: Contact },
         { id: "missions", path: "/kprofile/missions", Icon: TargetSVG },
         { id: "settings", path: "/kprofile/settings", Icon: Settings },

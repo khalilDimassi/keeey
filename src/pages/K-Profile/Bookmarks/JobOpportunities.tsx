@@ -1,10 +1,9 @@
+import { AlertCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { getUserId } from "../../../../utils/jwt";
-import { useSidebar } from "../../../components/SidebarContext";
-import { AlertCircle, ArrowDownCircle, ArrowLeft, Bookmark, Building, ChevronLeft, ChevronRight, Loader2, MailCheck, MailX, MapPin, User } from "lucide-react";
-import { fetchOpportunitiesList, fetchOpportunityCompetences, fetchOpportunityDetails, saveOpportunity, submitToOpportunity } from "../services";
-import { OpportunityListItem, MatchPercentages, Opportunity, OpportunityCompetences } from "../types";
-import useOpportunitiesFilter, { ContractType, OpportunityTab } from "../hooks";
+import { getUserId } from "../../../utils/jwt";
+import { fetchOpportunitiesList, fetchOpportunityCompetences, fetchOpportunityDetails, saveOpportunity, submitToOpportunity } from "../Competence/services";
+import { OpportunityListItem, MatchPercentages, Opportunity, OpportunityCompetences } from "../Competence/types";
+import useOpportunitiesFilter, { ContractType, OpportunityTab } from "../Competence/hooks";
 
 // Utility functions
 const formatTimeAgo = (dateString: string): string => {
@@ -415,8 +414,8 @@ const CompetenceCategory = ({ label, items }: { label: string; items: string[] }
 );
 
 // Main component
-const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClose?: () => void }) => {
-  const [activeTab, setActiveTab] = useState<OpportunityTab>("Opportunités");
+const JobOpportunities = ({ SavedOpportunities, selectedID, onClose }: { SavedOpportunities: JSX.Element, selectedID?: number, onClose?: () => void }) => {
+  const [activeTab, setActiveTab] = useState<OpportunityTab>("ALL");
   const [contractType, setContractType] = useState<ContractType>("ALL");
   const [threshold, setThreshold] = useState(0);
   const [selectedOpportunity, setSelectedOpportunity] = useState<OpportunityListItem | null>(null);
@@ -429,7 +428,7 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
 
   useEffect(() => {
     if (selectedID) {
-      setSelectedOpportunity(filteredItems.find(i => i.opportunity_id === selectedID));
+      setSelectedOpportunity(filteredItems.find(i => i.opportunity_id === selectedID) || null);
     }
   }, [filteredItems, selectedID]);
 
@@ -559,12 +558,12 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
   }
 
   return (
-    <div className="mt-10">
+    <>
       <div className="relative shadow-sm rounded-lg">
         {/* Tabs and Filters */}
         <div className="flex items-center justify-between">
           <div className="flex gap-2 h-16">
-            {(["Opportunités", "Opportunités de mes contacts", "Clients étant intéressés"] as OpportunityTab[]).map(tab => (
+            {(["ALL", "CONTACTS", "CLIENTS", "SAVED"] as OpportunityTab[]).map(tab => (
               <button
                 key={tab}
                 style={{
@@ -578,11 +577,13 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
                   }`}
                 onClick={() => setActiveTab(tab)}
               >
-                {tab === "Opportunités"
+                {tab === "ALL"
                   ? "Toutes les opportunités correspondantes"
-                  : tab === "Opportunités de mes contacts"
-                    ? "Opportunités de mes contacts"
-                    : "Clients étant intéressés"}
+                  : tab === "CONTACTS"
+                    ? "Opportunités de contacts"
+                    : tab === "CLIENTS"
+                      ? "Opportunités de clients"
+                      : "Opportunités sauvegardées"}
               </button>
             ))}
           </div>
@@ -644,84 +645,87 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
 
         {/* Opportunities List */}
         <div className="overflow-y-auto bg-white rounded-b-xl shadow-lg p-6">
-          {(displayedItems.length === 0) ? (
-            <div className="text-center py-10 text-gray-500">
-              <p>Aucune opportunité disponible.</p>
-            </div>
-          ) : (displayedItems.map((item, index) => {
-            const isLastItem = index === displayedItems.length - 1;
-            return (
-              <div
-                className="bg-slate-50 mb-3 p-4 rounded-xl hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
-                key={item.opportunity_id}
-                ref={isLastItem ? lastItemRef : null}
-                onClick={() => setSelectedOpportunity(item)}
-              >
-                {/* Avatar */}
-                <div
-                  className="w-16 h-16 rounded-full flex-shrink-0 object-cover mx-auto flex items-center justify-center text-sm text-black font-bold"
-                  style={{ backgroundColor: getRandomColor(item.title) }}
-                >
-                  {getInitials(item.title)}
+          {activeTab === "SAVED" ? SavedOpportunities :
+            (
+              displayedItems.length === 0 ? (
+                <div className="text-center py-10 text-gray-500">
+                  <p>Aucune opportunité disponible.</p>
                 </div>
+              ) : (displayedItems.map((item, index) => {
+                const isLastItem = index === displayedItems.length - 1;
+                return (
+                  <div
+                    className="bg-slate-50 mb-3 p-4 rounded-xl hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
+                    key={item.opportunity_id}
+                    ref={isLastItem ? lastItemRef : null}
+                    onClick={() => setSelectedOpportunity(item)}
+                  >
+                    {/* Avatar */}
+                    <div
+                      className="w-16 h-16 rounded-full flex-shrink-0 object-cover mx-auto flex items-center justify-center text-sm text-black font-bold"
+                      style={{ backgroundColor: getRandomColor(item.title) }}
+                    >
+                      {getInitials(item.title)}
+                    </div>
 
-                {/* Job details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-col">
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
-                      {item.title} <span className="text-sm text-gray-500">{formatTimeAgo(item.created_at)}</span>
-                    </h3>
-                    <div className="mt-2 flex items-center gap-2">
-                      <div className="px-3 rounded-xl bg-[#9FC5C8] text-[#297280] text-sm font-bold">
-                        {calculateMatchPercentage(item)}
+                    {/* Job details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col">
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                          {item.title} <span className="text-sm text-gray-500">{formatTimeAgo(item.created_at)}</span>
+                        </h3>
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="px-3 rounded-xl bg-[#9FC5C8] text-[#297280] text-sm font-bold">
+                            {calculateMatchPercentage(item)}
+                          </div>
+                          <span className="text-sm text-gray-700">Correspondent à votre profil</span>
+                        </div>
                       </div>
-                      <span className="text-sm text-gray-700">Correspondent à votre profil</span>
+                      <p className="text-gray-700 text-sm leading-relaxed mt-3 line-clamp-2">
+                        {item.description || "Description non disponible"}
+                      </p>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="absolute top-3 right-5 flex gap-4">
+                      {item.is_applied ? (
+                        <MailX
+                          className="hover:text-red-500 text-green-600 transition-all duration-200 transform hover:scale-110 mt-1"
+                          cursor={"pointer"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSubmitOpportunity(item.opportunity_id, item.is_applied);
+                          }}
+                          aria-label="Applied"
+                          size={30}
+                        />
+                      ) : (
+                        <MailCheck
+                          className="hover:text-green-500 transition-all duration-200 transform hover:scale-110 mt-1"
+                          cursor={"pointer"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSubmitOpportunity(item.opportunity_id, item.is_applied);
+                          }}
+                          aria-label="Apply"
+                          size={30}
+                        />
+                      )}
+                      <Bookmark
+                        className={`mt-1 transition-all duration-200 ${item.is_saved ? "text-black hover:text-red-500" : "text-black hover:text-yellow-400"
+                          }`}
+                        size={30}
+                        fill={item.is_saved ? "yellow" : "none"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveOpportunity(item.opportunity_id, item.is_saved);
+                        }}
+                      />
                     </div>
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed mt-3 line-clamp-2">
-                    {item.description || "Description non disponible"}
-                  </p>
-                </div>
-
-                {/* Action buttons */}
-                <div className="absolute top-3 right-5 flex gap-4">
-                  {item.is_applied ? (
-                    <MailX
-                      className="hover:text-red-500 text-green-600 transition-all duration-200 transform hover:scale-110 mt-1"
-                      cursor={"pointer"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSubmitOpportunity(item.opportunity_id, item.is_applied);
-                      }}
-                      aria-label="Applied"
-                      size={30}
-                    />
-                  ) : (
-                    <MailCheck
-                      className="hover:text-green-500 transition-all duration-200 transform hover:scale-110 mt-1"
-                      cursor={"pointer"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSubmitOpportunity(item.opportunity_id, item.is_applied);
-                      }}
-                      aria-label="Apply"
-                      size={30}
-                    />
-                  )}
-                  <Bookmark
-                    className={`mt-1 transition-all duration-200 ${item.is_saved ? "text-black hover:text-red-500" : "text-black hover:text-yellow-400"
-                      }`}
-                    size={30}
-                    fill={item.is_saved ? "yellow" : "none"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSaveOpportunity(item.opportunity_id, item.is_saved);
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          }))}
+                );
+              }))
+            )}
         </div>
       </div>
 
@@ -762,7 +766,7 @@ const JobOpportunities = ({ selectedID, onClose }: { selectedID?: number, onClos
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
