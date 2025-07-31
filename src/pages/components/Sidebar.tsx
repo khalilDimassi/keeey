@@ -38,8 +38,8 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
       selectedTextColor: "#297280",
       icons: [
         { id: "dashboard", path: "/kprofile/dashboard", Icon: DashbordSVG },
-        { id: "competence", path: "/kprofile/profile", Icon: CompetenceSVG },
-        { id: "bookmark", path: "/kprofile/bookmarks", Icon: OpportunitiesSVG },
+        { id: "profile", path: "/kprofile/profile", Icon: CompetenceSVG },
+        { id: "opportunities", path: "/kprofile/opportunities", Icon: OpportunitiesSVG },
         { id: "contact", path: "/kprofile/contacts", Icon: Contact },
         { id: "missions", path: "/kprofile/missions", Icon: TargetSVG },
         { id: "settings", path: "/kprofile/settings", Icon: Settings },

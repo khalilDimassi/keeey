@@ -1,4 +1,4 @@
-import { ArrowUpCircle, ArrowUpRight, MailCheck, MailX, Trash2 } from 'lucide-react';
+import { ArrowUpRight, MailCheck, MailX, Trash2 } from 'lucide-react';
 import { fetchOpportunities, deleteOpportunity, submitOpportunity } from './services';
 import { Enhancements, Opportunity, OpportunityStatus } from './types';
 import { OpportunitiesSVG } from '../../components/SVGcomponents';
@@ -45,7 +45,7 @@ const BookmarksKProfile = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteOpportunity(id);
-      setOpportunities(prev => prev.filter(opp => opp.id !== id));
+      setOpportunities(prev => prev.filter(opp => opp.opportunity_id !== id));
     } catch (err) {
       console.error('Failed to delete opportunity:', err);
     }
@@ -55,7 +55,7 @@ const BookmarksKProfile = () => {
     try {
       const updatedOpportunity = await submitOpportunity(id);
       setOpportunities(prev =>
-        prev.map(opp => opp.id === id ? updatedOpportunity : opp)
+        prev.map(opp => opp.opportunity_id === id ? updatedOpportunity : opp)
       );
     } catch (err) {
       console.error('Failed to submit opportunity:', err);
@@ -133,7 +133,9 @@ const BookmarksKProfile = () => {
     );
   };
 
-  const SavedOpportunities = () => {
+  const SavedOpportunities = (opportunities: Opportunity[]) => {
+    console.log(opportunities);
+
     return (
       <table className="w-full">
         <thead>
@@ -159,7 +161,7 @@ const BookmarksKProfile = () => {
             opportunities.map((opp) => {
               const competenceScore = calculateCompetenceScore(opp.enhancements ?? null);
               return (
-                <tr key={opp.id} className="hover:bg-white">
+                <tr key={opp.opportunity_id} className="hover:bg-white">
                   <td className="px-4 py-2 text-xs font-medium">
                     <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                       {Math.round(opp.enhancements?.total_match_percentage ?? 0 * 10)}%
@@ -167,9 +169,9 @@ const BookmarksKProfile = () => {
                   </td>
                   <td className="px-4 py-2 text-xs font-medium">{opp.company || "-"}</td>
                   <td className="px-4 py-2 text-xs font-medium">{opp.title || "-"}</td>
-                  <td className="px-4 py-2 text-xs font-medium">{opp.start_date || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.crit_start_date || "-"}</td>
                   <td className="px-4 py-2 text-xs font-medium">{opp.duration || "-"}</td>
-                  <td className="px-4 py-2 text-xs font-medium">{opp.location || "-"}</td>
+                  <td className="px-4 py-2 text-xs font-medium">{opp.crit_location || "-"}</td>
                   <td className="px-4 py-2 text-xs font-medium">
                     <div className="relative group mx-auto w-6 h-6">
                       <div className={`w-6 h-6 rounded-full border shadow-sm mx-auto ${getTagColorClass(opp.enhancements?.rate_match_percentage ?? 0)}`}></div>
@@ -219,7 +221,7 @@ const BookmarksKProfile = () => {
                       <button
                         className="p-0.5 text-white bg-[#297280] rounded-full hover:bg-gray-500 transition-colors"
                         title="Open user profile"
-                        onClick={() => { setSelectedID(opp.id) }}
+                        onClick={() => { setSelectedID(opp.opportunity_id) }}
                       >
                         <ArrowUpRight size={15} />
                       </button>
@@ -229,7 +231,7 @@ const BookmarksKProfile = () => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
-                          onClick={() => { handleSubmit(opp.id) }}
+                          onClick={() => { handleSubmit(opp.opportunity_id) }}
                         />
                       ) : (
                         <MailCheck
@@ -237,14 +239,14 @@ const BookmarksKProfile = () => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
-                          onClick={() => { handleSubmit(opp.id) }}
+                          onClick={() => { handleSubmit(opp.opportunity_id) }}
                         />
                       )}
                       <Trash2
                         size={20}
                         color="#297280"
                         className="cursor-pointer hover:text-[#1e5d63]"
-                        onClick={() => handleDelete(opp.id)}
+                        onClick={() => handleDelete(opp.opportunity_id)}
                       />
                     </div>
                   </td>
@@ -269,7 +271,7 @@ const BookmarksKProfile = () => {
         </h1>
       </div>
 
-      <JobOpportunities SavedOpportunities={SavedOpportunities()} />
+      <JobOpportunities SavedOpportunities={SavedOpportunities(opportunities)} />
     </div>
   );
 };
