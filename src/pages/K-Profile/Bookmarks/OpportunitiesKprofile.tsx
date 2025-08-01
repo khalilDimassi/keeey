@@ -146,6 +146,7 @@ const OpportunitiesKprofle = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 applyOpportunity(opportunity.opportunity_id);
+                loadOpportunities();
               }}
               aria-label="Applied"
               size={30}
@@ -157,6 +158,7 @@ const OpportunitiesKprofle = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 applyOpportunity(opportunity.opportunity_id);
+                loadOpportunities();
               }}
               aria-label="Apply"
               size={30}
@@ -170,6 +172,7 @@ const OpportunitiesKprofle = () => {
             onClick={(e) => {
               e.stopPropagation();
               saveOpportunity(opportunity.opportunity_id);
+              loadOpportunities();
             }}
           />
         </div>
