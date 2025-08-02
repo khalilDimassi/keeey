@@ -116,6 +116,11 @@ export interface Candidate {
     languages: Language[];
     tools: Tool[];
     qualities: Quality[];
+
+    calculatedExperience?: {
+        sum: number;
+        max: number;
+    };
 }
 
 export interface CandidateSuggestion {

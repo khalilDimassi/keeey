@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building, MailCheck, MapPin, User, Loader2, AlertCircle, StarOff, Star } from 'lucide-react';
+import { ArrowLeft, Building, MailCheck, MapPin, User, Loader2, AlertCircle, StarOff, Star, Briefcase } from 'lucide-react';
 import axios from "axios";
-import { Candidate, CandidateEnhancements } from "../types";
+import { Candidate, CandidateEnhancements, CandidateSector } from "../types";
+
+
 
 interface CandidateDetailModalProps {
     candidateId: string;
@@ -25,25 +27,45 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
         return () => clearTimeout(timer);
     }, []);
 
-    useEffect(() => {
+    useEffect(() => { loadCandidateDetails(); }, [candidateId]);
+
+    const loadCandidateDetails = async () => {
         setLoading(true);
         setError(null);
+        try {
+            const response = await axios.get<Candidate>(
+                `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/users/${candidateId}/candidate`
+            )
+            const candidate = response.data;
 
-        const loadCandidateDetails = async () => {
-            try {
-                const response = await axios.get<Candidate>(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/users/${candidateId}/candidate`
-                )
-                setCandidate(response.data);
-            } catch (err) {
-                console.error(err);
-                setError('Failed to load candidate details.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadCandidateDetails();
-    }, [candidateId]);
+            const sumExperience = calculateSumExperience(candidate.sectors);
+            const maxExperience = calculateMaxExperience(candidate.sectors);
+
+            setCandidate({
+                ...candidate,
+                calculatedExperience: {
+                    sum: sumExperience,
+                    max: maxExperience
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            setError('Failed to load candidate details.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const calculateSumExperience = (sectors: CandidateSector[]): number => {
+        if (!sectors || sectors.length === 0) return 0;
+        return sectors.reduce((total, sector) => total + sector.seniority, 0);
+    };
+
+    const calculateMaxExperience = (sectors: CandidateSector[]): number => {
+        if (!sectors || sectors.length === 0) return 0;
+        return Math.max(...sectors.map(sector => sector.seniority));
+    };
 
     const calculateCompetenceScore = (scores: CandidateEnhancements | null): number => {
         if (!scores) return 0;
@@ -155,23 +177,25 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                             <User className="h-16 w-16 text-blue-900" />
                         </div>
                         <div className="flex flex-col gap-3">
-                            <h2 className="text-xl font-semibold text-gray-900">{candidate?.occupation}</h2>
-                            <div className="flex flex-wrap items-center justify-start gap-4 text-sm text-gray-600 pl-3">
+                            <div className="flex items-center gap-2">
                                 <span className="bg-blue-200 text-blue-800 text-sm px-2 py-1 rounded font-medium animate-bounce-in">
                                     {matchings?.total_match_percentage ? matchings.total_match_percentage.toFixed(2) : "0.00"}%
                                 </span>
-                                {candidate?.organization &&
-                                    <span className="flex items-center gap-1 animate-slide-in-left">
-                                        <Building size={15} />
-                                        {candidate?.organization ? candidate?.organization : "-"}
-                                    </span>
-                                }
-                                {candidate?.location &&
-                                    <span className="flex items-center gap-1 animate-slide-in-right">
-                                        <MapPin size={15} />
-                                        {candidate?.location ? candidate?.location : "-"}
-                                    </span>
-                                }
+                                <h2 className="text-xl font-semibold text-gray-900">{candidate?.first_name} {candidate?.last_name}</h2>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-start gap-4 text-sm text-gray-600 pl-3">
+                                {candidate?.location && <span className="flex items-center gap-1 animate-slide-in-right">
+                                    <MapPin size={15} />
+                                    {candidate?.location ? candidate?.location : "-"}
+                                </span>}
+                                {candidate?.organization && <span className="flex items-center gap-1 animate-slide-in-left">
+                                    <Building size={15} />
+                                    {candidate?.organization ? candidate?.organization : "-"}
+                                </span>}
+                                {candidate?.occupation && <span className="flex items-center gap-1 animate-slide-in-left">
+                                    <Briefcase size={15} />
+                                    {candidate?.occupation ? candidate?.occupation : "-"}
+                                </span>}
                             </div>
                         </div>
                     </div>
@@ -316,16 +340,14 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                             </div>
 
                             {/* Location */}
-                            <div>
+                            {candidate?.location && <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Localisation</label>
                                 <span className="block px-2 py-1 border border-gray-300 rounded-xl bg-gray-50 text-sm text-gray-700 transition-all hover:bg-gray-100">{candidate?.location ?? "-"}</span>
-                            </div>
-                            {candidate?.remote &&
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Télétravail</label>
-                                    <span className="block px-2 py-1 border border-gray-300 rounded-xl bg-gray-50 text-sm text-gray-700 transition-all hover:bg-gray-100">{candidate?.remote ? "Oui" : "-"}</span>
-                                </div>
-                            }
+                            </div>}
+                            {candidate?.remote && <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Télétravail</label>
+                                <span className="block px-2 py-1 border border-gray-300 rounded-xl bg-gray-50 text-sm text-gray-700 transition-all hover:bg-gray-100">{candidate?.remote ? "Oui" : "-"}</span>
+                            </div>}
                         </div>
 
                         {/* Compétences Section */}
@@ -392,7 +414,9 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
                             <div className="flex flex-row gap-3 animate-slide-in-right">
                                 <span className="block text-sm font-bold text-gray-700">Années d'experience:</span>
                                 <span className="block text-sm font-medium text-gray-500">
-                                    {candidate.years_experience} {candidate.years_experience === 1 ? 'an' : 'ans'}
+                                    {candidate.years_experience && candidate.years_experience !== 0
+                                        ? `${candidate.years_experience} ${candidate.years_experience === 1 ? 'an' : 'ans'}`
+                                        : `${candidate.calculatedExperience?.sum || 0} ${(candidate.calculatedExperience?.sum || 0) === 1 ? 'an' : 'ans'}`}
                                 </span>
                             </div>
                         )}
