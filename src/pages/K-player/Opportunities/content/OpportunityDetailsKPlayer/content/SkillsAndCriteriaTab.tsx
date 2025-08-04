@@ -1,9 +1,10 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Edit, PlusCircle, Trash2 } from "lucide-react";
-import { OpportunitySectors, Sector, OpportunityCriteria, OpportunityRequirements, Job } from "../../types";
+import { Check, ChevronLeft, ChevronRight, Loader2, PenBox, PlusCircle, Trash2, X } from "lucide-react";
+import { OpportunitySectors, Sector, OpportunityCriteria, OpportunityRequirements, Job } from "../types";
+import { JobButton, JobButtonColorScheme } from "../../../../../components/JobButton";
+import { getAuthHeader } from "../../../../../../utils/jwt";
+
 import axios from "axios";
-import { getAuthHeader } from "../../../../../utils/jwt";
-import { JobButton, JobButtonColorScheme } from "../../../../K-Profile/Competence/content/SectorsAndCriteriasContent/JobButton";
 
 interface SkillsAndCriteriasProps {
   sectors: Sector[];
@@ -40,13 +41,7 @@ const DEFAULT_FORM_DATA = {
   }
 };
 
-const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
-  sectors,
-  loading,
-  error,
-  initialFormData,
-  opportunity_id
-}) => {
+const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, error, initialFormData, opportunity_id }) => {
   const [formData, setFormData] = useState({
     ...DEFAULT_FORM_DATA,
     ...(initialFormData || {})
@@ -320,7 +315,7 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
     };
 
     return (
-      <div className="w-full mx-auto grid grid-cols-2 gap-6 animate-pulse">
+      <div className="w-full bg-white rounded-b-xl rounded-r-xl shadow-lg p-6 grid grid-cols-2 gap-6">
         {/* Skills loading skeleton */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Compétences</h2>
@@ -403,11 +398,36 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
       <div className="bg-white rounded-xl p-6 hover:shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Compétences</h2>
-          <Edit
-            size={20}
-            className="text-blue-800 cursor-pointer"
-            onClick={() => setIsEditingSkills(!isEditingSkills)}
-          />
+          {isEditingSkills ? (
+            <div className="flex gap-2">
+              <X
+                cursor={_isSubmitting ? "not-allowed" : "pointer"}
+                size={24}
+                color="red"
+                onClick={() => setIsEditingSkills(false)}
+              />
+              {_isSubmitting
+                ? <Loader2
+                  className="animate-spin"
+                  size={24}
+                  color="#215A96"
+                />
+                : <Check
+                  size={24}
+                  color="#215A96"
+                  onClick={handleSaveSkills}
+                  cursor={"pointer"}
+                />
+              }
+            </div>
+          ) : (
+            <PenBox
+              cursor={"pointer"}
+              size={24}
+              color="#215A96"
+              onClick={() => setIsEditingSkills(true)}
+            />
+          )}
         </div>
 
         {isEditingSkills ? (
@@ -669,23 +689,6 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
                 </div>
               </div>
             )}
-
-            <div className="flex justify-end">
-              <button
-                type="button"
-                className="px-4 py-2 mr-2 bg-gray-200 rounded-xl"
-                onClick={() => setIsEditingSkills(false)}
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 bg-blue-700 text-white rounded-xl"
-                onClick={handleSaveSkills}
-              >
-                Enregistrer
-              </button>
-            </div>
           </div>
         ) : (
           <>
@@ -765,13 +768,37 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({
       <div className="bg-white rounded-xl p-6 hover:shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Critères & Requirements</h2>
-          <Edit
-            size={20}
-            className="text-blue-800 cursor-pointer"
-            onClick={() => setIsEditingCriterias(!isEditingCriterias)}
-          />
+          {isEditingCriterias ? (
+            <div className="flex gap-2">
+              <X
+                cursor={_isSubmitting ? "not-allowed" : "pointer"}
+                size={24}
+                color="red"
+                onClick={() => setIsEditingCriterias(false)}
+              />
+              {_isSubmitting
+                ? <Loader2
+                  className="animate-spin"
+                  size={24}
+                  color="#215A96"
+                />
+                : <Check
+                  size={24}
+                  color="#215A96"
+                  onClick={handleSaveCriterias}
+                  cursor={"pointer"}
+                />
+              }
+            </div>
+          ) : (
+            <PenBox
+              cursor={"pointer"}
+              size={24}
+              color="#215A96"
+              onClick={() => setIsEditingCriterias(true)}
+            />
+          )}
         </div>
-
         {isEditingCriterias ? (
           <div className="space-y-4">
             {/* Type de contrat */}

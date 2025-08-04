@@ -1,10 +1,10 @@
-import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "../services";
 import { useEffect, useState } from "react";
-import { CandidateSuggestion } from "../types";
-import { emitter } from "../../../../utils/eventEmitter";
+import { emitter } from "../../../../../utils/eventEmitter";
+import { CandidateSuggestion } from "./types";
+import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "./services";
 
-import CandidateDetailModal from "./CandidateDetailsModale";
-import CandidateCard from "./CandidateCard";
+import CandidateDetailModal from "./content/CandidateDetailsModale";
+import CandidateCard from "./content/CandidateCard";
 
 interface CandidatesListProps {
   apiType?: string;

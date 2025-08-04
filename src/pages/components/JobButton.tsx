@@ -1,4 +1,16 @@
-import { Job } from "../../types";
+interface Skill {
+    id: number;
+    Name?: string;
+    skill?: string;
+    seniority: number;
+}
+
+interface Job {
+    id: number;
+    Name?: string;
+    job?: string;
+    skills: Skill[];
+}
 
 // Define color scheme enums
 export enum JobButtonColorScheme {

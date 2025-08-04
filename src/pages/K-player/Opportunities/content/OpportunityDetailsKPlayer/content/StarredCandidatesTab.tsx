@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import { MatchPercentages, EnhancedCandidate } from '../../types';
 import { ArrowUpRight, MailCheck, MailX, Trash2 } from 'lucide-react';
-import { removeCandidateStar, validateCandidateInterest } from '../../services';
-import { emitter } from '../../../../../utils/eventEmitter';
+import { emitter } from '../../../../../../utils/eventEmitter';
+import { EnhancedCandidate, MatchPercentages } from '../types';
+import { removeCandidateStar, validateCandidateInterest } from '../services';
 
 interface CandidatesProps {
     candidates: EnhancedCandidate[]
@@ -14,6 +14,7 @@ interface CandidatesProps {
 
 const EnhancedCandidateComp = ({ candidates, opportunity_id, onSelectedCandidate }: CandidatesProps) => {
     const [candidatesList, setCandidatesList] = useState<EnhancedCandidate[]>(candidates);
+
     const calculateCompetenceScore = (scores: MatchPercentages | null): number => {
         if (!scores) return 0;
         return (
@@ -41,9 +42,7 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id, onSelectedCandidate
     const handleValidateInterest = async (candidateId: string, state: boolean) => {
         try {
             if (!opportunity_id) return;
-
             await validateCandidateInterest(opportunity_id, candidateId);
-
             // Update the local state
             setCandidatesList(prevList => prevList.map(candidate => {
                 if (candidate.user_id === candidateId) {
@@ -54,7 +53,6 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id, onSelectedCandidate
                             is_validated: state
                         } : {
                             is_validated: state,
-
                             total_match_percentage: 0,
                             skills_match_percentage: 0,
                             seniority_match_percentage: 0,
@@ -167,33 +165,36 @@ const EnhancedCandidateComp = ({ candidates, opportunity_id, onSelectedCandidate
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button
-                                className="p-2 text-white bg-[#215A96] rounded-full hover:bg-gray-500 transition-colors"
-                                title="Open user profile"
+                            <ArrowUpRight
+                                className='transition-colors bg-[#215A96] hover:bg-gray-500 p-1 rounded-full'
                                 onClick={() => onSelectedCandidate(candidate.user_id)}
-                            >
-                                <ArrowUpRight size={18} />
-                            </button>
-                            <button
-                                className={`px-3 py-1.5 rounded-full bg-[#215A96] flex items-center gap-1 transition-colors ${candidate.matching_scores?.is_validated
-                                    ? 'text-green-500 hover:text-red-500'
-                                    : 'text-white hover:text-green-500'
-                                    }`}
-                                title={candidate.matching_scores?.is_validated ? 'Revoke validation' : 'Validate interest'}
-                                onClick={handleClick}
-                            >
-                                {candidate.matching_scores?.is_validated ? (<MailX size={24} />) : (<MailCheck size={24} />)}
-                            </button>
-                            <button
-                                className={`p-2 bg-[#215A96] text-white rounded-full transition-colors hover:text-red-500`}
-                                title="Remove from favorites"
+                                cursor={'pointer'}
+                                color='white'
+                                size={36}
+                            />
+                            {candidate.matching_scores?.is_validated
+                                ? <MailX
+                                    className='text-green-500 hover:text-red-500 transition-colors'
+                                    cursor={"pointer"}
+                                    size={38}
+                                    onClick={handleClick}
+                                />
+                                : <MailCheck
+                                    className='text-[#215A96] hover:text-green-500 transition-colors'
+                                    cursor={"pointer"}
+                                    size={38}
+                                    onClick={handleClick}
+                                />
+                            }
+                            <Trash2
+                                className='text-[#215A96] hover:text-red-500 transition-colors'
+                                cursor={"pointer"}
+                                size={38}
                                 onClick={() => {
                                     handleDelete(opportunity_id, candidate.user_id);
                                     emitter.emit('refreshSuggestions');
                                 }}
-                            >
-                                <Trash2 size={24} />
-                            </button>
+                            />
                         </div>
                     </div>
                 );

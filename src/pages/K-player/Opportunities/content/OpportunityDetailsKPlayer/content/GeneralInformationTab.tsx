@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Check, Pencil, X } from 'lucide-react';
-import { OpportunityBasicInfo } from '../../types';
-import { updateOpportunityBasicInfo } from '../../services';
+import { Check, Loader2, PenBox, X } from 'lucide-react';
+import { OpportunityBasicInfo } from '../types';
+import { updateOpportunityBasicInfo } from '../services';
 
 interface GeneralInformationTabProps {
   formData: OpportunityBasicInfo;
@@ -98,47 +98,49 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto rounded-lg p-4 animate-pulse">
-        <div className="flex justify-end mb-4">
-          <div className="h-10 w-24 bg-gray-300 rounded-xl"></div>
-        </div>
+      <div className="w-full bg-white rounded-b-xl rounded-r-xl shadow-lg p-4">
+        <div className="max-w-7xl mx-auto rounded-lg p-4 animate-pulse">
+          <div className="flex justify-end mb-4">
+            <div className="h-10 w-24 bg-gray-300 rounded-xl"></div>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="col-span-1">
-              <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
-              <div className="h-10 bg-gray-200 rounded-xl"></div>
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="col-span-1">
+                <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-10 bg-gray-200 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {[1, 2].map((i) => (
-            <div key={i} className="col-span-1">
-              <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
-              <div className="h-10 bg-gray-200 rounded-xl"></div>
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="col-span-1">
+                <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-10 bg-gray-200 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {[1, 2].map((i) => (
-            <div key={i} className="col-span-1">
-              <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
-              <div className="h-10 bg-gray-200 rounded-xl"></div>
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="col-span-1">
+                <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-10 bg-gray-200 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
 
-        <div className="flex gap-6">
-          <div className="w-2/3 space-y-4">
-            <div>
-              <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
-              <div className="h-20 bg-gray-200 rounded-xl"></div>
-            </div>
-            <div>
-              <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
-              <div className="h-32 bg-gray-200 rounded-xl"></div>
+          <div className="flex gap-6">
+            <div className="w-2/3 space-y-4">
+              <div>
+                <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-20 bg-gray-200 rounded-xl"></div>
+              </div>
+              <div>
+                <div className="h-4 w-1/3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-32 bg-gray-200 rounded-xl"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -162,35 +164,33 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
       <div className="flex justify-end mb-4">
         {isEditing ? (
           <div className="flex gap-2">
-            <button
+            <X
+              cursor={isSubmitting ? "not-allowed" : "pointer"}
+              size={24}
+              color="red"
               onClick={handleCancel}
-              className="px-4 py-2 rounded-lg text-white bg-gray-500 hover:bg-gray-600 flex items-center gap-2"
-              style={{ borderRadius: "10px" }}
-              disabled={isSubmitting}
-            >
-              <X /> Annuler
-            </button>
-            <button
-              onClick={handleSubmit}
-              className="px-4 py-2 rounded-lg text-white flex items-center gap-2"
-              style={{ backgroundColor: "#215A96", borderRadius: "10px" }}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg> : <Check />}
-              Sauvegarder
-            </button>
+            />
+            {isSubmitting
+              ? <Loader2
+                className="animate-spin"
+                size={24}
+                color="#215A96"
+              />
+              : <Check
+                size={24}
+                color="#215A96"
+                onClick={handleSubmit}
+                cursor={"pointer"}
+              />
+            }
           </div>
         ) : (
-          <button
+          <PenBox
+            cursor={"pointer"}
+            size={24}
+            color="#215A96"
             onClick={handleSubmit}
-            className="px-4 py-2 rounded-lg text-white flex items-center gap-2"
-            style={{ backgroundColor: "#215A96", borderRadius: "10px" }}
-          >
-            <Pencil /> Modifier
-          </button>
+          />
         )}
       </div>
 
@@ -367,12 +367,11 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 placeholder="Contexte"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={3}
-              ></textarea>
+              />
             ) : (
               <div className="p-2 bg-gray-50 rounded-xl min-h-16">{localFormData.context || '-'}</div>
             )}
           </div>
-
           <div className="mb-6">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Descriptif de la mission</label>
             {isEditing ? (
@@ -384,7 +383,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 placeholder="Descriptif"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={4}
-              ></textarea>
+              />
             ) : (
               <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.description || '-'}</div>
             )}

@@ -53,7 +53,7 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
       icons: [
         { id: "dashboard", path: "/kplayer/dashboard", Icon: DashbordSVG },
         { id: "profile", path: "/kplayer/profile", Icon: ProfileCompanySVG },
-        { id: "search", path: "/kplayer/projects", Icon: Search },
+        { id: "search", path: "/kplayer/opportunities", Icon: Search },
         { id: "contacts", path: "/kplayer/contacts", Icon: Contact },
         { id: "missions", path: "/kplayer/missions", Icon: TargetSVG },
         { id: "settings", path: "/kplayer/settings", Icon: Settings },

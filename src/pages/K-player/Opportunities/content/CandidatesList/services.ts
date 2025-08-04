@@ -1,74 +1,7 @@
 // opportunityServices.ts
 import axios from 'axios';
-import { CandidateEnhancements, CandidateSuggestion, OpportunityFormData, Sector } from './types';
-import { getAuthHeader, getUserId } from '../../../utils/jwt';
-
-export const fetchSectors = async (): Promise<Sector[]> => {
-    const response = await axios.get<Sector[]>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/sectors`
-    );
-    return response.data;
-};
-
-export const fetchUserOpportunityData = async (id: string): Promise<OpportunityFormData> => {
-    const response = await axios.get<OpportunityFormData>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${id}`,
-        {
-            headers: getAuthHeader(),
-        }
-    );
-    return response.data;
-};
-
-export const fetchInitialSectorsCriterias = async (id: string | null): Promise<{ sectors: Sector[]; formData: OpportunityFormData; }> => {
-    if (!id) {
-        throw new Error('No User ID saved up. Relogin!!');
-    }
-
-    try {
-        const [sectors, formData] = await Promise.all([
-            fetchSectors(),
-            fetchUserOpportunityData(id),
-        ]);
-        return { sectors, formData };
-    } catch (error) {
-        console.error('Failed to fetch initial data:', error);
-        throw new Error('Failed to fetch initial data. Please try again later.');
-    }
-};
-
-export const saveOpportunityCriteria = async (formData: OpportunityFormData): Promise<void> => {
-    await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${getUserId()}/v2`,
-        formData,
-        {
-            headers: getAuthHeader(),
-        }
-    );
-};
-
-export const searchOpportunities = async (formData: OpportunityFormData): Promise<any> => {
-    const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/search`,
-        formData,
-        {
-            headers: getAuthHeader(),
-        }
-    );
-    return response.data;
-};
-
-export const saveAndSearchOpportunities = async (formData: OpportunityFormData): Promise<{ searchResults?: any; error?: string; }> => {
-    try {
-        await saveOpportunityCriteria(formData);
-        const searchResults = await searchOpportunities(formData);
-
-        return { searchResults };
-    } catch (error) {
-        console.error('Opportunity operation failed:', error);
-        return { error: 'Failed to save/search. Please try again.' };
-    }
-};
+import { CandidateEnhancements, CandidateSuggestion } from './types';
+import { getAuthHeader, getUserId } from '../../../../../utils/jwt';
 
 export const fetchCandidateSuggestions = async (): Promise<CandidateSuggestion[]> => {
     const response = await axios.get<CandidateSuggestion[]>(

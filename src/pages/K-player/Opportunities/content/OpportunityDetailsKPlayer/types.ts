@@ -1,28 +1,3 @@
-import { MinimalSector } from "../Competence/types";
-
-export interface KProfile {
-    first_name: string;
-    last_name: string;
-    user_id: string;
-}
-
-export interface Opportunity {
-    id: number;
-    opportunity_id: number;
-    title: string;
-    reference: string;
-    start_at: string;
-    status: string;
-    opportunity_role: string;
-
-    first_name: string;
-    last_name: string;
-    user_id: string;
-    kprofiles: KProfile[];
-    date: string;
-    participants: string[];
-}
-
 export interface Skill {
     id: number;
     Name: string;
@@ -67,12 +42,6 @@ export interface StarredCandidates {
     matching_scores: MatchPercentages;
 }
 
-export interface EnhancedCandidate extends CandidateSuggestion {
-    occupation?: string;
-    status?: string;
-    matching_scores?: MatchPercentages;
-}
-
 export interface MatchPercentages {
     status?: string;
     is_applied?: boolean;
@@ -93,6 +62,13 @@ export interface MatchPercentages {
     qualities_match_percentage: number;
 }
 
+export interface EnhancedCandidate extends CandidateSuggestion {
+    occupation?: string;
+    status?: string;
+    matching_scores?: MatchPercentages;
+}
+
+
 export interface OpportunityBasicInfo {
     title: string;
     announce_at: string;
@@ -110,6 +86,16 @@ export interface OpportunityBasicInfo {
     reference?: string,
     satisfaction?: number,
 }
+
+export interface MinimalSector {
+    id: number;
+    seniority: number;
+    jobs: {
+        id: number;
+        skills: number[];
+    }[];
+}
+
 
 export interface OpportunitySectors {
     selected_sectors: MinimalSector[];
@@ -140,3 +126,4 @@ export interface OpportunityFormData extends
     OpportunitySectors,
     OpportunityCriteria,
     OpportunityRequirements { }
+

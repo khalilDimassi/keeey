@@ -1,23 +1,37 @@
-import { useState, useEffect } from 'react';
-import { ArrowLeft, Star } from 'lucide-react';
-import { EnhancedCandidate, OpportunityFormData, Sector } from '../types';
-import { fetchCandidatesWithMatchData, fetchSectors } from '../services';
-import { getAuthHeader } from '../../../../utils/jwt';
+import { useEffect, useState } from "react";
+import { ArrowLeft, Star } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getAuthHeader } from "../../../../../utils/jwt";
+import { fetchCandidatesWithMatchData, fetchSectors } from "./services";
+import { OpportunityFormData, EnhancedCandidate, Sector } from "./types";
 
-import axios from 'axios';
-import GeneralInformationTab from './content/GeneralInformationTab';
-import SkillsAndCriterias from './content/SkillsAndCriteriaTab';
-import StarredCandidatesComp from './content/StarredCandidatesTab';
-import Diffusion from './content/DiffusionConfigTab';
-import CandidatesList from '../../Competence/content/CandidatesList';
+import axios from "axios";
+import Diffusion from "./content/DiffusionConfigTab";
+import GeneralInformationTab from "./content/GeneralInformationTab";
+import SkillsAndCriterias from "./content/SkillsAndCriteriaTab";
+import StarredCandidatesComp from "./content/StarredCandidatesTab";
+import CandidatesList from "../CandidatesList/CandidatesList";
 
-interface ProjectDetailsProps {
-  opportunity_id: string;
-  onBack: () => void;
-}
+type TabType = "Informations" | "Compétences_Critères" | "Candidates" | "Diffusion";
 
-const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
-  const [activeTab, setActiveTab] = useState("Informations");
+const TabButton = ({ tab, activeTab, onClick, children, icon }: { tab: TabType; activeTab: TabType; onClick: (tab: TabType) => void; children: React.ReactNode; icon?: React.ReactNode; }) => {
+  const isActive = activeTab === tab;
+  return (
+    <button
+      className={`px-6 py-2 flex items-center gap-2 font-medium transition-all relative ${isActive
+        ? "text-gray-900 bg-white rounded-t-xl z-10"
+        : "text-gray-400 bg-gray-100/50"
+        }`}
+      onClick={() => onClick(tab)}
+    >
+      {children}
+      {icon}
+    </button>
+  );
+};
+
+const OpportunityDetailsKPlayer = () => {
+  const [activeTab, setActiveTab] = useState<TabType>("Informations");
   const [candidatesTab, setCandidatesTab] = useState<"submitted" | "all">("all");
   const [opportunityDetails, setProjectDetails] = useState<OpportunityFormData | null>(null);
   const [starredCandidates, setStarredCandidates] = useState<EnhancedCandidate[]>([]);
@@ -25,6 +39,9 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+  let params = useParams<{ id: string }>();
 
   const mapApiResponseToFormData = (apiData: any): OpportunityFormData => {
     return {
@@ -118,17 +135,16 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
 
   useEffect(() => {
     loadSectors();
-    loadProjectDetails(opportunity_id);
-    loadStarredCandidates(opportunity_id);
-  }, [opportunity_id]);
-
-  const handleCloseModal = () => setSelectedCandidateId(null);
+    loadProjectDetails(params.id || "");
+    loadStarredCandidates(params.id || "");
+  }, [params.id]);
 
   return (
-    <div className="p-4 w-full mx-auto">
+    <main className="p-4 w-full mx-auto">
+      {/* header */}
       <div className="flex justify-start gap-3 items-end h-8 mb-4">
         <ArrowLeft
-          onClick={onBack}
+          onClick={() => navigate("/kplayer/opportunities")}
           className="mb-1 text-gray-600"
           cursor={"pointer"}
           size={20}
@@ -138,67 +154,16 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
       </div>
 
       <div className="flex relative">
-        <button
-          style={{
-            boxShadow: activeTab === "Informations"
-              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
-              : "none"
-          }}
-          className={`px-6 py-2 flex gap-2 font-medium transition-all relative ${activeTab === "Informations"
-            ? "text-gray-900 bg-white rounded-t-xl z-10"
-            : "text-gray-400 bg-gray-100/50"
-            }`}
-          onClick={() => setActiveTab("Informations")}
-        >
-          Informations Générales
-        </button>
-        <button
-          style={{
-            boxShadow: activeTab === "Compétences_Critères"
-              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #282c2824"
-              : "none"
-          }}
-          className={`px-6 flex gap-2 py-2 font-medium transition-all relative ${activeTab === "Compétences_Critères"
-            ? "text-gray-900 bg-white rounded-t-xl z-10"
-            : "text-gray-400 bg-gray-100/50"
-            }`}
-          onClick={() => setActiveTab("Compétences_Critères")}
-        >
-          Compétences & Critères
-        </button>
-        <button
-          style={{
-            boxShadow: activeTab === "Candidates"
-              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
-              : "none"
-          }}
-          className={`px-6 py-2 flex items-center justify-center gap-2 font-medium transition-all relative ${activeTab === "Candidates"
-            ? "text-gray-900 bg-white rounded-t-xl z-10"
-            : "text-gray-400 bg-gray-100/50"
-            }`}
-          onClick={() => setActiveTab("Candidates")}
-        >
-          Candidats <Star fill="white" size={18} className=' p-1 text-white bg-black rounded-full' />
-        </button>
-        <button
-          style={{
-            boxShadow: activeTab === "Diffusion"
-              ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
-              : "none"
-          }}
-          className={`px-6 py-3 flex gap-2 font-medium transition-all relative ${activeTab === "Diffusion"
-            ? "text-gray-900 bg-white rounded-t-xl z-10"
-            : "text-gray-400 bg-gray-100/50"
-            }`}
-          onClick={() => setActiveTab("Diffusion")}
-        >
-          Diffusion
-        </button>
+        <TabButton tab="Informations" activeTab={activeTab} onClick={setActiveTab} > Informations Générales </TabButton>
+        <TabButton tab="Compétences_Critères" activeTab={activeTab} onClick={setActiveTab} > Compétences & Critères </TabButton>
+        <TabButton tab="Candidates" activeTab={activeTab} onClick={setActiveTab} icon={<Star fill="white" size={18} className='p-1 text-white bg-black rounded-full' />}> Candidats </TabButton>
+        <TabButton tab="Diffusion" activeTab={activeTab} onClick={setActiveTab} >Diffusion</TabButton>
       </div>
 
-      <>
+      {/* tabs content */}
+      <div className="min-h-[55svh]">
         {activeTab === "Informations" && (<GeneralInformationTab
-          opportunity_id={opportunity_id}
+          opportunity_id={params.id || ""}
           formData={{
             title: opportunityDetails?.title ?? "",
             status: opportunityDetails?.status ?? "",
@@ -219,7 +184,7 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
           error={error}
         />)}
         {activeTab === "Compétences_Critères" && <SkillsAndCriterias
-          opportunity_id={opportunity_id}
+          opportunity_id={params.id || ""}
           sectors={sectors}
           loading={loading}
           error={error}
@@ -247,17 +212,18 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
           }}
         />}
         {activeTab === "Candidates" && <StarredCandidatesComp
-          opportunity_id={opportunity_id}
+          opportunity_id={params.id || ""}
           candidates={starredCandidates}
           loading={loading}
           error={error}
           onSelectedCandidate={setSelectedCandidateId}
         />}
         {activeTab === "Diffusion" && <Diffusion
-          opportunity_id={opportunity_id}
+          opportunity_id={params.id || ""}
         />}
-      </>
+      </div>
 
+      {/* candidates list */}
       <div className="mt-6">
         <div className="flex mb-4 border-b border-gray-200">
           <button
@@ -280,13 +246,13 @@ const ProjectDetails = ({ opportunity_id, onBack }: ProjectDetailsProps) => {
 
         <CandidatesList
           apiType={candidatesTab === "submitted" ? 'SUBMITTED' : 'ALL'}
-          opportunityId={opportunity_id}
+          opportunityId={params.id || ""}
           selectedCandidateId={selectedCandidateId ?? ""}
-          onClodeModal={handleCloseModal}
+          onClodeModal={() => setSelectedCandidateId(null)}
         />
       </div>
-    </div>
-  );
-}
+    </main>
+  )
+};
 
-export default ProjectDetails;
+export default OpportunityDetailsKPlayer
