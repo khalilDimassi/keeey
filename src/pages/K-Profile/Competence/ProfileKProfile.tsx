@@ -17,21 +17,12 @@ const ProfileKProfile = () => {
     { id: "CV_compéténces", label: "CV / Dossier de compétences" },
   ];
 
-  const TabButton = ({ active, onClick, children }: { active: boolean, onClick: () => void, children: React.ReactNode }) => (
+  const TabButton = ({ active, onClick, children }: { active: string, onClick: () => void, children: React.ReactNode }) => (
     <button
-      className={`px-4 py-2 flex gap-2 font-medium transition-all relative ${active ? "text-gray-900 bg-white rounded-t-xl z-10" : ""
+      className={`px-6 py-3 font-medium text-sm rounded-tl-xl rounded-tr-xl relative ${active !== "Informations" ? "-ml-1" : ""} ${active === activeTab
+        ? 'text-black bg-white shadow-[0_0_8px_0_rgba(0,0,0,0.1)] z-10'
+        : 'text-gray-700 bg-slate-100 hover:bg-gray-300'
         }`}
-      style={{
-        boxShadow: active
-          ? "0 -4px 4px -2px #6166611c, 4px 0 4px -2px #61666100, -4px 0 4px -2px #676d6724"
-          : "none",
-        fontWeight: 500,
-        fontSize: '20px',
-        lineHeight: '1.5',
-        letterSpacing: '0.00938em',
-        textAlign: 'center',
-        verticalAlign: 'middle'
-      }}
       onClick={onClick}
     >
       {children}
@@ -52,11 +43,11 @@ const ProfileKProfile = () => {
 
       {isOnline ? (
         <>
-          <div className="flex gap-2 relative">
+          <div className="flex relative w-full">
             {tabs.map((tab) => (
               <TabButton
                 key={tab.id}
-                active={activeTab === tab.id}
+                active={tab.id}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}

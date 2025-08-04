@@ -171,7 +171,7 @@ function ResumeTab() {
   };
 
   return (
-    <div className="w-full bg-white rounded-xl p-6 shadow-md min-h-[75vh]">
+    <div className="w-full bg-white rounded-b-xl p-6 shadow-md min-h-[75vh]">
       <div className="flex gap-8">
         {/* Left Column - Navigation */}
         <div className="w-1/5">

@@ -159,7 +159,7 @@ const SectorsAndCriteriasTab = () => {
 
 
   return (
-    <div className="w-full flex flex-wrap bg-white rounded-xl p-6 shadow-md">
+    <div className="w-full flex flex-wrap bg-white rounded-b-xl p-6 shadow-md">
       <div className="w-full md:w-1/2 px-4 mb-8">
         <Competences
           sectors={state.sectors}

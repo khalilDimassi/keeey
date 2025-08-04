@@ -198,7 +198,10 @@ const OpportunitiesKprofle = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab as OpportunityTabs)}
-              className={`px-6 py-4 font-medium transition-all relative flex items-center gap-2 ${activeTab === tab ? "text-gray-900 bg-white rounded-t-xl z-10" : ""}`}
+              className={`flex items-center gap-2 px-6 py-3 font-medium text-sm rounded-tl-xl rounded-tr-xl relative ${activeTab !== "ALL" ? "-ml-1" : ""} ${activeTab === tab
+                ? 'text-black bg-white shadow-[0_0_8px_0_rgba(0,0,0,0.1)] z-10'
+                : 'text-gray-700 bg-slate-100 hover:bg-gray-300'
+                }`}
             >
               {tab === "ALL" && <List size={20} />}
               {tab === "CONTACTS" && <Contact size={20} />}
