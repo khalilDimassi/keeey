@@ -216,8 +216,8 @@ const OpportunitiesKprofle = () => {
         </div>
         <div className="flex gap-1">
           <div className="flex items-center">
-            <label htmlFor="matchThreshold" className="text-sm font-medium text-gray-700 mr-3 whitespace-nowrap">
-              Compatibilité: <span className="font-semibold ml-2 text-teal-600">{threshold}%</span>
+            <label htmlFor="matchThreshold" className="text-sm font-medium text-gray-700 mr-3 flex gap-2 whitespace-nowrap">
+              Compatibilité: <span className="font-semibold text-teal-600 min-w-[35px] text-right">{threshold}%</span>
             </label>
             <button
               onClick={() => setThreshold(t => Math.max(0, t - 1))}
@@ -266,14 +266,7 @@ const OpportunitiesKprofle = () => {
       {/* Content */}
       <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
         {!loading && !loadingError && <RenderOpportunityList opportunities={opportunities} activeTab={activeTab} select={(id: number) => { setSelectedOpportunity(id); setIsVisible(true); }} />}
-        {!loading && loadingError && (
-          <>
-            <ErrorSkeleton />;
-            <div className="text-center py-4 text-red-500 font-medium">
-              <p>{loadingError}</p>
-            </div>
-          </>
-        )}
+        {!loading && loadingError && (<><ErrorSkeleton />;<div className="text-center py-4 text-red-500 font-medium"><p>{loadingError}</p></div></>)}
         {loading && <LoadingSkeleton count={1} />}
       </main>
       {selectedOpportunity !== 0 && <OpportunityDetailModal opportunityID={selectedOpportunity} enchantments={opportunities.find(o => o.opportunity_id === selectedOpportunity)!.enhancements!} isVisible={isVisible} handleCloseModal={() => setSelectedOpportunity(0)} onSubmit={() => applyOpportunity(selectedOpportunity)} onSave={() => saveOpportunity(selectedOpportunity)} />}

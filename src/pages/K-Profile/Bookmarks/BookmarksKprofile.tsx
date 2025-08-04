@@ -1,10 +1,9 @@
 import { ArrowUpRight, MailCheck, MailX, Trash2 } from 'lucide-react';
-import { fetchOpportunities, deleteOpportunity, submitOpportunity } from './services';
-import { Enhancements, Opportunity, OpportunityStatus } from './types';
+import { Enhancements, Opportunity, OpportunityBase, OpportunityStatus } from './types';
 import { OpportunitiesSVG } from '../../components/SVGcomponents';
 import { useState, useEffect } from 'react';
+import { applyOpportunity, fetchOpportunities, saveOpportunity } from './services';
 
-import JobOpportunities from './JobOpportunities';
 
 const statusLabels: Record<OpportunityStatus, string> = {
   OPEN: 'Ouvert',
@@ -17,7 +16,7 @@ const statusLabels: Record<OpportunityStatus, string> = {
 };
 
 const BookmarksKProfile = () => {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [opportunities, setOpportunities] = useState<OpportunityBase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [_selectedID, setSelectedID] = useState<number | null>(null);
@@ -42,23 +41,21 @@ const BookmarksKProfile = () => {
     loadData();
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleUnbookmark = async (id: number) => {
     try {
-      await deleteOpportunity(id);
+      await saveOpportunity(id);
       setOpportunities(prev => prev.filter(opp => opp.opportunity_id !== id));
     } catch (err) {
-      console.error('Failed to delete opportunity:', err);
+      console.error('Failed to unbookmark opportunity:', err);
     }
   };
 
-  const handleSubmit = async (id: number) => {
+  const handleApply = async (id: number) => {
     try {
-      const updatedOpportunity = await submitOpportunity(id);
-      setOpportunities(prev =>
-        prev.map(opp => opp.opportunity_id === id ? updatedOpportunity : opp)
-      );
+      await applyOpportunity(id);
+      setOpportunities(prev => prev.filter(opp => opp.opportunity_id !== id));
     } catch (err) {
-      console.error('Failed to submit opportunity:', err);
+      console.error('Failed to apply to opportunity:', err);
     }
   };
 
@@ -231,7 +228,7 @@ const BookmarksKProfile = () => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
-                          onClick={() => { handleSubmit(opp.opportunity_id) }}
+                          onClick={() => { handleApply(opp.opportunity_id) }}
                         />
                       ) : (
                         <MailCheck
@@ -239,14 +236,14 @@ const BookmarksKProfile = () => {
                           cursor={"pointer"}
                           size={20}
                           strokeWidth={2.5}
-                          onClick={() => { handleSubmit(opp.opportunity_id) }}
+                          onClick={() => { handleApply(opp.opportunity_id) }}
                         />
                       )}
                       <Trash2
                         size={20}
                         color="#297280"
                         className="cursor-pointer hover:text-[#1e5d63]"
-                        onClick={() => handleDelete(opp.opportunity_id)}
+                        onClick={() => handleUnbookmark(opp.opportunity_id)}
                       />
                     </div>
                   </td>
@@ -271,7 +268,8 @@ const BookmarksKProfile = () => {
         </h1>
       </div>
 
-      <JobOpportunities SavedOpportunities={SavedOpportunities(opportunities)} />
+      {/* <JobOpportunities SavedOpportunities={SavedOpportunities(opportunities)} /> */}
+
     </div>
   );
 };

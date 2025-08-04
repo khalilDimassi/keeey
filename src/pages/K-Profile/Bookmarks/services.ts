@@ -56,7 +56,7 @@ export const fetchOpportunityDetails = async (opportunity_id: number): Promise<O
 
 export const saveOpportunity = async (opportunity_id: number) => {
     try {
-        await axios.post<Opportunity>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/submit?state=save`, null,
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/submit?state=save`, null,
             {
                 headers: { ...getAuthHeader() },
             });
@@ -68,11 +68,11 @@ export const saveOpportunity = async (opportunity_id: number) => {
 
 export const applyOpportunity = async (opportunity_id: number) => {
     try {
-        await axios.post<Opportunity>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/submit?state=apply`, null, {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/submit?state=apply`, null, {
             headers: { ...getAuthHeader() },
         });
     } catch (error) {
         console.error('Error applying opportunity:', error);
         throw error;
     }
-};
+}; 

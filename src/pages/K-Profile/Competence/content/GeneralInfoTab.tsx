@@ -205,7 +205,7 @@ const GeneralInfoTab = () => {
   }
 
   return (
-    <div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-xl p-6 pt-14 shadow-md">
+    <div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-b-xl p-6 pt-14 shadow-md">
       <div className="absolute top-3 right-3 items-center m-2">
         {isEditing ? (
           <div className='flex gap-3'>
