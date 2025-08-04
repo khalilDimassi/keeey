@@ -11,8 +11,7 @@ export type OpportunityTabs =
     | "ALL"
     | "CONTACTS"
     | "CLIENTS"
-    | "SAVED"
-    | "APPLIED";
+    | "INTERACTED";
 
 // Base match percentage interface to avoid repetition
 export interface BaseMatchPercentages {

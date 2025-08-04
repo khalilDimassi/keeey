@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { OpportunitiesSVG } from "../../components/SVGcomponents";
 import { OpportunityBase, OpportunityTabs } from "./types";
-import { List, Contact, Building2, Bookmark, Send, ChevronLeft, ChevronRight, MailCheck, MailX } from "lucide-react";
+import { List, Contact, Building2, Bookmark, ChevronLeft, ChevronRight, MailCheck, MailX } from "lucide-react";
 import { ContractType } from "./hooks";
 import { applyOpportunity, fetchOpportunities, saveOpportunity } from "./services";
 import OpportunityDetailModal from "./content/OpportunityDetailModal";
 import { EmptySkeleton, ErrorSkeleton, LoadingSkeleton } from "./content/OpportunitySkeleton";
 
 const OpportunitiesKprofle = () => {
-  const tabs = ["ALL", "CONTACTS", "CLIENTS", "SAVED", "APPLIED"];
+  const tabs = ["ALL", "CONTACTS", "CLIENTS", "INTERACTED"];
   const [activeTab, setActiveTab] = useState<OpportunityTabs>("ALL");
   const [threshold, setThreshold] = useState(0);
   const [contractType, setContractType] = useState<ContractType>("ALL");
@@ -78,11 +78,11 @@ const OpportunitiesKprofle = () => {
         case "CLIENTS":
           filtered = filtered.filter(o => o.client_id !== "" && o.client_id !== undefined);
           break;
-        case "SAVED":
-          filtered = filtered.filter(o => o.enhancements?.is_saved);
+        case "INTERACTED":
+          filtered = filtered.filter(o => o.enhancements?.is_saved || o.enhancements?.is_applied);
+          filtered = filtered.sort((a, _) => (a.enhancements?.is_applied ? -1 : 1));
           break;
-        case "APPLIED":
-          filtered = filtered.filter(o => o.enhancements?.is_applied);
+        default:
           break;
       }
 
@@ -198,19 +198,17 @@ const OpportunitiesKprofle = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab as OpportunityTabs)}
-              className={`px-4 py-2 font-medium transition-all relative flex items-center gap-2 ${activeTab === tab ? "text-gray-900 bg-white rounded-t-xl z-10" : ""}`}
+              className={`px-6 py-4 font-medium transition-all relative flex items-center gap-2 ${activeTab === tab ? "text-gray-900 bg-white rounded-t-xl z-10" : ""}`}
             >
               {tab === "ALL" && <List size={20} />}
               {tab === "CONTACTS" && <Contact size={20} />}
               {tab === "CLIENTS" && <Building2 size={20} />}
-              {tab === "SAVED" && <Bookmark size={20} />}
-              {tab === "APPLIED" && <Send size={20} />}
+              {tab === "INTERACTED" && <Bookmark size={20} />}
 
-              {tab === "ALL" && "Tous" ||
-                tab === "CONTACTS" && "Mes Contacts" ||
-                tab === "CLIENTS" && "Clients interessés" ||
-                tab === "SAVED" && "Enregistrées" ||
-                tab === "APPLIED" && "Appliquées"}
+              {tab === "ALL" && "Toutes" ||
+                tab === "CONTACTS" && "de mes contacts" ||
+                tab === "CLIENTS" && "de clients intéressés" ||
+                tab === "INTERACTED" && "Sauvegardes & Candidatures"}
             </button>
           ))}
         </div>
