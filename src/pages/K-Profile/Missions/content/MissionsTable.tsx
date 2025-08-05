@@ -21,12 +21,12 @@ const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missi
               <td className="p-3">Fin</td>
               <td className="p-3">TJM</td>
               <td className="p-3">Satisfaction (Note)</td>
-              <td className="p-3">Actions</td>
+              <td className="p-3"></td>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-200">
             {missions.map((mission) => (
-              <tr key={mission.id} className="border-b hover:bg-gray-50">
+              <tr key={mission.id} className="hover:bg-gray-50">
                 <td className="p-3">
                   <span className={`px-4 py-1 text-xs font-bold rounded-full ${mission.status === "ONGOING" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                     {mission.status === "ONGOING" ? "En cours" : "Terminée"}

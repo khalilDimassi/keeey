@@ -1,4 +1,11 @@
 export type OpportunityStatus =
+    | 'SAVED'
+    | 'CLIENT_INTERESTED'
+    | 'APPLICATION_SENT'
+    | 'VIEWED_BY_CLIENT'
+    | 'IN_REVIEW'
+    | 'INTERVIEW_PENDING'
+
     | "OPEN"
     | "PENDING"
     | "ACCEPTED"
