@@ -225,7 +225,7 @@ const OpportunitiesKprofle = () => {
         <div
           className="bg-slate-50 mb-3 p-4 rounded-xl hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
           key={index}
-          onClick={() => select(opportunity.opportunity_id)}
+          onClick={() => onSelect(opportunity.opportunity_id)}
         >
           {/* Avatar */}
           <div
