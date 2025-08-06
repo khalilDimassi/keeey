@@ -1,47 +1,111 @@
-import { PenBox, Plus, Trash2, User, UserRound } from "lucide-react";
-import { AddOrgMember, FetchOrgMembers } from "../services";
-import { useEffect, useState } from "react";
-import { OrgMember, Role } from "../types";
+import { ChevronsUpDown, ChevronUp, ChevronDown, Plus, UserRound, User, PenBox, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FetchOrgMembers, AddOrgMember } from "../services";
+import { Role, OrgMember } from "../types";
+import MemberForm from "./MemberForm";
 
 const UsersCard = ({ role }: { role: Role }) => {
   const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [formTouched, setFormTouched] = useState(false);
+  const [editingMember, setEditingMember] = useState<OrgMember | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof OrgMember | 'name' | 'email_status';
+    direction: 'asc' | 'desc';
+  } | null>(null);
 
-  useEffect(() => {
-    const fetchOrgMembers = async () => {
-      setLoading(true);
-      setError(null);
-      let data: OrgMember[] = [];
-      try {
-        data = await FetchOrgMembers();
-        if (data) {
-          setOrgMembers(data);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
+  const fetchOrgMembers = async () => {
+    setLoading(true);
+    setError(null);
+    let data: OrgMember[] = [];
+    try {
+      data = await FetchOrgMembers();
+      if (data) {
+        setOrgMembers(data);
       }
-    }
-
-    fetchOrgMembers();
-  }, [setLoading, setError, setOrgMembers]);
-
-  const closeForm = () => {
-    if (!formTouched) {
-      setShowForm(false);
-    } else {
-      if (confirm("Des modifications seront perdues. Fermer le formulaire ?")) {
-        setShowForm(false);
-        setFormTouched(false);
-      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchOrgMembers();
+  }, []);
 
+  const handleUpdateMember = async (memberData: Omit<OrgMember, 'ID'>) => {
+    // TODO: to be implimented
+    console.log("Updating member:", editingMember?.first_name, memberData);
+    fetchOrgMembers();
+    setEditingMember(null);
+  };
+
+  const handleDeleteMember = async () => {
+    // TODO: to be implimented
+    console.log("Deleting member:", editingMember?.first_name);
+    fetchOrgMembers();
+    setEditingMember(null);
+  };
+
+  const requestSort = (key: keyof OrgMember | 'name' | 'email_status') => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedMembers = () => {
+    if (!sortConfig) return orgMembers;
+
+    return [...orgMembers].sort((a, b) => {
+      // Handle name sorting (combine first and last name)
+      if (sortConfig.key === 'name') {
+        const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+        const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+        if (nameA < nameB) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (nameA > nameB) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      }
+
+      // Handle email verification status
+      if (sortConfig.key === 'email_status') {
+        if (a.email_verified === b.email_verified) return 0;
+        if (sortConfig.direction === 'asc') {
+          return a.email_verified ? 1 : -1;
+        } else {
+          return a.email_verified ? -1 : 1;
+        }
+      }
+
+      // Handle other fields
+      const aValue = a[sortConfig.key as keyof OrgMember];
+      const bValue = b[sortConfig.key as keyof OrgMember];
+
+      if (aValue === bValue) return 0;
+      if (aValue === null || aValue === '') return sortConfig.direction === 'asc' ? 1 : -1;
+      if (bValue === null || bValue === '') return sortConfig.direction === 'asc' ? -1 : 1;
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const sortedMembers = getSortedMembers();
+
+  const getSortIcon = (key: keyof OrgMember | 'name' | 'email_status') => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ChevronsUpDown size={16} className="inline ml-1 opacity-30" />;
+    }
+    return sortConfig.direction === 'asc' ? (
+      <ChevronUp size={16} className="inline ml-1" />
+    ) : (
+      <ChevronDown size={16} className="inline ml-1" />
+    );
+  };
 
   return (
     <>
@@ -56,21 +120,53 @@ const UsersCard = ({ role }: { role: Role }) => {
           </button>
         )}
       </div>
-      <table className="w-full mt-2 border-collapse">
+      <table className="w-full mt-2">
         <thead>
           <tr className="border-b">
             <th className="p-2"></th>
-            <th className="text-left p-2">Nom et prénom</th>
-            <th className="text-left p-2">Email</th>
-            <th className="text-left p-2">Téléphone</th>
-            <th className="text-left p-2">Rôle</th>
+            <th className="text-left p-2">
+              <button
+                onClick={() => requestSort('name')}
+                className="flex items-center hover:text-[#215A96]"
+              >
+                Nom et prénom
+                {getSortIcon('name')}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                onClick={() => requestSort('email_status')}
+                className="flex items-center hover:text-[#215A96]"
+              >
+                Email
+                {getSortIcon('email_status')}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                onClick={() => requestSort('phone')}
+                className="flex items-center hover:text-[#215A96]"
+              >
+                Téléphone
+                {getSortIcon('phone')}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                onClick={() => requestSort('occupation')}
+                className="flex items-center hover:text-[#215A96]"
+              >
+                Rôle
+                {getSortIcon('occupation')}
+              </button>
+            </th>
             {role === "ADMIN" && <th className="text-left p-2"></th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
           {loading && (
             Array.from({ length: 5 }).map((_, index) => (
-              <tr key={`loading-${index}`} className="border-b">
+              <tr key={`loading-${index}`}>
                 <td className="p-2">
                   <div className="w-11 h-11 rounded-full bg-gray-300 animate-pulse mx-auto"></div>
                 </td>
@@ -119,7 +215,7 @@ const UsersCard = ({ role }: { role: Role }) => {
           )}
 
           {!loading && !error && (orgMembers ? (orgMembers.length ?? 0) > 0 : false) && (
-            orgMembers.map(member => (
+            sortedMembers.map(member => (
               <tr key={member.ID} className="border-b">
                 <td className="p-2">
                   <div
@@ -160,12 +256,24 @@ const UsersCard = ({ role }: { role: Role }) => {
                 {role === "ADMIN" &&
                   <td className="p-2">
                     <div className="flex gap-2">
-                      <PenBox size={24} className="transition-colors duration-100 hover:text-blue-700 cursor-pointer" onClick={() => {
-
-                      }} />
-                      <Trash2 size={24} className="transition-colors duration-100 hover:text-red-700 cursor-pointer" onClick={() => {
-
-                      }} />
+                      <PenBox
+                        size={24}
+                        className="transition-colors duration-100 text-[#215A96] hover:text-blue-900 hover:scale-110 cursor-pointer"
+                        onClick={() => {
+                          setEditingMember(member);
+                          setShowForm(true);
+                        }}
+                      />
+                      <Trash2
+                        size={24}
+                        className="transition-colors duration-100 text-[#215A96] hover:text-red-700 hover:scale-110 cursor-pointer"
+                        onClick={() => {
+                          if (confirm(`Êtes-vous sûr de vouloir supprimer ${member.first_name} ${member.last_name} ?`)) {
+                            console.log("Delete member:", member.ID);
+                            fetchOrgMembers();
+                          }
+                        }}
+                      />
                     </div>
                   </td>
                 }
@@ -176,106 +284,16 @@ const UsersCard = ({ role }: { role: Role }) => {
       </table>
 
       {showForm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in"
-          onClick={closeForm}
-        >
-          <div
-            className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl animate-slide-in-up relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4 border-b-2 border-[#215A96] pb-2">
-              <h2 className="text-lg font-semibold text-gray-700">Ajouter un utilisateur</h2>
-              <button onClick={closeForm} className="text-gray-500 hover:text-red-700">
-                <Trash2 size={20} />
-              </button>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                AddOrgMember({
-                  first_name: form.first_name.value,
-                  last_name: form.last_name.value,
-                  email: form.email.value,
-                  phone: form.phone.value,
-                  gender: form.gender.value,
-                  occupation: form.occupation.value,
-                })
-
-                setShowForm(false);
-                setFormTouched(false);
-              }}
-              className="space-y-4"
-            >
-              {/* Gender */}
-              <div className="flex items-center gap-6 pl-0.5">
-                <label className="flex items-center gap-1">
-                  <input type="radio" name="gender" value="male" onChange={() => setFormTouched(true)} />
-                  <span className="text-sm">M.</span>
-                </label>
-                <label className="flex items-center gap-1">
-                  <input type="radio" name="gender" value="female" onChange={() => setFormTouched(true)} />
-                  <span className="text-sm">Mme</span>
-                </label>
-              </div>
-
-              {/* Names */}
-              <div className="flex gap-4">
-                <input
-                  type="text"
-                  placeholder="Nom"
-                  name="last_name"
-                  className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                  onChange={() => setFormTouched(true)}
-                />
-                <input
-                  type="text"
-                  placeholder="Prénom"
-                  name="first_name"
-                  className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                  onChange={() => setFormTouched(true)}
-                />
-              </div>
-
-              {/* Occupation */}
-              <input
-                type="text"
-                placeholder="Fonction"
-                name="occupation"
-                className="w-full border rounded-xl px-3 py-2 text-sm"
-                onChange={() => setFormTouched(true)}
-              />
-
-              {/* Email & Phone */}
-              <div className="flex gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                  onChange={() => setFormTouched(true)}
-                />
-                <input
-                  type="tel"
-                  placeholder="Téléphone (optionnel)"
-                  name="phone"
-                  className="w-1/2 border rounded-xl px-3 py-2 text-sm"
-                  onChange={() => setFormTouched(true)}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="bg-[#215A96] flex items-center text-white mr-auto px-4 py-1 rounded-full h-fit hover:bg-blue-900 transition-all duration-200"
-              >
-                <Plus className="w-3 h-3 mr-1" /> Ajouter
-              </button>
-            </form>
-          </div>
-        </div>
+        <MemberForm
+          mode={editingMember ? 'edit' : 'add'}
+          member={editingMember || undefined}
+          onClose={() => {
+            setShowForm(false);
+            setEditingMember(null);
+          }}
+          onSubmit={editingMember ? handleUpdateMember : AddOrgMember}
+          onDelete={editingMember ? handleDeleteMember : undefined}
+        />
       )}
     </>
   );
