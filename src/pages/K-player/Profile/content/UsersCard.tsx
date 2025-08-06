@@ -10,10 +10,7 @@ const UsersCard = ({ role }: { role: Role }) => {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingMember, setEditingMember] = useState<OrgMember | null>(null);
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof OrgMember | 'name' | 'email_status';
-    direction: 'asc' | 'desc';
-  } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof OrgMember | 'name' | 'email_status'; direction: 'asc' | 'desc'; } | null>(null);
 
   const fetchOrgMembers = async () => {
     setLoading(true);
