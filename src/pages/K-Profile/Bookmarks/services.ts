@@ -17,9 +17,14 @@ export const fetchOpportunitiesEnhancements = async (opportunity_id: number): Pr
 
 export const fetchOpportunities = async (): Promise<OpportunityBase[]> => {
     try {
-        const response: AxiosResponse<OpportunityBase[]> = await axios.get<OpportunityBase[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/list`, {
-            headers: { ...getAuthHeader() },
-        });
+        let response: AxiosResponse<OpportunityBase[]>
+        if (!isAuthenticated()) {
+            response = await axios.get<OpportunityBase[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/list`);
+        } else {
+            response = await axios.get<OpportunityBase[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/list`, {
+                headers: { ...getAuthHeader() },
+            });
+        }
 
         if (isAuthenticated()) {
             for (let i = 0; i < response.data.length; i++) {
@@ -75,4 +80,15 @@ export const applyOpportunity = async (opportunity_id: number) => {
         console.error('Error applying opportunity:', error);
         throw error;
     }
-}; 
+};
+
+export const updateComment = async (opportunity_id: number, comment: string) => {
+    try {
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/comment`, { comment }, {
+            headers: { ...getAuthHeader() },
+        });
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        throw error;
+    }
+};

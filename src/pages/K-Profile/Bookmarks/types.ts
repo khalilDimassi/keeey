@@ -62,6 +62,7 @@ export interface OpportunityBase {
     created_at: string;
     client_id: string;
     contact_id: number;
+    comment: string;
     enhancements: Enhancements | null;
 }
 
@@ -88,5 +89,4 @@ export interface Opportunity extends OpportunityBase, OpportunityCompetences {
     updated_at: string;
 
     company?: string;
-    comment?: string;
 };

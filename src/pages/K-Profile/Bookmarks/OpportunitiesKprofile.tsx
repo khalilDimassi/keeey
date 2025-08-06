@@ -3,7 +3,7 @@ import { OpportunitiesSVG } from "../../components/SVGcomponents";
 import { Enhancements, OpportunityBase, OpportunityStatus, OpportunityTabs } from "./types";
 import { List, Contact, Building2, Bookmark, ChevronLeft, ChevronRight, MailCheck, MailX, ArrowUpRight, Trash2 } from "lucide-react";
 import { ContractType } from "./hooks";
-import { applyOpportunity, fetchOpportunities, saveOpportunity } from "./services";
+import { applyOpportunity, fetchOpportunities, saveOpportunity, updateComment } from "./services";
 import OpportunityDetailModal from "./content/OpportunityDetailModal";
 import { EmptySkeleton, ErrorSkeleton, LoadingSkeleton } from "./content/OpportunitySkeleton";
 
@@ -66,8 +66,13 @@ const OpportunitiesKprofle = () => {
     return `hsl(${h}, ${s}%, ${l}%)`;
   };
 
-  const handleComment = (id: number, comment: string) => {
-    console.log(`Commentaire pour l'opportunité ${id}: ${comment}`);
+  const handleComment = async (id: number, comment: string) => {
+    try {
+      await updateComment(id, comment);
+      loadOpportunities();
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : 'Unknown error: trying to load opportunities');
+    }
   };
 
   interface RenderOpportunityListProps {
@@ -354,16 +359,34 @@ const OpportunitiesKprofle = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="p-3"
-                    onClick={(e) => e.stopPropagation()}
-                  >{opportunity.enhancements?.comment ??
-                    <input className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                      type="text"
-                      placeholder="Ajouter un commentaire..."
-                      title="Ce commentaire n'est vu que par vous"
-                      onSubmit={(e) => { onComment(opportunity.opportunity_id, e.currentTarget.value) }}
-                    />
-                    }
+                  <td className="p-3" onClick={(e) => e.stopPropagation()}>
+                    {opportunity.comment === "" ? (
+                      <input
+                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        type="text"
+                        placeholder="Ajouter un commentaire..."
+                        title="Ce commentaire n'est vu que par vous"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            onComment(opportunity.opportunity_id, e.currentTarget.value);
+                            e.currentTarget.blur();
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2 group">
+                        <p className="text-sm leading-tight text-gray-700 text-wrap">{opportunity.comment}</p>
+                        <Trash2
+                          className="opacity-0 group-hover:opacity-70 transition-opacity"
+                          cursor={"pointer"}
+                          color="red"
+                          size={20}
+                          onClick={() => {
+                            onComment(opportunity.opportunity_id, "");
+                          }}
+                        />
+                      </div>
+                    )}
                   </td>
                   <td className="p-3">
                     <StatusBadge status={opportunity.enhancements?.status ?? "SAVED"} />
