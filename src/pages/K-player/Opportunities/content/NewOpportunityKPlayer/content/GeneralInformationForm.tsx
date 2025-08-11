@@ -220,7 +220,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Contexte"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
+              rows={12}
             />
           </div>
           <div>
@@ -232,7 +232,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Descriptif"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
+              rows={12}
             />
           </div>
           <div>
@@ -244,7 +244,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Details de la mission"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
+              rows={12}
             />
           </div>
           <div>
@@ -256,7 +256,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Profil attendu"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
+              rows={12}
             />
           </div>
 
