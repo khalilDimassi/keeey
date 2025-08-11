@@ -34,11 +34,6 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
     handleChange(e.target.name as keyof OpportunityBasicInfo, e.target.value);
   };
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value === '' ? 0 : Number(e.target.value);
-    handleChange(e.target.name as keyof OpportunityBasicInfo, value);
-  };
-
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChange(e.target.name as keyof OpportunityBasicInfo, e.target.value);
   };
@@ -195,112 +190,100 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="col-span-1">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
-          {isEditing ? (
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={localFormData.title}
-              onChange={handleStringChange}
-              placeholder="Titre"
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.title || '-'}</div>
-          )}
-        </div>
-        <div className="col-span-1">
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-          {isEditing ? (
-            <select
-              id="status"
-              name="status"
-              value={localFormData.status}
-              onChange={handleStringChange}
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Sélectionnez un statut</option>
-              <option value="ONGOING">Actif</option>
-              <option value="PENDING">En attente</option>
-              <option value="CONCLUDED">Fermé</option>
-              <option value="CLOSED">Annulé</option>
-            </select>
-          ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">
-              {localFormData.status === 'ONGOING' ? 'Actif' :
-                localFormData.status === 'PENDING' ? 'En attente' :
-                  localFormData.status === 'CONCLUDED' ? 'Fermé' :
-                    localFormData.status === 'CLOSED' ? 'Annulé' : '-'}
-            </div>
-          )}
-        </div>
-        <div className="col-span-1">
-          <label htmlFor="certainty" className="block text-sm font-medium text-gray-700 mb-1">Certitude du besoin</label>
-          {isEditing ? (
-            <select
-              id="certainty"
-              name="certainty"
-              value={localFormData.certainty}
-              onChange={handleStringChange}
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Sélectionnez une option</option>
-              <option value="confirmed">Budget confirmé</option>
-              <option value="probable">Besoin probable</option>
-              <option value="pool">Vivier</option>
-            </select>
-          ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">
-              {localFormData.certainty === 'confirmed' ? 'Budget confirmé' :
-                localFormData.certainty === 'probable' ? 'Besoin probable' :
-                  localFormData.certainty === 'pool' ? 'Vivier' : '-'}
-            </div>
-          )}
-        </div>
-      </div>
+        {/* Row 1 */}
+        <div className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label htmlFor="reference" className="block text-sm font-medium text-gray-700 mb-1">Référence de l'offre</label>
+            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.reference || '-'}</div>
+          </div>
+          <div className="col-span-1">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+            {isEditing ? (
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={localFormData.title}
+                onChange={handleStringChange}
+                placeholder="Titre"
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl">{localFormData.title || '-'}</div>
+            )}
+          </div>
+          <div className="col-span-1">
+            <label htmlFor="operational_manager" className="block text-sm font-medium text-gray-700 mb-1">Responsable opérationnel</label>
+            {isEditing ? (
+              <input
+                type="text"
+                id="operational_manager"
+                name="operational_manager"
+                value={localFormData.operational_manager}
+                onChange={handleStringChange}
+                placeholder="Responsable opérationnel"
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl">{localFormData.operational_manager || '-'}</div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="col-span-1">
-          <label htmlFor="operational_manager" className="block text-sm font-medium text-gray-700 mb-1">Responsable opérationnel</label>
-          {isEditing ? (
-            <input
-              type="text"
-              id="operational_manager"
-              name="operational_manager"
-              value={localFormData.operational_manager}
-              onChange={handleStringChange}
-              placeholder="Responsable opérationnel"
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.operational_manager || '-'}</div>
-          )}
+            )}
+          </div>
         </div>
-        <div className="col-span-1">
-          <label htmlFor="reference" className="block text-sm font-medium text-gray-700 mb-1">Référence de l'offre</label>
-          <div className="p-2 bg-gray-50 rounded-xl">{localFormData.reference || '-'}</div>
-        </div>
-        <div className="col-span-1">
-          <label htmlFor="rate" className="block text-sm font-medium text-gray-700 mb-1">TJM cible</label>
-          {isEditing ? (
-            <input
-              type="number"
-              id="rate"
-              name="rate"
-              value={localFormData.rate}
-              onChange={handleNumberChange}
-              placeholder="Responsable opérationnel"
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.rate || '-'}</div>
-          )}
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        {/* Row 2 */}
+        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="col-span-1">
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+            {isEditing ? (
+              <select
+                id="status"
+                name="status"
+                value={localFormData.status}
+                onChange={handleStringChange}
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Sélectionnez un statut</option>
+                <option value="ONGOING">Actif</option>
+                <option value="PENDING">En attente</option>
+                <option value="CONCLUDED">Fermé</option>
+                <option value="CLOSED">Annulé</option>
+              </select>
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl">
+                {localFormData.status === 'ONGOING' ? 'Actif' :
+                  localFormData.status === 'PENDING' ? 'En attente' :
+                    localFormData.status === 'CONCLUDED' ? 'Fermé' :
+                      localFormData.status === 'CLOSED' ? 'Annulé' : '-'}
+              </div>
+            )}
+          </div>
+          <div className="col-span-1">
+            <label htmlFor="certainty" className="block text-sm font-medium text-gray-700 mb-1">Certitude du besoin</label>
+            {isEditing ? (
+              <select
+                id="certainty"
+                name="certainty"
+                value={localFormData.opportunity_role}
+                onChange={handleStringChange}
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Sélectionnez une option</option>
+                <option value="BUDGET">Budget confirmé</option>
+                <option value="REQUIREMENT">Besoin probable</option>
+                <option value="LIVEPOOL">Vivier</option>
+              </select>
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl">
+                {localFormData.opportunity_role === 'BUDGET' ? 'Budget confirmé' :
+                  localFormData.opportunity_role === 'REQUIREMENT' ? 'Besoin probable' :
+                    localFormData.opportunity_role === 'LIVEPOOL' ? 'Vivier' : '-'}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Row 3 */}
         <div className="col-span-1">
           <label htmlFor="start_at" className="block text-sm font-medium text-gray-700 mb-1">Date de démarrage</label>
           {isEditing ? (
@@ -315,7 +298,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announce_at) || '-'}</div>
+            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.start_at) || '-'}</div>
           )}
         </div>
         <div className="col-span-1">
@@ -352,11 +335,10 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.responded_at) || '-'}</div>
           )}
         </div>
-      </div>
 
-      <div className='flex gap-6'>
-        <div className='w-2/3'>
-          <div className="mb-4">
+        {/* Row 5 & 6 */}
+        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
             <label htmlFor="context" className="block text-sm font-medium text-gray-700 mb-1">Contexte</label>
             {isEditing ? (
               <textarea
@@ -366,13 +348,13 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 onChange={handleStringChange}
                 placeholder="Contexte"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={3}
+                rows={6}
               />
             ) : (
               <div className="p-2 bg-gray-50 rounded-xl min-h-16">{localFormData.context || '-'}</div>
             )}
           </div>
-          <div className="mb-6">
+          <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Descriptif de la mission</label>
             {isEditing ? (
               <textarea
@@ -382,10 +364,42 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 onChange={handleStringChange}
                 placeholder="Descriptif"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={4}
+                rows={6}
               />
             ) : (
               <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.description || '-'}</div>
+            )}
+          </div>
+          <div>
+            <label htmlFor="mission" className="block text-sm font-medium text-gray-700 mb-1">Details de la mission</label>
+            {isEditing ? (
+              <textarea
+                id="mission"
+                name="mission"
+                value={localFormData.mission}
+                onChange={handleStringChange}
+                placeholder="Descriptif"
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={6}
+              />
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.mission || '-'}</div>
+            )}
+          </div>
+          <div>
+            <label htmlFor="candidat_profile" className="block text-sm font-medium text-gray-700 mb-1">Candidat attendu</label>
+            {isEditing ? (
+              <textarea
+                id="candidat_profile"
+                name="candidat_profile"
+                value={localFormData.candidate_profile}
+                onChange={handleStringChange}
+                placeholder="Descriptif"
+                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={6}
+              />
+            ) : (
+              <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.candidate_profile || '-'}</div>
             )}
           </div>
         </div>

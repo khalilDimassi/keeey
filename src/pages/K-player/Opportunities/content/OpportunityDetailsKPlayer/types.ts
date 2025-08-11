@@ -79,8 +79,9 @@ export interface OpportunityBasicInfo {
     description?: string;
     context?: string,
     mission?: string,
-    candidat_profile?: string,
+    candidate_profile?: string,
     certainty?: string,
+    opportunity_role?: string,
     operational_manager?: string,
     status?: string,
     reference?: string,

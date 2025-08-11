@@ -47,6 +47,7 @@ const OpportunityDetailsKPlayer = () => {
     return {
       // Basic Info
       title: apiData.title,
+      operational_manager: apiData.operational_manager,
       announce_at: apiData.announce_at,
       responded_at: apiData.responded_at,
       start_at: apiData.start_at,
@@ -55,7 +56,7 @@ const OpportunityDetailsKPlayer = () => {
       description: apiData.description || '',
       context: apiData.context || '',
       mission: apiData.mission || '',
-      candidat_profile: apiData.candidat_profile || '',
+      candidate_profile: apiData.candidate_profile || '',
       status: apiData.status || 'PENDING',
       reference: apiData.reference || '',
       opportunity_role: apiData.opportunity_role || 'REQUIREMENT',
@@ -168,17 +169,18 @@ const OpportunityDetailsKPlayer = () => {
             title: opportunityDetails?.title ?? "",
             status: opportunityDetails?.status ?? "",
             certainty: opportunityDetails?.certainty ?? "",
+            opportunity_role: opportunityDetails?.opportunity_role ?? "",
             operational_manager: opportunityDetails?.operational_manager ?? "",
             reference: opportunityDetails?.reference ?? "",
             announce_at: opportunityDetails?.announce_at ?? "",
             responded_at: opportunityDetails?.responded_at ?? "",
             start_at: opportunityDetails?.start_at ?? "",
-            duration: opportunityDetails?.duration ?? 0,
-            rate: opportunityDetails?.rate ?? 0,
+            duration: opportunityDetails?.duration ?? 0, // TODO: to be removed
+            rate: opportunityDetails?.rate ?? 0, // TODO: to be removed
             description: opportunityDetails?.description ?? "",
             context: opportunityDetails?.context ?? "",
             mission: opportunityDetails?.mission ?? "",
-            candidat_profile: opportunityDetails?.candidat_profile ?? "",
+            candidate_profile: opportunityDetails?.candidate_profile ?? "",
           }}
           loading={loading}
           error={error}
