@@ -3,17 +3,14 @@ import { useState, useEffect } from "react";
 import { DetailedMission, Contact, Company } from "../types";
 import { fetchCompanies, fetchContacts } from "../services";
 
-const NewMissionForm = ({
-  newMission,
-  setNewMission,
-  onSubmit,
-  loading
-}: {
-  newMission: Omit<DetailedMission, 'id'>,
-  setNewMission: React.Dispatch<React.SetStateAction<Omit<DetailedMission, 'id'>>>,
-  onSubmit: () => void,
-  loading: boolean
-}) => {
+interface NewMissionFormProps {
+  newMission: Omit<DetailedMission, 'id'>;
+  setNewMission: React.Dispatch<React.SetStateAction<Omit<DetailedMission, 'id'>>>;
+  onSubmit: () => void;
+  loading: boolean;
+}
+
+const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMissionFormProps) => {
   const [showForm, setShowForm] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
 
@@ -98,7 +95,9 @@ const NewMissionForm = ({
     >
       <div
         className="bg-white p-4 rounded-xl shadow-md w-full max-w-lg"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
       >
         <div className="flex justify-between items-center mb-4 border-b-2 border-[#297280] pb-2">
           <h2 className="text-lg font-semibold text-gray-700">Ajouter une mission</h2>
@@ -148,18 +147,27 @@ const NewMissionForm = ({
                   name="company"
                   value={newMission.company}
                   onChange={(e) => {
+                    e.stopPropagation();
                     setFormTouched(true);
                     setNewMission({ ...newMission, company: e.target.value });
                     setShowCompanyDropdown(true);
+                    setShowContactDropdown(false);
                   }}
-                  onFocus={() => setShowCompanyDropdown(true)}
+                  onFocus={() => {
+                    setShowCompanyDropdown(true);
+                    setShowContactDropdown(false);
+                  }}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
                   disabled={loadingCompanies}
                 />
                 <ChevronDown
                   size={20}
                   className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                  onClick={() => setShowCompanyDropdown(!showCompanyDropdown)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowCompanyDropdown(!showCompanyDropdown)
+                    setShowContactDropdown(false);
+                  }}
                 />
               </div>
 
@@ -218,18 +226,27 @@ const NewMissionForm = ({
                   name="contact"
                   value={newMission.contact}
                   onChange={(e) => {
+                    e.stopPropagation();
                     setFormTouched(true);
                     setNewMission({ ...newMission, contact: e.target.value });
                     setShowContactDropdown(true);
+                    setShowCompanyDropdown(false);
                   }}
-                  onFocus={() => setShowContactDropdown(true)}
+                  onFocus={() => {
+                    setShowContactDropdown(true)
+                    setShowCompanyDropdown(false);
+                  }}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
                   disabled={loadingContacts}
                 />
                 <ChevronDown
                   size={20}
                   className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                  onClick={() => setShowContactDropdown(!showContactDropdown)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowContactDropdown(!showContactDropdown)
+                    setShowCompanyDropdown(false);
+                  }}
                 />
               </div>
 

@@ -468,11 +468,11 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
       {/* Criteria & Requirements Section */}
       <div className="bg-white rounded-xl p-6 hover:shadow-xl">
         <h2 className="text-xl font-semibold">Critères & Requirements</h2>
-        <div className="space-y-4">
-          {/* Type de contrat */}
-          <div>
-            <p className="text-gray-600 mb-2">Type de contrat proposé</p>
-            <div className="flex flex-wrap gap-4 mb-4">
+        <div className="grid grid-cols-1 gap-6">
+          {/* Contract Type */}
+          <div className="space-y-2">
+            <p className="text-gray-600">Type de contrat proposé</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {[
                 { value: "FREELANCE", label: "Freelance" },
                 { value: "CDI", label: "CDI" },
@@ -501,296 +501,155 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
               ))}
             </div>
           </div>
-          {/* Date de démarrage */}
-          <div>
-            <p className="text-gray-600 mb-2">Date de démarrage souhaitée</p>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="flex gap-2">
-                <input
-                  type="date"
-                  className="w-full border p-2 rounded-xl"
-                  value={formData.criteria.crit_start_date}
-                  onChange={(e) => onFormDataChange("criteria", "crit_start_date", e.target.value)}
-                />
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="date"
-                  className="w-full border p-2 rounded-xl"
-                  value={formData.criteria.crit_start_date_lastest}
-                  onChange={(e) => onFormDataChange("criteria", "crit_start_date_lastest", e.target.value)}
-                  placeholder="Au plus tard"
-                />
-              </div>
-            </div>
-          </div>
-          {/* Durée prévisionnelle */}
-          <div>
-            <p className="text-gray-600 mb-2">Durée prévisionnelle</p>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  className="w-full border p-2 rounded-xl"
-                  placeholder="jours"
-                  value={formData.criteria.crit_duration}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    onFormDataChange("criteria", "crit_duration", value === "" ? null : parseInt(value, 10));
-                  }}
-                />
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  className="w-full border p-2 rounded-xl"
-                  placeholder="Au plus tard"
-                  value={formData.criteria.crit_duration_lastest}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    onFormDataChange("criteria", "crit_duration_lastest", value === "" ? null : parseInt(value, 10));
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          {/* TJM ou salaire */}
-          <div>
-            <p className="text-gray-600 mb-2">TJM ou salaire cible</p>
-            <div className="flex gap-2 mb-4">
+
+          {/* Start Date */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="text-gray-600">Date de démarrage souhaitée</p>
               <input
-                type="text"
-                placeholder="TJM ou salaire cible"
+                type="date"
                 className="w-full border p-2 rounded-xl"
-                value={formData.criteria.crit_target_rate}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  onFormDataChange("criteria", "crit_target_rate", value === "" ? null : parseInt(value, 10));
-                }}
+                value={formData.criteria.crit_start_date}
+                onChange={(e) => onFormDataChange("criteria", "crit_start_date", e.target.value)}
               />
+            </div>
+            <div className="space-y-2">
+              <p className="text-gray-600">Au plus tard</p>
               <input
-                type="text"
-                placeholder="TJM ou salaire max"
+                type="date"
                 className="w-full border p-2 rounded-xl"
-                value={formData.criteria.crit_max_rate}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  onFormDataChange("criteria", "crit_max_rate", value === "" ? null : parseInt(value, 10));
-                }}
+                value={formData.criteria.crit_start_date_lastest}
+                onChange={(e) => onFormDataChange("criteria", "crit_start_date_lastest", e.target.value)}
               />
             </div>
           </div>
-          {/* Localisation */}
-          <div>
-            <p className="text-gray-600 mb-2">Localisation</p>
-            <input
-              className="w-full border p-2 rounded-xl mb-4"
-              type="text"
-              placeholder="Localisation"
-              value={formData.criteria.crit_location}
-              onChange={(e) => onFormDataChange("criteria", "crit_location", e.target.value)}
-            />
+
+          {/* Duration */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="text-gray-600">Durée prévisionnelle</p>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-xl"
+                placeholder="jours"
+                value={formData.criteria.crit_duration ?? ''}
+                onChange={(e) => onFormDataChange("criteria", "crit_duration", e.target.value === "" ? null : parseInt(e.target.value, 10))}
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-gray-600">Durée max</p>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-xl"
+                placeholder="jours"
+                value={formData.criteria.crit_duration_lastest ?? ''}
+                onChange={(e) => onFormDataChange("criteria", "crit_duration_lastest", e.target.value === "" ? null : parseInt(e.target.value, 10))}
+              />
+            </div>
           </div>
-          {/* Télétravail */}
-          <div>
-            <p className="text-gray-600 mb-2">Télétravail</p>
-            <div className="flex gap-4 mb-4">
-              {[
-                { value: true, label: "Oui" },
-                { value: false, label: "Non" }
-              ].map(({ value, label }) => (
-                <label key={label} className="flex items-center gap-2">
+
+          {/* Rates */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="text-gray-600">TJM</p>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-xl"
+                placeholder="€/h"
+                value={formData.criteria.crit_target_rate ?? ''}
+                onChange={(e) => onFormDataChange("criteria", "crit_target_rate", e.target.value === "" ? null : parseInt(e.target.value, 10))}
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-gray-600">Salaire cible</p>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-xl"
+                placeholder="€/an"
+                value={formData.criteria.crit_max_rate ?? ''}
+                onChange={(e) => onFormDataChange("criteria", "crit_max_rate", e.target.value === "" ? null : parseInt(e.target.value, 10))}
+              />
+            </div>
+          </div>
+
+          {/* Location & Remote Work*/}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="text-gray-600">Localisation</p>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-xl"
+                placeholder="Ville, Pays"
+                value={formData.criteria.crit_location}
+                onChange={(e) => onFormDataChange("criteria", "crit_location", e.target.value)}
+              />
+            </div>
+            <div className="space-y-4">
+              <p className="text-gray-600">Télétravail</p>
+              <div className="flex gap-4">
+                {[{ value: true, label: "Oui" }, { value: false, label: "Non" }].map(({ value, label }) => (
+                  <label key={label} className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="remote"
+                      checked={formData.criteria.crit_remote === value}
+                      onChange={() => onFormDataChange("criteria", "crit_remote", value)}
+                      className="w-4 h-4"
+                      style={{ color: mainColor }}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Requirements Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { key: "tool", label: "Outils", field: "tools" },
+              { key: "authorization", label: "Habilitations", field: "authorizations" },
+              { key: "language", label: "Langues", field: "languages" },
+              { key: "quality", label: "Qualités Relationnelles", field: "qualities" },
+            ].map(({ key, label, field }) => (
+              <div key={key} className="space-y-2">
+                <p className="text-gray-600">{label}</p>
+                <div className="flex gap-2">
                   <input
-                    type="radio"
-                    name="remote"
-                    checked={formData.criteria.crit_remote === value}
-                    onChange={() => onFormDataChange("criteria", "crit_remote", value)}
-                    className="w-4 h-4"
-                    style={{ color: mainColor }}
+                    type="text"
+                    value={inputValues[key as keyof typeof inputValues]}
+                    onChange={(e) => handleInputChange(key as keyof typeof inputValues, e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
+                    placeholder={`Ajouter ${/^[aeiou]/i.test(label) ? "un" : "une"} ${label.toLowerCase()}`}
+                    className="flex-1 border p-2 rounded-xl"
                   />
-                  {label}
-                </label>
-              ))}
-            </div>
-          </div>
-          {/* Requirements Section */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-gray-600">Outils</p>
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  value={inputValues.tool}
-                  onChange={(e) => handleInputChange("tool", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      addItem("tool", "tools");
-                    }
-                  }}
-                  placeholder="Ajouter un outil"
-                  className="w-full border p-2 rounded-xl"
-                />
-                <button
-                  onClick={() => addItem("tool", "tools")}
-                  className={`${inputValues.tool.trim()
-                    ? "text-blue-600 hover:text-blue-800"
-                    : "text-gray-400"
-                    } transition-colors`}
-                  disabled={!inputValues.tool.trim()}
-                >
-                  <PlusCircle size={28} />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.requirements.tools?.map((tool, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl p-2"
-                    style={{ backgroundColor: mainColor, color: 'white' }}
+                  <button
+                    onClick={() => addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
+                    className={`p-2 ${inputValues[key as keyof typeof inputValues].trim() ? "text-blue-600" : "text-gray-400"}`}
+                    disabled={!inputValues[key as keyof typeof inputValues].trim()}
                   >
-                    <span>{tool}</span>
-                    <button
-                      onClick={() => removeItem("tools", tool)}
-                      className="text-white hover:text-gray-200 transition-colors"
+                    <PlusCircle size={24} />
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.requirements[field as keyof OpportunityRequirements]?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 rounded-xl px-3 py-1"
+                      style={{ backgroundColor: mainColor, color: 'white' }}
                     >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
+                      <span>{item}</span>
+                      <button
+                        onClick={() => removeItem(field as keyof OpportunityRequirements, item)}
+                        className="hover:text-gray-200"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-gray-600">Habilitations</p>
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  value={inputValues.authorization}
-                  onChange={(e) => handleInputChange("authorization", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      addItem("authorization", "authorizations");
-                    }
-                  }}
-                  placeholder="Ajouter une habilitation"
-                  className="w-full border p-2 rounded-xl"
-                />
-                <button
-                  onClick={() => addItem("authorization", "authorizations")}
-                  className={`${inputValues.authorization.trim()
-                    ? "text-blue-600 hover:text-blue-800"
-                    : "text-gray-400"
-                    } transition-colors`}
-                  disabled={!inputValues.authorization.trim()}
-                >
-                  <PlusCircle size={28} />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.requirements.authorizations?.map((auth, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl p-2"
-                    style={{ backgroundColor: mainColor, color: 'white' }}
-                  >
-                    <span>{auth}</span>
-                    <button
-                      onClick={() => removeItem("authorizations", auth)}
-                      className="text-white hover:text-gray-200 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-gray-600">Langues</p>
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  value={inputValues.language}
-                  onChange={(e) => handleInputChange("language", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      addItem("language", "languages");
-                    }
-                  }}
-                  placeholder="Ajouter une langue"
-                  className="w-full border p-2 rounded-xl"
-                />
-                <button
-                  onClick={() => addItem("language", "languages")}
-                  className={`${inputValues.language.trim()
-                    ? "text-blue-600 hover:text-blue-800"
-                    : "text-gray-400"
-                    } transition-colors`}
-                  disabled={!inputValues.language.trim()}
-                >
-                  <PlusCircle size={28} />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.requirements.languages?.map((lang, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl p-2"
-                    style={{ backgroundColor: mainColor, color: 'white' }}
-                  >
-                    <span>{lang}</span>
-                    <button
-                      onClick={() => removeItem("languages", lang)}
-                      className="text-white hover:text-gray-200 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-gray-600">Qualités Relationnelles</p>
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  value={inputValues.quality}
-                  onChange={(e) => handleInputChange("quality", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      addItem("quality", "qualities");
-                    }
-                  }}
-                  placeholder="Ajouter une qualité"
-                  className="w-full border p-2 rounded-xl"
-                />
-                <button
-                  onClick={() => addItem("quality", "qualities")}
-                  className={`${inputValues.quality.trim()
-                    ? "text-blue-600 hover:text-blue-800"
-                    : "text-gray-400"
-                    } transition-colors`}
-                  disabled={!inputValues.quality.trim()}
-                >
-                  <PlusCircle size={28} />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.requirements.qualities?.map((quality, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl p-2"
-                    style={{ backgroundColor: mainColor, color: 'white' }}
-                  >
-                    <span>{quality}</span>
-                    <button
-                      onClick={() => removeItem("qualities", quality)}
-                      className="text-white hover:text-gray-200 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

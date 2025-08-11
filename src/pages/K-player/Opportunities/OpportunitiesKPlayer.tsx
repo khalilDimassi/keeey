@@ -8,39 +8,28 @@ import OpportunitiesList from './content/projectsList';
 
 const OpportunitiesListPage = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-  const [filteredOpportunities, setFilteredOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'personal' | 'organization' | 'network'>('personal');
   const navigate = useNavigate();
 
+  const loadData = async () => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const data = await fetchOpportunities();
+      setOpportunities(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const filteredData = await fetchOpportunities(activeTab);
-        setOpportunities(filteredData);
-        applyFilter(filteredData, activeTab);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadData();
-  }, [activeTab]);
-
-  const applyFilter = (data: Opportunity[], tab: 'personal' | 'organization' | 'network') => {
-    // Implement your actual filtering logic here
-    setFilteredOpportunities(data);
-  };
-
-  const handleTabChange = (tab: 'personal' | 'organization' | 'network') => {
-    setActiveTab(tab);
-    applyFilter(opportunities, tab);
-  };
+  }, []);
 
   return (
     <div className="bg-gray-100">
@@ -51,10 +40,9 @@ const OpportunitiesListPage = () => {
               <Search className="" style={{ color: "#215A96" }} size={40} />
               <h1 className="text-xl font-semibold">Projets/Besoins</h1>
             </div>
-
             <div className="flex mx-auto rounded-full">
               <button
-                onClick={() => handleTabChange('personal')}
+                onClick={() => setActiveTab('personal')}
                 className={`px-6 py-2 text-sm border ${activeTab === 'personal'
                   ? 'text-blue-700 bg-blue-200'
                   : 'text-gray-600 bg-gray-50'
@@ -64,7 +52,7 @@ const OpportunitiesListPage = () => {
                 Mes besoins
               </button>
               <button
-                onClick={() => handleTabChange('organization')}
+                onClick={() => setActiveTab('organization')}
                 className={`px-6 py-2 text-sm border ${activeTab === 'organization'
                   ? 'text-blue-700 bg-blue-200'
                   : 'text-gray-600 bg-gray-50'
@@ -74,7 +62,7 @@ const OpportunitiesListPage = () => {
                 Besoins de ma société
               </button>
               <button
-                onClick={() => handleTabChange('network')}
+                onClick={() => setActiveTab('network')}
                 className={`px-6 py-2 text-sm border ${activeTab === 'network'
                   ? 'text-blue-700 bg-blue-200'
                   : 'text-gray-600 bg-gray-50'
@@ -84,7 +72,6 @@ const OpportunitiesListPage = () => {
                 Besoins de mon réseau
               </button>
             </div>
-
             <button
               onClick={() => navigate('/kplayer/opportunities/new')}
               className="flex items-center gap-2 text-white px-4 py-2 rounded-xl ml-auto"
@@ -95,9 +82,8 @@ const OpportunitiesListPage = () => {
             </button>
           </div>
         </div>
-
         <OpportunitiesList
-          Opportunities={filteredOpportunities}
+          Opportunities={opportunities.filter((opportunity) => opportunity.source === activeTab)}
           loading={loading}
           error={error || ""}
         />

@@ -20,6 +20,7 @@ export interface Opportunity {
     kprofiles: KProfile[];
     date: string;
     participants: string[];
+    source: string;
 }
 
 export interface MatchPercentages {

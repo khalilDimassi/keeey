@@ -1,13 +1,11 @@
 import { getAuthHeader, getUserId } from "../../../utils/jwt";
-
-import axios from "axios";
 import { OpportunityFormData, CandidateSuggestion } from "./content/OpportunityDetailsKPlayer/types";
 import { Opportunity } from "./types";
+import axios from "axios";
 
-export const fetchOpportunities = async (filter: 'personal' | 'organization' | 'network'): Promise<Opportunity[]> => {
+export const fetchOpportunities = async (): Promise<Opportunity[]> => {
     try {
-
-        const response = await axios.get<Opportunity[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${filter}/list`,
+        const response = await axios.get<Opportunity[]>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/personal/list`,
             { headers: { ...getAuthHeader() } }
         );
 
