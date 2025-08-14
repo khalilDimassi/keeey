@@ -3,6 +3,7 @@ import { OpportunityBasicInfo } from "../../OpportunityDetailsKPlayer/types";
 import { OrgMember } from "../../../../Profile/types";
 import { FetchOrgMembers } from "../../../../Profile/services";
 import { ChevronDown } from "lucide-react";
+import { getUserFullName } from "../../../../../../utils/jwt";
 
 const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) => void; formData: OpportunityBasicInfo; }) => {
   const [loading, setLoading] = useState(false);
@@ -94,6 +95,23 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
 
             {showOrgMembersDropdown && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                <div
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2 border-b-gray-500"
+                  onClick={() => {
+                    handleChange({
+                      target: {
+                        name: "operational_manager",
+                        value: getUserFullName()
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>);
+                    setShowOrgMembersDropdown(false);
+                  }}
+                >
+                  <span className="font-sm border-l-4 pl-3 border-l-blue-500">
+                    {getUserFullName()} (Moi)
+                  </span>
+                </div>
+
                 {orgMembers
                   .filter(member =>
                     `${member.first_name} ${member.last_name}`.toLowerCase().includes(formData.operational_manager?.toLowerCase() || '')
@@ -156,7 +174,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
             <select
               id="certainty"
               name="certainty"
-              value={formData.certainty || ''}
+              value={formData.opportunity_role || ''}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -209,8 +227,8 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
           </div>
         </div>
 
-        {/* Row 4 & 5 */}
-        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Row 4 */}
+        <div className="col-span-3 grid grid-cols-1 gap-4">
           <div>
             <label htmlFor="context" className="block text-sm font-medium text-gray-700 mb-1">Contexte</label>
             <textarea
@@ -220,7 +238,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Contexte"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={12}
+              rows={8}
             />
           </div>
           <div>
@@ -232,19 +250,7 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               onChange={handleChange}
               placeholder="Descriptif"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={12}
-            />
-          </div>
-          <div>
-            <label htmlFor="mission" className="block text-sm font-medium text-gray-700 mb-1">Details de la mission</label>
-            <textarea
-              id="mission"
-              name="mission"
-              value={formData.mission || ''}
-              onChange={handleChange}
-              placeholder="Details de la mission"
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={12}
+              rows={8}
             />
           </div>
           <div>
@@ -252,11 +258,11 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
             <textarea
               id="candidat_profile"
               name="candidat_profile"
-              value={formData.candidat_profile || ''}
+              value={formData.candidate_profile || ''}
               onChange={handleChange}
               placeholder="Profil attendu"
               className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={12}
+              rows={8}
             />
           </div>
 

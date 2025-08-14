@@ -19,7 +19,6 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
     },
     criteria: {
       contract_roles: criteriasData.contract_roles,
-      opportunity_role: criteriasData.opportunity_role,
       crit_start_date: criteriasData.crit_start_date,
       crit_start_date_lastest: criteriasData.crit_start_date_lastest,
       crit_duration: criteriasData.crit_duration,

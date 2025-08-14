@@ -32,23 +32,21 @@ const NewOpportunityKPlayer = () => {
   const [generalIndormation, setGeneralIndormation] = useState<OpportunityBasicInfo>({
     title: '',
     status: '',
-    certainty: '',
+    opportunity_role: '',
     operational_manager: '',
     reference: '',
-    rate: 0,
     start_at: '',
     announce_at: '',
     responded_at: '',
-    duration: 0,
     context: '',
-    description: ''
+    description: '',
+    candidate_profile: '',
   });
   const [skills, setSkills] = useState<OpportunitySectors>({
     selected_sectors: []
   });
   const [criterias, setCriterias] = useState<OpportunityCriteria>({
     contract_roles: [],
-    opportunity_role: '',
     crit_start_date: '',
     crit_start_date_lastest: '',
     crit_duration: 0,
@@ -110,6 +108,14 @@ const NewOpportunityKPlayer = () => {
     setSubmitting(true);
     setError(null);
     try {
+      if (generalIndormation.opportunity_role === "") {
+        generalIndormation.opportunity_role = "LIVEWELL";
+      }
+
+      if (generalIndormation.status === "") {
+        generalIndormation.status = "OPEN";
+      }
+
       const response = await createFullOpportunity(generalIndormation, skills, criterias, requirements, diffusion);
       navigate("/kplayer/opportunities/" + response.opportunity_id);
     } catch (error) {

@@ -74,16 +74,12 @@ export interface OpportunityBasicInfo {
     announce_at: string;
     responded_at: string;
     start_at: string;
-    duration: number;
-    rate: number;
-    description?: string;
-    context?: string,
-    mission?: string,
-    candidate_profile?: string,
-    certainty?: string,
-    opportunity_role?: string,
-    operational_manager?: string,
-    status?: string,
+    description: string;
+    context: string,
+    candidate_profile: string,
+    opportunity_role: string,
+    operational_manager: string,
+    status: string,
     reference?: string,
     satisfaction?: number,
 }
@@ -104,7 +100,6 @@ export interface OpportunitySectors {
 
 export interface OpportunityCriteria {
     contract_roles: string[];
-    opportunity_role?: string
     crit_start_date: string;
     crit_start_date_lastest: string;
     crit_duration: number;

@@ -51,11 +51,8 @@ const OpportunityDetailsKPlayer = () => {
       announce_at: apiData.announce_at,
       responded_at: apiData.responded_at,
       start_at: apiData.start_at,
-      duration: apiData.duration.toString(),
-      rate: apiData.rate.toString(),
       description: apiData.description || '',
       context: apiData.context || '',
-      mission: apiData.mission || '',
       candidate_profile: apiData.candidate_profile || '',
       status: apiData.status || 'PENDING',
       reference: apiData.reference || '',
@@ -168,18 +165,14 @@ const OpportunityDetailsKPlayer = () => {
           formData={{
             title: opportunityDetails?.title ?? "",
             status: opportunityDetails?.status ?? "",
-            certainty: opportunityDetails?.certainty ?? "",
             opportunity_role: opportunityDetails?.opportunity_role ?? "",
             operational_manager: opportunityDetails?.operational_manager ?? "",
             reference: opportunityDetails?.reference ?? "",
             announce_at: opportunityDetails?.announce_at ?? "",
             responded_at: opportunityDetails?.responded_at ?? "",
             start_at: opportunityDetails?.start_at ?? "",
-            duration: opportunityDetails?.duration ?? 0, // TODO: to be removed
-            rate: opportunityDetails?.rate ?? 0, // TODO: to be removed
             description: opportunityDetails?.description ?? "",
             context: opportunityDetails?.context ?? "",
-            mission: opportunityDetails?.mission ?? "",
             candidate_profile: opportunityDetails?.candidate_profile ?? "",
           }}
           loading={loading}

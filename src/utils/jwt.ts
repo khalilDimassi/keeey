@@ -125,4 +125,21 @@ export const updateUserId = (newUserId: string) => {
 // Check if user ID exists
 export const hasUserId = (): boolean => {
     return getUserId() !== null;
-}; 
+};
+
+const USER_FULLNAME_KEY = "user_fullname";
+
+// Save user Fullname in localStorage
+export const saveUserFullName = (userFullName: string) => {
+    localStorage.setItem(USER_FULLNAME_KEY, userFullName);
+};
+
+// Retrieve user Fullname from localStorage
+export const getUserFullName = (): string | null => {
+    return localStorage.getItem(USER_FULLNAME_KEY);
+};
+
+// Remove user Fullname from localStorage (Logout)
+export const removeUserFullName = () => {
+    localStorage.removeItem(USER_FULLNAME_KEY);
+};

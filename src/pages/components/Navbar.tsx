@@ -1,6 +1,6 @@
 import { AlertTriangle, LogOut, UserPlus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { isAuthenticated, getAuthHeader, saveUserId, removeToken } from "../../utils/jwt";
+import { isAuthenticated, getAuthHeader, saveUserId, removeToken, saveUserFullName, removeUserId, removeUserFullName } from "../../utils/jwt";
 import { useNavigate } from "react-router-dom";
 import { ProfileType } from "./types";
 import KeeeyLogo from "../assets/KeeyLogo";
@@ -31,6 +31,7 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
                     const { first_name, last_name, ID, email_verified } = response.data.user;
                     setUserName(`${first_name} ${last_name}`);
                     saveUserId(ID);
+                    saveUserFullName(`${first_name} ${last_name}`);
                     setIsEmailVerified(email_verified);
                 })
                 .catch(error => console.error("Error fetching profile:", error));
@@ -41,6 +42,8 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
     const CreateAccountClick = () => {
         if (isAuthenticated()) {
             removeToken();
+            removeUserId();
+            removeUserFullName();
             navigate("/");
         } else {
             navigate("/Login/kprofile");

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Check, Loader2, PenBox, X } from 'lucide-react';
+import { Check, ChevronDown, Loader2, PenBox, X } from 'lucide-react';
 import { OpportunityBasicInfo } from '../types';
 import { updateOpportunityBasicInfo } from '../services';
+import { OrgMember } from '../../../../Profile/types';
+import { getUserFullName } from '../../../../../../utils/jwt';
+import { FetchOrgMembers } from '../../../../Profile/services';
 
 interface GeneralInformationTabProps {
   formData: OpportunityBasicInfo;
@@ -15,6 +18,26 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
   const [isEditing, setIsEditing] = useState(false);
   const [localFormData, setLocalFormData] = useState<OpportunityBasicInfo>(formData);
   const [prevFormData, setPrevFormData] = useState<OpportunityBasicInfo>(formData);
+
+  const [membersLoading, setMembersLoading] = useState(false);
+  const [membersError, setMembersError] = useState<string | null>(null);
+  const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
+  const [showOrgMembersDropdown, setShowOrgMembersDropdown] = useState(false);
+
+  useEffect(() => {
+    setMembersLoading(true);
+    setMembersError(null);
+    FetchOrgMembers()
+      .then(data => {
+        setOrgMembers(data);
+        setMembersLoading(false);
+      })
+      .catch(error => {
+        setOrgMembers([]);
+        setMembersError(error instanceof Error ? error.message : "An unknown error occurred.");
+        setMembersLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (!isEditing && formData !== prevFormData) {
@@ -51,9 +74,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
 
       if (localFormData.title !== formData.title) updatePayload.title = localFormData.title;
       if (localFormData.status !== formData.status) updatePayload.status = localFormData.status;
-      if (localFormData.certainty !== formData.certainty) updatePayload.certainty = localFormData.certainty;
+      if (localFormData.opportunity_role !== formData.opportunity_role) updatePayload.opportunity_role = localFormData.opportunity_role;
       if (localFormData.operational_manager !== formData.operational_manager) updatePayload.operational_manager = localFormData.operational_manager;
-      if (localFormData.rate !== formData.rate) updatePayload.rate = localFormData.rate;
       if (localFormData.start_at !== formData.start_at) updatePayload.start_at = localFormData.start_at;
       if (localFormData.announce_at !== formData.announce_at) updatePayload.announce_at = localFormData.announce_at;
       if (localFormData.responded_at !== formData.responded_at) updatePayload.responded_at = localFormData.responded_at;
@@ -66,9 +88,6 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
         ...prev,
         ...updatePayload
       }));
-
-      console.info("new data: ", localFormData);
-      console.info("old data: ", formData);
 
       setIsEditing(false);
     } finally {
@@ -194,7 +213,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label htmlFor="reference" className="block text-sm font-medium text-gray-700 mb-1">Référence de l'offre</label>
-            <div className="p-2 bg-gray-50 rounded-xl">{localFormData.reference || '-'}</div>
+            <div className="p-2 bg-gray-100 rounded-xl">{localFormData.reference || '-'}</div>
           </div>
           <div className="col-span-1">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
@@ -209,24 +228,98 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl">{localFormData.title || '-'}</div>
+              <div className="p-2 bg-gray-100 rounded-xl">{localFormData.title || '-'}</div>
             )}
           </div>
           <div className="col-span-1">
             <label htmlFor="operational_manager" className="block text-sm font-medium text-gray-700 mb-1">Responsable opérationnel</label>
             {isEditing ? (
-              <input
-                type="text"
-                id="operational_manager"
-                name="operational_manager"
-                value={localFormData.operational_manager}
-                onChange={handleStringChange}
-                placeholder="Responsable opérationnel"
-                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            ) : (
-              <div className="p-2 bg-gray-50 rounded-xl">{localFormData.operational_manager || '-'}</div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="operational_manager"
+                  name="operational_manager"
+                  value={localFormData.operational_manager || ''}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleStringChange(e);
+                    setShowOrgMembersDropdown(true);
+                  }}
+                  onFocus={() => {
+                    setShowOrgMembersDropdown(true);
+                  }}
+                  placeholder={membersLoading ? "Chargement..." : "Responsable opérationnel"}
+                  className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                  disabled={membersLoading}
+                />
+                <ChevronDown
+                  size={20}
+                  className="absolute right-2 top-2 text-gray-400 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowOrgMembersDropdown(!showOrgMembersDropdown);
+                  }}
+                />
 
+                {membersError && (
+                  <p className="text-red-500 text-xs mt-1">{membersError}</p>
+                )}
+
+                {showOrgMembersDropdown && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                    <div
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2 border-b-gray-500"
+                      onClick={() => {
+                        handleStringChange({
+                          target: {
+                            name: "operational_manager",
+                            value: getUserFullName()
+                          }
+                        } as React.ChangeEvent<HTMLInputElement>);
+                        setShowOrgMembersDropdown(false);
+                      }}
+                    >
+                      <span className="font-sm border-l-4 pl-3 border-l-blue-500">
+                        {getUserFullName()} (Moi)
+                      </span>
+                    </div>
+
+                    {orgMembers
+                      .filter(member =>
+                        `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
+                      )
+                      .map((member) => (
+                        <div
+                          key={member.ID}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            handleStringChange({
+                              target: {
+                                name: "operational_manager",
+                                value: `${member.first_name} ${member.last_name}`
+                              }
+                            } as React.ChangeEvent<HTMLInputElement>);
+                            setShowOrgMembersDropdown(false);
+                          }}
+                        >
+                          <span className={`font-sm border-l-4 pl-3 ${member.email_verified ? "border-green-500" : "border-orange-500"}`}>
+                            {member.first_name} {member.last_name}
+                          </span>
+                        </div>
+                      ))
+                    }
+                    {orgMembers.filter(member =>
+                      `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
+                    ).length === 0 && (
+                        <div className="px-4 py-2 text-gray-500">
+                          Aucun membre trouvé
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="p-2 bg-gray-100 rounded-xl">{localFormData.operational_manager || '-'}</div>
             )}
           </div>
         </div>
@@ -239,31 +332,37 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               <select
                 id="status"
                 name="status"
-                value={localFormData.status}
+                value={localFormData.status || ''}
                 onChange={handleStringChange}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sélectionnez un statut</option>
-                <option value="ONGOING">Actif</option>
                 <option value="PENDING">En attente</option>
-                <option value="CONCLUDED">Fermé</option>
-                <option value="CLOSED">Annulé</option>
+                <option value="ACCEPTED">Accepté</option>
+                <option value="REJECTED">Refusé</option>
+                <option value="ONGOING">En cours</option>
+                <option value="CONCLUDED">Terminé</option>
+                <option value="OPEN">Ouvert</option>
+                <option value="CLOSED">Fermé</option>
               </select>
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl">
-                {localFormData.status === 'ONGOING' ? 'Actif' :
-                  localFormData.status === 'PENDING' ? 'En attente' :
-                    localFormData.status === 'CONCLUDED' ? 'Fermé' :
-                      localFormData.status === 'CLOSED' ? 'Annulé' : '-'}
+              <div className="p-2 bg-gray-100 rounded-xl">
+                {localFormData.status === 'PENDING' ? 'En attente' :
+                  localFormData.status === 'ACCEPTED' ? 'Accepté' :
+                    localFormData.status === 'REJECTED' ? 'Refusé' :
+                      localFormData.status === 'ONGOING' ? 'En cours' :
+                        localFormData.status === 'CONCLUDED' ? 'Terminé' :
+                          localFormData.status === 'OPEN' ? 'Ouvert' :
+                            localFormData.status === 'CLOSED' ? 'Fermé' : '-'}
               </div>
             )}
           </div>
           <div className="col-span-1">
-            <label htmlFor="certainty" className="block text-sm font-medium text-gray-700 mb-1">Certitude du besoin</label>
+            <label htmlFor="opportunity_role" className="block text-sm font-medium text-gray-700 mb-1">Certitude du besoin</label>
             {isEditing ? (
               <select
-                id="certainty"
-                name="certainty"
+                id="opportunity_role"
+                name="opportunity_role"
                 value={localFormData.opportunity_role}
                 onChange={handleStringChange}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -271,13 +370,13 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 <option value="">Sélectionnez une option</option>
                 <option value="BUDGET">Budget confirmé</option>
                 <option value="REQUIREMENT">Besoin probable</option>
-                <option value="LIVEPOOL">Vivier</option>
+                <option value="LIVEWELL">Vivier</option>
               </select>
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl">
+              <div className="p-2 bg-gray-100 rounded-xl">
                 {localFormData.opportunity_role === 'BUDGET' ? 'Budget confirmé' :
                   localFormData.opportunity_role === 'REQUIREMENT' ? 'Besoin probable' :
-                    localFormData.opportunity_role === 'LIVEPOOL' ? 'Vivier' : '-'}
+                    localFormData.opportunity_role === 'LIVEWELL' ? 'Vivier' : '-'}
               </div>
             )}
           </div>
@@ -298,7 +397,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.start_at) || '-'}</div>
+            <div className="p-2 bg-gray-100 rounded-xl">{formatDate(localFormData.start_at) || '-'}</div>
           )}
         </div>
         <div className="col-span-1">
@@ -315,7 +414,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.announce_at) || '-'}</div>
+            <div className="p-2 bg-gray-100 rounded-xl">{formatDate(localFormData.announce_at) || '-'}</div>
           )}
         </div>
         <div className="col-span-1">
@@ -332,12 +431,12 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               />
             </div>
           ) : (
-            <div className="p-2 bg-gray-50 rounded-xl">{formatDate(localFormData.responded_at) || '-'}</div>
+            <div className="p-2 bg-gray-100 rounded-xl">{formatDate(localFormData.responded_at) || '-'}</div>
           )}
         </div>
 
-        {/* Row 5 & 6 */}
-        <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Rows 4-6 */}
+        <div className="col-span-3 grid grid-cols-1 gap-4">
           <div>
             <label htmlFor="context" className="block text-sm font-medium text-gray-700 mb-1">Contexte</label>
             {isEditing ? (
@@ -351,7 +450,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 rows={6}
               />
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl min-h-16">{localFormData.context || '-'}</div>
+              <div className="p-2 bg-gray-100 rounded-xl min-h-24">{localFormData.context || '-'}</div>
             )}
           </div>
           <div>
@@ -367,23 +466,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 rows={6}
               />
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.description || '-'}</div>
-            )}
-          </div>
-          <div>
-            <label htmlFor="mission" className="block text-sm font-medium text-gray-700 mb-1">Details de la mission</label>
-            {isEditing ? (
-              <textarea
-                id="mission"
-                name="mission"
-                value={localFormData.mission}
-                onChange={handleStringChange}
-                placeholder="Descriptif"
-                className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={6}
-              />
-            ) : (
-              <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.mission || '-'}</div>
+              <div className="p-2 bg-gray-100 rounded-xl min-h-24">{localFormData.description || '-'}</div>
             )}
           </div>
           <div>
@@ -399,7 +482,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
                 rows={6}
               />
             ) : (
-              <div className="p-2 bg-gray-50 rounded-xl min-h-24">{localFormData.candidate_profile || '-'}</div>
+              <div className="p-2 bg-gray-100 rounded-xl min-h-24">{localFormData.candidate_profile || '-'}</div>
             )}
           </div>
         </div>
