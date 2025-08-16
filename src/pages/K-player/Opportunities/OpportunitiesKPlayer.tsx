@@ -13,23 +13,18 @@ const OpportunitiesListPage = () => {
   const [activeTab, setActiveTab] = useState<'personal' | 'organization' | 'network'>('personal');
   const navigate = useNavigate();
 
-  const loadData = async () => {
-    setError(null);
-    setLoading(true);
-
-    try {
-      const data = await fetchOpportunities();
-      setOpportunities(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadData();
+    setLoading(true);
+    setError(null);
+    fetchOpportunities()
+      .then(data => { setOpportunities(data); })
+      .catch(error => {
+        setOpportunities([]);
+        setError(error instanceof Error ? error.message : "An unknown error occurred.");
+      })
+      .finally(() => { setLoading(false); });
   }, []);
+
 
   return (
     <div className="bg-gray-100">

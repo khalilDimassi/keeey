@@ -32,8 +32,11 @@ export const fetchOpportunities = async (): Promise<OpportunityBase[]> => {
             }
         }
 
-        response.data.sort((a, b) => b.enhancements?.total_match_percentage! - a.enhancements?.total_match_percentage!);
+        if (response.data === null || response.data.length === 0) {
+            return [];
+        }
 
+        response.data.sort((a, b) => b.enhancements?.total_match_percentage! - a.enhancements?.total_match_percentage!);
         return response.data;
     } catch (error) {
         console.error('Error fetching opportunities:', error);

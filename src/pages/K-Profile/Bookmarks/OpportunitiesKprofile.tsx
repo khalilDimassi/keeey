@@ -17,22 +17,23 @@ const OpportunitiesKprofle = () => {
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-
-  const loadOpportunities = async () => {
-    try {
-      setLoading(true);
-      const opps = await fetchOpportunities();
-      setOpportunities(opps);
-    } catch (err) {
-      setLoadingError(err instanceof Error ? err.message : 'Unknown error: trying to load opportunities');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    loadOpportunities();
-  }, []);
+    setLoading(true);
+    setLoadingError(null);
+    fetchOpportunities()
+      .then(opps => {
+        setOpportunities(opps);
+      })
+      .catch(err => {
+        setOpportunities([]);
+        setLoadingError(err instanceof Error ? err.message : 'Unknown error: trying to load opportunities');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [refresh]);
 
   const formatTimeAgo = (dateString: string): string => {
     if (!dateString) return "";
@@ -64,15 +65,6 @@ const OpportunitiesKprofle = () => {
     const s = 10 + Math.abs(hash) % 15;
     const l = 40 + Math.abs(hash) % 10;
     return `hsl(${h}, ${s}%, ${l}%)`;
-  };
-
-  const handleComment = async (id: number, comment: string) => {
-    try {
-      await updateComment(id, comment);
-      loadOpportunities();
-    } catch (err) {
-      console.error(err instanceof Error ? err.message : 'Unknown error: trying to load opportunities');
-    }
   };
 
   interface RenderOpportunityListProps {
@@ -267,7 +259,7 @@ const OpportunitiesKprofle = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   applyOpportunity(opportunity.opportunity_id);
-                  loadOpportunities();
+                  setRefresh(prev => prev + 1);
                 }}
                 aria-label="Applied"
                 size={30}
@@ -279,7 +271,7 @@ const OpportunitiesKprofle = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   applyOpportunity(opportunity.opportunity_id);
-                  loadOpportunities();
+                  setRefresh(prev => prev + 1);
                 }}
                 aria-label="Apply"
                 size={30}
@@ -293,7 +285,7 @@ const OpportunitiesKprofle = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 saveOpportunity(opportunity.opportunity_id);
-                loadOpportunities();
+                setRefresh(prev => prev + 1);
               }}
             />
           </div>
@@ -521,7 +513,7 @@ const OpportunitiesKprofle = () => {
       </div>
       {/* Content */}
       <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
-        {!loading && !loadingError && <RenderOpportunityList opportunities={opportunities} activeTab={activeTab} onSelect={(id: number) => { setSelectedOpportunity(id); setIsVisible(true); }} onComment={(id: number, comment: string) => handleComment(id, comment)} onApply={(id: number) => applyOpportunity(id)} onUnbookmark={(id: number) => saveOpportunity(id)} />}
+        {!loading && !loadingError && <RenderOpportunityList opportunities={opportunities} activeTab={activeTab} onSelect={(id: number) => { setSelectedOpportunity(id); setIsVisible(true); }} onComment={(id: number, comment: string) => updateComment(id, comment).then(() => { setRefresh(prev => prev + 1) }).catch(err => { console.error(err instanceof Error ? err.message : 'Unknown error: comment not updated') })} onApply={(id: number) => applyOpportunity(id)} onUnbookmark={(id: number) => saveOpportunity(id)} />}
         {!loading && loadingError && (<><ErrorSkeleton />;<div className="text-center py-4 text-red-500 font-medium"><p>{loadingError}</p></div></>)}
         {loading && <LoadingSkeleton count={1} />}
       </main>

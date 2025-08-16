@@ -39,145 +39,147 @@ const MissionsKProfile = () => {
   });
 
   useEffect(() => {
-    const loadMissions = async () => {
-      setMissionsLoading(true);
-      setMissionsError(null);
-      try {
-        const data = await fetchMissions();
-        setMissions(data);
-      } catch (err) {
-        setMissionsError(err instanceof Error ? err.message : 'Failed to load missions');
-      } finally {
-        setMissionsLoading(false);
-      }
-    };
-
-    loadMissions();
-  }, [setMissionsLoading, setMissionsError, setMissions]);
+    setMissionsLoading(true);
+    setMissionsError(null);
+    fetchMissions()
+      .then(data => setMissions(data))
+      .catch(err => {
+        setMissions([]);
+        setMissionsError(err instanceof Error ? err.message : 'Failed to load missions')
+      })
+      .finally(() => setMissionsLoading(false));
+  }, []);
 
   useEffect(() => {
     if (selectedMissionId !== null) {
-      const loadMission = async () => {
-        setMissionLoading(true);
-        setMissionError(null);
-        try {
-          const data = await fetchMissionDetails(selectedMissionId);
-          setMission(data);
-        } catch (err) {
-          setMissionError(err instanceof Error ? err.message : 'Failed to load mission details');
-        } finally {
-          setMissionLoading(false);
-        }
-      };
-
-      loadMission();
+      setMissionLoading(true);
+      setMissionError(null);
+      fetchMissionDetails(selectedMissionId)
+        .then(data => setMission(data))
+        .catch(err => {
+          setMission(null);
+          setMissionError(err instanceof Error ? err.message : 'Failed to load mission details')
+        })
+        .finally(() => setMissionLoading(false));
     }
-  }, [selectedMissionId, setMissionLoading, setMissionError, setMission]);
+  }, [selectedMissionId]);
 
-  const handleAddMission = async () => {
+  const handleAddMission = () => {
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
 
-    try {
-      await addMission(newMission);
-      setSuccessMessage('Mission added successfully!');
-      // Refresh missions list
-      const updatedMissions = await fetchMissions();
-      setMissions(updatedMissions);
-      // Reset form
-      setNewMission({
-        status: 'ONGOING',
-        company: '',
-        contact: '',
-        title: '',
-        start: '',
-        end: '',
-        rate: '',
-        satisfaction: 0,
-        invoices: []
+    addMission(newMission)
+      .then(() => {
+        setSuccessMessage('Mission added successfully!');
+        // Refresh missions list
+        return fetchMissions();
+      })
+      .then((updatedMissions) => {
+        setMissions(updatedMissions);
+        // Reset form
+        setNewMission({
+          status: 'ONGOING',
+          company: '',
+          contact: '',
+          title: '',
+          start: '',
+          end: '',
+          rate: '',
+          satisfaction: 0,
+          invoices: [],
+        });
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to add mission');
+      })
+      .finally(() => {
+        setOperationLoading(false);
       });
-    } catch (err) {
-      setOperationError(err instanceof Error ? err.message : 'Failed to add mission');
-    } finally {
-      setOperationLoading(false);
-    }
   };
 
-  const handleUpdateMission = async () => {
+  const handleUpdateMission = () => {
     if (!mission) return;
 
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
 
-    try {
-      await updateMission(mission);
-      setSuccessMessage('Mission updated successfully!');
-      // Refresh missions list and details
-      const updatedMissions = await fetchMissions();
-      setMissions(updatedMissions);
-      const updatedMission = await fetchMissionDetails(mission.id);
-      setMission(updatedMission);
-    } catch (err) {
-      setOperationError(err instanceof Error ? err.message : 'Failed to update mission');
-    } finally {
-      setOperationLoading(false);
-    }
+    updateMission(mission)
+      .then(() => {
+        setSuccessMessage('Mission updated successfully!');
+        // Refresh missions list and details in parallel
+        return Promise.all([fetchMissions(), fetchMissionDetails(mission.id)]);
+      })
+      .then(([updatedMissions, updatedMission]) => {
+        setMissions(updatedMissions);
+        setMission(updatedMission);
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to update mission');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
   };
 
-  const handleDeleteMission = async (id: number) => {
+  const handleDeleteMission = (id: number) => {
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
 
-    try {
-      await deleteMission(id);
-      setSuccessMessage('Mission deleted successfully!');
-      // Refresh missions list
-      const updatedMissions = await fetchMissions();
-      setMissions(updatedMissions);
-      // Clear selected mission if it was the deleted one
-      if (selectedMissionId === id) {
-        setSelectedMissionId(null);
-        setMission(null);
-      }
-    } catch (err) {
-      setOperationError(err instanceof Error ? err.message : 'Failed to delete mission');
-    } finally {
-      setOperationLoading(false);
-    }
+    deleteMission(id)
+      .then(() => {
+        setSuccessMessage('Mission deleted successfully!');
+        return fetchMissions();
+      })
+      .then((updatedMissions) => {
+        setMissions(updatedMissions);
+        if (selectedMissionId === id) {
+          setSelectedMissionId(null);
+          setMission(null);
+        }
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to delete mission');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
   };
 
-
-  const handleRequestCRA = async (id: number) => {
+  const handleRequestCRA = (id: number) => {
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
 
-    try {
-      await requestCRA(id);
-      setSuccessMessage('CRA requested successfully!');
-    } catch (err) {
-      setOperationError(err instanceof Error ? err.message : 'Failed to request CRA');
-    } finally {
-      setOperationLoading(false);
-    }
+    requestCRA(id)
+      .then(() => {
+        setSuccessMessage('CRA requested successfully!');
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to request CRA');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
   };
 
-  const handleRequestInvoice = async (id: number) => {
+  const handleRequestInvoice = (id: number) => {
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
 
-    try {
-      await requestInvoice(id);
-      setSuccessMessage('Invoice requested successfully!');
-    } catch (err) {
-      setOperationError(err instanceof Error ? err.message : 'Failed to request invoice');
-    } finally {
-      setOperationLoading(false);
-    }
+    requestInvoice(id)
+      .then(() => {
+        setSuccessMessage('Invoice requested successfully!');
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to request invoice');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
   };
 
   const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
