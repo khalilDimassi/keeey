@@ -55,7 +55,10 @@ export default {
 					'3': 'hsl(var(--chart-3))',
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
-				}
+				},
+				kprofile: generateColorScale('#297280'),
+				kplayer: generateColorScale('#215A96'),
+				kpartner: generateColorScale('#A89B7B'),
 			},
 			keyframes: {
 				'accordion-down': {
@@ -81,4 +84,37 @@ export default {
 			}
 		}
 	},
+}
+
+// Function to generate a color scale from 100-900 with your color as 500
+function generateColorScale(baseColor) {
+	return {
+		100: adjustColor(baseColor, 80),
+		200: adjustColor(baseColor, 60),
+		300: adjustColor(baseColor, 40),
+		400: adjustColor(baseColor, 20),
+		500: baseColor,
+		600: adjustColor(baseColor, -20),
+		700: adjustColor(baseColor, -40),
+		800: adjustColor(baseColor, -60),
+		900: adjustColor(baseColor, -80),
+	};
+}
+
+// Helper function to lighten/darken a hex color
+function adjustColor(color, percent) {
+	const num = parseInt(color.replace('#', ''), 16);
+	const amt = Math.round(2.55 * percent);
+	const R = (num >> 16) + amt;
+	const G = ((num >> 8) & 0x00FF) + amt;
+	const B = (num & 0x0000FF) + amt;
+
+	return `#${(
+		0x1000000 +
+		(R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+		(G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+		(B < 255 ? (B < 1 ? 0 : B) : 255)
+	)
+		.toString(16)
+		.slice(1)}`;
 }

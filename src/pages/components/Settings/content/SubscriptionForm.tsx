@@ -1,5 +1,5 @@
 
-const SubscriptionForm = ({ setMessage }: { setMessage: (message: string) => void }) => {
+const SubscriptionForm = ({ mainColor, setMessage }: { mainColor: string, setMessage: (message: string) => void }) => {
     return (
         <div className="relative w-full h-full">
             {/* Stylish Work in Progress Overlay */}

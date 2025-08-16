@@ -4,7 +4,7 @@ import { updateAlertesSettings } from "../services";
 
 
 
-function NotificationsSettings({ alSettings, onRefresh, setMessage }: { alSettings: alertesSettings, onRefresh: () => void, setMessage: (message: string) => void }) {
+function NotificationsSettings({ mainColor, alSettings, onRefresh, setMessage }: { mainColor: string, alSettings: alertesSettings, onRefresh: () => void, setMessage: (message: string) => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -25,11 +25,11 @@ function NotificationsSettings({ alSettings, onRefresh, setMessage }: { alSettin
           type="checkbox"
           checked={checked}
           onChange={onChange}
-          className="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-[#30797F] cursor-pointer transition-colors duration-300 ease-in-out"
+          className={`peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-[${mainColor}] cursor-pointer transition-colors duration-300 ease-in-out`}
         />
         <label
           htmlFor={id}
-          className="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-all duration-300 ease-in-out peer-checked:translate-x-6 peer-checked:border-[#30797F] peer-checked:scale-110 cursor-pointer"
+          className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-all duration-300 ease-in-out peer-checked:translate-x-6 peer-checked:border-[${mainColor}] peer-checked:scale-110 cursor-pointer`}
         />
       </div>
     );
@@ -75,11 +75,11 @@ function NotificationsSettings({ alSettings, onRefresh, setMessage }: { alSettin
       </div>
 
       <header className="mb-10 flex flex-row items-center justify-between">
-        <h2 className="text-3xl font-semibold text-[#30797F]">
+        <h2 className={`text-3xl font-semibold text-[${mainColor}]`}>
           Alertes / notifications
         </h2>
 
-        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className={`bg-[${mainColor}] text-white px-6 py-2 mr-8 rounded-3xl font-semibold`}>
           {loading ? "Chargement..." : "Terminer"}
         </button>
       </header>

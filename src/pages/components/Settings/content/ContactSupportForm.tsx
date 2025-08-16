@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supportTicket } from "../types";
 import { sendSupportTicket } from "../services";
 
-function ContactSupportForm({ setMessage }: { setMessage: (message: string) => void }) {
+function ContactSupportForm({ mainColor, setMessage }: { mainColor: string, setMessage: (message: string) => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -46,11 +46,11 @@ function ContactSupportForm({ setMessage }: { setMessage: (message: string) => v
   return (
     <>
       <header className="mb-10 flex flex-row items-center justify-between">
-        <h2 className="text-3xl font-semibold text-[#30797F]">
+        <h2 className={`text-3xl font-semibold text-[${mainColor}]`}>
           Contact / Support
         </h2>
 
-        <button onClick={(e) => handleSubmit(e)} disabled={loading} className="bg-[#30797F] text-white px-6 py-2 mr-8 rounded-3xl font-semibold hover:bg-[#30797F] transition-all">
+        <button onClick={(e) => handleSubmit(e)} disabled={loading} className={`bg-[${mainColor}] text-white px-6 py-2 mr-8 rounded-3xl font-semibold`}>
           {loading ? "Chargement..." : "Envoyer"}
         </button>
       </header>

@@ -2,11 +2,11 @@ import { Route, Routes } from 'react-router-dom';
 
 import ContactsKPlayer from '../pages/K-player/Contact/ContactsKPlayer';
 import MissionsKplayer from '../pages/K-player/Mission/MissionsKplayer';
-import ReglageKPlayer from '../pages/K-player/Reglage/ReglageKPlayer';
 import ProfileKPlayer from '../pages/K-player/Profile/ProfileKPlayer';
 import OpportunitiesKPlayer from '../pages/K-player/Opportunities/OpportunitiesKPlayer';
 import OpportunityDetailsKPlayer from '../pages/K-player/Opportunities/content/OpportunityDetailsKPlayer/OpportunityDetailsKPlayer';
 import NewOpportunityKPlayer from '../pages/K-player/Opportunities/content/NewOpportunityKPlayer/NewOpportunityKPlayer';
+import SettingsPage from '../pages/components/Settings/SettingsPage';
 
 const KPlayerRoutes = () => {
     return (
@@ -18,7 +18,7 @@ const KPlayerRoutes = () => {
             <Route path="opportunities/new" element={<NewOpportunityKPlayer />} />
             <Route path="contacts" element={<ContactsKPlayer />} />
             <Route path="missions" element={<MissionsKplayer />} />
-            <Route path="settings" element={<ReglageKPlayer />} />
+            <Route path="settings" element={<SettingsPage mainColor='#215A96' />} />
 
             <Route path="*" element={<ProfileKPlayer />} />
         </Routes>

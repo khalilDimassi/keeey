@@ -10,7 +10,8 @@ import ContactSupportForm from "./content/ContactSupportForm";
 import SubscriptionForm from "./content/SubscriptionForm";
 
 
-const ReglageKProfile = () => {
+const SettingsPage = ({ mainColor }: { mainColor: string }) => {
+  const [refresh, setRefresh] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
   const [alSettings, setAlertesSettings] = useState<alertesSettings>({
     newMatchingOffer: false,
@@ -31,56 +32,48 @@ const ReglageKProfile = () => {
       id: "pwd",
       label: "Modifier le mot de passe",
       icon: <Key className="w-5 h-5" />,
-      component: <ChangePasswordForm setMessage={() => { setMessage }} />
+      component: <ChangePasswordForm mainColor={mainColor} setMessage={() => { setMessage }} />
     },
     {
       id: "notif",
       label: "Alertes / Notifications",
       icon: <Bell className="w-5 h-5" />,
-      component: <NotificationsSettings alSettings={alSettings} onRefresh={() => { onRefresh }} setMessage={() => { setMessage }} />
+      component: <NotificationsSettings mainColor={mainColor} alSettings={alSettings} onRefresh={() => { setRefresh(prev => prev + 1) }} setMessage={() => { setMessage }} />
     },
     {
       id: "security",
       label: "Confidentialité et accès",
       icon: <Shield className="w-5 h-5" />,
-      component: <Confidentialite confSettings={confSettings} onRefresh={() => { onRefresh }} setMessage={() => { setMessage }} />
+      component: <Confidentialite mainColor={mainColor} confSettings={confSettings} onRefresh={() => { setRefresh(prev => prev + 1) }} setMessage={() => { setMessage }} />
     },
     {
       id: "support",
       label: "Contact / Support",
       icon: <Headphones className="w-5 h-5" />,
-      component: <ContactSupportForm setMessage={() => { setMessage }} />
+      component: <ContactSupportForm mainColor={mainColor} setMessage={() => { setMessage }} />
     },
     {
       id: "sub",
       label: "Abonnement",
       icon: <CreditCard className="w-5 h-5" />,
-      component: <SubscriptionForm setMessage={() => { setMessage }} />
+      component: <SubscriptionForm mainColor={mainColor} setMessage={() => { setMessage }} />
     },
   ];
 
   const [selectedMenu, setSelectedMenu] = useState<MenuItem['id']>(menuItems[0].id);
   const selectedComponent = menuItems.find(item => item.id === selectedMenu)?.component;
 
-  const loadData = async () => {
-    try {
-      const alData = await loadAlertesSettings();
-      const confData = await loadConfidalitySettings();
-      setAlertesSettings(alData);
-      setConfSettings(confData);
-    } catch (error) {
-      console.error('Error loading settings data:', error);
-      setMessage("Une erreur s'est produite lors du chargement des données.");
-    }
-  };
-
   useEffect(() => {
-    loadData();
-  }, [setAlertesSettings]);
-
-  const onRefresh = () => {
-    loadData();
-  };
+    Promise.all([loadAlertesSettings(), loadConfidalitySettings()])
+      .then(([alData, confData]) => {
+        setAlertesSettings(alData);
+        setConfSettings(confData);
+      })
+      .catch((error) => {
+        console.error('Error loading settings data:', error);
+        setMessage("Une erreur s'est produite lors du chargement des données.");
+      });
+  }, [setAlertesSettings, refresh]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -94,7 +87,7 @@ const ReglageKProfile = () => {
     <div className="min-h-screen w-full flex flex-col">
       <div className="flex items-center justify-between space-x-3 my-4">
         <div className="flex items-center gap-2">
-          <Settings className="w-8 h-8 text-[#297280]" />
+          <Settings className={`w-8 h-8 text-[${mainColor}]`} />
           <h1 className="text-xl font-semibold text-black">
             Réglage
           </h1>
@@ -124,12 +117,12 @@ const ReglageKProfile = () => {
                 className={`flex justify-between items-center gap-3 p-3 rounded-xl cursor-pointer
                 transition-all duration-200 group
                 ${selectedMenu === item.id
-                    ? "bg-[#297280]/10 text-[#297280]"
+                    ? `bg-[${mainColor}]/10 text-[${mainColor}]`
                     : "hover:bg-gray-100 text-gray-700"}`}
                 onClick={() => setSelectedMenu(item.id)}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`${selectedMenu === item.id ? "text-[#297280]" : "text-gray-600"}`}>
+                  <span className={`${selectedMenu === item.id ? `text-[${mainColor}]` : "text-gray-600"}`}>
                     {item.icon}
                   </span>
                   <span className="hidden lg:inline text-sm font-medium">
@@ -140,7 +133,7 @@ const ReglageKProfile = () => {
                   </span>
                 </div>
                 <ChevronRight
-                  className={`w-5 h-5 transition-all duration-200 ${selectedMenu === item.id ? "text-[#297280]" : "text-gray-500"}`}
+                  className={`w-5 h-5 transition-all duration-200 ${selectedMenu === item.id ? `text-[${mainColor}]` : "text-gray-500"}`}
                 />
               </li>
             ))}
@@ -158,4 +151,4 @@ const ReglageKProfile = () => {
   );
 }
 
-export default ReglageKProfile;
+export default SettingsPage;
