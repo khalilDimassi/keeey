@@ -249,10 +249,10 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
             />
           </div>
           <div>
-            <label htmlFor="candidat_profile" className="block text-sm font-medium text-gray-700 mb-1">Profil attendu</label>
+            <label htmlFor="candidate_profile" className="block text-sm font-medium text-gray-700 mb-1">Profil attendu</label>
             <textarea
-              id="candidat_profile"
-              name="candidat_profile"
+              id="candidate_profile"
+              name="candidate_profile"
               value={formData.candidate_profile || ''}
               onChange={handleChange}
               placeholder="Profil attendu"
