@@ -70,16 +70,15 @@ const NewOpportunityKPlayer = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadSectors = async () => {
-      try {
-        const sectors = await fetchSectors();
+    setError(null);
+    fetchSectors()
+      .then((sectors) => {
         setSectors(sectors);
-      } catch (err) {
+      })
+      .catch((err) => {
+        setSectors([]);
         setError(err instanceof Error ? err.message : "An unknown error occurred.");
-      }
-    };
-
-    loadSectors();
+      });
   }, []);
 
   const handleOnChange = (tab: TabType) => (data: any) => {
@@ -104,25 +103,24 @@ const NewOpportunityKPlayer = () => {
     if (!generalIndormation || !skills || !criterias || !diffusion) {
       return;
     }
-
     setSubmitting(true);
     setError(null);
-    try {
-      if (generalIndormation.opportunity_role === "") {
-        generalIndormation.opportunity_role = "LIVEWELL";
-      }
+    const payload = {
+      ...generalIndormation,
+      opportunity_role: generalIndormation.opportunity_role || "LIVEWELL",
+      status: generalIndormation.status || "OPEN",
+    };
 
-      if (generalIndormation.status === "") {
-        generalIndormation.status = "OPEN";
-      }
-
-      const response = await createFullOpportunity(generalIndormation, skills, criterias, requirements, diffusion);
-      navigate("/kplayer/opportunities/" + response.opportunity_id);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
-    } finally {
-      setSubmitting(false);
-    }
+    createFullOpportunity(payload, skills, criterias, requirements, diffusion)
+      .then((response) => {
+        navigate("/kplayer/opportunities/" + response.opportunity_id);
+      })
+      .catch((error) => {
+        setError(error instanceof Error ? error.message : "An unknown error occurred");
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   return (

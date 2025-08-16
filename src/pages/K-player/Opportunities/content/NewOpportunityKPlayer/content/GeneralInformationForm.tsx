@@ -113,10 +113,8 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
                 </div>
 
                 {orgMembers
-                  .filter(member =>
-                    `${member.first_name} ${member.last_name}`.toLowerCase().includes(formData.operational_manager?.toLowerCase() || '')
-                  )
-                  .map((member) => (
+                  ?.filter((member: OrgMember) => `${member.first_name} ${member.last_name}`.toLowerCase().includes(formData.operational_manager?.toLowerCase() || ''))
+                  ?.map((member: OrgMember) => (
                     <div
                       key={member.ID}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -136,13 +134,10 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
                     </div>
                   ))
                 }
-                {orgMembers.filter(member =>
-                  `${member.first_name} ${member.last_name}`.toLowerCase().includes(formData.operational_manager?.toLowerCase() || '')
-                ).length === 0 && (
-                    <div className="px-4 py-2 text-gray-500">
-                      Aucun membre trouvé
-                    </div>
-                  )}
+                {orgMembers
+                  ?.filter(member => `${member.first_name} ${member.last_name}`.toLowerCase().includes(formData.operational_manager?.toLowerCase() || ''))
+                  ?.length === 0 && (<div className="px-4 py-2 text-gray-500">Aucun membre trouvé</div>)
+                }
               </div>
             )}
           </div>
