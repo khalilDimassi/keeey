@@ -122,7 +122,7 @@ const ContactsKProfile = () => {
             }
           })
           .catch((error) => {
-            setDataError(error instanceof Error ? error.message : String(error));
+            setDataError(error instanceof Error ? error.message : 'An unknown error occurred');
           })
           .finally(() => {
             setLoading(false);
