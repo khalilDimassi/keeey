@@ -260,7 +260,6 @@ const GeneralInformationForm = ({ onChange, formData }: { onChange: (data: any) 
               rows={8}
             />
           </div>
-
         </div>
       </div>
     </div>
