@@ -20,24 +20,21 @@ const ContactsKProfile = () => {
   const [formTouched, setFormTouched] = useState(false);
   const [selectedContact, setSelectedContact] = useState<contactFetch | null>(null);
   const [activeDetailsTab, setActiveDetailsTab] = useState('informations');
-  const [occupationType, setOccupationType] = useState('');
-
 
 
   useEffect(() => {
-    const fetchContacts = async () => {
-      setDataError(null);
-      setLoading(true);
-      const [data, error] = await loadContacts();
-      if (error) {
-        setDataError(error);
-      } else if (data) {
-        setContacts(data);
-      }
-      setLoading(false);
-    };
-
-    fetchContacts();
+    loadContacts()
+      .then((data) => {
+        if (data) {
+          setContacts(data);
+        }
+      })
+      .catch((error) => {
+        setDataError(error instanceof Error ? error.message : String(error));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -83,7 +80,6 @@ const ContactsKProfile = () => {
 
       alert("Contact deleted successfully!");
     } catch (error) {
-      console.error("Failed to delete contact:", error);
       setPostError("Failed to delete contact: " + (error instanceof Error ? error.message : String(error)));
     }
   };
@@ -99,8 +95,8 @@ const ContactsKProfile = () => {
     }
   };
 
-  async function handleSubmission(contactType: string, form: EventTarget & HTMLFormElement) {
-    const res = await createContact(contactType, {
+  function handleSubmission(contactType: string, form: EventTarget & HTMLFormElement) {
+    createContact(contactType, {
       gender: form.gender.value,
       first_name: form.first_name.value,
       last_name: form.last_name.value,
@@ -110,18 +106,28 @@ const ContactsKProfile = () => {
       phone: form.phone?.value || "",
       notes: form.notes?.value || "",
       request_reference: form.request_reference.checked
-    });
-
-    if (res) {
-      setPostError(res);
-      setShowForm(false);
-      setFormTouched(false);
-    } else {
-      setShowForm(false);
-      setFormTouched(false);
-      setDataError(null);
-      loadContacts();
-    }
+    })
+      .then(() => {
+        setShowForm(false);
+        setFormTouched(false);
+      })
+      .catch((error) => {
+        setPostError(error instanceof Error ? error.message : 'An unknown error occurred');
+      })
+      .finally(() => {
+        loadContacts()
+          .then((data) => {
+            if (data) {
+              setContacts(data);
+            }
+          })
+          .catch((error) => {
+            setDataError(error instanceof Error ? error.message : String(error));
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      });
   }
 
   const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
@@ -254,7 +260,7 @@ const ContactsKProfile = () => {
               className="ml-auto h-fit flex self-center items-center bg-[#297280] text-white text-sm px-5 py-1.5 rounded-full shadow-md hover:bg-teal-900"
               onClick={handleNewContact}
             >
-              <Plus className="w-3 h-3 mr-1" /> Ajouter un {activeTab === 'cooptation' ? 'parrain' : 'contact'}
+              <Plus className="w-3 h-3 mr-1" /> Ajouter {activeTab === 'cooptation' ? 'une cooptation' : 'un contact'}
             </button>
           </div>
 
@@ -417,7 +423,7 @@ const ContactsKProfile = () => {
               </form>
             </div>
           </div>
-        ) : showForm && activeTab === 'cooptation' ? (
+        ) : showForm && activeTab === 'cooptation' && displayedContacts.filter(contact => contact.role === 'REFERRAL').length < 6 ? (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in"
             onClick={closeForm}
@@ -440,21 +446,16 @@ const ContactsKProfile = () => {
                   e.preventDefault();
                   const form = e.currentTarget;
 
-                  const occupationValue =
-                    form.occupationType.value === 'employee'
-                      ? form.occupationDetails.value
-                      : form.occupationType.value;
-
                   createContact("SPONSOR", {
                     gender: form.gender.value,
                     first_name: form.first_name.value,
                     last_name: form.last_name.value,
                     email: form.email.value,
-                    company: form.company.value,
-                    occupation: occupationValue,
+                    company: "",
+                    occupation: form.occupationDetails.value,
                     phone: form.phone?.value || "",
                     notes: form.notes?.value || "",
-                    request_reference: form.request_reference.checked
+                    request_reference: false
                   });
 
                   setShowForm(false);
@@ -493,51 +494,16 @@ const ContactsKProfile = () => {
                   />
                 </div>
 
-                {/* Company & Occupation */}
-                <div className="flex gap-4">
-                  <div className="w-1/2">
-                    <select
-                      name="occupationType"
-                      className="w-full border rounded-xl px-3 py-2 text-sm"
-                      onChange={(e) => {
-                        setFormTouched(true);
-                        setOccupationType(e.target.value);
-                      }}
-                    >
-                      <option value="">Sélectionner une profession...</option>
-                      <option value="freelancer">Indépendant</option>
-                      <option value="employee">Employé</option>
-                      <option value="businessOwner">Propriétaire d'entreprise</option>
-                    </select>
-                  </div>
-
-                  <div className="w-1/2">
-                    <input
-                      type="text"
-                      placeholder={(occupationType === 'freelancer' || occupationType === '') ? 'Non applicable' : "Nom de l'entreprise"}
-                      name="company"
-                      className={`w-full border rounded-xl px-3 py-2 text-sm transition-all ${(occupationType === 'freelancer' || occupationType === '')
-                        ? 'bg-gray-100 cursor-not-allowed opacity-70'
-                        : 'bg-white'
-                        }`}
-                      disabled={(occupationType === 'freelancer' || occupationType === '')}
-                      onChange={() => setFormTouched(true)}
-                    />
-                  </div>
+                {/* Occupation */}
+                <div className="mt-4">
+                  <input
+                    type="text"
+                    placeholder="Fonction (optionnel)"
+                    name="occupationDetails"
+                    className="w-full border rounded-xl px-3 py-2 text-sm"
+                    onChange={() => setFormTouched(true)}
+                  />
                 </div>
-
-                {/* Occupation details field - only shown if not freelancer */}
-                {occupationType && occupationType === 'employee' && (
-                  <div className="mt-4">
-                    <input
-                      type="text"
-                      placeholder="Votre titre de poste"
-                      name="occupationDetails"
-                      className="w-full border rounded-xl px-3 py-2 text-sm"
-                      onChange={() => setFormTouched(true)}
-                    />
-                  </div>
-                )}
 
                 {/* Email & Phone */}
                 <div className="flex gap-4">
@@ -570,6 +536,7 @@ const ContactsKProfile = () => {
                 <div className="flex justify-between items-center px-4">
                   <button
                     type="submit"
+                    disabled={!formTouched}
                     className="bg-[#297280] flex items-center text-white px-4 py-1 rounded-full h-fit hover:bg-teal-900 transition-all duration-200"
                   >
                     <Plus className="w-3 h-3 mr-1" /> Ajouter
