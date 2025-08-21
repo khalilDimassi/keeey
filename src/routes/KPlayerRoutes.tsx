@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 
 import ContactsKPlayer from '../pages/K-player/Contact/ContactsKPlayer';
-import MissionsKplayer from '../pages/K-player/Mission/MissionsKplayer';
 import ProfileKPlayer from '../pages/K-player/Profile/ProfileKPlayer';
 import OpportunitiesKPlayer from '../pages/K-player/Opportunities/OpportunitiesKPlayer';
 import OpportunityDetailsKPlayer from '../pages/K-player/Opportunities/content/OpportunityDetailsKPlayer/OpportunityDetailsKPlayer';
 import NewOpportunityKPlayer from '../pages/K-player/Opportunities/content/NewOpportunityKPlayer/NewOpportunityKPlayer';
 import SettingsPage from '../pages/components/Settings/SettingsPage';
+import MissionsKplayer from '../pages/K-player/Mission/MissionsKplayer';
 
 const KPlayerRoutes = () => {
     return (
