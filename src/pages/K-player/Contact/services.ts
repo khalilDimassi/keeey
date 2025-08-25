@@ -15,16 +15,24 @@ export const fetchContacts = async () => {
     }
 };
 
-export const addContact = async (role: contactRole, data: contact) => {
+export const addContact = async (contact_role: contactRole, data?: contact) => {
     try {
-        const response = await axios.post<contact>(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/${role}`,
+        if (!data) {
+            throw new Error("Missing referral data.");
+        } else if (contact_role !== "INTERNAL-CONTACT" && contact_role !== "EXTERNAL-CONTACT" && contact_role !== "CONSULTANT") {
+            throw new Error("Invalid contact role");
+        }
+
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/users/contacts/${contact_role}`,
             data,
             { headers: getAuthHeader() }
         );
-        return response.data;
-    } catch (error) {
-        throw new Error('Failed to add contact: ' + (error instanceof Error ? error.message : String(error)));
+        if (response.data.message.includes("User already exists")) {
+            alert("L'adresse e-mail du contact existe déjà dans la base de données. Lien création avec les données d'origine. Contact ajouté dans la liste de references.");
+        }
+    } catch (error: any) {
+        throw error || new Error("Failed to create contact: " + (error instanceof Error ? error.message : String(error)));
     }
 };
 
