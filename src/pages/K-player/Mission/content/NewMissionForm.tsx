@@ -1,5 +1,5 @@
 import { Plus, Star, Trash2, ChevronDown } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { DetailedMission, Contact, Company } from "../types";
 import { fetchCompanies, fetchContacts } from "../services";
 
@@ -13,67 +13,114 @@ interface NewMissionFormProps {
 const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMissionFormProps) => {
   const [showForm, setShowForm] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
-
-  // States for companies
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [loadingCompanies, setLoadingCompanies] = useState(false);
-  const [companyError, setCompanyError] = useState<string | null>(null);
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
-
-  // States for contacts
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loadingContacts, setLoadingContacts] = useState(false);
-  const [contactError, setContactError] = useState<string | null>(null);
   const [showContactDropdown, setShowContactDropdown] = useState(false);
 
-  useEffect(() => {
-    if (showForm) {
-      // Load companies when form is shown
-      const loadCompanies = async () => {
-        setLoadingCompanies(true);
-        setCompanyError(null);
-        try {
-          const data = await fetchCompanies();
-          setCompanies(data);
-        } catch (err) {
-          setCompanyError(err instanceof Error ? err.message : 'Failed to load companies');
-        } finally {
-          setLoadingCompanies(false);
-        }
-      };
+  // Data states
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loadingData, setLoadingData] = useState({ companies: false, contacts: false });
+  const [errors, setErrors] = useState({ companies: null as string | null, contacts: null as string | null });
 
-      loadCompanies();
+  // Memoized filtered data
+  const filteredCompanies = useMemo(() => {
+    return companies.filter(company =>
+      company.name.toLowerCase().includes(newMission.company.toLowerCase())
+    );
+  }, [companies, newMission.company]);
+
+  const filteredContacts = useMemo(() => {
+    return contacts.filter(contact =>
+      `${contact.first_name} ${contact.last_name}`
+        .toLowerCase()
+        .includes(newMission.contact.toLowerCase())
+    );
+  }, [contacts, newMission.contact]);
+
+  // Data loading functions
+  const loadCompanies = useCallback(async () => {
+    setLoadingData(prev => ({ ...prev, companies: true }));
+    setErrors(prev => ({ ...prev, companies: null }));
+    try {
+      const data = await fetchCompanies();
+      setCompanies(data);
+    } catch (err) {
+      setErrors(prev => ({
+        ...prev,
+        companies: err instanceof Error ? err.message : 'Failed to load companies'
+      }));
+    } finally {
+      setLoadingData(prev => ({ ...prev, companies: false }));
     }
-  }, [showForm, setLoadingCompanies, setCompanyError, setCompanies]);
+  }, []);
 
+  const loadContacts = useCallback(async () => {
+    setLoadingData(prev => ({ ...prev, contacts: true }));
+    setErrors(prev => ({ ...prev, contacts: null }));
+    try {
+      const data = await fetchContacts();
+      setContacts(data);
+    } catch (err) {
+      setErrors(prev => ({
+        ...prev,
+        contacts: err instanceof Error ? err.message : 'Failed to load contacts'
+      }));
+    } finally {
+      setLoadingData(prev => ({ ...prev, contacts: false }));
+    }
+  }, []);
+
+  // Load data when form is shown
   useEffect(() => {
     if (showForm) {
-      // Load contacts when form is shown
-      const loadContacts = async () => {
-        setLoadingContacts(true);
-        setContactError(null);
-        try {
-          const data = await fetchContacts();
-          setContacts(data);
-        } catch (err) {
-          setContactError(err instanceof Error ? err.message : 'Failed to load contacts');
-        } finally {
-          setLoadingContacts(false);
-        }
-      };
-
+      loadCompanies();
       loadContacts();
     }
-  }, [showForm, setLoadingContacts, setContactError, setContacts]);
+  }, [showForm, loadCompanies, loadContacts]);
 
   const closeForm = () => {
     if (!formTouched) {
       setShowForm(false);
+    } else if (confirm("Des modifications seront perdues. Fermer le formulaire ?")) {
+      setShowForm(false);
+      setFormTouched(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof Omit<DetailedMission, 'id'>, value: string) => {
+    setFormTouched(true);
+    setNewMission(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCompanySelect = (companyName: string) => {
+    handleInputChange('company', companyName);
+    setShowCompanyDropdown(false);
+  };
+
+  const handleContactSelect = (contactName: string) => {
+    handleInputChange('contact', contactName);
+    setShowContactDropdown(false);
+  };
+
+  const handleSatisfactionChange = (rating: number) => {
+    setFormTouched(true);
+    setNewMission(prev => ({ ...prev, satisfaction: rating }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit();
+    setFormTouched(false);
+    setShowForm(false);
+  };
+
+  const toggleDropdown = (dropdown: 'company' | 'contact') => {
+    if (dropdown === 'company') {
+      setShowCompanyDropdown(prev => !prev);
+      setShowContactDropdown(false);
     } else {
-      if (confirm("Des modifications seront perdues. Fermer le formulaire ?")) {
-        setShowForm(false);
-        setFormTouched(false);
-      }
+      setShowContactDropdown(prev => !prev);
+      setShowCompanyDropdown(false);
     }
   };
 
@@ -95,9 +142,7 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
     >
       <div
         className="bg-white p-4 rounded-xl shadow-md w-full max-w-lg"
-        onClick={(e) => {
-          e.stopPropagation()
-        }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4 border-b-2 border-[#215A96] pb-2">
           <h2 className="text-lg font-semibold text-gray-700">Ajouter une mission</h2>
@@ -106,15 +151,7 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
           </button>
         </div>
 
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
-            setFormTouched(false);
-            setShowForm(false);
-          }}
-        >
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
               Titre de la mission
@@ -123,12 +160,8 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
               type="text"
               id="title"
               placeholder="Titre"
-              name="title"
               value={newMission.title}
-              onChange={(e) => {
-                setFormTouched(true);
-                setNewMission({ ...newMission, title: e.target.value });
-              }}
+              onChange={(e) => handleInputChange('title', e.target.value)}
               className="w-full border rounded-xl px-3 py-2 text-sm"
               required
             />
@@ -143,73 +176,45 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
                 <input
                   type="text"
                   id="company"
-                  placeholder={loadingCompanies ? "Chargement..." : "Entreprise"}
-                  name="company"
+                  placeholder={loadingData.companies ? "Chargement..." : "Entreprise"}
                   value={newMission.company}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    setFormTouched(true);
-                    setNewMission({ ...newMission, company: e.target.value });
-                    setShowCompanyDropdown(true);
-                    setShowContactDropdown(false);
-                  }}
-                  onFocus={() => {
-                    setShowCompanyDropdown(true);
-                    setShowContactDropdown(false);
-                  }}
+                  onChange={(e) => handleInputChange('company', e.target.value)}
+                  onFocus={() => toggleDropdown('company')}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
-                  disabled={loadingCompanies}
+                  disabled={loadingData.companies}
                 />
                 <ChevronDown
                   size={20}
                   className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowCompanyDropdown(!showCompanyDropdown)
-                    setShowContactDropdown(false);
-                  }}
+                  onClick={() => toggleDropdown('company')}
                 />
               </div>
 
-              {companyError && (
-                <p className="text-red-500 text-xs mt-1">{companyError}</p>
+              {errors.companies && (
+                <p className="text-red-500 text-xs mt-1">{errors.companies}</p>
               )}
 
               {showCompanyDropdown && (
                 <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                  {companies
-                    .filter(company =>
-                      company.name.toLowerCase().includes(newMission.company.toLowerCase())
-                    )
-                    .map((company) => (
-                      <div
-                        key={company.id}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          setNewMission({ ...newMission, company: company.name });
-                          setShowCompanyDropdown(false);
-                          setFormTouched(true);
-                        }}
-                      >
-                        <span
-                          className="font-sm border-l-4 pl-3 border-green-500"
-                        >{company.name}</span>
-                      </div>
-                    ))
-                  }
-                  {companies.filter(company =>
-                    company.name.toLowerCase().includes(newMission.company.toLowerCase())
-                  ).length === 0 && (
-                      <div
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
-                        onClick={() => {
-                          setShowCompanyDropdown(false);
-                          setFormTouched(true);
-                        }}
-                      >
-                        + Créer "{newMission.company}"
-                      </div>
-                    )}
+                  {filteredCompanies.map((company) => (
+                    <div
+                      key={company.id}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleCompanySelect(company.name)}
+                    >
+                      <span className="font-sm border-l-4 pl-3 border-green-500">
+                        {company.name}
+                      </span>
+                    </div>
+                  ))}
+                  {filteredCompanies.length === 0 && newMission.company && (
+                    <div
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
+                      onClick={() => setShowCompanyDropdown(false)}
+                    >
+                      + Créer "{newMission.company}"
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -222,80 +227,52 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
                 <input
                   type="text"
                   id="contact"
-                  placeholder={loadingContacts ? "Chargement..." : "Contact"}
-                  name="contact"
+                  placeholder={loadingData.contacts ? "Chargement..." : "Contact"}
                   value={newMission.contact}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    setFormTouched(true);
-                    setNewMission({ ...newMission, contact: e.target.value });
-                    setShowContactDropdown(true);
-                    setShowCompanyDropdown(false);
-                  }}
-                  onFocus={() => {
-                    setShowContactDropdown(true)
-                    setShowCompanyDropdown(false);
-                  }}
+                  onChange={(e) => handleInputChange('contact', e.target.value)}
+                  onFocus={() => toggleDropdown('contact')}
                   className="w-full border rounded-xl px-3 py-2 text-sm pr-8"
-                  disabled={loadingContacts}
+                  disabled={loadingData.contacts}
                 />
                 <ChevronDown
                   size={20}
                   className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowContactDropdown(!showContactDropdown)
-                    setShowCompanyDropdown(false);
-                  }}
+                  onClick={() => toggleDropdown('contact')}
                 />
               </div>
 
-              {contactError && (
-                <p className="text-red-500 text-xs mt-1">{contactError}</p>
+              {errors.contacts && (
+                <p className="text-red-500 text-xs mt-1">{errors.contacts}</p>
               )}
 
               {showContactDropdown && (
                 <div className="absolute z-10 mt-1 w-full max-h-32 bg-white border border-gray-200 rounded-lg shadow-lg overflow-auto">
-                  {contacts
-                    .filter(contact =>
-                      `${contact.first_name} ${contact.last_name}`
-                        .toLowerCase()
-                        .includes(newMission.contact.toLowerCase())
-                    )
-                    .map((contact) => (
-                      <div
-                        key={contact.id}
-                        className="px-4 py-2 bg-gray-50s hover:bg-gray-100 cursor-pointer border-b border-gray-200"
-                        onClick={() => {
-                          setNewMission({
-                            ...newMission,
-                            contact: `${contact.first_name} ${contact.last_name}`
-                          });
-                          setShowContactDropdown(false);
-                          setFormTouched(true);
-                        }}
+                  {filteredContacts.map((contact) => (
+                    <div
+                      key={contact.id}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200"
+                      onClick={() => handleContactSelect(`${contact.first_name} ${contact.last_name}`)}
+                    >
+                      <span
+                        className={`font-sm border-l-4 pl-3 ${contact.status === "REGISTERED"
+                            ? "border-green-500"
+                            : contact.status === "NOT-REGISTERED"
+                              ? "border-orange-500"
+                              : "border-red-500"
+                          }`}
                       >
-                        <span
-                          className={`font-sm border-l-4 pl-3 ${contact.status === "REGISTERED" ? "border-green-500" : contact.status === "NOT-REGISTERED" ? "border-orange-500" : "border-red-500"}`}
-                        >{contact.first_name} {contact.last_name}</span>
-                      </div>
-                    ))
-                  }
-                  {contacts.filter(contact =>
-                    `${contact.first_name} ${contact.last_name}`
-                      .toLowerCase()
-                      .includes(newMission.contact.toLowerCase())
-                  ).length === 0 && newMission.contact.length > 0 && (
-                      <div
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
-                        onClick={() => {
-                          setShowContactDropdown(false);
-                          setFormTouched(true);
-                        }}
-                      >
-                        + Créer "{newMission.contact}"
-                      </div>
-                    )}
+                        {contact.first_name} {contact.last_name}
+                      </span>
+                    </div>
+                  ))}
+                  {filteredContacts.length === 0 && newMission.contact && (
+                    <div
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
+                      onClick={() => setShowContactDropdown(false)}
+                    >
+                      + Créer "{newMission.contact}"
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -309,12 +286,8 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
               <input
                 type="date"
                 id="start"
-                name="start"
                 value={newMission.start}
-                onChange={(e) => {
-                  setFormTouched(true);
-                  setNewMission({ ...newMission, start: e.target.value });
-                }}
+                onChange={(e) => handleInputChange('start', e.target.value)}
                 className="w-full border rounded-xl px-3 py-2 text-sm"
                 required
               />
@@ -326,12 +299,8 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
               <input
                 type="date"
                 id="end"
-                name="end"
                 value={newMission.end}
-                onChange={(e) => {
-                  setFormTouched(true);
-                  setNewMission({ ...newMission, end: e.target.value });
-                }}
+                onChange={(e) => handleInputChange('end', e.target.value)}
                 className="w-full border rounded-xl px-3 py-2 text-sm"
               />
             </div>
@@ -346,12 +315,8 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
                 type="text"
                 id="rate"
                 placeholder="TJM"
-                name="rate"
                 value={newMission.rate}
-                onChange={(e) => {
-                  setFormTouched(true);
-                  setNewMission({ ...newMission, rate: e.target.value });
-                }}
+                onChange={(e) => handleInputChange('rate', e.target.value)}
                 className="w-full border rounded-xl px-3 py-2 text-sm"
               />
             </div>
@@ -364,13 +329,10 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
                   <Star
                     key={index}
                     size={20}
-                    cursor={"pointer"}
+                    cursor="pointer"
                     fill={index < newMission.satisfaction ? "#EAB308" : "none"}
                     stroke={index < newMission.satisfaction ? "#EAB308" : "#D1D5DB"}
-                    onClick={() => {
-                      setFormTouched(true);
-                      setNewMission({ ...newMission, satisfaction: index + 1 });
-                    }}
+                    onClick={() => handleSatisfactionChange(index + 1)}
                   />
                 ))}
               </div>

@@ -1,8 +1,8 @@
 import { DetailedMission, Invoice } from "../types";
+import NewInvoiceForm from "./NewInvoiceForm";
 
-const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { mission: DetailedMission, handleCRA: (invoiceId: number) => void, handleInvoice: (invoiceId: number) => void, loading: boolean }) => {
+const MissionDetails = ({ mission, handleCRA, handleInvoice, handleAddInvoice, loading }: { mission: DetailedMission, handleCRA: (invoiceId: number) => void, handleInvoice: (invoiceId: number) => void, handleAddInvoice: (newInvoice: Invoice) => void, loading: boolean }) => {
   if (!mission) return null;
-
   return (
     <div className="space-y-4">
       {loading ? (
@@ -20,7 +20,12 @@ const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { missio
                 <th>Descriptif Frais</th>
                 <th>Ecart</th>
                 <th>Montant HT</th>
-                <th></th>
+                <th>
+                  <NewInvoiceForm
+                    missionID={mission.id}
+                    handleAddInvoice={handleAddInvoice}
+                  />
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -42,16 +47,18 @@ const MissionDetails = ({ mission, handleCRA, handleInvoice, loading }: { missio
                     <td className="p-3">{invoice.month}</td>
                     <td className="p-3">{invoice.days}</td>
                     <td className="p-3">{invoice.costs}</td>
-                    <td className="p-3">{invoice.description}</td>
+                    <td className="p-3 text-left text-wrap w-[600px]">{invoice.description}</td>
                     <td className="p-3">{invoice.gap}</td>
                     <td className="p-3">{invoice.amountHT}</td>
                     <td className="py-3 pr-3 flex flex-row justify-around items-center gap-2">
                       <button
-                        onClick={() => { handleCRA(invoice.id) }}
+                        onClick={() => { handleCRA(invoice.id!) }}
+                        title="Requerir un CRA"
                         className="bg-[#215A96] hover:bg-blue-900 text-white rounded-full py-0.5 px-2 w-1/2 text-sm"
                       >CRA</button>
                       <button
-                        onClick={() => { handleInvoice(invoice.id) }}
+                        onClick={() => { handleInvoice(invoice.id!) }}
+                        title="Requerir une facture"
                         className="bg-[#215A96] hover:bg-blue-900 text-white rounded-full py-0.5 px-2 w-1/2 text-sm"
                       >Facture</button>
                     </td>

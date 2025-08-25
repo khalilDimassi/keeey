@@ -1,5 +1,5 @@
 import { getAuthHeader } from '../../../utils/jwt';
-import { DetailedMission, Mission } from './types';
+import { DetailedMission, Invoice, Mission } from './types';
 import axios from 'axios';
 
 export const fetchMissionDetails = async (selectedMissionId: number) => {
@@ -75,5 +75,41 @@ export const fetchCompanies = async () => {
         return response.data;
     } catch (error) {
         throw new Error(`Failed to fetch companies: ${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+export const addInvoice = async (invoice: Invoice) => {
+    try {
+        await axios.post<Invoice>(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/missions/${invoice.mission_id}/invoices`,
+            {
+                mission_id: Number(invoice.mission_id),
+                status: invoice.status,
+                year: invoice.year,
+                month: invoice.month,
+                days: Number(invoice.days),
+                costs: Number(invoice.costs),
+                description: invoice.description,
+                gap: Number(invoice.gap),
+                amountHT: Number(invoice.amountHT),
+            },
+            { headers: getAuthHeader() });
+    } catch (error) {
+        throw new Error(`Failed to add invoice: ${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+export const deleteInvoice = async (missionId: number, invoiceId: number) => {
+    try {
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/missions/${missionId}/invoices/${invoiceId}`, { headers: getAuthHeader() });
+    } catch (error) {
+        throw new Error(`Failed to delete invoice: ${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+export const updateInvoice = async (missionId: number, invoiceId: number, invoice: Invoice) => {
+    try {
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/missions/${missionId}/invoices/${invoiceId}`, invoice, { headers: getAuthHeader() });
+    } catch (error) {
+        throw new Error(`Failed to update invoice: ${error instanceof Error ? error.message : String(error)}`);
     }
 }

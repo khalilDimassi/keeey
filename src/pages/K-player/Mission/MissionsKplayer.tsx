@@ -1,6 +1,6 @@
-import { addMission, deleteMission, fetchMissionDetails, fetchMissions, requestCRA, requestInvoice, updateMission } from "./services";
+import { addInvoice, addMission, deleteMission, fetchMissionDetails, fetchMissions, requestCRA, requestInvoice, updateMission } from "./services";
 import { TargetSVG } from "../../components/SVGcomponents";
-import { Mission, DetailedMission } from "./types";
+import { Mission, DetailedMission, Invoice } from "./types";
 import { Star, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -182,6 +182,27 @@ const MissionsKplayer = () => {
       });
   };
 
+  const handleAddInvoice = (newInvoice: Invoice) => {
+    setOperationLoading(true);
+    setOperationError(null);
+    setSuccessMessage(null);
+
+    addInvoice(newInvoice)
+      .then(() => {
+        setSuccessMessage('Invoice added successfully!');
+        return fetchMissionDetails(newInvoice.mission_id);
+      })
+      .then((updatedMission) => {
+        setMission(updatedMission);
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to add invoice');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
+  };
+
   const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -302,6 +323,7 @@ const MissionsKplayer = () => {
             mission={mission as DetailedMission}
             handleCRA={handleRequestCRA}
             handleInvoice={handleRequestInvoice}
+            handleAddInvoice={handleAddInvoice}
             loading={missionLoading}
           />
         )}
