@@ -72,3 +72,8 @@ export const getColorScale = () => {
 
 // Initialize on import 
 initializeThemeColors(getUserRole() ?? 'default');
+
+// force reinitialization when user role changes
+export const refreshThemeColors = (): void => {
+  initializeThemeColors(getUserRole() ?? 'default');
+};

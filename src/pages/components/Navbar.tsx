@@ -1,8 +1,10 @@
+import { isAuthenticated, getAuthHeader, saveUserId, saveUserFullName, removeUserId, removeUserFullName, saveUserRole, removeUserRole } from "../../utils/jwt";
 import { AlertTriangle, LogOut, UserPlus } from "lucide-react";
-import { useState, useEffect } from "react";
-import { isAuthenticated, getAuthHeader, saveUserId, removeToken, saveUserFullName, removeUserId, removeUserFullName, saveUserRole } from "../../utils/jwt";
+import { refreshThemeColors } from "../../utils/color";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { ProfileType } from "./types";
+
 import KeeeyLogo from "../assets/KeeyLogo";
 import axios from "axios";
 
@@ -14,11 +16,7 @@ interface ProfileConfig {
     popupColor: string
 }
 
-interface NavbarProps {
-    profileType: ProfileType
-}
-
-const UnifiedNavbar = ({ profileType }: NavbarProps) => {
+const UnifiedNavbar = ({ profileType }: { profileType: ProfileType }) => {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [userName, setUserName] = useState<string | null>(null);
@@ -26,6 +24,10 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
 
     useEffect(() => {
         if (isAuthenticated()) {
+            removeUserFullName();
+            removeUserId();
+            removeUserRole();
+
             axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/profile`, { headers: getAuthHeader(), })
                 .then(response => {
                     const { first_name, last_name, ID, email_verified, user_role } = response.data.user;
@@ -34,17 +36,22 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
                     saveUserFullName(`${first_name} ${last_name}`);
                     saveUserRole(user_role);
                     setIsEmailVerified(email_verified);
+                    refreshThemeColors();
                 })
                 .catch(error => console.error("Error fetching profile:", error));
         }
-    }, [setUserName, saveUserId, setIsEmailVerified]);
+    }, [isAuthenticated]);
 
 
     const CreateAccountClick = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        document.cookie.split(';').forEach(cookie => {
+            const [name] = cookie.split('=');
+            document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+        });
+
         if (isAuthenticated()) {
-            removeToken();
-            removeUserId();
-            removeUserFullName();
             navigate("/");
         } else {
             navigate("/Login/kprofile");
@@ -194,15 +201,15 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
 };
 
 
-export const NavbarKProfile = (props: Omit<NavbarProps, 'profileType'>) => (
+export const NavbarKProfile = (props: Omit<{ profileType: ProfileType }, 'profileType'>) => (
     <UnifiedNavbar {...props} profileType="kprofile" />
 );
 
-export const NavbarKPlayer = (props: Omit<NavbarProps, 'profileType'>) => (
+export const NavbarKPlayer = (props: Omit<{ profileType: ProfileType }, 'profileType'>) => (
     <UnifiedNavbar {...props} profileType="kplayer" />
 );
 
-export const NavbarKPartner = (props: Omit<NavbarProps, 'profileType'>) => (
+export const NavbarKPartner = (props: Omit<{ profileType: ProfileType }, 'profileType'>) => (
     <UnifiedNavbar {...props} profileType="kpartner" />
 );
 
