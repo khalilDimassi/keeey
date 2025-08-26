@@ -1,7 +1,13 @@
 import { Star, ArrowUpRightIcon, Trash2Icon } from "lucide-react";
 import { Mission } from "../types";
+import { getColor } from "../../../../utils/color";
 
 const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missions: Mission[]; onSelectMission: (missionId: number) => void; onDelete: (missionId: number) => void; loading: boolean; }) => {
+  if (!missions) return (
+    <div className="overflow-x-auto">
+      <div className="text-center py-8 text-gray-500">No missions available</div>
+    </div>
+  );
 
   return (
     <div className="overflow-x-auto">
@@ -53,12 +59,14 @@ const MissionsTable = ({ missions, onSelectMission, onDelete, loading }: { missi
                     <ArrowUpRightIcon
                       color="white"
                       size={25}
-                      className="cursor-pointer bg-[#215A96] p-0.5 rounded-full hover:bg-blue-900"
+                      cursor={"pointer"}
+                      className={`p-0.5 rounded-full ${"bg-[" + getColor(500) + "] hover:bg-[" + getColor(600) + "]"}`}
                       onClick={() => onSelectMission(mission.id)}
                     />
                     <Trash2Icon
                       size={25}
-                      className="cursor-pointer text-[#215A96] hover:text-red-900"
+                      cursor={"pointer"}
+                      className={`${"text-[" + getColor(500) + "]"} hover:text-red-900`}
                       onClick={() => onDelete(mission.id)}
                     />
                   </div>

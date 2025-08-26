@@ -5,8 +5,8 @@ import Oportunite from '../pages/K-Profile/Competence/mode guest/Oportunite';
 import ProfileKProfile from '../pages/K-Profile/Competence/ProfileKProfile';
 import ContactsKProfile from '../pages/K-Profile/Contact/ContactsKProfile';
 import DashboardKProfile from '../pages/K-Profile/Dashboard/DashboardKProfile';
-import MissionsKProfile from '../pages/K-Profile/Missions/MissionsKProfile';
 import OpportunitiesKprofle from '../pages/K-Profile/Bookmarks/OpportunitiesKprofile';
+import MissionsPage from '../pages/components/Missions/MissionsPage';
 import SettingsPage from '../pages/components/Settings/SettingsPage';
 
 const KProfileRoutes = () => {
@@ -16,7 +16,7 @@ const KProfileRoutes = () => {
             <Route path="profile" element={<ProfileKProfile />} />
             <Route path="opportunities" element={<OpportunitiesKprofle />} />
             <Route path="contacts" element={<ContactsKProfile />} />
-            <Route path="missions" element={<MissionsKProfile />} />
+            <Route path="missions" element={<MissionsPage />} />
             <Route path="settings" element={<SettingsPage mainColor='#297280' />} />
 
 

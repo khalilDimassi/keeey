@@ -6,7 +6,7 @@ import OpportunitiesKPlayer from '../pages/K-player/Opportunities/OpportunitiesK
 import OpportunityDetailsKPlayer from '../pages/K-player/Opportunities/content/OpportunityDetailsKPlayer/OpportunityDetailsKPlayer';
 import NewOpportunityKPlayer from '../pages/K-player/Opportunities/content/NewOpportunityKPlayer/NewOpportunityKPlayer';
 import SettingsPage from '../pages/components/Settings/SettingsPage';
-import MissionsKplayer from '../pages/K-player/Mission/MissionsKplayer';
+import MissionsPage from '../pages/components/Missions/MissionsPage';
 
 const KPlayerRoutes = () => {
     return (
@@ -17,7 +17,7 @@ const KPlayerRoutes = () => {
             <Route path="opportunities/:id" element={<OpportunityDetailsKPlayer />} />
             <Route path="opportunities/new" element={<NewOpportunityKPlayer />} />
             <Route path="contacts" element={<ContactsKPlayer />} />
-            <Route path="missions" element={<MissionsKplayer />} />
+            <Route path="missions" element={<MissionsPage />} />
             <Route path="settings" element={<SettingsPage mainColor='#215A96' />} />
 
             <Route path="*" element={<ProfileKPlayer />} />

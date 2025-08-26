@@ -1,6 +1,7 @@
 import { Plus, Info, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Invoice } from "../types";
+import { getColor } from "../../../../utils/color";
 
 const NewInvoiceForm = ({ missionID, handleAddInvoice }: { missionID: number, handleAddInvoice: (newInvoice: Invoice) => void }) => {
   const [showForm, setShowForm] = useState(false);
@@ -68,7 +69,7 @@ const NewInvoiceForm = ({ missionID, handleAddInvoice }: { missionID: number, ha
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="flex gap-2 items-center text-white text-xs mx-auto my-2 px-4 py-2 rounded-full shadow bg-[#215A96] hover:bg-blue-900"
+        className={`flex gap-2 items-center text-white text-xs mx-auto my-2 px-4 py-2 rounded-full shadow ${"bg-[" + getColor(500) + "] hover:bg-[" + getColor(600) + "]"}`}
       >
         <Plus size={16} /> Nouvelle facture
       </button>
@@ -84,7 +85,7 @@ const NewInvoiceForm = ({ missionID, handleAddInvoice }: { missionID: number, ha
         className="bg-white p-6 rounded-xl shadow-md w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4 border-b-2 border-[#215A96] pb-2">
+        <div className={`flex justify-between items-center mb-4 border-b-2 pb-2 ${"border-[" + getColor(500) + "]"}`}>
           <h2 className="text-lg font-semibold text-gray-700">Nouvelle facture</h2>
           <button onClick={closeForm} className="text-gray-500 hover:text-red-700">
             <Trash2 size={20} />
@@ -306,7 +307,7 @@ const NewInvoiceForm = ({ missionID, handleAddInvoice }: { missionID: number, ha
           </div>
 
           <button
-            className="flex justify-center w-full px-4 py-2 text-sm text-white bg-[#215A96] rounded-full hover:bg-blue-900"
+            className={`flex justify-self-end justify-center w-1/2 px-4 py-2 rounded-full text-sm text-white disabled:opacity-50 ${"bg-[" + getColor(500) + "] hover:bg-[" + getColor(600) + "] transition-colors"}`}
             type="submit"
           >
             <Plus size={16} className="mr-1" /> Créer la facture

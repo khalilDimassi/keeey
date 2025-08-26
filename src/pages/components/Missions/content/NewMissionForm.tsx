@@ -2,6 +2,7 @@ import { Plus, Star, Trash2, ChevronDown } from "lucide-react";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { DetailedMission, Contact, Company } from "../types";
 import { fetchCompanies, fetchContacts } from "../services";
+import { getColor } from '../../../../utils/color';
 
 interface NewMissionFormProps {
   newMission: Omit<DetailedMission, 'id'>;
@@ -128,7 +129,7 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="ml-auto flex gap-2 items-center text-white px-4 py-2 rounded-full shadow bg-[#215A96] hover:bg-blue-900"
+        className={`ml-auto flex gap-2 items-center text-white px-4 py-2 rounded-full shadow ${"bg-[" + getColor(500) + "] hover:bg-[" + getColor(600) + "] transition-colors"}`}
       >
         <Plus size={20} /> Ajouter une mission
       </button>
@@ -144,11 +145,14 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
         className="bg-white p-4 rounded-xl shadow-md w-full max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4 border-b-2 border-[#215A96] pb-2">
+        <div className={`flex justify-between items-center mb-4 border-b-2 pb-2 ${"border-[" + getColor(500) + "]"}`}>
           <h2 className="text-lg font-semibold text-gray-700">Ajouter une mission</h2>
-          <button onClick={closeForm} className="text-gray-500 hover:text-red-700">
-            <Trash2 size={20} />
-          </button>
+          <Trash2
+            className="text-gray-500 hover:text-red-700"
+            cursor={"pointer"}
+            onClick={closeForm}
+            size={20}
+          />
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -255,10 +259,10 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
                     >
                       <span
                         className={`font-sm border-l-4 pl-3 ${contact.status === "REGISTERED"
-                            ? "border-green-500"
-                            : contact.status === "NOT-REGISTERED"
-                              ? "border-orange-500"
-                              : "border-red-500"
+                          ? "border-green-500"
+                          : contact.status === "NOT-REGISTERED"
+                            ? "border-orange-500"
+                            : "border-red-500"
                           }`}
                       >
                         {contact.first_name} {contact.last_name}
@@ -340,7 +344,7 @@ const NewMissionForm = ({ newMission, setNewMission, onSubmit, loading }: NewMis
           </div>
 
           <button
-            className="flex justify-self-end justify-center w-1/3 mr-3 px-4 py-2 text-sm text-white bg-[#215A96] rounded-full hover:bg-blue-900 disabled:opacity-50"
+            className={`flex justify-self-end justify-center w-1/2 mr-3 px-4 py-2 rounded-full text-sm text-white disabled:opacity-50 ${"bg-[" + getColor(500) + "] hover:bg-[" + getColor(600) + "] transition-colors"}`}
             type="submit"
             disabled={loading}
           >

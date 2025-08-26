@@ -1,6 +1,6 @@
 import { AlertTriangle, LogOut, UserPlus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { isAuthenticated, getAuthHeader, saveUserId, removeToken, saveUserFullName, removeUserId, removeUserFullName } from "../../utils/jwt";
+import { isAuthenticated, getAuthHeader, saveUserId, removeToken, saveUserFullName, removeUserId, removeUserFullName, saveUserRole } from "../../utils/jwt";
 import { useNavigate } from "react-router-dom";
 import { ProfileType } from "./types";
 import KeeeyLogo from "../assets/KeeyLogo";
@@ -28,10 +28,11 @@ const UnifiedNavbar = ({ profileType }: NavbarProps) => {
         if (isAuthenticated()) {
             axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/private/profile`, { headers: getAuthHeader(), })
                 .then(response => {
-                    const { first_name, last_name, ID, email_verified } = response.data.user;
+                    const { first_name, last_name, ID, email_verified, user_role } = response.data.user;
                     setUserName(`${first_name} ${last_name}`);
                     saveUserId(ID);
                     saveUserFullName(`${first_name} ${last_name}`);
+                    saveUserRole(user_role);
                     setIsEmailVerified(email_verified);
                 })
                 .catch(error => console.error("Error fetching profile:", error));

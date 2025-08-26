@@ -1,14 +1,15 @@
-import { addMission, deleteMission, fetchMissionDetails, fetchMissions, requestCRA, requestInvoice, updateMission } from "./services";
-import { TargetSVG } from "../../components/SVGcomponents";
-import { Mission, DetailedMission } from "./types";
+import { addInvoice, addMission, deleteMission, fetchMissionDetails, fetchMissions, requestCRA, requestInvoice, updateMission } from "./services";
+import { Mission, DetailedMission, Invoice } from "./types";
+import { getColor } from "../../../utils/color";
 import { Star, ArrowLeft } from "lucide-react";
+import { TargetSVG } from "../SVGcomponents";
 import { useEffect, useState } from "react";
 
 import NewMissionForm from "./content/NewMissionForm";
 import MissionDetails from "./content/MissionDetails";
 import MissionsTable from "./content/MissionsTable";
 
-const MissionsKProfile = () => {
+const MissionsPage = () => {
   // State for UI feedback
   const [operationLoading, setOperationLoading] = useState<boolean>(false);
   const [operationError, setOperationError] = useState<string | null>(null);
@@ -182,6 +183,27 @@ const MissionsKProfile = () => {
       });
   };
 
+  const handleAddInvoice = (newInvoice: Invoice) => {
+    setOperationLoading(true);
+    setOperationError(null);
+    setSuccessMessage(null);
+
+    addInvoice(newInvoice)
+      .then(() => {
+        setSuccessMessage('Invoice added successfully!');
+        return fetchMissionDetails(newInvoice.mission_id);
+      })
+      .then((updatedMission) => {
+        setMission(updatedMission);
+      })
+      .catch((err) => {
+        setOperationError(err instanceof Error ? err.message : 'Failed to add invoice');
+      })
+      .finally(() => {
+        setOperationLoading(false);
+      });
+  };
+
   const MessageWithDismiss = ({ message, type, prefix = '', onDismiss }: { message: string; type: 'error' | 'success'; prefix?: string; onDismiss: () => void; }) => {
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -217,7 +239,7 @@ const MissionsKProfile = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-3">
           {!selectedMissionId && <>
-            <TargetSVG size={40} color="#297280" />
+            <TargetSVG size={40} color={getColor(500)} />
             <h1 className="text-xl font-semibold">Missions</h1>
           </>}
           {selectedMissionId && <div className="flex items-center gap-2">
@@ -302,6 +324,7 @@ const MissionsKProfile = () => {
             mission={mission as DetailedMission}
             handleCRA={handleRequestCRA}
             handleInvoice={handleRequestInvoice}
+            handleAddInvoice={handleAddInvoice}
             loading={missionLoading}
           />
         )}
@@ -310,4 +333,4 @@ const MissionsKProfile = () => {
   );
 };
 
-export default MissionsKProfile;
+export default MissionsPage;

@@ -143,3 +143,25 @@ export const getUserFullName = (): string | null => {
 export const removeUserFullName = () => {
     localStorage.removeItem(USER_FULLNAME_KEY);
 };
+
+const USER_ROLE = "user_role";
+
+export type UserRole = 'K-PROFILE'
+    | 'K-PLAYER'
+    | 'K-PARTNER'
+    | 'default';
+
+// Save user role in localStorage
+export const saveUserRole = (userRole: string) => {
+    localStorage.setItem(USER_ROLE, userRole);
+};
+
+// Retrieve user role from localStorage
+export const getUserRole = (): UserRole | null => {
+    return localStorage.getItem(USER_ROLE) as UserRole || null;
+};
+
+// Remove user role from localStorage (Logout)
+export const removeUserRole = () => {
+    localStorage.removeItem(USER_ROLE);
+}; 
