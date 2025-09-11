@@ -161,7 +161,7 @@ const OrgCard = ({ role, org, loading = false, error = null, onDataUpdate }: Org
             <>
               <button
                 onClick={handleCancel}
-                className="text-gray-600 hover:text-red-800"
+                className="text-gray-600 hover:text-red-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
                 disabled={isSubmitting}
               >
                 <X size={16} />
@@ -169,7 +169,7 @@ const OrgCard = ({ role, org, loading = false, error = null, onDataUpdate }: Org
               <button
                 onClick={handleSave}
                 disabled={isSubmitting}
-                className="text-gray-600 hover:text-green-800 disabled:opacity-50"
+                className="text-gray-600 hover:text-green-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
               >
                 <Check size={16} />
               </button>
@@ -177,7 +177,7 @@ const OrgCard = ({ role, org, loading = false, error = null, onDataUpdate }: Org
           ) : role === "ADMIN" && (
             <button
               onClick={handleEditClick}
-              className="text-[#215A96]"
+              className="text-[#215A96] hover:text-blue-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
             >
               <Pencil size={16} />
             </button>

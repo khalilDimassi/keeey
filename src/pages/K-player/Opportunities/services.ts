@@ -33,8 +33,6 @@ export const submitOpportunity = async (formData: OpportunityFormData, formType:
             announce_at: formData.announce_at,
             responded_at: formData.responded_at,
             start_at: formData.start_at,
-            duration: formData.duration || 0,
-            rate: formData.rate || 0,
             opportunity_role: formType,
             contract_roles: formData.contract_roles,
             crit_start_date: formData.crit_start_date,

@@ -120,7 +120,7 @@ const DetailsCard = ({ role, profile, loading = false, error = null, onDataUpdat
             <div className="flex gap-2">
               <button
                 onClick={handleCancel}
-                className="text-gray-600 hover:text-red-800 disabled:opacity-50"
+                className="text-gray-600 hover:text-red-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
                 disabled={isSubmitting}
               >
                 <X size={16} />
@@ -128,7 +128,7 @@ const DetailsCard = ({ role, profile, loading = false, error = null, onDataUpdat
               <button
                 onClick={handleSave}
                 disabled={isSubmitting}
-                className="text-gray-600 hover:text-green-800 disabled:opacity-50"
+                className="text-gray-600 hover:text-green-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
               >
                 <Check size={16} />
               </button>
@@ -137,7 +137,7 @@ const DetailsCard = ({ role, profile, loading = false, error = null, onDataUpdat
             <button
               onClick={handleEditClick}
               disabled={isSubmitting}
-              className="text-[#215A96] hover:text-blue-800 disabled:opacity-50"
+              className="text-[#215A96] hover:text-blue-800 hover:scale-125 disabled:opacity-50 transition-all duration-100"
             >
               <Pencil size={16} />
             </button>
