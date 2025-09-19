@@ -1,4 +1,5 @@
 import { jwtVerify, JWTPayload, decodeJwt as joseDecodeJwt } from 'jose';
+import { GuestData } from '../pages/K-Profile/Competence/types';
 
 const TOKEN_KEY = "auth_token";
 
@@ -164,4 +165,42 @@ export const getUserRole = (): UserRole | null => {
 // Remove user role from localStorage (Logout)
 export const removeUserRole = () => {
     localStorage.removeItem(USER_ROLE);
-}; 
+};
+
+const GUEST_TOKEN = "guest_token";
+
+// Save guest token in localStorage
+export const saveGuestToken = (guestToken: string) => {
+    localStorage.setItem(GUEST_TOKEN, guestToken);
+};
+
+// Retrieve guest token from localStorage
+export const getGuestToken = () => {
+    const token = localStorage.getItem(GUEST_TOKEN);
+    return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
+};
+
+// Remove guest token from localStorage (Logout)
+export const removeGuestToken = () => {
+    localStorage.removeItem(GUEST_TOKEN);
+};
+
+export const GUEST_STORAGE = "guest_data";
+
+export const saveGuestData = (data: Partial<GuestData>) => {
+    const existing = loadGuestData();
+    const merged = { ...existing, ...data };
+    localStorage.setItem(GUEST_STORAGE, JSON.stringify(merged));
+};
+
+export const loadGuestData = (): Partial<GuestData> => {
+    try {
+        const raw = localStorage.getItem(GUEST_STORAGE);
+        return raw ? JSON.parse(raw) : {};
+    } catch {
+        return {};
+    }
+};
+
+// Debugger: get all data
+export const getLocalStorageData = () => localStorage;

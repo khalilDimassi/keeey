@@ -1,42 +1,43 @@
 import { Fragment, useEffect, useState } from "react";
-import { Job, MinimalSector, Sector } from "../../types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { JobButton, JobButtonColorScheme } from "../../../../components/JobButton";
+import { Job, MinimalSector, Sector } from "../types"
+import { Check, ChevronLeft, ChevronRight, LoaderIcon } from "lucide-react";
+import { JobButton, JobButtonColorScheme } from "../../../components/JobButton";
 
-interface CompetencesProps {
-  sectors: Sector[];
+
+interface GuestSectorsProps {
+  sectors: Sector[],
+  guestSelection: MinimalSector[],
+  updateGuestData: (change: { section: 'sectors'; data: MinimalSector[] }) => void
+  onSave: () => void
   loading: boolean;
-  error: string | null;
-  initialSelections: MinimalSector[];
-  onSelectionChange: (newData: MinimalSector[]) => void;
 }
 
-const Competences = ({ sectors = [], loading, error, initialSelections, onSelectionChange, }: CompetencesProps) => {
+const GuestSectors = ({ sectors, guestSelection, updateGuestData, onSave, loading }: GuestSectorsProps) => {
   const [activeSector, setActiveSector] = useState<number | null>(null);
   const [sectorToDeactivate, setSectorToDeactivate] = useState<number | null>(null);
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [hoveredToggleButton, setHoveredToggleButton] = useState<number | null>(null);
 
   useEffect(() => {
-    if (initialSelections.length > 0 && !activeSector) {
-      setActiveSector(initialSelections[0].id);
-    } else if (initialSelections.length === 0) {
+    if (guestSelection.length > 0 && !activeSector) {
+      setActiveSector(guestSelection[0].id);
+    } else if (guestSelection.length === 0) {
       setActiveSector(null);
     }
-  }, [initialSelections]);
+  }, [guestSelection]);
 
   const toggleSector = (sectorId: number) => {
-    const isSelected = initialSelections.some(s => s.id === sectorId);
+    const isSelected = guestSelection.some(s => s.id === sectorId);
     if (isSelected) {
       setSectorToDeactivate(sectorId);
     } else {
-      if (initialSelections.length < 3) {
+      if (guestSelection.length < 3) {
         const newSector = {
           id: sectorId,
           seniority: 1,
           jobs: [],
         };
-        onSelectionChange([...initialSelections, newSector]);
+        updateGuestData({ section: 'sectors', data: [...guestSelection, newSector] });
         setActiveSector(sectorId);
       }
     }
@@ -44,8 +45,8 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
 
   const confirmDeactivation = (confirm: boolean) => {
     if (confirm && sectorToDeactivate !== null) {
-      const updatedSectors = initialSelections.filter(s => s.id !== sectorToDeactivate);
-      onSelectionChange(updatedSectors);
+      const updatedSectors = guestSelection.filter(s => s.id !== sectorToDeactivate);
+      updateGuestData({ section: 'sectors', data: updatedSectors });
       if (activeSector === sectorToDeactivate) {
         setActiveSector(updatedSectors.length > 0 ? updatedSectors[0].id : null);
       }
@@ -54,14 +55,14 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
   };
 
   const handleSeniorityChange = (sectorId: number, value: number) => {
-    const updatedSectors = initialSelections.map(sector =>
+    const updatedSectors = guestSelection.map(sector =>
       sector.id === sectorId ? { ...sector, seniority: value } : sector
     );
-    onSelectionChange(updatedSectors);
+    updateGuestData({ section: 'sectors', data: updatedSectors });
   };
 
   const toggleJob = (sectorId: number, jobId: number) => {
-    const updatedSectors = initialSelections.map(sector => {
+    const updatedSectors = guestSelection.map(sector => {
       if (sector.id !== sectorId) return sector;
 
       const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
@@ -79,35 +80,45 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
       }
     });
 
-    onSelectionChange(updatedSectors);
+    updateGuestData({ section: 'sectors', data: updatedSectors });
   };
 
   const toggleSkill = (sectorId: number, jobId: number, skillId: number) => {
-    const updatedSectors = initialSelections.map(sector => {
+    const updatedSectors = guestSelection.map(sector => {
       if (sector.id !== sectorId) return sector;
 
-      const updatedJobs = sector.jobs.map(job => {
-        if (job.id !== jobId) return job;
+      const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
+      let updatedJobs;
 
-        const skillIndex = job.skills.indexOf(skillId);
+      if (jobIndex === -1) {
+        updatedJobs = [
+          ...sector.jobs,
+          { id: jobId, skills: [skillId] }
+        ];
+      } else {
+        updatedJobs = sector.jobs.map(job => {
+          if (job.id !== jobId) return job;
 
-        return {
-          ...job,
-          skills: skillIndex >= 0
-            ? job.skills.filter(id => id !== skillId)
-            : [...job.skills, skillId],
-        };
-      });
+          const skillIndex = job.skills.indexOf(skillId);
+          return {
+            ...job,
+            skills:
+              skillIndex >= 0
+                ? job.skills.filter(id => id !== skillId)
+                : [...job.skills, skillId],
+          };
+        });
+      }
 
       return { ...sector, jobs: updatedJobs };
     });
 
-    onSelectionChange(updatedSectors);
+    updateGuestData({ section: 'sectors', data: updatedSectors });
   };
 
   // Count selected skills for a job
   const countSelectedSkillsForJob = (sectorId: number, jobId: number) => {
-    const sector = initialSelections.find(s => s.id === sectorId);
+    const sector = guestSelection.find(s => s.id === sectorId);
     if (!sector) return 0;
 
     const job = sector?.jobs?.find(j => j.id === jobId) ?? null;
@@ -116,13 +127,13 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
 
   // Check if a job is selected
   const isJobSelected = (sectorId: number, jobId: number) => {
-    const sector = initialSelections?.find(s => s.id === sectorId) ?? null;
+    const sector = guestSelection?.find(s => s.id === sectorId) ?? null;
     return sector?.jobs?.some(j => j.id === jobId) ?? false;
   };
 
   // Check if a skill is selected
   const isSkillSelected = (sectorId: number, jobId: number, skillId: number) => {
-    const sector = initialSelections.find(s => s.id === sectorId);
+    const sector = guestSelection.find(s => s.id === sectorId);
     if (!sector) return false;
 
     const job = sector.jobs.find(j => j.id === jobId);
@@ -131,110 +142,50 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
 
   // Get seniority level for a sector
   const getSeniority = (sectorId: number) => {
-    const sector = initialSelections.find(s => s.id === sectorId);
+    const sector = guestSelection.find(s => s.id === sectorId);
     return sector ? sector.seniority : 1;
   };
 
-  const randomWidth = () => {
-    const widths = ["w-16", "w-20", "w-24", "w-28", "w-32"];
-    return widths[Math.floor(Math.random() * widths.length)];
-  };
-
-  if (error) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl"
-        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
-        <h2 className="text-lg font-semibold mb-4">Compétences</h2>
-        <div className="text-center py-8 text-red-500">
-          <p className="font-medium">Couldn't load component data</p>
-          <p className="text-sm">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl animate-pulse"
-        style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
-        <h2 className="text-lg font-semibold mb-4">Compétences</h2>
-
-        {/* Skeleton for sectors */}
-        <p className="text-black font-semibold mb-2">Secteur</p>
-        <div className="flex flex-wrap gap-2 mb-5">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className={`h-10 ${randomWidth()} bg-gray-200 rounded-xl`}
-            ></div>
-          ))}
-        </div>
-
-        {/* Skeleton for selected sectors tabs */}
-        <div className="flex gap-2 mb-6">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="w-24 h-8 bg-gray-200 rounded-md"></div>
-          ))}
-        </div>
-
-        {/* Skeleton for seniority */}
-        <div className="my-4">
-          <div className="flex justify-between text-sm mb-2">
-            <div className="h-4 w-20 bg-gray-200 rounded"></div>
-            <div className="h-4 w-24 bg-gray-200 rounded"></div>
-          </div>
-          <div className="relative w-full mb-2">
-            <div className="w-full h-3 bg-gray-200 rounded-xl"></div>
-          </div>
-          <div className="flex justify-between text-xs mt-1">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-3 w-3 bg-gray-200 rounded-full"></div>
-            ))}
-          </div>
-        </div>
-
-        {/* Skeleton for jobs */}
-        <p className="text-gray-600 mb-2">Metier</p>
-        <div className="space-y-2">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-12 bg-gray-100 rounded-xl"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
-      className="bg-white  w-full"
+      className="bg-white w-full p-8 ml-[-4px] rounded-b-xl shadow-[4px_4px_6px_1px_rgba(0,0,0,0.1)]"
     >
       {/* Secteur */}
-      <p className="text-lg font-semibold mb-2 text-gray-800">Secteur</p>
+      <div className="flex flex-row justify-between">
+        <p className="text-lg font-semibold mb-2 text-gray-800">Secteur</p>
+        <button
+          type="button"
+          title="Modifications détectées. Cliquez pour enregistrer!"
+          className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+          onClick={onSave}>
+          {loading ? <LoaderIcon className="w-5 h-5 text-gray-700 animate-spin" /> : <Check className="w-5 h-5 text-green-700" />}
+        </button>
+      </div>
       <div className="flex flex-wrap gap-2 mb-5 w-full">
         {sectors.map((sector) => (
           <button
             key={sector.id}
             type="button"
             className={`flex items-center px-3 py-2 border shadow rounded-xl space-x-2 whitespace-nowrap flex-grow-0 flex-shrink-0
-              ${initialSelections?.some(s => s.id === sector.id)
+                  ${guestSelection?.some(s => s.id === sector.id)
                 ? 'bg-[#297280] text-white'
                 : 'border-black bg-gray-50 text-gray-700'
               }
-              ${!initialSelections?.some(s => s.id === sector.id) &&
-                initialSelections?.length >= 3
+                  ${!guestSelection?.some(s => s.id === sector.id) &&
+                guestSelection?.length >= 3
                 ? 'opacity-50'
                 : ''
               }
-            `}
+                `}
             onClick={() => toggleSector(sector.id)}
             disabled={
-              !initialSelections?.some(s => s.id === sector.id) &&
-              initialSelections?.length >= 3
+              !guestSelection?.some(s => s.id === sector.id) &&
+              guestSelection?.length >= 3
             }
           >
             {sector.Name}{" "}
             <span className="ml-2">
-              {initialSelections?.some(s => s.id === sector.id) ? "-" : "+"}
+              {guestSelection?.some(s => s.id === sector.id) ? "-" : "+"}
             </span>
           </button>
         ))}
@@ -245,22 +196,22 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
       </div>
 
       {/* Selected sectors display */}
-      {initialSelections?.length > 0 && (
+      {guestSelection?.length > 0 && (
         <div className="flex flex-row justify-center items-stretch overflow-hidden mb-6">
-          {initialSelections.map((sector, index) => (
+          {guestSelection.map((sector, index) => (
             <button
               key={sector.id}
               type="button"
               className={`
-            px-4 py-2 
-            border border-gray-300
-            ${index === 0 ? 'rounded-l-full' : 'border-l-0'} 
-            ${index === initialSelections.length - 1 ? 'rounded-r-full' : ''}
-            ${activeSector === sector.id
+                px-4 py-2 
+                border border-gray-300
+                ${index === 0 ? 'rounded-l-full' : 'border-l-0'} 
+                ${index === guestSelection.length - 1 ? 'rounded-r-full' : ''}
+                ${activeSector === sector.id
                   ? "bg-[#297280] text-white border-[#297280]"
                   : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                 }
-          `}
+              `}
               onClick={() => setActiveSector(sector.id)}
             >
               {sectors.find((s) => s.id === sector.id)?.Name}
@@ -462,7 +413,6 @@ const Competences = ({ sectors = [], loading, error, initialSelections, onSelect
       )}
     </div>
   );
-};
+}
 
-export default Competences;
-
+export default GuestSectors

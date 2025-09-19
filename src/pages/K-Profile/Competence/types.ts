@@ -239,3 +239,56 @@ export interface ResumeSearchingDetails {
 }
 
 export interface SectorSuggestionsResponse extends Array<Sector> { }
+
+// ------------- Guest Data Interfaces -------------
+export interface GuestResume {
+    sectors: MinimalSector[];
+    languages: GuestLanguage[];
+    authorizations: GuestAuthorization[];
+    tools: GuestTool[];
+    qualities: GuestQuality[];
+}
+
+export interface GuestLanguage {
+    name: string;
+    level: number;
+}
+
+export interface GuestAuthorization {
+    name: string;
+    level: number;
+}
+
+export interface GuestTool {
+    name: string;
+    level: number;
+}
+
+export interface GuestQuality {
+    name: string;
+    level: number;
+}
+
+export interface GuestProfile {
+    contract_roles: ContractRole[];
+    organization_roles: OrganizationRole[];
+    crit_daily_rate: number;
+    crit_yearly_rate: number;
+    crit_mobility: string;
+    crit_location: string;
+    crit_distance: string;
+    availability: Availability;
+}
+
+export type ContractRole = "FREELANCE" | "PORTAGE" | "CDI" | "CDD" | "CDI-C";
+export type OrganizationRole = "LARGE" | "INDUSTRIAL" | "PME/TPE" | "ESN" | "OTHER";
+export type Availability = "IMMEDIATE" | "ONE_MONTH" | "THREE_MONTHS" | string;
+
+export interface GuestData {
+    resume: GuestResume;
+    profile: GuestProfile;
+    token: string;
+    id: string;
+    created_at: string;
+    expire_at: string;
+}

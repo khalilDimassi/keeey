@@ -1,7 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { isAuthenticated } from '../utils/jwt';
 
-import Oportunite from '../pages/K-Profile/Competence/mode guest/Oportunite';
 import ProfileKProfile from '../pages/K-Profile/Competence/ProfileKProfile';
 import ContactsKProfile from '../pages/K-Profile/Contact/ContactsKProfile';
 import DashboardKProfile from '../pages/K-Profile/Dashboard/DashboardKProfile';
@@ -19,8 +17,7 @@ const KProfileRoutes = () => {
             <Route path="missions" element={<MissionsPage />} />
             <Route path="settings" element={<SettingsPage mainColor='#297280' />} />
 
-
-            <Route path="*" element={isAuthenticated() ? <DashboardKProfile /> : <Oportunite />} />
+            <Route path="*" element={<DashboardKProfile />} />
         </Routes>
     );
 };
