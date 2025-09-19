@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLocalStorageData, isAuthenticated, loadGuestData, saveGuestData } from "../../../utils/jwt";
+import { isAuthenticated, loadGuestData, saveGuestData } from "../../../utils/jwt";
 import { CompetenceSVG } from "../../components/SVGcomponents";
 import { GuestData, GuestProfile, MinimalSector, Sector } from "./types";
 

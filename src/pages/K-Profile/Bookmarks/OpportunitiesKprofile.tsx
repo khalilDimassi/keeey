@@ -481,10 +481,10 @@ const OpportunitiesKprofle = () => {
               value={threshold}
               onChange={e => setThreshold(Number(e.target.value))}
               className="w-28 h-2 mx-2 bg-gray-200 rounded-xl appearance-none
-                  [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
-                  [&::-webkit-slider-thumb]:rounded-full
-                  [&::-webkit-slider-thumb]:bg-teal-500"
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
+                    [&::-webkit-slider-thumb]:rounded-full
+                    [&::-webkit-slider-thumb]:bg-teal-500"
             />
             <button
               onClick={() => setThreshold(t => Math.min(100, t + 1))}
@@ -497,7 +497,7 @@ const OpportunitiesKprofle = () => {
           {/* Contract type selector */}
           <select
             className="px-4 py-2 font-medium text-gray-500 border border-gray-200 rounded-xl
-                 focus:ring-teal-500 focus:border-teal-500"
+                   focus:ring-teal-500 focus:border-teal-500"
             value={contractType}
             onChange={e => setContractType(e.target.value as ContractType)}
           >
@@ -518,7 +518,8 @@ const OpportunitiesKprofle = () => {
         {loading && <LoadingSkeleton count={1} />}
       </main>
       {selectedOpportunity !== 0 && <OpportunityDetailModal opportunityID={selectedOpportunity} enchantments={opportunities.find(o => o.opportunity_id === selectedOpportunity)!.enhancements!} isVisible={isVisible} handleCloseModal={() => setSelectedOpportunity(0)} onSubmit={() => applyOpportunity(selectedOpportunity)} onSave={() => saveOpportunity(selectedOpportunity)} />}
-    </div>
+
+    </div >
   )
 };
 

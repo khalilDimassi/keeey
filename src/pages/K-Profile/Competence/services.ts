@@ -220,4 +220,24 @@ export const fetchUpdateGuestData = async (): Promise<GuestData> => {
 		console.error("Failed to fetch guest data:", err);
 		throw err;
 	}
-}; 
+};
+
+export const fetchGuestMatches = async (): Promise<GuestSessionResponse> => {
+	try {
+		const stored = loadGuestData();
+
+		const response = await axios.post<GuestSessionResponse>(
+			`${API_BASE_URL}/api/v1/public/session-data`,
+			{
+				resume: stored.resume ?? {},
+				profile: stored.profile ?? {},
+			},
+			{ headers: getGuestToken() }
+		);
+
+		return response.data;
+	} catch (error) {
+		console.error('Failed to fetch guest matches:', error);
+		throw error;
+	}
+}

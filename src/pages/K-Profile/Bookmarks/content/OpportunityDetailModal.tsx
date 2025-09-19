@@ -116,7 +116,7 @@ const CompetencesSection = ({ competences }: { competences: OpportunityCompetenc
   </div>
 );
 
-const OpportunityDetailModal = ({ opportunityID, enchantments, isVisible, handleCloseModal, onSubmit, onSave }: { opportunityID: number, enchantments: Enhancements, isVisible: boolean, handleCloseModal: () => void, onSubmit: () => void, onSave: () => void }) => {
+const OpportunityDetailModal = ({ opportunityID, enchantments, isVisible, handleCloseModal, onSubmit, onSave, guest }: { opportunityID: number, enchantments: Enhancements, isVisible: boolean, handleCloseModal: () => void, onSubmit?: () => void, onSave?: () => void, guest?: boolean }) => {
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -204,11 +204,11 @@ const OpportunityDetailModal = ({ opportunityID, enchantments, isVisible, handle
                   <button onClick={handleCloseModal} className="flex justify-self-start pl-2 rounded-lg transition-colors hover:bg-gray-100">
                     <ArrowLeft size={25} className="text-gray-600" />
                   </button>
-                  <div className="w-24 h-24 bg-green-400 rounded-full flex items-center justify-center transform transition-transform hover:scale-105">
+                  <div className="w-24 h-24 bg-green-400 rounded-full my-auto flex items-center justify-center transform transition-transform hover:scale-105">
                     <User className="h-16 w-16 text-green-900" />
                   </div>
                   <div className="flex flex-col gap-3">
-                    <h2 className="text-xl font-semibold text-gray-900">{opportunity!.title}</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 text-wrap max-w-xs">{opportunity!.title}</h2>
                     <span className="bg-green-200 text-green-800 text-sm px-2 py-1 rounded font-medium w-fit">
                       {enchantments.total_match_percentage ? enchantments.total_match_percentage.toFixed(2) : "0.00"}%
                     </span>
@@ -253,7 +253,7 @@ const OpportunityDetailModal = ({ opportunityID, enchantments, isVisible, handle
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-row items-center justify-end gap-6 w-full">
+                  {!guest && <div className="flex flex-row items-center justify-end gap-6 w-full">
                     <select className="px-3 py-2 w-1/3 mr-5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all focus:ring-2 focus:ring-green-500 focus:border-transparent">
                       <option value={"Saved"}>Saved</option>
                       <option value={"Applied"}>Applied</option>
@@ -282,7 +282,7 @@ const OpportunityDetailModal = ({ opportunityID, enchantments, isVisible, handle
                       cursor={"pointer"}
                       size={30}
                     />
-                  </div>
+                  </div>}
                 </div>
               </div>
 
