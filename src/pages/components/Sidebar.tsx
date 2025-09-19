@@ -32,7 +32,7 @@ interface SidebarProps {
 
 
 const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: SidebarProps) => {
-  const guestBlockedKProfile = ["dashboard", "contacts", "missions", "settings"];
+  const guestBlockedKProfile = ["dashboard", "contact", "missions", "settings"];
   const [popupVisible, setPopupVisible] = useState(false);
 
 
