@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { Settings, Contact, Building2, Search, UserCheck } from "lucide-react";
 import { DashbordSVG, CompetenceSVG, TargetSVG, CvSvG, ProfileCompanySVG, OpportunitiesSVG } from "./SVGcomponents";
 import { ProfileType } from "./types";
+import { useState } from "react";
+import { isAuthenticated } from "../../utils/jwt";
 
 // TODO: Mock components for demonstration - replace with actual imports 
 const GroupContacr = ({ className }: { className?: string }) => <Contact className={className} />;
@@ -30,6 +32,10 @@ interface SidebarProps {
 
 
 const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: SidebarProps) => {
+  const guestBlockedKProfile = ["dashboard", "contacts", "missions", "settings"];
+  const [popupVisible, setPopupVisible] = useState(false);
+
+
   const profileConfigs: Record<ProfileType, ProfileConfig> = {
     kprofile: {
       backgroundColor: "#297280",
@@ -90,39 +96,66 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         ? "flex-row gap-x-40 justify-center items-center"
         : "flex-col gap-20 py-12 items-center"
         }`}>
-        {config.icons.map(({ id, path, Icon }) => (
-          <NavLink
-            key={id}
-            to={path}
-            onClick={() => {
-              window.scrollTo(0, 0);
-              if (horizontal) {
-                toggleSidebar();
-              }
-            }}
-            className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
-          >
-            {({ isActive }) => (
-              <div
-                className={`transition-all duration-300 ${!horizontal && isActive
-                  ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
-                  : ""
-                  }`}
+        {config.icons.map(({ id, path, Icon }) => {
+          const isBlocked = !isAuthenticated() && profileType === "kprofile" && guestBlockedKProfile.includes(id);
+          return (
+            <div key={id}>
+              <NavLink
+                to={isBlocked ? "/kprofile/profile" : path}
+                onClick={(e) => {
+                  window.scrollTo(0, 0);
+                  if (horizontal) toggleSidebar();
+                  if (isBlocked) {
+                    e.preventDefault();
+                    setPopupVisible(true);
+                  }
+                }}
+                className={`cursor-pointer flex items-center ${horizontal ? "p-2" : ""}`}
               >
-                <Icon
-                  className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300 ${isActive && !horizontal
-                    ? `text-[${config.selectedTextColor}]`
-                    : "text-white hover:text-gray-200"
-                    }`}
-                />
-              </div>
-            )}
-          </NavLink>
-        ))}
+                {({ isActive }) => (
+                  <div
+                    className={`transition-all duration-300 ${!horizontal && isActive && !isBlocked
+                      ? "bg-slate-100 rounded-full py-2 px-4 ml-8"
+                      : ""}`}
+                  >
+                    <Icon
+                      className={`w-8 h-8 md:w-4 md:h-4 lg:w-8 lg:h-8 transition-colors duration-300
+                        ${isBlocked
+                          ? "text-gray-400 cursor-not-allowed"
+                          : isActive && !horizontal
+                            ? `text-[${config.selectedTextColor}]`
+                            : "text-white hover:text-gray-200"
+                        }`}
+                    />
+                  </div>
+                )}
+              </NavLink>
+            </div>
+          );
+        })}
       </div>
+
+      {popupVisible && (
+        <div onClick={() => setPopupVisible(false)} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-xl shadow-lg p-6 w-80">
+            <h2 className="text-lg font-bold mb-4">Fonctionnalité réservée</h2>
+            <p className="text-gray-600 mb-4">
+              Cette section est disponible uniquement pour les utilisateurs connectés.
+            </p>
+            <button
+              onClick={() => setPopupVisible(false)}
+              className="px-4 py-2 rounded-xl bg-[#297280] text-white hover:bg-[#215a65]"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
+
 
 export const SidebarKProfile = (props: Omit<SidebarProps, 'profileType'>) => (
   <UnifiedSidebar {...props} profileType="kprofile" />

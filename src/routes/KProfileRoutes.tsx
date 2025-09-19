@@ -12,12 +12,12 @@ import { isAuthenticated } from '../utils/jwt';
 const KProfileRoutes = () => {
     return (
         <Routes>
-            <Route path="dashboard" element={<DashboardKProfile />} />
+            <Route path="dashboard" element={isAuthenticated() ? <DashboardKProfile /> : <ProfileKProfile />} />
             <Route path="profile" element={<ProfileKProfile />} />
             <Route path="opportunities" element={isAuthenticated() ? <OpportunitiesKprofle /> : <GuestList />} />
-            <Route path="contacts" element={<ContactsKProfile />} />
-            <Route path="missions" element={<MissionsPage />} />
-            <Route path="settings" element={<SettingsPage mainColor='#297280' />} />
+            <Route path="contacts" element={isAuthenticated() ? <ContactsKProfile /> : <ProfileKProfile />} />
+            <Route path="missions" element={isAuthenticated() ? <MissionsPage /> : <ProfileKProfile />} />
+            <Route path="settings" element={isAuthenticated() ? <SettingsPage mainColor='#297280' /> : <ProfileKProfile />} />
 
             <Route path="*" element={<ProfileKProfile />} />
         </Routes>
