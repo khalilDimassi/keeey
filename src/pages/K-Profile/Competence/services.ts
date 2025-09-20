@@ -222,6 +222,56 @@ export const fetchUpdateGuestData = async (): Promise<GuestData> => {
 	}
 };
 
+export const updateGuestData = async () => {
+	try {
+		const data = loadGuestData();
+
+		const response = await axios.put<GuestData>(
+			`${API_BASE_URL}/api/v1/public/session-data`,
+			{
+				resume: data.resume ?? {},
+				profile: data.profile ?? {},
+			},
+			{ headers: getGuestToken() }
+		);
+
+
+		if (
+			response.data.token &&
+			response.data.token !== getGuestToken()["Authorization"].split(" ")[1]
+		) {
+			console.info("Guest token refreshed:", response.data.token);
+			saveGuestToken(response.data.token);
+		}
+
+		const merged: GuestData = {
+			resume: data.resume ?? { sectors: [], languages: [], authorizations: [], tools: [], qualities: [] },
+			profile: data.profile ?? {
+				contract_roles: [],
+				organization_roles: [],
+				crit_daily_rate: 0,
+				crit_yearly_rate: 0,
+				crit_mobility: "",
+				crit_location: "",
+				crit_distance: "",
+				availability: "IMMEDIATE",
+			},
+			token: response.data.token,
+			id: response.data.id,
+			created_at: response.data.created_at,
+			expire_at: response.data.expire_at,
+		};
+
+		// Save only local fields back to storage
+		saveGuestData({ resume: merged.resume, profile: merged.profile });
+
+		return merged;
+	} catch (err) {
+		console.error("Failed to update guest data:", err);
+		throw err;
+	}
+}
+
 export const fetchGuestMatches = async (): Promise<GuestSessionResponse> => {
 	try {
 		const stored = loadGuestData();

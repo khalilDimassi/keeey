@@ -8,7 +8,7 @@ import ResumeTab from "./content/ResumeTab";
 import SectorsAndCriteriasTab from "./content/SectorsAndCriteriasTab";
 import GuestSectors from "./mode guest/GuestSectors";
 import GuestCriterias from "./mode guest/GuestCriterias";
-import { fetchSectors, fetchUpdateGuestData } from "./services";
+import { fetchSectors, fetchUpdateGuestData, updateGuestData } from "./services";
 import GuestRequirements from "./mode guest/GuestRequirements";
 
 const tabs = [
@@ -90,7 +90,7 @@ const ProfileKProfile = () => {
     console.info('🔍 Saving new guest data:', guestData);
     saveGuestData(guestData);
 
-    fetchUpdateGuestData()
+    updateGuestData()
       .then((guestData) => setGuestData(guestData))
       .catch((error) => console.error("Failed to fetch guest data:", error))
       .finally(() => setLoading(false));
