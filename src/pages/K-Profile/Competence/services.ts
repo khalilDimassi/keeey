@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getAuthHeader, getGuestToken, loadGuestData, saveGuestData, saveGuestToken } from '../../../utils/jwt';
 import { ApiResponse, ApiUserResponse, GuestData, MinimalSector, OpportunitiesSearchCriterias, ResumeData, ResumeSearchingDetails, SectorSuggestionsResponse } from './types';
-import { useState, useEffect } from 'react';
 import { BaseMatchPercentages } from '../Bookmarks/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

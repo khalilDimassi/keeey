@@ -86,8 +86,6 @@ const ProfileKProfile = () => {
 
   const onSaveData = () => {
     if (!loading) return;
-
-    console.info('🔍 Saving new guest data:', guestData);
     saveGuestData(guestData);
 
     updateGuestData()
