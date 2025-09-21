@@ -4,7 +4,7 @@ import { GuestData, GuestResume } from "../types";
 
 interface GuestRequirementsProps {
   guestData: GuestData;
-  updateGuestData: (change: { section: "requirements"; data: Partial<GuestData> }) => void;
+  updateGuestData: (change: { section: "requirements"; data: Partial<GuestResume> }) => void;
 }
 
 const GuestRequirements = ({ guestData, updateGuestData }: GuestRequirementsProps) => {

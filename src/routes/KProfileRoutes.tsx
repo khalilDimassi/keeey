@@ -1,13 +1,13 @@
 import { Route, Routes } from 'react-router-dom';
+import { isAuthenticated } from '../utils/jwt';
 
 import ProfileKProfile from '../pages/K-Profile/Competence/ProfileKProfile';
 import ContactsKProfile from '../pages/K-Profile/Contact/ContactsKProfile';
 import DashboardKProfile from '../pages/K-Profile/Dashboard/DashboardKProfile';
 import OpportunitiesKprofle from '../pages/K-Profile/Bookmarks/OpportunitiesKprofile';
-import GuestList from '../pages/K-Profile/Bookmarks/GuestList';
+import GuestList from '../pages/K-Profile/Bookmarks/mod guest/GuestList';
 import MissionsPage from '../pages/components/Missions/MissionsPage';
 import SettingsPage from '../pages/components/Settings/SettingsPage';
-import { isAuthenticated } from '../utils/jwt';
 
 const KProfileRoutes = () => {
     return (

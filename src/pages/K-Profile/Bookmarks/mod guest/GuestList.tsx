@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
-import { Enhancements, OpportunityBase } from "./types";
-import { OpportunitiesSVG } from "../../components/SVGcomponents";
-import { fetchOpportunities } from "./services";
-import { fetchGuestMatches } from "../Competence/services";
-import OpportunityDetailModal from "./content/OpportunityDetailModal";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { OpportunitiesSVG } from "../../../components/SVGcomponents";
+import { fetchGuestMatches } from "../../Competence/services";
+import { fetchOpportunities } from "../services";
+import { OpportunityBase, Enhancements } from "../types";
+import OpportunityDetailModal from "../content/OpportunityDetailModal";
 
 type ContractType = "ALL" | "CDI" | "CDD" | "CDI-C" | "CONSULTANT" | "PORTAGE" | "FREELANCE";
 

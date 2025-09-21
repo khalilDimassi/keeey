@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { Job, MinimalSector, Sector } from "../types"
-import { Check, ChevronLeft, ChevronRight, LoaderIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { JobButton, JobButtonColorScheme } from "../../../components/JobButton";
 
 
@@ -8,11 +8,9 @@ interface GuestSectorsProps {
   sectors: Sector[],
   guestSelection: MinimalSector[],
   updateGuestData: (change: { section: 'sectors'; data: MinimalSector[] }) => void
-  onSave: () => void
-  loading: boolean;
 }
 
-const GuestSectors = ({ sectors, guestSelection, updateGuestData, onSave, loading }: GuestSectorsProps) => {
+const GuestSectors = ({ sectors, guestSelection, updateGuestData }: GuestSectorsProps) => {
   const [activeSector, setActiveSector] = useState<number | null>(null);
   const [sectorToDeactivate, setSectorToDeactivate] = useState<number | null>(null);
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
@@ -147,20 +145,9 @@ const GuestSectors = ({ sectors, guestSelection, updateGuestData, onSave, loadin
   };
 
   return (
-    <div
-      className="bg-white w-full p-8 ml-[-4px] rounded-b-xl shadow-[4px_4px_6px_1px_rgba(0,0,0,0.1)]"
-    >
+    <div className="w-3/4">
       {/* Secteur */}
-      <div className="flex flex-row justify-between">
-        <p className="text-lg font-semibold mb-2 text-gray-800">Secteur</p>
-        <button
-          type="button"
-          title="Modifications détectées. Cliquez pour enregistrer!"
-          className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-          onClick={onSave}>
-          {loading ? <LoaderIcon className="w-5 h-5 text-gray-700 animate-spin" /> : <Check className="w-5 h-5 text-green-700" />}
-        </button>
-      </div>
+      <p className="text-lg font-semibold mb-2 text-gray-800">Secteur</p>
       <div className="flex flex-wrap gap-2 mb-5 w-full">
         {sectors.map((sector) => (
           <button

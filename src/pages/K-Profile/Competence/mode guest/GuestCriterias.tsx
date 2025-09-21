@@ -31,10 +31,6 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
     updateGuestData({ section: "criterias", data: { [field]: value } });
   };
 
-  const handleMobilityChange = (value: string) => {
-    updateGuestData({ section: "criterias", data: { crit_mobility: value } });
-  };
-
   const handleDistanceChange = (value: string) => {
     updateGuestData({ section: "criterias", data: { crit_distance: value } });
   };
@@ -66,7 +62,6 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
   const isDate = /^\d{4}-\d{2}-\d{2}$/.test(profile.availability);
 
   return (
-
     <div>
       <div className="flex flex-row items-center justify-between mb-4">
         <h3 className="mb-2 font-semibold">Type de contrat souhaité/accepté</h3>
