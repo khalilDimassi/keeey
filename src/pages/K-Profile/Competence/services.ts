@@ -177,7 +177,7 @@ export const fetchUpdateGuestData = async (): Promise<GuestData> => {
 		const stored = loadGuestData();
 
 		const response = await axios.post<GuestData>(
-			`${API_BASE_URL}/api/v1/public/session-data`,
+			`${API_BASE_URL}/api/v1/public/session-data-kprofile`,
 			{
 				resume: stored.resume ?? {},
 				profile: stored.profile ?? {},
@@ -226,7 +226,7 @@ export const updateGuestData = async () => {
 		const data = loadGuestData();
 
 		const response = await axios.put<GuestData>(
-			`${API_BASE_URL}/api/v1/public/session-data`,
+			`${API_BASE_URL}/api/v1/public/session-data-kprofile`,
 			{
 				resume: data.resume ?? {},
 				profile: data.profile ?? {},
