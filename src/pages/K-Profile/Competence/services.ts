@@ -276,7 +276,7 @@ export const fetchGuestMatches = async (): Promise<GuestSessionResponse> => {
 		const stored = loadGuestData();
 
 		const response = await axios.post<GuestSessionResponse>(
-			`${API_BASE_URL}/api/v1/public/session-data`,
+			`${API_BASE_URL}/api/v1/public/session-data-kprofile`,
 			{
 				resume: stored.resume ?? {},
 				profile: stored.profile ?? {},

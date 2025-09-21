@@ -177,7 +177,7 @@ export const saveGuestToken = (guestToken: string) => {
 // Retrieve guest token from localStorage
 export const getGuestToken = () => {
     const token = localStorage.getItem(GUEST_TOKEN);
-    return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
+    return token ? { Authorization: `Bearer ${token}` } : { Authorization: 'Bearer ' };
 };
 
 // Remove guest token from localStorage (Logout)
