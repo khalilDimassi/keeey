@@ -1,14 +1,18 @@
 import { useEffect, useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Bookmark, Building2, ChevronLeft, ChevronRight, Contact, List } from "lucide-react";
 import { OpportunitiesSVG } from "../../../components/SVGcomponents";
 import { fetchGuestMatches } from "../../Competence/services";
 import { fetchOpportunities } from "../services";
-import { OpportunityBase, Enhancements } from "../types";
+import { OpportunityBase, Enhancements, OpportunityTabs } from "../types";
+
 import OpportunityDetailModal from "../content/OpportunityDetailModal";
+
 
 type ContractType = "ALL" | "CDI" | "CDD" | "CDI-C" | "CONSULTANT" | "PORTAGE" | "FREELANCE";
 
 const GuestList = () => {
+  const tabs = ["ALL", "CONTACTS", "CLIENTS", "INTERACTED"];
+  const [activeTab, setActiveTab] = useState<OpportunityTabs>("ALL");
   const [opportunities, setOpportunities] = useState<OpportunityBase[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,16 +60,20 @@ const GuestList = () => {
   }, [opportunities.length]);
 
   const filteredOpportunities = useMemo(() => {
-    return opportunities.filter(opportunity => {
-      const matchPercent = opportunity.enhancements?.total_match_percentage ?? 0;
-
-      const passThreshold = matchPercent >= threshold;
-      const passContract =
-        contractType === "ALL" || opportunity.contract_roles.includes(contractType);
-
-      return passThreshold && passContract;
-    });
+    return opportunities
+      .filter(opportunity => {
+        const matchPercent = opportunity.enhancements?.total_match_percentage ?? 0;
+        const passThreshold = matchPercent >= threshold;
+        const passContract = contractType === "ALL" || opportunity.contract_roles.includes(contractType);
+        return passThreshold && passContract;
+      })
+      .sort((a, b) => {
+        const matchA = a.enhancements?.total_match_percentage ?? 0;
+        const matchB = b.enhancements?.total_match_percentage ?? 0;
+        return matchB - matchA;
+      });
   }, [opportunities, threshold, contractType]);
+
 
   const formatTimeAgo = (dateString: string): string => {
     if (!dateString) return "";
@@ -111,8 +119,25 @@ const GuestList = () => {
         </h1>
       </div>
 
-      <div className="flex gap-4 justify-between items-center px-6 mb-4">
-        <span></span>
+      <div className="flex gap-4 justify-between items-center">
+        <div className="flex">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as OpportunityTabs)}
+              className={`flex items-center gap-2 px-6 py-3 font-medium text-sm rounded-tl-xl rounded-tr-xl relative ${activeTab !== "ALL" ? "-ml-1" : ""} ${activeTab === tab
+                ? 'text-black bg-white shadow-[0_-6px_12px_-2px_rgba(0,0,0,0.08)] z-10'
+                : 'text-gray-700 bg-slate-100 hover:bg-gray-300'
+                }`}
+            >
+              {tab === "ALL" && <List size={20} />}
+              {tab === "CONTACTS" && <Contact size={20} />}
+              {tab === "CLIENTS" && <Building2 size={20} />}
+              {tab === "INTERACTED" && <Bookmark size={20} />}
+              {tab === "ALL" && "Toutes" || tab === "CONTACTS" && "de mes contacts" || tab === "CLIENTS" && "de clients intéressés" || tab === "INTERACTED" && "Sauvegardes & Candidatures"}
+            </button>
+          ))}
+        </div>
         <div className="flex gap-4 items-center">
           <div className="flex items-center">
             <label htmlFor="matchThreshold" className="text-sm font-medium text-gray-700 mr-3 flex gap-2 whitespace-nowrap">
@@ -210,7 +235,7 @@ const GuestList = () => {
       )}
 
       {!loading && !error && (
-        <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-xl">
+        <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
           {filteredOpportunities.map((opportunity, index) => (
             <div
               className="bg-slate-50 mb-3 p-4 rounded-xl hover:shadow transition-shadow flex flex-col sm:flex-row gap-4 border-b border-gray-200 relative cursor-pointer"
