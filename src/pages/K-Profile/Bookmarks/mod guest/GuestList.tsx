@@ -234,7 +234,13 @@ const GuestList = () => {
       </>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && activeTab != "ALL" && (
+        <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
+          <p className="text-center mt-8 py-4 text-gray-500 font-medium">Create Account to access this feature!</p>
+        </main>
+      )}
+
+      {!loading && !error && activeTab === "ALL" && (
         <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
           {filteredOpportunities.map((opportunity, index) => (
             <div
