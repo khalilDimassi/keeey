@@ -22,6 +22,7 @@ interface ProfileConfig {
   boxShadow: string;
   selectedTextColor: string;
   icons: IconItem[];
+  guestBlocked: string[];
 }
 
 interface SidebarProps {
@@ -32,7 +33,6 @@ interface SidebarProps {
 
 
 const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: SidebarProps) => {
-  const guestBlockedKProfile = ["dashboard", "contact", "missions", "settings"];
   const [popupVisible, setPopupVisible] = useState(false);
 
 
@@ -49,7 +49,8 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         { id: "contact", path: "/kprofile/contacts", Icon: Contact },
         { id: "missions", path: "/kprofile/missions", Icon: TargetSVG },
         { id: "settings", path: "/kprofile/settings", Icon: Settings },
-      ]
+      ],
+      guestBlocked: ["settings"],
     },
     kplayer: {
       backgroundColor: "#215A96",
@@ -63,7 +64,8 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         { id: "contacts", path: "/kplayer/contacts", Icon: Contact },
         { id: "missions", path: "/kplayer/missions", Icon: TargetSVG },
         { id: "settings", path: "/kplayer/settings", Icon: Settings },
-      ]
+      ],
+      guestBlocked: ["dashboard", "profile", "search", "contacts", "missions", "settings"],
     },
     kpartner: {
       backgroundColor: "#A89B7B",
@@ -79,7 +81,8 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         { id: "user", path: "/kpartner/contacts", Icon: Contactetoile },
         { id: "target", path: "/kpartner/missions", Icon: TargetSVG },
         { id: "settings", path: "/kpartner/settings", Icon: Settings },
-      ]
+      ],
+      guestBlocked: ["dashboard", "competence", "fileText1", "bookmark", "contact", "user", "target", "settings"],
     }
   };
 
@@ -97,11 +100,12 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         : "flex-col gap-20 py-12 items-center"
         }`}>
         {config.icons.map(({ id, path, Icon }) => {
-          const isBlocked = !isAuthenticated() && profileType === "kprofile" && guestBlockedKProfile.includes(id);
+          const isBlocked = !isAuthenticated() && config.guestBlocked.includes(id);
+          const guestPath = profileType === "kprofile" ? "/LoginPageKprofile" : profileType === "kplayer" ? "/LoginPageKplayer" : "/LoginPageKpartner";
           return (
             <div key={id}>
               <NavLink
-                to={isBlocked ? "/kprofile/profile" : path}
+                to={isBlocked ? guestPath : path}
                 onClick={(e) => {
                   window.scrollTo(0, 0);
                   if (horizontal) toggleSidebar();

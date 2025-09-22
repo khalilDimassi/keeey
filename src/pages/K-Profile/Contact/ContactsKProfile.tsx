@@ -1,12 +1,13 @@
 import { createContact, loadContacts, deleteContact } from "./services";
 import { ArrowLeft, Ban, Contact, Plus, Trash2, } from "lucide-react";
 import { useEffect, useState } from "react";
-import { contactFetch } from "./types";
+import { contactFetch, guestContactsExamples } from "./types";
 
 import ContactsReferencesContent from "./content/ContactsReferencesContent";
 import CoOptationPatronageContent from "./content/CoOptationPatronageContent";
 import GeneralInformationContent from "./content/GeneralInformationContent";
 import ContactMissions from "./content/ContactMissions";
+import { isAuthenticated } from "../../../utils/jwt";
 
 const ContactsKProfile = () => {
   const [activeTab, setActiveTab] = useState('referrals');
@@ -20,22 +21,21 @@ const ContactsKProfile = () => {
   const [formTouched, setFormTouched] = useState(false);
   const [selectedContact, setSelectedContact] = useState<contactFetch | null>(null);
   const [activeDetailsTab, setActiveDetailsTab] = useState('informations');
+  const [popupVisible, setPopupVisible] = useState(false);
 
+  const isAuth = isAuthenticated();
 
   useEffect(() => {
-    loadContacts()
-      .then((data) => {
-        if (data) {
-          setContacts(data);
-        }
-      })
-      .catch((error) => {
-        setDataError(error instanceof Error ? error.message : String(error));
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    if (isAuth) {
+      setLoading(true);
+      loadContacts()
+        .then((data) => { if (data) setContacts(data); })
+        .catch((error) => { setDataError(error instanceof Error ? error.message : String(error)); })
+        .finally(() => { setLoading(false); });
+    } else {
+      setContacts(guestContactsExamples);
+    }
+  }, [isAuth]);
 
   useEffect(() => {
     // Handle smooth transition between states
@@ -64,15 +64,21 @@ const ContactsKProfile = () => {
   }, [loading, dataError, contacts]);
 
   const handleNewContact = () => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
     setShowForm(true);
   };
 
   const handleContactDelete = async (contactID: number) => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
     try {
       const isConfirmed = window.confirm("Are you sure you want to delete this contact?");
-      if (!isConfirmed) {
-        return;
-      }
+      if (!isConfirmed) return;
 
       await deleteContact(contactID);
       const updatedContacts = contacts.filter((contact) => contact.ID !== contactID);
@@ -547,6 +553,28 @@ const ContactsKProfile = () => {
           </div>
         ) : null
         }
+        {popupVisible && (
+          <div
+            onClick={() => setPopupVisible(false)}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-xl shadow-lg p-6 w-80"
+            >
+              <h2 className="text-lg font-bold mb-4">Fonctionnalité réservée</h2>
+              <p className="text-gray-600 mb-4">
+                Cette section est disponible uniquement pour les utilisateurs connectés.
+              </p>
+              <button
+                onClick={() => setPopupVisible(false)}
+                className="px-4 py-2 rounded-xl bg-[#297280] text-white hover:bg-[#215a65]"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        )}
       </>
     )
   );
