@@ -150,7 +150,8 @@ const Criteria: FC<CriteriaProps> = ({ criteria, onCriteriaChange }) => {
               className="relative w-full h-4 mb-1 cursor-pointer"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
+                let percent = (e.clientX - rect.left) / rect.width;
+                percent = Math.max(0, Math.min(1, percent));
                 handleDistanceChange(Math.round(percent * 100));
               }}
             >

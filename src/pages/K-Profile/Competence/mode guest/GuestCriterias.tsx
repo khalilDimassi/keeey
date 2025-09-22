@@ -35,6 +35,10 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
     updateGuestData({ section: "criterias", data: { crit_mobility: mode } });
   };
 
+  const handleMobilityChange = (option: string) => {
+    updateGuestData({ section: "criterias", data: { crit_mobility: option } });
+  };
+
   const handleDistanceChange = (value: string) => {
     updateGuestData({ section: "criterias", data: { crit_distance: value } });
   };
@@ -67,16 +71,7 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-between mb-4">
-        <h3 className="mb-2 font-semibold">Type de contrat souhaité/accepté</h3>
-        <button
-          type="button"
-          title="Modifications détectées. Cliquez pour enregistrer!"
-          className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-          onClick={onSave}>
-          {loading ? <LoaderIcon className="w-5 h-5 text-gray-700 animate-spin" /> : <Check className="w-5 h-5 text-green-700" />}
-        </button>
-      </div>
+      <h3 className="mb-2 font-semibold">Type de contrat souhaité/accepté</h3>
       <div className="flex flex-wrap gap-2 mb-6">
         {(Object.keys(contractTranslations) as ContractRole[]).map(role => (
           <button
@@ -128,12 +123,26 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
 
       <h3 className="mb-2 font-semibold">Mobilité</h3>
       <div className="mb-6">
-        <div className="flex gap-2 items-center justify-center">
+        <div className="flex flex-wrap gap-6 mb-2">
+          {Object.entries(['Locale', 'Régionale', 'France', 'Internationale']).map(([id, option]) => (
+            <label key={option} className="flex items-center">
+              <input
+                id={id}
+                type="checkbox"
+                checked={option === profile.crit_mobility}
+                onChange={() => handleMobilityChange(option)}
+                className="mr-2"
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+        <div className='flex gap-2 items-center justify-center'>
           <input
             type="text"
             placeholder="Ville"
             value={profile.crit_location}
-            onChange={e => handleLocationChange(e.target.value)}
+            onChange={(e) => handleLocationChange(e.target.value)}
             className="border border-gray-300 rounded-xl p-2 w-1/3"
           />
           <div className="w-full">
@@ -141,14 +150,33 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
               <span>{profile.crit_distance} km</span>
               <span>100 km</span>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={parseInt(profile.crit_distance || "0")}
-              onChange={e => handleDistanceChange(e.target.value)}
-              className="w-full"
-            />
+            <div
+              className="relative w-full h-4 mb-1 cursor-pointer"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                let percent = (e.clientX - rect.left) / rect.width;
+                percent = Math.max(0, Math.min(1, percent));
+                handleDistanceChange(Math.round(percent * 100).toString());
+              }}
+            >
+              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full transform -translate-y-1/2"></div>
+              <div
+                className="absolute top-1/2 left-0 h-1 bg-[#297280] rounded-full transform -translate-y-1/2"
+                style={{ width: `${profile.crit_distance}%` }}
+              ></div>
+              <div
+                className="absolute top-1/2 w-3 h-3 bg-[#297280] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-sm"
+                style={{ left: `${profile.crit_distance}%` }}
+              ></div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={profile.crit_distance}
+                onChange={(e) => handleDistanceChange(e.target.value)}
+                className="absolute w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
             <div className="text-xs text-gray-500">Distance</div>
           </div>
         </div>
@@ -237,6 +265,14 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
           />
         </div>
       </div>
+
+      <button
+        type="button"
+        title="Modifications détectées. Cliquez pour enregistrer!"
+        className="flex items-center justify-center md:ml-[-20%] mx-auto px-5 py-2 bg-kprofile-500 text-white hover:bg-kprofile-600 hover:text-white rounded-full  transition-colors"
+        onClick={onSave}>
+        {loading ? <><LoaderIcon className="w-5 h-5 text-red-600 animate-spin mr-4" /> Changements Détectés!</> : <><Check className="w-5 h-5 text-green-200 mr-4" /> Enregistrée</>}
+      </button>
     </div>
   );
 };

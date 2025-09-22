@@ -10,7 +10,6 @@ import SectorsAndCriteriasTab from "./content/SectorsAndCriteriasTab";
 
 import GuestSectors from "./mode guest/GuestSectors";
 import GuestCriterias from "./mode guest/GuestCriterias";
-import GuestRequirements from "./mode guest/GuestRequirements";
 import GuestInfo from "./mode guest/GuestInfo";
 import GuestResume from "./mode guest/GuestResume";
 
@@ -57,7 +56,7 @@ const GuestProfileMode = ({ activeTab, sectorSuggestions, guestData, onGuestData
         <GuestInfo />
       )}
       {activeTab === "Compétences_Critères" && (
-        <div className="bg-white w-full p-8 ml-[-4px] rounded-b-xl shadow-[4px_4px_6px_1px_rgba(0,0,0,0.1)] flex flex-row gap-12">
+        <div className="bg-white w-full p-8 ml-[-4px] rounded-b-xl shadow-[4px_4px_6px_1px_rgba(0,0,0,0.1)] flex md:flex-row flex-col gap-4">
           <GuestSectors
             sectors={sectorSuggestions}
             guestSelection={guestData.resume?.sectors ?? []}
