@@ -236,7 +236,7 @@ const GuestList = () => {
 
       {!loading && !error && activeTab != "ALL" && (
         <main className="w-full flex flex-col overflow-y-auto bg-white min-h-[75vh] p-6 shadow-md rounded-b-xl">
-          <p className="text-center mt-8 py-4 text-gray-500 font-medium">Create Account to access this feature!</p>
+          <p className="text-center mt-8 py-4 text-gray-500 font-medium">Créez un compte pour accéder à cette fonctionnalité!</p>
         </main>
       )}
 
