@@ -5,7 +5,6 @@ const GuestInfo = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// Simulate loading delay
 		const timer = setTimeout(() => {
 			setLoading(false);
 		}, 300);
@@ -13,7 +12,6 @@ const GuestInfo = () => {
 		return () => clearTimeout(timer);
 	}, []);
 
-	// Example data in French
 	const exampleData = {
 		profile: {
 			id: "exemple-123",
@@ -53,7 +51,7 @@ const GuestInfo = () => {
 
 	if (loading) {
 		const SimpleStatusCard = () => (
-			<div className="p-5 rounded-xl border border-gray-200 bg-gray-50">
+			<div className="p-5 rounded-xl border border-gray-200 bg-white">
 				<div className="flex items-center gap-2 mb-4">
 					<div className="w-2 h-2 rounded-full bg-gray-300" />
 					<div className="font-medium text-gray-500">Chargement...</div>
@@ -67,13 +65,13 @@ const GuestInfo = () => {
 		);
 
 		return (
-			<div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-b-xl p-6 pt-14 shadow-md">
 				{[1, 2, 3, 4, 5, 6].map((key) => (
 					<SimpleStatusCard key={key} />
 				))}
 			</div>
 		);
-	}
+	};
 
 	return (
 		<div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-b-xl p-6 pt-14 shadow-md">

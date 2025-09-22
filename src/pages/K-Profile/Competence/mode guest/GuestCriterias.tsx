@@ -31,6 +31,10 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
     updateGuestData({ section: "criterias", data: { [field]: value } });
   };
 
+  const handleTransportModeChange = (mode: string) => {
+    updateGuestData({ section: "criterias", data: { crit_mobility: mode } });
+  };
+
   const handleDistanceChange = (value: string) => {
     updateGuestData({ section: "criterias", data: { crit_distance: value } });
   };
@@ -147,6 +151,45 @@ const GuestCriterias = ({ guestData, updateGuestData, loading, onSave }: GuestCr
             />
             <div className="text-xs text-gray-500">Distance</div>
           </div>
+        </div>
+      </div>
+
+      <h3 className="mb-2 font-semibold">Mode de transport</h3>
+      <div className="mb-6">
+        <div className="space-y-3">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="transport"
+              value="personal"
+              checked={profile.crit_mobility === 'personal'}
+              onChange={() => handleTransportModeChange('personal')}
+              className="mr-2"
+            />
+            Pas de contrainte : Véhicule personnel ou autre mode de transport
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="transport"
+              value="public"
+              checked={profile.crit_mobility === 'public'}
+              onChange={() => handleTransportModeChange('public')}
+              className="mr-2"
+            />
+            Modes doux ou transport en commun uniquement
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="transport"
+              value="remote"
+              checked={profile.crit_mobility === 'remote'}
+              onChange={() => handleTransportModeChange('remote')}
+              className="mr-2"
+            />
+            Télétravail uniquement
+          </label>
         </div>
       </div>
 

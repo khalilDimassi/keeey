@@ -254,7 +254,7 @@ const GuestList = () => {
       {selectedOpportunity !== 0 && (
         <OpportunityDetailModal
           opportunityID={selectedOpportunity}
-          enchantments={opportunities.find(o => o.opportunity_id === selectedOpportunity)!.enhancements!}
+          enchantments={opportunities.find(o => o.opportunity_id === selectedOpportunity)!.enhancements ?? {} as Enhancements}
           isVisible={isVisible}
           handleCloseModal={() => setSelectedOpportunity(0)}
           guest={true}

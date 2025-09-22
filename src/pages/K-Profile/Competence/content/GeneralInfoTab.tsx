@@ -196,7 +196,7 @@ const GeneralInfoTab = () => {
     );
 
     return (
-      <div className="w-full mx-auto relative pt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="w-full mx-auto relative grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-b-xl p-6 pt-14 shadow-md">
         {[1, 2, 3, 4, 5, 6].map(() => (
           <SimpleStatusCard key={Math.random()} status={error ? "error" : "loading"} />
         ))}

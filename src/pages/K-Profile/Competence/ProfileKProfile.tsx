@@ -63,18 +63,12 @@ const GuestProfileMode = ({ activeTab, sectorSuggestions, guestData, onGuestData
             guestSelection={guestData.resume?.sectors ?? []}
             updateGuestData={onGuestDataChange}
           />
-          <div className="flex flex-col gap-8">
-            <GuestCriterias
-              guestData={guestData}
-              updateGuestData={onGuestDataChange}
-              onSave={onSaveData}
-              loading={loading}
-            />
-            <GuestRequirements
-              guestData={guestData}
-              updateGuestData={onGuestDataChange}
-            />
-          </div>
+          <GuestCriterias
+            guestData={guestData}
+            updateGuestData={onGuestDataChange}
+            onSave={onSaveData}
+            loading={loading}
+          />
         </div>
       )}
       {activeTab === "CV_compéténces" && (
