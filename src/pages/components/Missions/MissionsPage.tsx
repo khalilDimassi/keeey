@@ -1,5 +1,5 @@
 import { addInvoice, addMission, deleteMission, fetchMissionDetails, fetchMissions, requestCRA, requestInvoice, updateMission } from "./services";
-import { Mission, DetailedMission, Invoice } from "./types";
+import { Mission, DetailedMission, Invoice, exampleMission, exampleDetailedMission } from "./types";
 import { getColor } from "../../../utils/color";
 import { Star, ArrowLeft } from "lucide-react";
 import { TargetSVG } from "../SVGcomponents";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import NewMissionForm from "./content/NewMissionForm";
 import MissionDetails from "./content/MissionDetails";
 import MissionsTable from "./content/MissionsTable";
+import { getUserRole, isAuthenticated } from "../../../utils/jwt";
 
 const MissionsPage = () => {
   // State for UI feedback
@@ -39,33 +40,49 @@ const MissionsPage = () => {
     invoices: []
   });
 
-  useEffect(() => {
-    setMissionsLoading(true);
-    setMissionsError(null);
-    fetchMissions()
-      .then(data => setMissions(data))
-      .catch(err => {
-        setMissions([]);
-        setMissionsError(err instanceof Error ? err.message : 'Failed to load missions')
-      })
-      .finally(() => setMissionsLoading(false));
-  }, []);
+  const isAuth = isAuthenticated();
+  const [popupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
-    if (selectedMissionId !== null) {
-      setMissionLoading(true);
-      setMissionError(null);
-      fetchMissionDetails(selectedMissionId)
-        .then(data => setMission(data))
+    if (isAuth) {
+      setMissionsLoading(true);
+      setMissionsError(null);
+      fetchMissions()
+        .then(data => setMissions(data))
         .catch(err => {
-          setMission(null);
-          setMissionError(err instanceof Error ? err.message : 'Failed to load mission details')
+          setMissions([]);
+          setMissionsError(err instanceof Error ? err.message : 'Failed to load missions')
         })
-        .finally(() => setMissionLoading(false));
+        .finally(() => setMissionsLoading(false));
+    } else {
+      setMissions([exampleMission]);
     }
-  }, [selectedMissionId]);
+  }, [isAuth]);
+
+  useEffect(() => {
+    if (isAuth) {
+      if (selectedMissionId !== null) {
+        setMissionLoading(true);
+        setMissionError(null);
+        fetchMissionDetails(selectedMissionId)
+          .then(data => setMission(data))
+          .catch(err => {
+            setMission(null);
+            setMissionError(err instanceof Error ? err.message : 'Failed to load mission details')
+          })
+          .finally(() => setMissionLoading(false));
+      }
+    } else {
+      setMission(exampleDetailedMission);
+    }
+  }, [selectedMissionId, isAuth]);
 
   const handleAddMission = () => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -102,6 +119,11 @@ const MissionsPage = () => {
   const handleUpdateMission = () => {
     if (!mission) return;
 
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -125,6 +147,11 @@ const MissionsPage = () => {
   };
 
   const handleDeleteMission = (id: number) => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -150,6 +177,11 @@ const MissionsPage = () => {
   };
 
   const handleRequestCRA = (id: number) => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -167,6 +199,11 @@ const MissionsPage = () => {
   };
 
   const handleRequestInvoice = (id: number) => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -184,6 +221,11 @@ const MissionsPage = () => {
   };
 
   const handleAddInvoice = (newInvoice: Invoice) => {
+    if (!isAuth) {
+      setPopupVisible(true);
+      return;
+    }
+
     setOperationLoading(true);
     setOperationError(null);
     setSuccessMessage(null);
@@ -329,6 +371,29 @@ const MissionsPage = () => {
           />
         )}
       </div>
+
+      {popupVisible && (
+        <div
+          onClick={() => setPopupVisible(false)}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-xl shadow-lg p-6 w-80"
+          >
+            <h2 className="text-lg font-bold mb-4">Fonctionnalité réservée</h2>
+            <p className="text-gray-600 mb-4">
+              Cette section est disponible uniquement pour les utilisateurs connectés.
+            </p>
+            <button
+              onClick={() => setPopupVisible(false)}
+              className="px-4 py-2 rounded-xl bg-[#297280] text-white hover:bg-[#215a65]"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -23,18 +23,7 @@ interface SupportTicket {
     content: string;
 }
 
-const UnifiedAuthCard: React.FC<UnifiedAuthCardProps> = ({
-    userType,
-    onEmailStep,
-    onLogin,
-    onRegister,
-    onSocialAuth,
-    onSupportTicket,
-    onPasswordResetRequest,
-    error,
-    isLoading,
-    clearError
-}) => {
+const UnifiedAuthCard = ({ userType, onEmailStep, onLogin, onRegister, onSocialAuth, onSupportTicket, onPasswordResetRequest, error, isLoading, clearError }: UnifiedAuthCardProps) => {
     const [step, setStep] = useState<AuthStep>('initial');
     const [email, setEmail] = useState('');
     const [showSupportPopup, setShowSupportPopup] = useState(false);
