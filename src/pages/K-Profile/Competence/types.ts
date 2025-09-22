@@ -243,10 +243,10 @@ export interface SectorSuggestionsResponse extends Array<Sector> { }
 // ------------- Guest Data Interfaces -------------
 export interface GuestResume {
     sectors: MinimalSector[];
-    languages: GuestLanguage[];
-    authorizations: GuestAuthorization[];
-    tools: GuestTool[];
-    qualities: GuestQuality[];
+    // languages: GuestLanguage[];
+    // authorizations: GuestAuthorization[];
+    // tools: GuestTool[];
+    // qualities: GuestQuality[];
 }
 
 export interface GuestLanguage {
