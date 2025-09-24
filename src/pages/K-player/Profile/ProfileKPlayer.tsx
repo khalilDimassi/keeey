@@ -1,66 +1,64 @@
 import { useEffect, useState } from "react";
 import { FetchOrg, FetchProfile } from "./services";
-import { Profile, Organization } from "./types";
+import { Profile, Organization, fakeMembers, fakeOrg, fakeProfile } from "./types";
 import { ProfileCompanySVG } from "../../components/SVGcomponents";
 
 import DetailsCard from "./content/DetailsCard";
 import OrgCard from "./content/OrgCard";
 import UsersCard from "./content/UsersCard";
+import { isAuthenticated } from "../../../utils/jwt";
 
 const ProfileKPlayer = () => {
+  const isAuth = isAuthenticated();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [prfLoading, setPrfloading] = useState(true);
   const [prfError, setPrfError] = useState<string | null>(null);
 
-  const fetchProfuileData = async () => {
-    setPrfloading(true);
-    try {
-      const data = await FetchProfile();
-      setProfile(data);
-      setPrfError(null);
-    } catch (err) {
-      setPrfError(err instanceof Error ? err.message : "Unknown error occurred");
-      setProfile(null);
-    } finally {
-      setPrfloading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProfuileData();
-  }, []);
+    if (isAuth) {
+      setPrfloading(true);
+      FetchProfile()
+        .then((data) => {
+          setProfile(data);
+          setPrfError(null);
+        })
+        .catch((err) => {
+          setPrfError(err instanceof Error ? err.message : "Unknown error occurred");
+          setProfile(null);
+        })
+        .finally(() => {
+          setPrfloading(false);
+        });
+    } else {
+      setProfile(fakeProfile);
+      setPrfloading(false);
+    };
+  }, [isAuth]);
 
   const [org, setOrg] = useState<Organization | null>(null);
   const [orgLoading, setOrgLoading] = useState(true);
   const [orgError, setOrgError] = useState<string | null>(null);
 
-
-  const fetchOrgData = async () => {
-    setOrgLoading(true);
-    try {
-      const data = await FetchOrg();
-      setOrg(data);
-      setOrgError(null);
-    } catch (err) {
-      setOrgError(err instanceof Error ? err.message : "Unknown error occurred");
-      setOrg(null);
-    } finally {
+  useEffect(() => {
+    if (isAuth) {
+      setOrgLoading(true);
+      FetchOrg()
+        .then((data) => {
+          setOrg(data);
+          setOrgError(null);
+        })
+        .catch((err) => {
+          setOrgError(err instanceof Error ? err.message : "Unknown error occurred");
+          setOrg(null);
+        })
+        .finally(() => {
+          setOrgLoading(false);
+        })
+    } else {
+      setOrg(fakeOrg);
       setOrgLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchOrgData();
-  }, []);
-
-  function onPrfDataUpdate() {
-    fetchProfuileData();
-  }
-
-  function onOrgDataUpdate() {
-    fetchOrgData();
-  }
-
+  }, [isAuth]);
 
   return (
     <div className="">
@@ -77,14 +75,42 @@ const ProfileKPlayer = () => {
             profile={profile}
             loading={prfLoading}
             error={prfError}
-            onDataUpdate={onPrfDataUpdate}
+            onDataUpdate={() => {
+              setPrfloading(true);
+              FetchProfile()
+                .then((data) => {
+                  setProfile(data);
+                  setPrfError(null);
+                })
+                .catch((err) => {
+                  setPrfError(err instanceof Error ? err.message : "Unknown error occurred");
+                  setProfile(null);
+                })
+                .finally(() => {
+                  setPrfloading(false);
+                });
+            }}
           />
           <OrgCard
             role={profile?.profile.player_role || "-"}
             org={org}
             loading={orgLoading}
             error={orgError}
-            onDataUpdate={onOrgDataUpdate}
+            onDataUpdate={() => {
+              setOrgLoading(true);
+              FetchOrg()
+                .then((data) => {
+                  setOrg(data);
+                  setOrgError(null);
+                })
+                .catch((err) => {
+                  setOrgError(err instanceof Error ? err.message : "Unknown error occurred");
+                  setOrg(null);
+                })
+                .finally(() => {
+                  setOrgLoading(false);
+                })
+            }}
           />
         </div>
 

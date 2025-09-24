@@ -1,8 +1,10 @@
 import { ChevronsUpDown, ChevronUp, ChevronDown, Plus, UserRound, User, PenBox, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FetchOrgMembers, AddOrgMember } from "../services";
-import { Role, OrgMember } from "../types";
+import { Role, OrgMember, fakeMembers } from "../types";
+
 import MemberForm from "./MemberForm";
+import { isAuthenticated } from "../../../../utils/jwt";
 
 const UsersCard = ({ role }: { role: Role }) => {
   const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
@@ -12,25 +14,35 @@ const UsersCard = ({ role }: { role: Role }) => {
   const [editingMember, setEditingMember] = useState<OrgMember | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof OrgMember | 'name' | 'email_status'; direction: 'asc' | 'desc'; } | null>(null);
 
-  const fetchOrgMembers = async () => {
+  const isAuth = isAuthenticated();
+
+  const fetchOrgMembers = () => {
     setLoading(true);
     setError(null);
-    let data: OrgMember[] = [];
-    try {
-      data = await FetchOrgMembers();
-      if (data) {
+
+    FetchOrgMembers()
+      .then((data) => {
         setOrgMembers(data);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setLoading(false);
-    }
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch org members:", err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch org members');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    fetchOrgMembers();
-  }, []);
+    if (isAuth) {
+      fetchOrgMembers();
+    } else {
+      setOrgMembers(fakeMembers);
+      setLoading(false);
+      setError(null);
+    }
+  }, [isAuth]);
 
   const handleUpdateMember = async (memberData: Omit<OrgMember, 'ID'>) => {
     // TODO: to be implimented
