@@ -68,7 +68,6 @@ export interface EnhancedCandidate extends CandidateSuggestion {
     matching_scores?: MatchPercentages;
 }
 
-
 export interface OpportunityBasicInfo {
     title: string;
     announce_at: string;
@@ -92,7 +91,6 @@ export interface MinimalSector {
         skills: number[];
     }[];
 }
-
 
 export interface OpportunitySectors {
     selected_sectors: MinimalSector[];

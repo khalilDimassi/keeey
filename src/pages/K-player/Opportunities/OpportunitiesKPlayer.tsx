@@ -5,26 +5,53 @@ import { fetchOpportunities } from './services';
 import { Opportunity } from './types';
 
 import OpportunitiesList from './content/projectsList';
+import { isAuthenticated, loadGuestOpportunities } from '../../../utils/jwt';
 
 const OpportunitiesListPage = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'personal' | 'organization' | 'network'>('personal');
+
   const navigate = useNavigate();
+  const isAuth = isAuthenticated();
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetchOpportunities()
-      .then(data => { setOpportunities(data); })
-      .catch(error => {
-        setOpportunities([]);
-        setError(error instanceof Error ? error.message : "An unknown error occurred.");
-      })
-      .finally(() => { setLoading(false); });
-  }, []);
+    if (isAuth) {
+      fetchOpportunities()
+        .then(data => { setOpportunities(data); })
+        .catch(error => {
+          setOpportunities([]);
+          setError(error instanceof Error ? error.message : "An unknown error occurred.");
+        })
+        .finally(() => { setLoading(false); });
+    } else {
+      const mapped = loadGuestOpportunities().map((g: any): Opportunity => ({
+        id: g.id,
+        opportunity_id: g.id,
+        title: g.title,
+        reference: "Guest Test: " + g.id,
+        start_at: g.start_at ?? "-",
+        status: g.status ?? "",
+        opportunity_role: g.opportunity_role ?? "",
 
+        first_name: "",
+        last_name: "",
+        user_id: "",
+        kprofiles: [],
+        date: g.created_at.split("T")[0] ?? "",
+        participants: [],
+        source: "guest"
+      }));
+
+      setOpportunities(mapped);
+
+      setLoading(false);
+      setError(null);
+    }
+  }, [isAuth]);
 
   return (
     <div className="bg-gray-100">
@@ -78,9 +105,10 @@ const OpportunitiesListPage = () => {
           </div>
         </div>
         <OpportunitiesList
-          Opportunities={opportunities.filter((opportunity) => opportunity.source === activeTab)}
+          Opportunities={opportunities.filter((opportunity) => opportunity.source === activeTab || opportunity.source === "guest")}
           loading={loading}
           error={error || ""}
+          guestFriendly={activeTab === "personal"}
         />
       </div>
     </div>

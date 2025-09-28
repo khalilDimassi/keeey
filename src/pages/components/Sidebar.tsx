@@ -65,7 +65,7 @@ const UnifiedSidebar = ({ profileType, horizontal = false, toggleSidebar }: Side
         { id: "missions", path: "/kplayer/missions", Icon: TargetSVG },
         { id: "settings", path: "/kplayer/settings", Icon: Settings },
       ],
-      guestBlocked: ["dashboard", "profile", "search", "contacts", "missions", "settings"],
+      guestBlocked: ["settings"],
     },
     kpartner: {
       backgroundColor: "#A89B7B",

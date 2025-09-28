@@ -1,7 +1,8 @@
-import { AlertCircle, ChevronRight, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertCircle, ChevronRight, FolderOpen, ChevronDown, ChevronUp, ShieldBan } from 'lucide-react';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Opportunity } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { isAuthenticated } from '../../../../utils/jwt';
 
 interface OpportunityItemProps {
   Opportunity: Opportunity;
@@ -17,48 +18,52 @@ const OpportunityItem = ({ Opportunity, getStatusColor, getStatusNameInFrench, o
     style={style}
   >
     {/* Status */}
-    <span className={`px-2 py-1 rounded text-sm ${getStatusColor(Opportunity)} text-center`}>
+    <div className={`px-2 py-1 rounded text-sm ${getStatusColor(Opportunity)} text-center`}>
       {Opportunity.opportunity_role === "LIVEWELL" ? "Vivier" : getStatusNameInFrench(Opportunity.status)}
-    </span>
+    </div>
 
     {/* Title */}
-    <span className="font-medium truncate">{Opportunity.title}</span>
+    <div className="font-medium truncate">{Opportunity.title}</div>
 
     {/* Reference */}
-    <span className="text-sm bg-blue-200 text-blue-700 px-4 py-1 rounded whitespace-nowrap text-center  w-32">
-      {Opportunity.reference}
-    </span>
+    <div className="bg-blue-200 px-4 rounded-xl whitespace-nowrap flex justify-center items-center w-32 h-full">
+      <p className="text-sm text-blue-700">{Opportunity.reference}</p>
+    </div>
 
     {/* Date */}
-    <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded text-center w-20">
-      {Opportunity.date || Opportunity.start_at || 'N/A'}
-    </span>
+    <div className="bg-gray-200 px-2 rounded-xl flex justify-center items-center w-24 h-full">
+      <p className="text-gray-700 text-sm"> {Opportunity.date || Opportunity.start_at || 'N/A'} </p>
+    </div>
 
     {/* Participants */}
-    <div className="flex -space-x-2 justify-self-end">
-      {Opportunity.participants ? (
-        Opportunity.participants.map((url, index) => (
-          <img
-            key={index}
-            src={url}
-            alt={`Participant ${index + 1}`}
-            className="w-8 h-8 rounded-full border-2 border-white"
-          />
-        ))
-      ) : Opportunity.kprofiles ? (
-        Opportunity.kprofiles.map((profile, _index) => (
-          <div
-            key={profile.user_id}
-            className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm text-blue-700 border-2 border-white"
-          >
-            {profile.first_name[0]}{profile.last_name[0]}
-          </div>
-        ))
-      ) : null}
-      <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm text-gray-600 border-2 border-white">
-        {Opportunity.kprofiles?.length}
-      </span>
-    </div>
+    {isAuthenticated() ? (
+      <div className="flex -space-x-2 justify-self-end">
+        {Opportunity.participants ? (
+          Opportunity.participants.map((url, index) => (
+            <img
+              key={index}
+              src={url}
+              alt={`Participant ${index + 1}`}
+              className="w-8 h-8 rounded-full border-2 border-white"
+            />
+          ))
+        ) : Opportunity.kprofiles ? (
+          Opportunity.kprofiles.map((profile, _index) => (
+            <div
+              key={profile.user_id}
+              className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm text-blue-700 border-2 border-white"
+            >
+              {profile.first_name[0]}{profile.last_name[0]}
+            </div>
+          ))
+        ) : null}
+        <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm text-gray-600 border-2 border-white">
+          {Opportunity.kprofiles?.length}
+        </span>
+      </div>
+    ) : (
+      <span>  </span>
+    )}
 
     {/* Button */}
     <button
@@ -75,6 +80,7 @@ interface ProjectsListProps {
   Opportunities: Opportunity[];
   loading: boolean;
   error: string;
+  guestFriendly?: boolean;
 }
 
 type SortField = 'status'
@@ -87,7 +93,33 @@ type SortDirection = 'asc'
 
 const MIN_LOADING_TIME = 300;
 
-const OpportunitiesList = ({ Opportunities, loading, error }: ProjectsListProps) => {
+const OpportunitiesList = ({ Opportunities, loading, error, guestFriendly }: ProjectsListProps) => {
+  if (!isAuthenticated() && !guestFriendly) {
+    return (
+      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
+        <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-1 gap-4 items-center justify-center text-center">
+          <div className="flex flex-row items-center justify-center">
+            <ShieldBan color='red' className="mr-2" size={20} />
+            <p className="text-red-500">Cette fonctionnalité est réservée aux utilisateurs enregistrés.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (Opportunities.length === 0) {
+    return (
+      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
+        <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-1 gap-4 items-center justify-center text-center">
+          <div className="text-gray-500">
+            <FolderOpen className="inline mr-2" size={20} />
+            Aucune opportunité trouvée
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const [sortField, setSortField] = useState<SortField>('status');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [showLoader, setShowLoader] = useState(true);
@@ -244,19 +276,6 @@ const OpportunitiesList = ({ Opportunities, loading, error }: ProjectsListProps)
     );
   }
 
-  if (Opportunities.length === 0) {
-    return (
-      <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
-        <div className="bg-white rounded-xl shadow-sm p-3 border grid grid-cols-1 gap-4 items-center justify-center text-center">
-          <div className="text-gray-500">
-            <FolderOpen className="inline mr-2" size={20} />
-            Aucune opportunité trouvée
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4 bg-white rounded-lg p-4" style={{ boxShadow: "0 0 4px 1px #11355d69", borderRadius: "10px" }}>
       {/* Header with sorting options */}
@@ -301,7 +320,12 @@ const OpportunitiesList = ({ Opportunities, loading, error }: ProjectsListProps)
           ) : null}
         </button>
 
-        <div className="text-right">Participants</div>
+        {isAuthenticated() ? (
+          <div className="text-right">Participants</div>
+        ) : (
+          <span></span>
+        )}
+
         <div className="text-center">Actions</div>
       </div>
       <div className="animate-stagger">
@@ -317,19 +341,21 @@ const OpportunitiesList = ({ Opportunities, loading, error }: ProjectsListProps)
           />
         ))}
         {/* LIVEWELL opportunities section */}
-        {sortedOpportunities.some(opp => opp.opportunity_role === "LIVEWELL") && (<>
-          <div className="border-t border-gray-200 my-4"></div>
-          {sortedOpportunities.filter(opp => opp.opportunity_role === "LIVEWELL").map((Opportunity, index) => (
-            <OpportunityItem
-              key={Opportunity.id || Opportunity.opportunity_id}
-              Opportunity={Opportunity}
-              getStatusColor={getStatusColor}
-              getStatusNameInFrench={getStatusNameInFrench}
-              onSelect={(opportunityId) => navigate(`/kplayer/opportunities/${opportunityId}`)}
-              style={{ animationDelay: `${index * 0.05}s` }}
-            />
-          ))}
-        </>)}
+        {sortedOpportunities.some(opp => opp.opportunity_role === "LIVEWELL") && (
+          <>
+            <div className="border-t border-gray-200 my-4"></div>
+            {sortedOpportunities.filter(opp => opp.opportunity_role === "LIVEWELL").map((Opportunity, index) => (
+              <OpportunityItem
+                key={Opportunity.id || Opportunity.opportunity_id}
+                Opportunity={Opportunity}
+                getStatusColor={getStatusColor}
+                getStatusNameInFrench={getStatusNameInFrench}
+                onSelect={(opportunityId) => navigate(`/kplayer/opportunities/${opportunityId}`)}
+                style={{ animationDelay: `${index * 0.05}s` }}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

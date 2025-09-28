@@ -131,18 +131,28 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
     const updatedSectors = formData.sectors.selected_sectors.map(sector => {
       if (sector.id !== sectorId) return sector;
 
-      const updatedJobs = sector.jobs.map(job => {
-        if (job.id !== jobId) return job;
+      const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
+      let updatedJobs;
 
-        const skillIndex = job.skills.indexOf(skillId);
+      if (jobIndex === -1) {
+        updatedJobs = [
+          ...sector.jobs,
+          { id: jobId, skills: [skillId] }
+        ];
+      } else {
+        updatedJobs = sector.jobs.map(job => {
+          if (job.id !== jobId) return job;
 
-        return {
-          ...job,
-          skills: skillIndex >= 0
-            ? job.skills.filter(id => id !== skillId)
-            : [...job.skills, skillId],
-        };
-      });
+          const skillIndex = job.skills.indexOf(skillId);
+          return {
+            ...job,
+            skills:
+              skillIndex >= 0
+                ? job.skills.filter(id => id !== skillId)
+                : [...job.skills, skillId],
+          };
+        });
+      }
 
       return { ...sector, jobs: updatedJobs };
     });
@@ -203,6 +213,11 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
       : [];
     onFormDataChange("requirements", listKey, currentArray.filter(i => i !== item));
   };
+
+  // constants for limits
+  const MAX_REQUIREMENT_LENGTH = 64;   // max characters per item
+  const MAX_REQUIREMENTS_PER_FIELD = 6; // max items per field
+
 
   return (
     <div className="w-full p-6 grid grid-cols-2 gap-6">
@@ -470,7 +485,7 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
         <div className="grid grid-cols-1 gap-6">
           {/* Contract Type */}
           <div className="space-y-2">
-            <p className="text-gray-600">Type de contrat proposé</p>
+            <label className="text-gray-600" htmlFor="contract_roles">Type de contrat proposé</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {[
                 { value: "FREELANCE", label: "Freelance" },
@@ -479,33 +494,39 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
                 { value: "CDI-C", label: "CDI Cadre" },
                 { value: "PORTAGE", label: "Portage salarial" },
                 { value: "CONSULTANT", label: "Consultant" },
-              ].map(({ value, label }) => (
-                <label key={value} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    name="contract"
-                    checked={formData.criteria.contract_roles?.includes(value) || false}
-                    onChange={() => {
+              ].map(({ value, label }) => {
+                const isSelected = formData.criteria.contract_roles?.includes(value) || false;
+                return (
+                  <button
+                    id="contract_roles"
+                    key={value}
+                    type="button"
+                    onClick={() => {
                       const currentRoles = formData.criteria.contract_roles || [];
-                      const newRoles = currentRoles.includes(value)
+                      const newRoles = isSelected
                         ? currentRoles.filter(role => role !== value)
                         : [...currentRoles, value];
                       onFormDataChange("criteria", "contract_roles", newRoles);
                     }}
-                    className="w-4 h-4"
-                    style={{ color: mainColor }}
-                  />
-                  {label}
-                </label>
-              ))}
+                    className={`px-4 py-2 rounded-xl text-sm flex items-center transition-colors
+                      ${isSelected
+                        ? "bg-[#215A96] text-white"
+                        : "bg-white border border-gray-300 hover:bg-gray-50"
+                      }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Start Date */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <p className="text-gray-600">Date de démarrage souhaitée</p>
+              <label className="text-gray-600" htmlFor="start_date">Date de démarrage souhaitée</label>
               <input
+                id="start_date"
                 type="date"
                 className="w-full border p-2 rounded-xl"
                 value={formData.criteria.crit_start_date}
@@ -513,8 +534,9 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
               />
             </div>
             <div className="space-y-2">
-              <p className="text-gray-600">Au plus tard</p>
+              <label className="text-gray-600" htmlFor="max_start_date">Au plus tard</label>
               <input
+                id="max_start_date"
                 type="date"
                 className="w-full border p-2 rounded-xl"
                 value={formData.criteria.crit_start_date_lastest}
@@ -526,8 +548,9 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
           {/* Duration */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <p className="text-gray-600">Durée prévisionnelle</p>
+              <label className="text-gray-600" htmlFor="duration">Durée prévisionnelle</label>
               <input
+                id="duration"
                 type="text"
                 className="w-full border p-2 rounded-xl"
                 placeholder="jours"
@@ -536,8 +559,9 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
               />
             </div>
             <div className="space-y-2">
-              <p className="text-gray-600">Durée max</p>
+              <label className="text-gray-600" htmlFor="max_duration">Durée max</label>
               <input
+                id="max_duration"
                 type="text"
                 className="w-full border p-2 rounded-xl"
                 placeholder="jours"
@@ -550,8 +574,9 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
           {/* Rates */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <p className="text-gray-600">TJM</p>
+              <label className="text-gray-600" htmlFor="tjm">TJM</label>
               <input
+                id="tjm"
                 type="text"
                 className="w-full border p-2 rounded-xl"
                 placeholder="€/h"
@@ -560,8 +585,9 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
               />
             </div>
             <div className="space-y-2">
-              <p className="text-gray-600">Salaire cible</p>
+              <label className="text-gray-600" htmlFor="max_rate">Salaire cible</label>
               <input
+                id="max_rate"
                 type="text"
                 className="w-full border p-2 rounded-xl"
                 placeholder="€/an"
@@ -573,32 +599,41 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
 
           {/* Location & Remote Work*/}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-gray-600">Localisation</p>
+            {/* Location */}
+            <div>
+              <label className="text-gray-600" htmlFor="location">Localisation</label>
               <input
+                id="location"
                 type="text"
-                className="w-full border p-2 rounded-xl"
+                className="w-full border p-2 rounded-xl mt-2 h-[42px]"
                 placeholder="Ville, Pays"
                 value={formData.criteria.crit_location}
                 onChange={(e) => onFormDataChange("criteria", "crit_location", e.target.value)}
               />
             </div>
-            <div className="space-y-4">
-              <p className="text-gray-600">Télétravail</p>
-              <div className="flex gap-4">
-                {[{ value: true, label: "Oui" }, { value: false, label: "Non" }].map(({ value, label }) => (
-                  <label key={label} className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="remote"
-                      checked={formData.criteria.crit_remote === value}
-                      onChange={() => onFormDataChange("criteria", "crit_remote", value)}
-                      className="w-4 h-4"
-                      style={{ color: mainColor }}
-                    />
-                    {label}
-                  </label>
-                ))}
+
+            {/* Remote */}
+            <div>
+              <label className="text-gray-600" htmlFor="remote">Télétravail</label>
+              <div className="grid grid-cols-2 gap-2 mt-2 h-[42px]">
+                {[{ value: true, label: "Oui" }, { value: false, label: "Non" }].map(({ value, label }) => {
+                  const isSelected = formData.criteria.crit_remote === value;
+                  return (
+                    <button
+                      key={String(value)}
+                      type="button"
+                      id="remote"
+                      onClick={() => onFormDataChange("criteria", "crit_remote", value)}
+                      className={`w-full h-full px-4 rounded-xl text-sm flex items-center justify-center transition-colors
+                        ${isSelected
+                          ? "bg-[#215A96] text-white"
+                          : "bg-white border border-gray-300 hover:bg-gray-50"
+                        }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -610,45 +645,85 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
               { key: "authorization", label: "Habilitations", field: "authorizations" },
               { key: "language", label: "Langues", field: "languages" },
               { key: "quality", label: "Qualités Relationnelles", field: "qualities" },
-            ].map(({ key, label, field }) => (
-              <div key={key} className="space-y-2">
-                <p className="text-gray-600">{label}</p>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={inputValues[key as keyof typeof inputValues]}
-                    onChange={(e) => handleInputChange(key as keyof typeof inputValues, e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
-                    placeholder={`Ajouter ${/^[aeiou]/i.test(label) ? "un" : "une"} ${label.toLowerCase()}`}
-                    className="flex-1 border p-2 rounded-xl"
-                  />
-                  <button
-                    onClick={() => addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
-                    className={`p-2 ${inputValues[key as keyof typeof inputValues].trim() ? "text-blue-600" : "text-gray-400"}`}
-                    disabled={!inputValues[key as keyof typeof inputValues].trim()}
-                  >
-                    <PlusCircle size={24} />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.requirements[field as keyof OpportunityRequirements]?.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 rounded-xl px-3 py-1"
-                      style={{ backgroundColor: mainColor, color: 'white' }}
-                    >
-                      <span>{item}</span>
-                      <button
-                        onClick={() => removeItem(field as keyof OpportunityRequirements, item)}
-                        className="hover:text-gray-200"
+            ].map(({ key, label, field }) => {
+              const value = inputValues[key as keyof typeof inputValues] || "";
+              const items = formData.requirements[field as keyof OpportunityRequirements] || [];
+              const isMaxed = items.length >= MAX_REQUIREMENTS_PER_FIELD;
+
+              return (
+                <div key={key} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-gray-600" htmlFor={key}>{label}</label>
+                    {value.length >= MAX_REQUIREMENT_LENGTH * 0.7 && (
+                      <span
+                        className={`text-sm ${value.length === MAX_REQUIREMENT_LENGTH ? "text-red-500" : "text-gray-400"
+                          }`}
                       >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
+                        {MAX_REQUIREMENT_LENGTH - value.length}/{MAX_REQUIREMENT_LENGTH}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      id={key}
+                      type="text"
+                      value={value}
+                      maxLength={MAX_REQUIREMENT_LENGTH}
+                      onChange={(e) => handleInputChange(key as keyof typeof inputValues, e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" &&
+                        value.trim() &&
+                        !isMaxed &&
+                        addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)
+                      }
+                      placeholder={`Ajouter ${/^[aeiou]/i.test(label) ? "un" : "une"} ${label.toLowerCase()}`}
+                      className="flex-1 border p-2 rounded-xl"
+                      disabled={isMaxed}
+                    />
+                    <button
+                      onClick={() => addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
+                      className={`p-2 ${value.trim() && !isMaxed ? "text-blue-600" : "text-gray-400"
+                        }`}
+                      disabled={!value.trim() || isMaxed}
+                    >
+                      <PlusCircle size={24} />
+                    </button>
+                  </div>
+
+                  {isMaxed && (
+                    <p className="text-sm text-red-500">
+                      Maximum de {MAX_REQUIREMENTS_PER_FIELD} {label.toLowerCase()} atteint.
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {items.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 rounded-xl px-3 py-1 max-w-full"
+                        style={{ backgroundColor: mainColor, color: "white" }}
+                      >
+                        <div className="relative overflow-hidden max-w-full">
+                          <span
+                            className="block whitespace-nowrap overflow-hidden text-ellipsis hover:text-clip hover:animate-scroll"
+                          >
+                            {item}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => removeItem(field as keyof OpportunityRequirements, item)}
+                          className="hover:text-gray-200"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+
           </div>
         </div>
       </div>

@@ -1,206 +1,250 @@
 import { jwtVerify, JWTPayload, decodeJwt as joseDecodeJwt } from 'jose';
 import { GuestData } from '../pages/K-Profile/Competence/types';
+import { GuestOpportunity } from '../pages/K-player/Opportunities/mod guest/GuestDS';
 
 const TOKEN_KEY = "auth_token";
 
 // Save JWT token in localStorage
 export const saveToken = (token: string) => {
-    localStorage.setItem(TOKEN_KEY, token);
+	localStorage.setItem(TOKEN_KEY, token);
 };
 
 // Retrieve JWT token from localStorage
 export const getToken = (): string | null => {
-    return localStorage.getItem(TOKEN_KEY);
+	return localStorage.getItem(TOKEN_KEY);
 };
 
 // Remove JWT token from localStorage (Logout)
 export const removeToken = () => {
-    localStorage.removeItem(TOKEN_KEY);
+	localStorage.removeItem(TOKEN_KEY);
 };
 
 // Update JWT token (Re-login)
 export const updateToken = (newToken: string) => {
-    saveToken(newToken);
+	saveToken(newToken);
 };
 
 // Check if user is authenticated (returns true if token exists)
 export const isAuthenticated = (): boolean => {
-    return getToken() !== null;
+	return getToken() !== null;
 };
 
 // Utility to get the Authorization header
 export const getAuthHeader = () => {
-    const token = getToken();
-    return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
+	const token = getToken();
+	return token ? { Authorization: `Bearer ${token}` } : { Authorization: '' };
 };
 
 // Decode JWT Token
 interface KeeeyJwtPayload extends JWTPayload {
-    user_id: string;
-    email: string;
-    user_role: string;
-    exp: number;
-    iat: number;
+	user_id: string;
+	email: string;
+	user_role: string;
+	exp: number;
+	iat: number;
 }
 
 export const decodeJwtUnsafe = (token: string | null): KeeeyJwtPayload | null => {
-    if (!token) return null;
+	if (!token) return null;
 
-    try {
-        const payload = joseDecodeJwt(token);
-        if (isKeeeyJwtPayload(payload)) {
-            return payload;
-        }
-        return null;
+	try {
+		const payload = joseDecodeJwt(token);
+		if (isKeeeyJwtPayload(payload)) {
+			return payload;
+		}
+		return null;
 
-    } catch (error) {
-        console.error("JWT decoding failed:", error);
-        return null;
-    }
+	} catch (error) {
+		console.error("JWT decoding failed:", error);
+		return null;
+	}
 }
 
 export const decodeJwt = async (token: string | null): Promise<KeeeyJwtPayload | null> => {
-    if (!token) return null;
+	if (!token) return null;
 
-    const jwtSecret = import.meta.env.VITE_JWT_SECRET;
-    if (!jwtSecret) {
-        console.warn('VITE_JWT_SECRET not available, falling back to unsafe decode');
-        return decodeJwtUnsafe(token);
-    }
+	const jwtSecret = import.meta.env.VITE_JWT_SECRET;
+	if (!jwtSecret) {
+		console.warn('VITE_JWT_SECRET not available, falling back to unsafe decode');
+		return decodeJwtUnsafe(token);
+	}
 
-    try {
-        // Note: jose uses Uint8Array for secrets, so we encode the string 
-        const secretKey = new TextEncoder().encode(jwtSecret);
-        const { payload } = await jwtVerify(token, secretKey);
-        if (isKeeeyJwtPayload(payload)) {
-            return payload;
-        }
-        return null;
+	try {
+		// Note: jose uses Uint8Array for secrets, so we encode the string 
+		const secretKey = new TextEncoder().encode(jwtSecret);
+		const { payload } = await jwtVerify(token, secretKey);
+		if (isKeeeyJwtPayload(payload)) {
+			return payload;
+		}
+		return null;
 
-    } catch (error) {
-        console.error("JWT verification failed:", error);
-        console.warn('Falling back to unsafe decode for claims reading');
-        return decodeJwtUnsafe(token);
-    }
+	} catch (error) {
+		console.error("JWT verification failed:", error);
+		console.warn('Falling back to unsafe decode for claims reading');
+		return decodeJwtUnsafe(token);
+	}
 }
 
 export const isKeeeyJwtPayload = (payload: JWTPayload): payload is KeeeyJwtPayload => {
-    return (
-        typeof payload === 'object' &&
-        payload !== null &&
-        'user_id' in payload &&
-        typeof payload.user_id === 'string' &&
-        'user_role' in payload &&
-        typeof payload.user_role === 'string' &&
-        'email' in payload &&
-        typeof payload.verified === 'boolean' &&
-        'iat' in payload &&
-        typeof payload.iat === 'number' &&
-        'exp' in payload &&
-        typeof payload.exp === 'number'
-    );
+	return (
+		typeof payload === 'object' &&
+		payload !== null &&
+		'user_id' in payload &&
+		typeof payload.user_id === 'string' &&
+		'user_role' in payload &&
+		typeof payload.user_role === 'string' &&
+		'email' in payload &&
+		typeof payload.verified === 'boolean' &&
+		'iat' in payload &&
+		typeof payload.iat === 'number' &&
+		'exp' in payload &&
+		typeof payload.exp === 'number'
+	);
 }
 
 const USER_ID_KEY = "user_id";
 
 // Save user ID in localStorage
 export const saveUserId = (userId: string) => {
-    localStorage.setItem(USER_ID_KEY, userId);
+	localStorage.setItem(USER_ID_KEY, userId);
 };
 
 // Retrieve user ID from localStorage
 export const getUserId = (): string | null => {
-    return localStorage.getItem(USER_ID_KEY);
+	return localStorage.getItem(USER_ID_KEY);
 };
 
 // Remove user ID from localStorage (Logout)
 export const removeUserId = () => {
-    localStorage.removeItem(USER_ID_KEY);
+	localStorage.removeItem(USER_ID_KEY);
 };
 
 // Update user ID (Re-login or profile update)
 export const updateUserId = (newUserId: string) => {
-    saveUserId(newUserId);
+	saveUserId(newUserId);
 };
 
 // Check if user ID exists
 export const hasUserId = (): boolean => {
-    return getUserId() !== null;
+	return getUserId() !== null;
 };
 
 const USER_FULLNAME_KEY = "user_fullname";
 
 // Save user Fullname in localStorage
 export const saveUserFullName = (userFullName: string) => {
-    localStorage.setItem(USER_FULLNAME_KEY, userFullName);
+	localStorage.setItem(USER_FULLNAME_KEY, userFullName);
 };
 
 // Retrieve user Fullname from localStorage
 export const getUserFullName = (): string | null => {
-    return localStorage.getItem(USER_FULLNAME_KEY);
+	return localStorage.getItem(USER_FULLNAME_KEY);
 };
 
 // Remove user Fullname from localStorage (Logout)
 export const removeUserFullName = () => {
-    localStorage.removeItem(USER_FULLNAME_KEY);
+	localStorage.removeItem(USER_FULLNAME_KEY);
 };
 
 const USER_ROLE = "user_role";
 
 export type UserRole = 'K-PROFILE'
-    | 'K-PLAYER'
-    | 'K-PARTNER'
-    | 'default';
+	| 'K-PLAYER'
+	| 'K-PARTNER'
+	| 'default';
 
 // Save user role in localStorage
 export const saveUserRole = (userRole: string) => {
-    localStorage.setItem(USER_ROLE, userRole);
+	localStorage.setItem(USER_ROLE, userRole);
 };
 
 // Retrieve user role from localStorage
 export const getUserRole = (): UserRole | null => {
-    return localStorage.getItem(USER_ROLE) as UserRole || null;
+	return localStorage.getItem(USER_ROLE) as UserRole || null;
 };
 
 // Remove user role from localStorage (Logout)
 export const removeUserRole = () => {
-    localStorage.removeItem(USER_ROLE);
+	localStorage.removeItem(USER_ROLE);
 };
 
 const GUEST_TOKEN = "guest_token";
 
 // Save guest token in localStorage
 export const saveGuestToken = (guestToken: string) => {
-    localStorage.setItem(GUEST_TOKEN, guestToken);
+	localStorage.setItem(GUEST_TOKEN, guestToken);
 };
 
 // Retrieve guest token from localStorage
 export const getGuestToken = () => {
-    const token = localStorage.getItem(GUEST_TOKEN);
-    return token ? { Authorization: `Bearer ${token}` } : { Authorization: 'Bearer ' };
+	const token = localStorage.getItem(GUEST_TOKEN);
+	return token ? { Authorization: `Bearer ${token}` } : { Authorization: 'Bearer ' };
 };
 
 // Remove guest token from localStorage (Logout)
 export const removeGuestToken = () => {
-    localStorage.removeItem(GUEST_TOKEN);
+	localStorage.removeItem(GUEST_TOKEN);
 };
 
 export const GUEST_STORAGE = "guest_data";
 
 export const saveGuestData = (data: Partial<GuestData>) => {
-    const existing = loadGuestData();
-    const merged = { ...existing, ...data };
-    localStorage.setItem(GUEST_STORAGE, JSON.stringify(merged));
+	const existing = loadGuestData();
+	const merged = { ...existing, ...data };
+	localStorage.setItem(GUEST_STORAGE, JSON.stringify(merged));
 };
 
 export const loadGuestData = (): Partial<GuestData> => {
-    try {
-        const raw = localStorage.getItem(GUEST_STORAGE);
-        return raw ? JSON.parse(raw) : {};
-    } catch {
-        return {};
-    }
+	try {
+		const raw = localStorage.getItem(GUEST_STORAGE);
+		return raw ? JSON.parse(raw) : {};
+	} catch {
+		return {};
+	}
 };
 
-// Debugger: get all data
+export const GUEST_OPPORTUNITIES = "guest_opportunities";
+
+export const saveGuestOpportunity = (opportunity: Partial<GuestOpportunity>) => {
+	const existing = loadGuestOpportunities();
+
+	if (existing.length >= 3 && !opportunity.id) {
+		console.warn('Guest can only save up to 3 opportunities');
+		return;
+	}
+
+	if (opportunity.id) {
+		const updated = existing.map(opp =>
+			opp.id === opportunity.id ? { ...opp, ...opportunity } : opp
+		);
+		localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
+	} else {
+		const newId = existing.length > 0 ? Math.max(...existing.map(opp => opp.id)) + 1 : 1;
+		const newOpportunity: GuestOpportunity = {
+			...opportunity,
+			id: newId,
+			created_at: opportunity.created_at || new Date().toISOString(),
+			expire_at: opportunity.expire_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+		} as GuestOpportunity;
+
+		const updated = [...existing, newOpportunity];
+		localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
+	}
+};
+
+export const loadGuestOpportunities = (): GuestOpportunity[] => {
+	try {
+		const raw = localStorage.getItem(GUEST_OPPORTUNITIES);
+		return raw ? JSON.parse(raw) : [];
+	} catch {
+		return [];
+	}
+};
+
+export const deleteGuestOpportunity = (id: number) => {
+	const existing = loadGuestOpportunities();
+	const updated = existing.filter(opp => opp.id !== id);
+	localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
+};
+
 export const getLocalStorageData = () => localStorage;

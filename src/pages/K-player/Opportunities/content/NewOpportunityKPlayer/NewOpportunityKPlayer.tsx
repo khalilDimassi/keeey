@@ -8,6 +8,7 @@ import { OpportunityBasicInfo, OpportunityCriteria, OpportunityRequirements, Opp
 import GeneralInformationForm from "./content/GeneralInformationForm";
 import SkillsCriteriasForm from "./content/SkillsCriteriasForm";
 import DiffusionForm from "./content/DiffusionForm";
+import { isAuthenticated, saveGuestOpportunity } from "../../../../../utils/jwt";
 
 
 type TabType = "Informations" | "Compétences_Critères" | "Diffusion";
@@ -68,6 +69,7 @@ const NewOpportunityKPlayer = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const isAuth = isAuthenticated();
 
   useEffect(() => {
     setError(null);
@@ -111,16 +113,23 @@ const NewOpportunityKPlayer = () => {
       status: generalIndormation.status || "OPEN",
     };
 
-    createFullOpportunity(payload, skills, criterias, requirements, diffusion)
-      .then((response) => {
-        navigate("/kplayer/opportunities/" + response.opportunity_id);
-      })
-      .catch((error) => {
-        setError(error instanceof Error ? error.message : "An unknown error occurred");
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    if (isAuth) {
+      createFullOpportunity(payload, skills, criterias, requirements, diffusion)
+        .then((response) => {
+          navigate("/kplayer/opportunities/" + response.opportunity_id);
+        })
+        .catch((error) => {
+          setError(error instanceof Error ? error.message : "An unknown error occurred");
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+    } else {
+      saveGuestOpportunity({ ...payload, ...skills, ...criterias, ...requirements, ...diffusion });
+      setSubmitting(false);
+    }
+
+    navigate("/kplayer/opportunities");
   }
 
   return (
