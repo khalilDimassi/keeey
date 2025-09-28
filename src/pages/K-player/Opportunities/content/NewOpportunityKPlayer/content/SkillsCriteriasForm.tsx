@@ -128,34 +128,25 @@ const SkillsCriteriasForm = ({ onChange, sectors, skillsData, criteriasData, req
   };
 
   const toggleSkill = (sectorId: number, jobId: number, skillId: number) => {
-    const updatedSectors = formData.sectors.selected_sectors.map(sector => {
-      if (sector.id !== sectorId) return sector;
-
-      const jobIndex = sector.jobs.findIndex(j => j.id === jobId);
-      let updatedJobs;
-
-      if (jobIndex === -1) {
-        updatedJobs = [
-          ...sector.jobs,
-          { id: jobId, skills: [skillId] }
-        ];
-      } else {
-        updatedJobs = sector.jobs.map(job => {
-          if (job.id !== jobId) return job;
-
-          const skillIndex = job.skills.indexOf(skillId);
-          return {
-            ...job,
-            skills:
-              skillIndex >= 0
-                ? job.skills.filter(id => id !== skillId)
-                : [...job.skills, skillId],
-          };
-        });
-      }
-
-      return { ...sector, jobs: updatedJobs };
-    });
+    const updatedSectors = formData.sectors.selected_sectors.map(sector =>
+      sector.id !== sectorId
+        ? sector
+        : {
+          ...sector,
+          jobs: sector.jobs.some(j => j.id === jobId)
+            ? sector.jobs.map(j =>
+              j.id !== jobId
+                ? j
+                : {
+                  ...j,
+                  skills: j.skills.includes(skillId)
+                    ? j.skills.filter(id => id !== skillId)
+                    : [...j.skills, skillId],
+                }
+            )
+            : [...sector.jobs, { id: jobId, skills: [skillId] }],
+        }
+    );
 
     onFormDataChange("sectors", "selected_sectors", updatedSectors);
   };

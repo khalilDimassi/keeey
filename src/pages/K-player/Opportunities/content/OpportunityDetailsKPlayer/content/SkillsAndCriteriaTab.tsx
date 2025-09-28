@@ -1,8 +1,8 @@
-import { FC, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Loader2, PenBox, PlusCircle, Trash2, X } from "lucide-react";
 import { OpportunitySectors, Sector, OpportunityCriteria, OpportunityRequirements, Job } from "../types";
 import { JobButton, JobButtonColorScheme } from "../../../../../components/JobButton";
-import { getAuthHeader } from "../../../../../../utils/jwt";
+import { getAuthHeader, isAuthenticated, loadGuestOpportunities, saveGuestOpportunity } from "../../../../../../utils/jwt";
 
 import axios from "axios";
 
@@ -41,7 +41,7 @@ const DEFAULT_FORM_DATA = {
   }
 };
 
-const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, error, initialFormData, opportunity_id }) => {
+const SkillsAndCriterias = ({ sectors, loading, error, initialFormData, opportunity_id }: SkillsAndCriteriasProps) => {
   const [formData, setFormData] = useState({
     ...DEFAULT_FORM_DATA,
     ...(initialFormData || {})
@@ -64,11 +64,9 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [hoveredToggleButton, setHoveredToggleButton] = useState<number | null>(null);
 
-  const onFormDataChange = (
-    section: 'sectors' | 'criteria' | 'requirements',
-    field: string,
-    value: any
-  ) => {
+  const isAuth = isAuthenticated();
+
+  const onFormDataChange = (section: 'sectors' | 'criteria' | 'requirements', field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [section]: {
@@ -152,24 +150,25 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
   };
 
   const toggleSkill = (sectorId: number, jobId: number, skillId: number) => {
-    const updatedSectors = formData.sectors.selected_sectors.map(sector => {
-      if (sector.id !== sectorId) return sector;
-
-      const updatedJobs = sector.jobs.map(job => {
-        if (job.id !== jobId) return job;
-
-        const skillIndex = job.skills.indexOf(skillId);
-
-        return {
-          ...job,
-          skills: skillIndex >= 0
-            ? job.skills.filter(id => id !== skillId)
-            : [...job.skills, skillId],
-        };
-      });
-
-      return { ...sector, jobs: updatedJobs };
-    });
+    const updatedSectors = formData.sectors.selected_sectors.map(sector =>
+      sector.id !== sectorId
+        ? sector
+        : {
+          ...sector,
+          jobs: sector.jobs.some(j => j.id === jobId)
+            ? sector.jobs.map(j =>
+              j.id !== jobId
+                ? j
+                : {
+                  ...j,
+                  skills: j.skills.includes(skillId)
+                    ? j.skills.filter(id => id !== skillId)
+                    : [...j.skills, skillId],
+                }
+            )
+            : [...sector.jobs, { id: jobId, skills: [skillId] }],
+        }
+    );
 
     onFormDataChange("sectors", "selected_sectors", updatedSectors);
   };
@@ -228,64 +227,102 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
     onFormDataChange("requirements", listKey, currentArray.filter(i => i !== item));
   };
 
-  const handleSaveSkills = async () => {
-    try {
-      setIsSubmitting(true);
-      const filteredSectors = formData.sectors.selected_sectors.filter(
-        sector => sector.jobs && sector.jobs.length > 0
-      );
+  const handleSaveSkills = () => {
+    setIsSubmitting(true);
+    setSubmissionStatus({});
 
-      await axios.put(
+    const filteredSectors = formData.sectors.selected_sectors.filter(
+      sector => sector.jobs && sector.jobs.length > 0
+    );
+
+    if (isAuth) {
+      axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/v2`,
         { selected_sectors: filteredSectors },
         { headers: { 'Content-Type': 'application/json', ...getAuthHeader() } }
-      );
+      )
+        .then(() => {
+          setSubmissionStatus({
+            success: true,
+            message: 'Skills saved successfully!'
+          })
+          setIsEditingSkills(false);
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message || 'Failed to save skills data.';
+          setSubmissionStatus({ success: false, message: errorMessage });
+          alert(`Save failed: ${errorMessage}`);
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+          setTimeout(() => setSubmissionStatus({}), 3000);
+        });
+    } else {
+      const guestData = loadGuestOpportunities().find(opp => opp.id.toString() === opportunity_id);
+      saveGuestOpportunity({ ...guestData, selected_sectors: filteredSectors });
 
       setSubmissionStatus({
         success: true,
         message: 'Skills saved successfully!'
-      });
+      })
       setIsEditingSkills(false);
-    } catch (error) {
-      setSubmissionStatus({
-        success: false,
-        message: 'Failed to save skills data.'
-      });
-    } finally {
+
       setIsSubmitting(false);
-      // Clear status message after a delay
       setTimeout(() => setSubmissionStatus({}), 3000);
     }
   };
 
-  const handleSaveCriterias = async () => {
-    try {
-      setIsSubmitting(true);
-      await axios.put(
+
+  const handleSaveCriterias = () => {
+    setIsSubmitting(true);
+    setSubmissionStatus({});
+
+    if (isAuth) {
+      axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}/v2`,
         {
           ...formData.criteria,
           ...formData.requirements
         },
         { headers: { 'Content-Type': 'application/json', ...getAuthHeader() } }
-      );
+      )
+        .then(() => {
+          setSubmissionStatus({
+            success: true,
+            message: 'Criteria and requirements saved successfully!'
+          });
+          setIsEditingCriterias(false);
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message || 'Failed to save criteria data.';
+          setSubmissionStatus({ success: false, message: errorMessage });
+          alert(`Save failed: ${errorMessage}`);
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+          // Clear status message after a delay
+          setTimeout(() => setSubmissionStatus({}), 3000);
+        });
+    } else {
+      const guestData = loadGuestOpportunities().find(opp => opp.id.toString() === opportunity_id);
+      saveGuestOpportunity({ ...guestData, ...formData.criteria, ...formData.requirements });
 
       setSubmissionStatus({
         success: true,
         message: 'Criteria and requirements saved successfully!'
       });
       setIsEditingCriterias(false);
-    } catch (error) {
-      setSubmissionStatus({
-        success: false,
-        message: 'Failed to save criteria data.'
-      });
-    } finally {
+
       setIsSubmitting(false);
       // Clear status message after a delay
       setTimeout(() => setSubmissionStatus({}), 3000);
     }
   };
+
+  // constants for limits
+  const MAX_REQUIREMENT_LENGTH = 64;   // max characters per item
+  const MAX_REQUIREMENTS_PER_FIELD = 6; // max items per field
+  const mainColor = "#215A96"
 
   if (error) {
     return (
@@ -425,7 +462,10 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
               cursor={"pointer"}
               size={24}
               color="#215A96"
-              onClick={() => setIsEditingSkills(true)}
+              onClick={() => {
+                setIsEditingSkills(true)
+                setIsSubmitting(false)
+              }}
             />
           )}
         </div>
@@ -534,17 +574,17 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
                           <button
                             onClick={() => handlePointsChange(currentPoints - 1)}
                             disabled={currentPoints <= 0}
-                            className="p-1 text-gray-500 hover:text-[#215A96] disabled:opacity-30 disabled:cursor-not-allowed"
+                            className={`p-1 text-gray-500 hover:text-[${mainColor}] disabled:opacity-30 disabled:cursor-not-allowed`}
                           >
-                            <ChevronLeft className="h-4 w-4" color="#215A96" strokeWidth={5} />
+                            <ChevronLeft className="h-4 w-4" strokeWidth={5} />
                           </button>
                           <span className="font-medium">{currentSeniority?.name}</span>
                           <button
                             onClick={() => handlePointsChange(currentPoints + 1)}
                             disabled={currentPoints >= 21}
-                            className="p-1 text-gray-500 hover:text-[#215A96] disabled:opacity-30 disabled:cursor-not-allowed"
+                            className={`p-1 text-gray-500 hover:text-[${mainColor}] disabled:opacity-30 disabled:cursor-not-allowed`}
                           >
-                            <ChevronRight className="h-4 w-4" color="#215A96" strokeWidth={5} />
+                            <ChevronRight className="h-4 w-4" strokeWidth={5} />
                           </button>
                         </div>
                         <span>{(currentPoints > 20) ? "20+" : currentPoints} ans</span>
@@ -561,11 +601,11 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
                       >
                         <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded-xl transform -translate-y-1/2"></div>
                         <div
-                          className="absolute top-1/2 left-0 h-2 bg-[#215A96] rounded-xl transform -translate-y-1/2"
+                          className={`absolute top-1/2 left-0 h-2 bg-[${mainColor}] rounded-xl transform -translate-y-1/2`}
                           style={{ width: `${(currentPoints / 21) * 100}%` }}
                         ></div>
                         <div
-                          className="absolute top-1/2 w-5 h-5 bg-[#215A96] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md transition-all duration-100"
+                          className={`absolute top-1/2 w-5 h-5 bg-[${mainColor}] rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-md transition-all duration-100`}
                           style={{ left: `${(currentPoints / 21) * 100}%` }}
                         ></div>
                         <input
@@ -582,7 +622,7 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
                         {seniorityLevels.map((level) => (
                           <span
                             key={level.level}
-                            className={currentDisplayLevel === level.level ? "font-bold text-[#215A96]" : ""}
+                            className={currentDisplayLevel === level.level ? `font-bold text-[${mainColor}]` : ""}
                           >
                             {level.level}
                           </span>
@@ -639,7 +679,7 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
                                           key={skill.id}
                                           type="button"
                                           className={`px-3 py-1 text-sm border rounded-xl ${isSkillSelected(activeSector, expandedJob, skill.id)
-                                            ? 'bg-[#215A96] text-white'
+                                            ? `bg-[${mainColor}] text-white border-[${mainColor}]`
                                             : 'border-gray-300 bg-white text-gray-700'
                                             }`}
                                           onClick={() => toggleSkill(activeSector, expandedJob, skill.id)}
@@ -812,24 +852,30 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
                   { value: "CDI-C", label: "CDI Cadre" },
                   { value: "PORTAGE", label: "Portage salarial" },
                   { value: "CONSULTANT", label: "Consultant" },
-                ].map(({ value, label }) => (
-                  <label key={value} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="contract"
-                      checked={formData.criteria.contract_roles?.includes(value) || false}
-                      onChange={() => {
+                ].map(({ value, label }) => {
+                  const isSelected = formData.criteria.contract_roles?.includes(value) || false;
+                  return (
+                    <button
+                      id="contract_roles"
+                      key={value}
+                      type="button"
+                      onClick={() => {
                         const currentRoles = formData.criteria.contract_roles || [];
-                        const newRoles = currentRoles.includes(value)
+                        const newRoles = isSelected
                           ? currentRoles.filter(role => role !== value)
                           : [...currentRoles, value];
                         onFormDataChange("criteria", "contract_roles", newRoles);
                       }}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    {label}
-                  </label>
-                ))}
+                      className={`px-4 py-2 rounded-xl text-sm flex items-center transition-colors
+                        ${isSelected
+                          ? "bg-[#215A96] text-white"
+                          : "bg-white border border-gray-300 hover:bg-gray-50"
+                        }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -915,236 +961,132 @@ const SkillsAndCriterias: FC<SkillsAndCriteriasProps> = ({ sectors, loading, err
               </div>
             </div>
 
-            {/* Localisation */}
-            <div>
-              <p className="text-gray-600 mb-2">Localisation</p>
-              <input
-                className="w-full border p-2 rounded-xl mb-4"
-                type="text"
-                placeholder="Localisation"
-                value={formData.criteria.crit_location}
-                onChange={(e) => onFormDataChange("criteria", "crit_location", e.target.value)}
-              />
-            </div>
+            {/* Location & Remote Work*/}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Location */}
+              <div>
+                <label className="text-gray-600" htmlFor="location">Localisation</label>
+                <input
+                  id="location"
+                  type="text"
+                  className="w-full border p-2 rounded-xl mt-2 h-[42px]"
+                  placeholder="Ville, Pays"
+                  value={formData.criteria.crit_location}
+                  onChange={(e) => onFormDataChange("criteria", "crit_location", e.target.value)}
+                />
+              </div>
 
-            {/* Télétravail */}
-            <div>
-              <p className="text-gray-600 mb-2">Télétravail</p>
-              <div className="flex gap-4 mb-4">
-                {[
-                  { value: true, label: "Oui" },
-                  { value: false, label: "Non" }
-                ].map(({ value, label }) => (
-                  <label key={label} className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="remote"
-                      checked={formData.criteria.crit_remote === value}
-                      onChange={() => onFormDataChange("criteria", "crit_remote", value)}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    {label}
-                  </label>
-                ))}
+              {/* Remote */}
+              <div>
+                <label className="text-gray-600" htmlFor="remote">Télétravail</label>
+                <div className="grid grid-cols-2 gap-2 mt-2 h-[42px]">
+                  {[{ value: true, label: "Oui" }, { value: false, label: "Non" }].map(({ value, label }) => {
+                    const isSelected = formData.criteria.crit_remote === value;
+                    return (
+                      <button
+                        key={String(value)}
+                        type="button"
+                        id="remote"
+                        onClick={() => onFormDataChange("criteria", "crit_remote", value)}
+                        className={`w-full h-full px-4 rounded-xl text-sm flex items-center justify-center transition-colors
+                        ${isSelected
+                            ? "bg-[#215A96] text-white"
+                            : "bg-white border border-gray-300 hover:bg-gray-50"
+                          }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Requirements Section */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <p className="text-gray-600">Outils</p>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text"
-                    value={inputValues.tool}
-                    onChange={(e) => handleInputChange("tool", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        addItem("tool", "tools");
-                      }
-                    }}
-                    placeholder="Ajouter un outil"
-                    className="w-full border p-2 rounded-xl"
-                  />
-                  <button
-                    onClick={() => addItem("tool", "tools")}
-                    className={`${inputValues.tool.trim()
-                      ? "text-blue-600 hover:text-blue-800"
-                      : "text-gray-400"
-                      } transition-colors`}
-                    disabled={!inputValues.tool.trim()}
-                  >
-                    <PlusCircle size={28} />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.requirements.tools?.map((tool, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
-                    >
-                      <span>{tool}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { key: "tool", label: "Outils", field: "tools" },
+                { key: "authorization", label: "Habilitations", field: "authorizations" },
+                { key: "language", label: "Langues", field: "languages" },
+                { key: "quality", label: "Qualités Relationnelles", field: "qualities" },
+              ].map(({ key, label, field }) => {
+                const value = inputValues[key as keyof typeof inputValues] || "";
+                const items = formData.requirements[field as keyof OpportunityRequirements] || [];
+                const isMaxed = items.length >= MAX_REQUIREMENTS_PER_FIELD;
+
+                return (
+                  <div key={key} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <label className="text-gray-600" htmlFor={key}>{label}</label>
+                      {value.length >= MAX_REQUIREMENT_LENGTH * 0.7 && (
+                        <span
+                          className={`text-sm ${value.length === MAX_REQUIREMENT_LENGTH ? "text-red-500" : "text-gray-400"
+                            }`}
+                        >
+                          {MAX_REQUIREMENT_LENGTH - value.length}/{MAX_REQUIREMENT_LENGTH}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <input
+                        id={key}
+                        type="text"
+                        value={value}
+                        maxLength={MAX_REQUIREMENT_LENGTH}
+                        onChange={(e) => handleInputChange(key as keyof typeof inputValues, e.target.value)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" &&
+                          value.trim() &&
+                          !isMaxed &&
+                          addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)
+                        }
+                        placeholder={`Ajouter ${/^[aeiou]/i.test(label) ? "un" : "une"} ${label.toLowerCase()}`}
+                        className="flex-1 border p-2 rounded-xl"
+                        disabled={isMaxed}
+                      />
                       <button
-                        onClick={() => removeItem("tools", tool)}
-                        className="text-white hover:text-gray-200 transition-colors"
+                        onClick={() => addItem(key as keyof typeof inputValues, field as keyof OpportunityRequirements)}
+                        className={`p-2 ${value.trim() && !isMaxed ? "text-blue-600" : "text-gray-400"
+                          }`}
+                        disabled={!value.trim() || isMaxed}
                       >
-                        <Trash2 size={18} />
+                        <PlusCircle size={24} />
                       </button>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <p className="text-gray-600">Habilitations</p>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text"
-                    value={inputValues.authorization}
-                    onChange={(e) => handleInputChange("authorization", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        addItem("authorization", "authorizations");
-                      }
-                    }}
-                    placeholder="Ajouter une habilitation"
-                    className="w-full border p-2 rounded-xl"
-                  />
-                  <button
-                    onClick={() => addItem("authorization", "authorizations")}
-                    className={`${inputValues.authorization.trim()
-                      ? "text-blue-600 hover:text-blue-800"
-                      : "text-gray-400"
-                      } transition-colors`}
-                    disabled={!inputValues.authorization.trim()}
-                  >
-                    <PlusCircle size={28} />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.requirements.authorizations?.map((auth, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
-                    >
-                      <span>{auth}</span>
-                      <button
-                        onClick={() => removeItem("authorizations", auth)}
-                        className="text-white hover:text-gray-200 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                    {isMaxed && (
+                      <p className="text-sm text-red-500">
+                        Maximum de {MAX_REQUIREMENTS_PER_FIELD} {label.toLowerCase()} atteint.
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {items.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 rounded-xl px-3 py-1 max-w-full bg-[#215A96] text-white"
+                        >
+                          <div className="relative overflow-hidden max-w-full">
+                            <span
+                              className="block whitespace-nowrap overflow-hidden text-ellipsis hover:text-clip hover:animate-scroll"
+                            >
+                              {item}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => removeItem(field as keyof OpportunityRequirements, item)}
+                            className="hover:text-gray-200"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  </div>
+                );
+              })}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <p className="text-gray-600">Langues</p>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text"
-                    value={inputValues.language}
-                    onChange={(e) => handleInputChange("language", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        addItem("language", "languages");
-                      }
-                    }}
-                    placeholder="Ajouter une langue"
-                    className="w-full border p-2 rounded-xl"
-                  />
-                  <button
-                    onClick={() => addItem("language", "languages")}
-                    className={`${inputValues.language.trim()
-                      ? "text-blue-600 hover:text-blue-800"
-                      : "text-gray-400"
-                      } transition-colors`}
-                    disabled={!inputValues.language.trim()}
-                  >
-                    <PlusCircle size={28} />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.requirements.languages?.map((lang, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
-                    >
-                      <span>{lang}</span>
-                      <button
-                        onClick={() => removeItem("languages", lang)}
-                        className="text-white hover:text-gray-200 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-gray-600">Qualités Relationnelles</p>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text"
-                    value={inputValues.quality}
-                    onChange={(e) => handleInputChange("quality", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        addItem("quality", "qualities");
-                      }
-                    }}
-                    placeholder="Ajouter une qualité"
-                    className="w-full border p-2 rounded-xl"
-                  />
-                  <button
-                    onClick={() => addItem("quality", "qualities")}
-                    className={`${inputValues.quality.trim()
-                      ? "text-blue-600 hover:text-blue-800"
-                      : "text-gray-400"
-                      } transition-colors`}
-                    disabled={!inputValues.quality.trim()}
-                  >
-                    <PlusCircle size={28} />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.requirements.qualities?.map((quality, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-[#215A96] text-white rounded-xl p-2"
-                    >
-                      <span>{quality}</span>
-                      <button
-                        onClick={() => removeItem("qualities", quality)}
-                        className="text-white hover:text-gray-200 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                type="button"
-                className="px-4 py-2 mr-2 bg-gray-200 rounded-xl"
-                onClick={() => setIsEditingCriterias(false)}
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 bg-blue-700 text-white rounded-xl"
-                onClick={handleSaveCriterias}
-              >
-                Enregistrer
-              </button>
             </div>
           </div>
         ) : (

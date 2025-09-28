@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Star } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAuthHeader } from "../../../../../utils/jwt";
+import { getAuthHeader, isAuthenticated, loadGuestOpportunities } from "../../../../../utils/jwt";
 import { fetchCandidatesWithMatchData, fetchSectors } from "./services";
 import { OpportunityFormData, EnhancedCandidate, Sector } from "./types";
 
@@ -40,6 +40,7 @@ const OpportunityDetailsKPlayer = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
 
+  const isAuth = isAuthenticated();
   const navigate = useNavigate();
   let params = useParams<{ id: string }>();
 
@@ -88,54 +89,70 @@ const OpportunityDetailsKPlayer = () => {
     };
   };
 
-  const loadProjectDetails = async (opportunity_id: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.get<OpportunityFormData>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${opportunity_id}`,
-        { headers: getAuthHeader() }
-      );
-      setProjectDetails(mapApiResponseToFormData(response.data));
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load opportunity details.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadSectors = async () => {
-    try {
-      setLoading(true);
-      const sectors = await fetchSectors();
-      setSectors(sectors);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadStarredCandidates = async (opportunity_id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const candidates = await fetchCandidatesWithMatchData("STARRED", opportunity_id);
-      setStarredCandidates(candidates);
-    } catch (err) {
-      console.error("Failed to load candidates:", err);
-      setError(err instanceof Error ? err.message : 'Failed to load candidates');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadSectors();
-    loadProjectDetails(params.id || "");
-    loadStarredCandidates(params.id || "");
-  }, [params.id]);
+    // Load sectors
+    setLoading(true);
+    fetchSectors()
+      .then((sectors) => {
+        setSectors(sectors);
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "An unknown error occurred.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    if (params.id && isAuth) {
+      // Load project details
+      setLoading(true);
+      axios.get<OpportunityFormData>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/private/opportunities/${params.id}`,
+        { headers: getAuthHeader() }
+      )
+        .then((response) => {
+          setProjectDetails(mapApiResponseToFormData(response.data));
+          setError(null);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError('Failed to load opportunity details.');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+
+      // Load starred candidates
+      setLoading(true);
+      fetchCandidatesWithMatchData("STARRED", params.id)
+        .then((candidates) => {
+          setStarredCandidates(candidates);
+          setError(null);
+        })
+        .catch((err) => {
+          console.error("Failed to load candidates:", err);
+          setError(err instanceof Error ? err.message : 'Failed to load candidates');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else if (params.id && !isAuth) {
+      try {
+        const opportunity = loadGuestOpportunities().find((opportunity) => opportunity.id.toString() === params.id);
+        if (opportunity) {
+          const { id, created_at, expire_at, ...projectDetails } = opportunity;
+          setProjectDetails(projectDetails);
+          setError(null);
+        }
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'An unknown error occurred while fetching opportunity details.');
+      } finally {
+        setStarredCandidates([]);
+        setError(null);
+        setLoading(false);
+      }
+    }
+  }, [params.id, isAuth]);
 
   return (
     <main className="p-4 w-full mx-auto">

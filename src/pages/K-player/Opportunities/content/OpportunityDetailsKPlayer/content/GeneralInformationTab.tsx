@@ -3,7 +3,7 @@ import { Check, ChevronDown, Loader2, PenBox, X } from 'lucide-react';
 import { OpportunityBasicInfo } from '../types';
 import { updateOpportunityBasicInfo } from '../services';
 import { OrgMember } from '../../../../Profile/types';
-import { getUserFullName } from '../../../../../../utils/jwt';
+import { getUserFullName, isAuthenticated } from '../../../../../../utils/jwt';
 import { FetchOrgMembers } from '../../../../Profile/services';
 
 interface GeneralInformationTabProps {
@@ -18,26 +18,38 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
   const [isEditing, setIsEditing] = useState(false);
   const [localFormData, setLocalFormData] = useState<OpportunityBasicInfo>(formData);
   const [prevFormData, setPrevFormData] = useState<OpportunityBasicInfo>(formData);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [membersLoading, setMembersLoading] = useState(false);
   const [membersError, setMembersError] = useState<string | null>(null);
   const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
   const [showOrgMembersDropdown, setShowOrgMembersDropdown] = useState(false);
 
+  const isAuth = isAuthenticated();
+
   useEffect(() => {
     setMembersLoading(true);
     setMembersError(null);
-    FetchOrgMembers()
-      .then(data => {
-        setOrgMembers(data);
-        setMembersLoading(false);
-      })
-      .catch(error => {
-        setOrgMembers([]);
-        setMembersError(error instanceof Error ? error.message : "An unknown error occurred.");
-        setMembersLoading(false);
-      });
-  }, []);
+    if (isAuth) {
+      FetchOrgMembers()
+        .then(data => {
+          setOrgMembers(data);
+          setMembersLoading(false);
+        })
+        .catch(error => {
+          setOrgMembers([]);
+          setMembersError(error instanceof Error ? error.message : "An unknown error occurred.");
+          setMembersLoading(false);
+        })
+        .finally(() => {
+          setMembersLoading(false);
+        });
+    } else {
+      setOrgMembers([]);
+      setMembersError(null);
+      setMembersLoading(false);
+    }
+  }, [isAuth]);
 
   useEffect(() => {
     if (!isEditing && formData !== prevFormData) {
@@ -50,54 +62,61 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
     setLocalFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-  };
-
-  const handleStringChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    handleChange(e.target.name as keyof OpportunityBasicInfo, e.target.value);
-  };
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleChange(e.target.name as keyof OpportunityBasicInfo, e.target.value);
+    }))
   };
 
   const handleSubmit = async () => {
     if (!isEditing) {
       setIsEditing(true);
+      setSubmitError(null);
       return;
     }
 
     setIsSubmitting(true);
-    try {
-      // Prepare the update payload with only changed fields
-      const updatePayload: Partial<OpportunityBasicInfo> = {};
+    setSubmitError(null);
 
-      if (localFormData.title !== formData.title) updatePayload.title = localFormData.title;
-      if (localFormData.status !== formData.status) updatePayload.status = localFormData.status;
-      if (localFormData.opportunity_role !== formData.opportunity_role) updatePayload.opportunity_role = localFormData.opportunity_role;
-      if (localFormData.operational_manager !== formData.operational_manager) updatePayload.operational_manager = localFormData.operational_manager;
-      if (localFormData.start_at !== formData.start_at) updatePayload.start_at = localFormData.start_at;
-      if (localFormData.announce_at !== formData.announce_at) updatePayload.announce_at = localFormData.announce_at;
-      if (localFormData.responded_at !== formData.responded_at) updatePayload.responded_at = localFormData.responded_at;
-      if (localFormData.context !== formData.context) updatePayload.context = localFormData.context;
-      if (localFormData.description !== formData.description) updatePayload.description = localFormData.description;
+    // Prepare the update payload with only changed fields
+    const updatePayload: Partial<OpportunityBasicInfo> = {};
 
-      await updateOpportunityBasicInfo(updatePayload, opportunity_id);
+    if (localFormData.title !== formData.title) updatePayload.title = localFormData.title;
+    if (localFormData.status !== formData.status) updatePayload.status = localFormData.status;
+    if (localFormData.opportunity_role !== formData.opportunity_role) updatePayload.opportunity_role = localFormData.opportunity_role;
+    if (localFormData.operational_manager !== formData.operational_manager) updatePayload.operational_manager = localFormData.operational_manager;
+    if (localFormData.start_at !== formData.start_at) updatePayload.start_at = localFormData.start_at;
+    if (localFormData.announce_at !== formData.announce_at) updatePayload.announce_at = localFormData.announce_at;
+    if (localFormData.responded_at !== formData.responded_at) updatePayload.responded_at = localFormData.responded_at;
+    if (localFormData.context !== formData.context) updatePayload.context = localFormData.context;
+    if (localFormData.description !== formData.description) updatePayload.description = localFormData.description;
 
-      setLocalFormData(prev => ({
-        ...prev,
-        ...updatePayload
-      }));
-
+    // Check if there are any changes to submit
+    if (Object.keys(updatePayload).length === 0) {
       setIsEditing(false);
-    } finally {
       setIsSubmitting(false);
+      return;
     }
+
+    updateOpportunityBasicInfo(updatePayload, opportunity_id)
+      .then(() => {
+        setLocalFormData(prev => ({
+          ...prev,
+          ...updatePayload
+        }));
+        setIsEditing(false);
+      })
+      .catch(error => {
+        const errorMessage = error instanceof Error ? error.message : "Une erreur est survenue lors de la mise à jour";
+        setSubmitError(errorMessage);
+        alert(`Erreur de mise à jour: ${errorMessage}`);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const handleCancel = () => {
     setLocalFormData(formData);
     setIsEditing(false);
+    setSubmitError(null); // Clear errors on cancel
   };
 
   const formatDate = (dateString: string) => {
@@ -182,7 +201,7 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               cursor={isSubmitting ? "not-allowed" : "pointer"}
               size={24}
               color="red"
-              onClick={handleCancel}
+              onClick={isSubmitting ? undefined : handleCancel}
             />
             {isSubmitting
               ? <Loader2
@@ -208,12 +227,26 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
         )}
       </div>
 
+      {/* Submission Error Display */}
+      {submitError && (
+        <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Erreur de soumission! </strong>
+          <span className="block sm:inline">{submitError}</span>
+          <button
+            className="absolute top-0 right-0 px-2 py-1 text-red-700"
+            onClick={() => setSubmitError(null)}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Row 1 */}
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label htmlFor="reference" className="block text-sm font-medium text-gray-700 mb-1">Référence de l'offre</label>
-            <div className="p-2 bg-gray-100 rounded-xl">{localFormData.reference || '-'}</div>
+            <div className="p-2 bg-gray-100 rounded-xl">{isAuth ? localFormData.reference || '-' : 'Gest Test: ' + opportunity_id || '-'}</div>
           </div>
           <div className="col-span-1">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
@@ -221,9 +254,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               <input
                 type="text"
                 id="title"
-                name="title"
                 value={localFormData.title}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 placeholder="Titre"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -235,87 +267,87 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             <label htmlFor="operational_manager" className="block text-sm font-medium text-gray-700 mb-1">Responsable opérationnel</label>
             {isEditing ? (
               <div className="relative">
-                <input
-                  type="text"
-                  id="operational_manager"
-                  name="operational_manager"
-                  value={localFormData.operational_manager || ''}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    handleStringChange(e);
-                    setShowOrgMembersDropdown(true);
-                  }}
-                  onFocus={() => {
-                    setShowOrgMembersDropdown(true);
-                  }}
-                  placeholder={membersLoading ? "Chargement..." : "Responsable opérationnel"}
-                  className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                  disabled={membersLoading}
-                />
-                <ChevronDown
-                  size={20}
-                  className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowOrgMembersDropdown(!showOrgMembersDropdown);
-                  }}
-                />
-
-                {membersError && (
-                  <p className="text-red-500 text-xs mt-1">{membersError}</p>
-                )}
-
-                {showOrgMembersDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                    <div
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2 border-b-gray-500"
-                      onClick={() => {
-                        handleStringChange({
-                          target: {
-                            name: "operational_manager",
-                            value: getUserFullName()
-                          }
-                        } as React.ChangeEvent<HTMLInputElement>);
-                        setShowOrgMembersDropdown(false);
+                {!isAuth ? (
+                  <input disabled
+                    type="text"
+                    id="operational_manager"
+                    value="Gest User: " // TODO: add guest id
+                    className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      id="operational_manager"
+                      value={localFormData.operational_manager || ''}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value);
+                        setShowOrgMembersDropdown(true);
                       }}
-                    >
-                      <span className="font-sm border-l-4 pl-3 border-l-blue-500">
-                        {getUserFullName()} (Moi)
-                      </span>
-                    </div>
+                      onFocus={() => {
+                        setShowOrgMembersDropdown(true);
+                      }}
+                      placeholder={membersLoading ? "Chargement..." : "Responsable opérationnel"}
+                      className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                      disabled={membersLoading}
+                    />
+                    <ChevronDown
+                      size={20}
+                      className="absolute right-2 top-2 text-gray-400 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowOrgMembersDropdown(!showOrgMembersDropdown);
+                      }}
+                    />
 
-                    {orgMembers
-                      .filter(member =>
-                        `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
-                      )
-                      .map((member) => (
+                    {membersError && (
+                      <p className="text-red-500 text-xs mt-1">{membersError}</p>
+                    )}
+
+                    {showOrgMembersDropdown && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
                         <div
-                          key={member.ID}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2 border-b-gray-500"
                           onClick={() => {
-                            handleStringChange({
-                              target: {
-                                name: "operational_manager",
-                                value: `${member.first_name} ${member.last_name}`
-                              }
-                            } as React.ChangeEvent<HTMLInputElement>);
+                            handleChange("operational_manager" as keyof OpportunityBasicInfo, getUserFullName() || '');
                             setShowOrgMembersDropdown(false);
                           }}
                         >
-                          <span className={`font-sm border-l-4 pl-3 ${member.email_verified ? "border-green-500" : "border-orange-500"}`}>
-                            {member.first_name} {member.last_name}
+                          <span className="font-sm border-l-4 pl-3 border-l-blue-500">
+                            {getUserFullName()} (Moi)
                           </span>
                         </div>
-                      ))
-                    }
-                    {orgMembers.filter(member =>
-                      `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
-                    ).length === 0 && (
-                        <div className="px-4 py-2 text-gray-500">
-                          Aucun membre trouvé
-                        </div>
-                      )}
-                  </div>
+
+                        {orgMembers
+                          .filter(member =>
+                            `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
+                          )
+                          .map((member) => (
+                            <div
+                              key={member.ID}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                              onClick={() => {
+                                handleChange("operational_manager" as keyof OpportunityBasicInfo, `${member.first_name} ${member.last_name}`)
+                                setShowOrgMembersDropdown(false);
+                              }}
+                            >
+                              <span className={`font-sm border-l-4 pl-3 ${member.email_verified ? "border-green-500" : "border-orange-500"}`}>
+                                {member.first_name} ${member.last_name}
+                              </span>
+                            </div>
+                          ))
+                        }
+                        {orgMembers.filter(member =>
+                          `${member.first_name} ${member.last_name}`.toLowerCase().includes(localFormData.operational_manager?.toLowerCase() || '')
+                        ).length === 0 && (
+                            <div className="px-4 py-2 text-gray-500">
+                              Aucun membre trouvé
+                            </div>
+                          )}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             ) : (
@@ -331,9 +363,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             {isEditing ? (
               <select
                 id="status"
-                name="status"
                 value={localFormData.status || ''}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sélectionnez un statut</option>
@@ -362,9 +393,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             {isEditing ? (
               <select
                 id="opportunity_role"
-                name="opportunity_role"
                 value={localFormData.opportunity_role}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sélectionnez une option</option>
@@ -390,9 +420,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               <input
                 type="date"
                 id="start_at"
-                name="start_at"
                 value={localFormData.start_at}
-                onChange={handleDateChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -407,9 +436,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               <input
                 type="date"
                 id="announce_at"
-                name="announce_at"
                 value={localFormData.announce_at ? localFormData.announce_at : ''}
-                onChange={handleDateChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -424,9 +452,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
               <input
                 type="date"
                 id="responded_at"
-                name="responded_at"
                 value={localFormData.responded_at ? localFormData.responded_at : ''}
-                onChange={handleDateChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -442,9 +469,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             {isEditing ? (
               <textarea
                 id="context"
-                name="context"
                 value={localFormData.context}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 placeholder="Contexte"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={6}
@@ -458,9 +484,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             {isEditing ? (
               <textarea
                 id="description"
-                name="description"
                 value={localFormData.description}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 placeholder="Descriptif"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={6}
@@ -474,9 +499,8 @@ const GeneralInformationTab = ({ formData, loading, error, opportunity_id }: Gen
             {isEditing ? (
               <textarea
                 id="candidat_profile"
-                name="candidat_profile"
                 value={localFormData.candidate_profile}
-                onChange={handleStringChange}
+                onChange={(e) => handleChange(e.target.id as keyof OpportunityBasicInfo, e.target.value)}
                 placeholder="Descriptif"
                 className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={6}
