@@ -177,8 +177,7 @@ const OpportunityDetailsKPlayer = () => {
 
       {/* tabs content */}
       <div className="min-h-[55svh]">
-        {activeTab === "Informations" && (<GeneralInformationTab
-          opportunity_id={params.id || ""}
+        {activeTab === "Informations" && (<GeneralInformationTab opportunity_id={params.id || ""}
           formData={{
             title: opportunityDetails?.title ?? "",
             status: opportunityDetails?.status ?? "",
@@ -195,8 +194,7 @@ const OpportunityDetailsKPlayer = () => {
           loading={loading}
           error={error}
         />)}
-        {activeTab === "Compétences_Critères" && <SkillsAndCriterias
-          opportunity_id={params.id || ""}
+        {activeTab === "Compétences_Critères" && <SkillsAndCriterias opportunity_id={params.id || ""}
           sectors={sectors}
           loading={loading}
           error={error}
@@ -223,16 +221,13 @@ const OpportunityDetailsKPlayer = () => {
             },
           }}
         />}
-        {activeTab === "Candidates" && <StarredCandidatesComp
-          opportunity_id={params.id || ""}
+        {activeTab === "Candidates" && <StarredCandidatesComp opportunity_id={params.id || ""}
+          onSelectedCandidate={setSelectedCandidateId}
           candidates={starredCandidates}
           loading={loading}
           error={error}
-          onSelectedCandidate={setSelectedCandidateId}
         />}
-        {activeTab === "Diffusion" && <Diffusion
-          opportunity_id={params.id || ""}
-        />}
+        {activeTab === "Diffusion" && <Diffusion opportunity_id={params.id || ""} />}
       </div>
 
       {/* candidates list */}

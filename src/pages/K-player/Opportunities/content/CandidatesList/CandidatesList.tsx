@@ -5,6 +5,7 @@ import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, val
 
 import CandidateDetailModal from "./content/CandidateDetailsModale";
 import CandidateCard from "./content/CandidateCard";
+import { isAuthenticated } from "../../../../../utils/jwt";
 
 interface CandidatesListProps {
   apiType?: string;
@@ -57,29 +58,43 @@ const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, o
   const [version, setVersion] = useState(0);
   const [matchPercentageFilter, setMatchPercentageFilter] = useState<number>(0);
 
-  // Data fetching and initialization
-  const loadCandidates = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchCandidatesWithMatchData(apiType, opportunityId);
-      setCandidates(data);
-    } catch (err) {
-      console.error("Failed to load candidates:", err);
-      setError(err instanceof Error ? err.message : 'Failed to load candidates');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isAuth = isAuthenticated();
 
   useEffect(() => {
-    loadCandidates();
+    setLoading(true);
+    setError(null);
+
+    if (isAuth) {
+      fetchCandidatesWithMatchData(apiType, opportunityId)
+        .then(data => setCandidates(data))
+        .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
+        .finally(() => setLoading(false));
+    } else {
+      setCandidates([]); // TODO: add matchings & candidates
+      setLoading(false);
+    }
+
     const handleRefresh = () => setVersion(v => v + 1);
     emitter.on('refreshSuggestions', handleRefresh);
     return () => emitter.off('refreshSuggestions', handleRefresh);
-  }, [apiType, opportunityId]);
+  }, [apiType, opportunityId, isAuth]);
 
-  useEffect(() => { loadCandidates(); }, [version]);
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+
+    if (isAuth) {
+      fetchCandidatesWithMatchData(apiType, opportunityId)
+        .then(data => setCandidates(data))
+        .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
+        .finally(() => setLoading(false));
+    } else {
+      setCandidates([]); // TODO: add matchings & candidates
+      setLoading(false);
+    }
+
+  }, [version, apiType, opportunityId, isAuth]);
+
   useEffect(() => { if (selectedCandidateId) setSelectedCandidateID(selectedCandidateId); }, [selectedCandidateId]);
 
   // Filter and sort candidates
