@@ -1,6 +1,7 @@
-import { getAuthHeader, getUserId } from "../../../utils/jwt";
-import { OpportunityFormData, CandidateSuggestion } from "./content/OpportunityDetailsKPlayer/types";
-import { Opportunity } from "./types";
+import { getAuthHeader, getGuestToken, getUserId } from "../../../utils/jwt";
+import { CandidateSuggestion } from "./content/CandidatesList/types";
+import { OpportunityFormData } from "./content/OpportunityDetailsKPlayer/types";
+import { CandidatesMatches, GuestOpportunity, Opportunity } from "./types";
 import axios from "axios";
 
 export const fetchOpportunities = async (): Promise<Opportunity[]> => {
@@ -124,4 +125,34 @@ export const updateCandidateStatus = (
             ? { ...candidate, ...updates }
             : candidate
     );
-}; 
+};
+
+export const fetchUpdateGestOpportunityMatches = async (opportunity: GuestOpportunity): Promise<CandidateSuggestion[]> => {
+    const candidates = await axios.get<CandidateSuggestion[]>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/candidates`
+    );
+
+    let enhancedCandidates = candidates.data.map(candidate => ({
+        ...candidate,
+        jobs: candidate.jobs ?? [],
+        totalMatchPercentage: 0
+    }));
+
+    const matches = await axios.post<CandidatesMatches>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity`,
+        {
+            opportunity: {
+                ...opportunity,
+                id: opportunity.id.toString(),
+            }
+        },
+        { headers: getGuestToken() }
+    );
+
+    enhancedCandidates = enhancedCandidates.map(candidate => {
+        const match = matches.data.matchings.find(m => m.candidate_id === candidate.user_id);
+        return match ? { ...candidate, totalMatchPercentage: match.matching_result.total_match_percentage, matching: match.matching_result } : candidate;
+    });
+
+    return enhancedCandidates;
+};

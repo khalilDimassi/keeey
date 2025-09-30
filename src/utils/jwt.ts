@@ -1,6 +1,6 @@
 import { jwtVerify, JWTPayload, decodeJwt as joseDecodeJwt } from 'jose';
 import { GuestData } from '../pages/K-Profile/Competence/types';
-import { GuestOpportunity } from '../pages/K-player/Opportunities/mod guest/GuestDS';
+import { GuestOpportunity } from '../pages/K-player/Opportunities/types';
 
 const TOKEN_KEY = "auth_token";
 
@@ -219,7 +219,9 @@ export const saveGuestOpportunity = (opportunity: Partial<GuestOpportunity>) => 
 		);
 		localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
 	} else {
-		const newId = existing.length > 0 ? Math.max(...existing.map(opp => opp.id)) + 1 : 1;
+		const newId = existing.length > 0
+			? Math.max(...existing.map(opp => Number(opp.id)).filter(id => !isNaN(id))) + 1
+			: 1;
 		const newOpportunity: GuestOpportunity = {
 			...opportunity,
 			id: newId,

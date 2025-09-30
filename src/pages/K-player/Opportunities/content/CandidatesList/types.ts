@@ -99,11 +99,11 @@ export interface CandidateEnhancements {
     availability_match_percentage: number;
     rate_match_percentage: number;
     mobility_match_percentage: number;
-    languages_match_percentage: number;
-    tools_match_percentage: number;
-    authorizations_match_percentage: number;
-    qualities_match_percentage: number;
+    languages_match_percentage?: number;
+    tools_match_percentage?: number;
+    authorizations_match_percentage?: number;
+    qualities_match_percentage?: number;
 
-    is_starred: boolean;
-    is_validated: boolean;
+    is_starred?: boolean;
+    is_validated?: boolean;
 }

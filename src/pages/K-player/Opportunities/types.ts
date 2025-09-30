@@ -1,3 +1,4 @@
+import { OpportunityFormData } from "./content/OpportunityDetailsKPlayer/types";
 
 export interface KProfile {
     first_name: string;
@@ -34,11 +35,28 @@ export interface MatchPercentages {
     seniority_match_percentage: number;
     jobs_match_percentage: number;
     sectors_match_percentage: number;
+    contract_role_match_percentage?: number;
+    organization_role_match_percentage?: number;
     availability_match_percentage: number;
     rate_match_percentage: number;
     mobility_match_percentage: number;
-    languages_match_percentage: number;
-    tools_match_percentage: number;
-    authorizations_match_percentage: number;
-    qualities_match_percentage: number;
+    languages_match_percentage?: number;
+    tools_match_percentage?: number;
+    authorizations_match_percentage?: number;
+    qualities_match_percentage?: number;
+}
+
+export interface GuestOpportunity extends OpportunityFormData {
+    id: number | string
+    created_at: string
+    expire_at: string
+}
+
+export interface CandidatesMatches {
+    matchings: Array<{ candidate_id: string; matching_result: MatchPercentages }>
+    token: string
+    id: string
+    opportunity_id: string
+    created_at: string
+    expire_at: string
 }

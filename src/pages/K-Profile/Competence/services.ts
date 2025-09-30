@@ -194,7 +194,8 @@ export const fetchUpdateGuestData = async (): Promise<GuestData> => {
 		}
 
 		const merged: GuestData = {
-			resume: stored.resume ?? { sectors: [], languages: [], authorizations: [], tools: [], qualities: [] },
+			// resume: stored.resume ?? { sectors: [], languages: [], authorizations: [], tools: [], qualities: [] },
+			resume: stored.resume ?? { sectors: [] },
 			profile: stored.profile ?? {
 				contract_roles: [],
 				organization_roles: [],
@@ -244,7 +245,8 @@ export const updateGuestData = async () => {
 		}
 
 		const merged: GuestData = {
-			resume: data.resume ?? { sectors: [], languages: [], authorizations: [], tools: [], qualities: [] },
+			// resume: data.resume ?? { sectors: [], languages: [], authorizations: [], tools: [], qualities: [] },
+			resume: data.resume ?? { sectors: [] },
 			profile: data.profile ?? {
 				contract_roles: [],
 				organization_roles: [],

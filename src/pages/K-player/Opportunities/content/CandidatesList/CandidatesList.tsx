@@ -5,7 +5,9 @@ import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, val
 
 import CandidateDetailModal from "./content/CandidateDetailsModale";
 import CandidateCard from "./content/CandidateCard";
-import { isAuthenticated } from "../../../../../utils/jwt";
+import { isAuthenticated, loadGuestOpportunities } from "../../../../../utils/jwt";
+import { fetchUpdateGestOpportunityMatches } from "../../services";
+import { GuestOpportunity } from "../../types";
 
 interface CandidatesListProps {
   apiType?: string;
@@ -69,8 +71,14 @@ const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, o
         .then(data => setCandidates(data))
         .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
         .finally(() => setLoading(false));
+    } else if (apiType !== "SUBMITTED") {
+      fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id.toString() === opportunityId) as GuestOpportunity)
+        .then((results) => { setCandidates(results) })
+        .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
+        .finally(() => setLoading(false));
     } else {
-      setCandidates([]); // TODO: add matchings & candidates
+      setCandidates([]);
+      setError('Cette fonctionnalité est réservée aux utilisateurs enregistrés.');
       setLoading(false);
     }
 
@@ -88,11 +96,16 @@ const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, o
         .then(data => setCandidates(data))
         .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
         .finally(() => setLoading(false));
+    } else if (apiType !== "SUBMITTED") {
+      fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id.toString() === opportunityId) as GuestOpportunity)
+        .then((results) => { setCandidates(results) })
+        .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
+        .finally(() => setLoading(false));
     } else {
-      setCandidates([]); // TODO: add matchings & candidates
+      setCandidates([]);
+      setError('Cette fonctionnalité est réservée aux utilisateurs enregistrés.');
       setLoading(false);
     }
-
   }, [version, apiType, opportunityId, isAuth]);
 
   useEffect(() => { if (selectedCandidateId) setSelectedCandidateID(selectedCandidateId); }, [selectedCandidateId]);
