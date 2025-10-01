@@ -71,10 +71,10 @@ const CandidateDetailModal = ({ candidateId, matchings, onClose, is_starred, is_
     if (!scores) return 0;
     return (
       (scores.jobs_match_percentage * 0.75) +
-      (scores.languages_match_percentage * 0.125) +
-      (scores.qualities_match_percentage * 0.025) +
-      (scores.tools_match_percentage * 0.075) +
-      (scores.authorizations_match_percentage * 0.025)
+      (scores.languages_match_percentage || 0 * 0.125) +
+      (scores.qualities_match_percentage || 0 * 0.025) +
+      (scores.tools_match_percentage || 0 * 0.075) +
+      (scores.authorizations_match_percentage || 0 * 0.025)
     );
   };
 

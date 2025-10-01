@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchOpportunities } from './services';
 import { Opportunity } from './types';
+import { isAuthenticated, loadGuestOpportunities } from '../../../utils/jwt';
 
 import OpportunitiesList from './content/projectsList';
-import { isAuthenticated, loadGuestOpportunities } from '../../../utils/jwt';
 
 const OpportunitiesListPage = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);

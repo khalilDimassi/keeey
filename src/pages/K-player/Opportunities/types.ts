@@ -47,16 +47,18 @@ export interface MatchPercentages {
 }
 
 export interface GuestOpportunity extends OpportunityFormData {
-    id: number | string
+    id: number
     created_at: string
     expire_at: string
 }
 
-export interface CandidatesMatches {
-    matchings: Array<{ candidate_id: string; matching_result: MatchPercentages }>
-    token: string
-    id: string
-    opportunity_id: string
-    created_at: string
-    expire_at: string
+export interface GuestOpportunitySession {
+    matchings: Array<{ opportunity_id: number, candidate_id: string; matching_result: MatchPercentages }>;
+    created_at: string;
+    expire_at: string;
+}
+
+export interface GuestOpportunitySessionResponse {
+    token: string;
+    data: GuestOpportunitySession
 }

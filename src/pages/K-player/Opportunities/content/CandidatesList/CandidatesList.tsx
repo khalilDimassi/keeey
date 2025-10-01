@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { emitter } from "../../../../../utils/eventEmitter";
 import { CandidateSuggestion } from "./types";
 import { fetchCandidatesWithMatchData, starCandidate, updateCandidateStatus, validateCandidateInterest } from "./services";
-
-import CandidateDetailModal from "./content/CandidateDetailsModale";
-import CandidateCard from "./content/CandidateCard";
 import { isAuthenticated, loadGuestOpportunities } from "../../../../../utils/jwt";
 import { fetchUpdateGestOpportunityMatches } from "../../services";
 import { GuestOpportunity } from "../../types";
+
+import CandidateDetailModal from "./content/CandidateDetailsModale";
+import CandidateCard from "./content/CandidateCard";
 
 interface CandidatesListProps {
   apiType?: string;
@@ -72,10 +72,10 @@ const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, o
         .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
         .finally(() => setLoading(false));
     } else if (apiType !== "SUBMITTED") {
-      fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id.toString() === opportunityId) as GuestOpportunity)
-        .then((results) => { setCandidates(results) })
-        .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
-        .finally(() => setLoading(false));
+      // fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id === opportunityId) as GuestOpportunity)
+      //   .then((results) => { setCandidates(results) })
+      //   .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
+      //   .finally(() => setLoading(false));
     } else {
       setCandidates([]);
       setError('Cette fonctionnalité est réservée aux utilisateurs enregistrés.');
@@ -97,7 +97,7 @@ const CandidatesList = ({ apiType = "ALL", opportunityId, selectedCandidateId, o
         .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
         .finally(() => setLoading(false));
     } else if (apiType !== "SUBMITTED") {
-      fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id.toString() === opportunityId) as GuestOpportunity)
+      fetchUpdateGestOpportunityMatches(loadGuestOpportunities().find(opportunity => opportunity.id === Number(opportunityId)) as GuestOpportunity)
         .then((results) => { setCandidates(results) })
         .catch(err => setError(err instanceof Error ? err.message : 'Failed to load candidates'))
         .finally(() => setLoading(false));

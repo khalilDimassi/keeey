@@ -8,7 +8,8 @@ import { OpportunityBasicInfo, OpportunityCriteria, OpportunityRequirements, Opp
 import GeneralInformationForm from "./content/GeneralInformationForm";
 import SkillsCriteriasForm from "./content/SkillsCriteriasForm";
 import DiffusionForm from "./content/DiffusionForm";
-import { isAuthenticated, saveGuestOpportunity } from "../../../../../utils/jwt";
+import { getGuestToken, isAuthenticated, saveGuestOpportunity } from "../../../../../utils/jwt";
+import { createGuestOpportunitySession } from "../../services";
 
 
 type TabType = "Informations" | "Compétences_Critères" | "Diffusion";
@@ -125,8 +126,17 @@ const NewOpportunityKPlayer = () => {
           setSubmitting(false);
         });
     } else {
-      saveGuestOpportunity({ ...payload, ...skills, ...criterias, ...requirements, ...diffusion });
-      setSubmitting(false);
+      const newID = saveGuestOpportunity({ ...payload, ...skills, ...criterias, ...requirements, ...diffusion });
+      createGuestOpportunitySession({ ...payload, ...skills, ...criterias, ...requirements, ...diffusion, id: newID, created_at: '', expire_at: '' })
+        .then(() => {
+          navigate("/kplayer/opportunities/" + newID);
+        })
+        .catch((error) => {
+          setError(error instanceof Error ? error.message : "An unknown error occurred");
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
     }
 
     navigate("/kplayer/opportunities");

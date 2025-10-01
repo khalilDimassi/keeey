@@ -1,7 +1,8 @@
-import { getAuthHeader, getGuestToken, getUserId } from "../../../utils/jwt";
-import { CandidateSuggestion } from "./content/CandidatesList/types";
+import { getAuthHeader, getGuestToken, getUserId, saveGuestToken } from "../../../utils/jwt";
+import { GuestOpportunity, GuestOpportunitySessionResponse, Opportunity } from "./types";
 import { OpportunityFormData } from "./content/OpportunityDetailsKPlayer/types";
-import { CandidatesMatches, GuestOpportunity, Opportunity } from "./types";
+import { CandidateSuggestion } from "./content/CandidatesList/types";
+
 import axios from "axios";
 
 export const fetchOpportunities = async (): Promise<Opportunity[]> => {
@@ -127,7 +128,80 @@ export const updateCandidateStatus = (
     );
 };
 
+// =================== GUEST OPPORTUNITIES ===================
+
+export const createGuestOpportunitySession = async (opportunity: GuestOpportunity): Promise<GuestOpportunitySessionResponse> => {
+    console.log("Creating new opportunity session:", opportunity.id);
+
+    const response = await axios.post<GuestOpportunitySessionResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity`,
+        {
+            opportunity: {
+                ...opportunity,
+                id: opportunity.id,
+            }
+        },
+        { headers: getGuestToken() }
+    );
+
+    // Save the new token if provided
+    if (response.data.token && getGuestToken().Authorization.split(' ')[1] !== response.data.token) {
+        saveGuestToken(response.data.token);
+    }
+
+    return response.data;
+};
+
+export const getGuestOpportunitiesSession = async (): Promise<GuestOpportunitySessionResponse> => {
+    const response = await axios.get<GuestOpportunitySessionResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity`,
+        { headers: getGuestToken() }
+    );
+
+    // Update token if refreshed
+    if (response.data.token && getGuestToken().Authorization.split(' ')[1] !== response.data.token) {
+        saveGuestToken(response.data.token);
+    }
+
+    return response.data;
+};
+
+export const updateGuestOpportunitySession = async (opportunity: Partial<GuestOpportunity>): Promise<GuestOpportunitySessionResponse> => {
+    const response = await axios.put<GuestOpportunitySessionResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity/${opportunity.id}`,
+        {
+            opportunity: {
+                ...opportunity,
+                id: opportunity.id,
+            }
+        },
+        { headers: getGuestToken() }
+    );
+
+    // Update token if refreshed
+    if (response.data.token && getGuestToken().Authorization.split(' ')[1] !== response.data.token) {
+        saveGuestToken(response.data.token);
+    }
+
+    return response.data;
+};
+
+export const deleteGuestOpportunitySession = async (opportunityId: string): Promise<GuestOpportunitySessionResponse> => {
+    const response = await axios.delete<GuestOpportunitySessionResponse>(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity/${opportunityId}`,
+        { headers: getGuestToken() }
+    );
+
+    // Update token if refreshed
+    if (response.data.token && getGuestToken().Authorization.split(' ')[1] !== response.data.token) {
+        saveGuestToken(response.data.token);
+    }
+
+    return response.data;
+};
+
 export const fetchUpdateGestOpportunityMatches = async (opportunity: GuestOpportunity): Promise<CandidateSuggestion[]> => {
+    if (!opportunity) throw new Error("Opportunity is required");
     const candidates = await axios.get<CandidateSuggestion[]>(
         `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/opportunities/suggestions/candidates`
     );
@@ -138,20 +212,23 @@ export const fetchUpdateGestOpportunityMatches = async (opportunity: GuestOpport
         totalMatchPercentage: 0
     }));
 
-    const matches = await axios.post<CandidatesMatches>(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/public/session-data-opportunity`,
-        {
-            opportunity: {
-                ...opportunity,
-                id: opportunity.id.toString(),
-            }
-        },
-        { headers: getGuestToken() }
-    );
+    let matches: GuestOpportunitySessionResponse;
+    try {
+        const response = await getGuestOpportunitiesSession();
+        matches = response;
+    } catch (error) {
+        console.error("Error fetching guest matches:", error);
+        throw error;
+    }
 
     enhancedCandidates = enhancedCandidates.map(candidate => {
-        const match = matches.data.matchings.find(m => m.candidate_id === candidate.user_id);
-        return match ? { ...candidate, totalMatchPercentage: match.matching_result.total_match_percentage, matching: match.matching_result } : candidate;
+        const matchingsArray = Object.values(matches.data.matchings).flat();
+        const match = matchingsArray.find(m => m.candidate_id === candidate.user_id);
+        return match ? {
+            ...candidate,
+            totalMatchPercentage: match.matching_result.total_match_percentage,
+            matching: match.matching_result
+        } : candidate;
     });
 
     return enhancedCandidates;

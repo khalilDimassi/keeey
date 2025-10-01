@@ -205,12 +205,12 @@ export const loadGuestData = (): Partial<GuestData> => {
 
 export const GUEST_OPPORTUNITIES = "guest_opportunities";
 
-export const saveGuestOpportunity = (opportunity: Partial<GuestOpportunity>) => {
+export const saveGuestOpportunity = (opportunity: Partial<GuestOpportunity>): number => {
 	const existing = loadGuestOpportunities();
 
 	if (existing.length >= 3 && !opportunity.id) {
-		console.warn('Guest can only save up to 3 opportunities');
-		return;
+		console.warn('Guest can only save up to 3 opportunities. Delete one first.');
+		return 0;
 	}
 
 	if (opportunity.id) {
@@ -231,7 +231,11 @@ export const saveGuestOpportunity = (opportunity: Partial<GuestOpportunity>) => 
 
 		const updated = [...existing, newOpportunity];
 		localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
+
+		return newId;
 	}
+
+	return 0;
 };
 
 export const loadGuestOpportunities = (): GuestOpportunity[] => {
@@ -249,4 +253,4 @@ export const deleteGuestOpportunity = (id: number) => {
 	localStorage.setItem(GUEST_OPPORTUNITIES, JSON.stringify(updated));
 };
 
-export const getLocalStorageData = () => localStorage;
+export const getLocalStorageData = () => localStorage; 
