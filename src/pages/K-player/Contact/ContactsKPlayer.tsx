@@ -2,8 +2,22 @@ import { addContact, deleteContact, fetchContacts } from "./services";
 import { Contact, PenBox, Plus, Trash2, User, UserRound } from "lucide-react";
 import { contact, contactRole, contactStatus } from "./types";
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { isAuthenticated } from "../../../utils/jwt";
 
 import ContactForm from "./content/ContactForm";
+
+const sampleContacts: contact[] = [
+  { id: 1, first_name: "Jean", last_name: "Dupont", gender: "male", status: "REGISTERED", role: "INTERNAL-CONTACT", occupation: "Responsable RH", company: "Carrefour", email: "jean.dupont@carrefour.fr", phone: "06 12 34 56 78", ongoing_projects: 2 },
+  { id: 2, first_name: "Sophie", last_name: "Martin", gender: "female", status: "CONTACTED", role: "EXTERNAL-CONTACT", occupation: "Chargée de Recrutement", company: "BNP Paribas", email: "sophie.martin@bnpparibas.fr", phone: "07 98 76 54 32", ongoing_projects: 1 },
+  { id: 3, first_name: "Karim", last_name: "Bouzid", gender: "male", status: "NOT-REGISTERED", role: "EXTERNAL-CONTACT", occupation: "Directeur IT", company: "Orange", email: "karim.bouzid@orange.fr", phone: "06 45 67 89 12", ongoing_projects: 0 },
+];
+
+const sampleConsultants: contact[] = [
+  { id: 101, first_name: "Claire", last_name: "Moreau", gender: "female", status: "SEARCHING", role: "CONSULTANT", occupation: "Développeuse Full-Stack", company: "Freelance", email: "claire.moreau@gmail.com", phone: "06 78 90 12 34", ongoing_projects: 0 },
+  { id: 102, first_name: "Lucas", last_name: "Bernard", gender: "male", status: "IN-MISSION", role: "CONSULTANT", occupation: "Consultant Data", company: "Capgemini", email: "lucas.bernard@capgemini.com", phone: "07 11 22 33 44", ongoing_projects: 1 },
+  { id: 103, first_name: "Fatima", last_name: "Benali", gender: "female", status: "MISSION-HK", role: "CONSULTANT", occupation: "Scrum Master", company: "Sopra Steria", email: "fatima.benali@soprasteria.fr", phone: "07 22 33 44 55", ongoing_projects: 2 },
+];
+
 
 const ContactsKPlayer = () => {
   const [activeTab, setActiveTab] = useState<'CONTACTS' | 'CONSULTANTS'>('CONTACTS');
@@ -11,49 +25,61 @@ const ContactsKPlayer = () => {
   const [error, setError] = useState<string | null>(null);
   const [contacts, setContacts] = useState<contact[]>([]);
   const [formActive, setFormActive] = useState(false);
+  const guestContacts = [...sampleContacts, ...sampleConsultants];
 
   const filteredContacts = useMemo(() => {
+    const list = isAuthenticated() ? contacts : guestContacts;
     return activeTab === 'CONTACTS'
-      ? contacts.filter(contact => contact.role !== 'CONSULTANT')
-      : contacts.filter(contact => contact.role === 'CONSULTANT');
+      ? list.filter(c => c.role !== 'CONSULTANT')
+      : list.filter(c => c.role === 'CONSULTANT');
   }, [contacts, activeTab]);
 
   const loadContacts = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchContacts();
-      if (data) setContacts(data);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
-    } finally {
-      setLoading(false);
-    }
+    if (!isAuthenticated()) return;
+
+    fetchContacts()
+      .then(data => {
+        setContacts(data);
+      })
+      .catch(error => {
+        setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  useEffect(() => {
-    loadContacts();
-  }, [loadContacts]);
+  useEffect(() => { loadContacts() }, [loadContacts]);
 
   const handleNewContact = async (role: contactRole, data: contact) => {
-    try {
-      await addContact(role, data);
-      setFormActive(false);
-      await loadContacts();
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+    if (!isAuthenticated()) {
+      alert("⚠️ Cette fonctionnalité est réservée aux utilisateurs enregistrés.");
+      return;
     }
+    addContact(role, data)
+      .then(() => {
+        setFormActive(false);
+        loadContacts();
+      })
+      .catch(error => {
+        setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      });
   };
 
   const handleDeleteContact = async (id: number) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce contact ?")) {
-      try {
-        await deleteContact(id);
-        await loadContacts();
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'An unknown error occurred');
-      }
+    if (!isAuthenticated()) {
+      alert("⚠️ Seuls les utilisateurs enregistrés peuvent supprimer un contact.");
+      return;
     }
+
+    confirm("Êtes-vous sûr de vouloir supprimer ce contact ?") ?
+      deleteContact(id)
+        .then(() => {
+          loadContacts();
+        })
+        .catch(error => {
+          setError(error instanceof Error ? error.message : 'An unknown error occurred');
+        }) : null;
   };
 
   const renderStatusBadge = (status: contactStatus) => {
@@ -223,7 +249,13 @@ const ContactsKPlayer = () => {
         </button>
         <button
           className="ml-auto mb-2 h-fit flex self-center items-center bg-[#215A96] text-white text-sm px-5 py-1.5 rounded-full shadow-md hover:bg-blue-900"
-          onClick={() => setFormActive(true)}
+          onClick={() => {
+            if (!isAuthenticated()) {
+              alert("⚠️ Veuillez vous inscrire ou vous connecter pour ajouter un contact.");
+              return;
+            }
+            setFormActive(true)
+          }}
         >
           <Plus className="w-3 h-3 mr-1" /> Ajouter un {activeTab === 'CONSULTANTS' ? 'consultant' : 'contact'}
         </button>
